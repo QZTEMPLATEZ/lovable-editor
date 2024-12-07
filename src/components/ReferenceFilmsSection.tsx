@@ -1,5 +1,6 @@
 import React from 'react';
 import { Upload, Film, Info } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -11,9 +12,10 @@ interface ReferenceFilmsSectionProps {
   onDrop: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   videoFiles: File[];
+  onContinue: () => void;
 }
 
-const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles }: ReferenceFilmsSectionProps) => {
+const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: ReferenceFilmsSectionProps) => {
   return (
     <div className="space-y-6">
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-8 border border-purple-500/30">
@@ -77,6 +79,18 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles }: ReferenceFilm
             </ul>
           </div>
         </div>
+
+        {videoFiles.length === 3 && (
+          <div className="mt-6 flex justify-center">
+            <Button 
+              onClick={onContinue}
+              className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-2 rounded-lg flex items-center gap-2"
+            >
+              Continue to Raw Footage
+              <Film className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

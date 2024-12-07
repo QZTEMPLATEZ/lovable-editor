@@ -70,6 +70,14 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     e.preventDefault();
   };
 
+  const handleContinue = () => {
+    setCurrentStep('raw');
+    toast({
+      title: "Moving to Raw Footage",
+      description: "Please upload your raw wedding footage for editing",
+    });
+  };
+
   const handleMusicSelect = (file: File, beats: any[]) => {
     setMusicTrack(file);
     setMusicBeats(beats);
@@ -100,7 +108,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
       if (progress >= 100) {
         clearInterval(interval);
         setCurrentStep('pre-approval');
-        setFinalVideoUrl(URL.createObjectURL(videoFiles[0]));
+        setFinalVideoUrl(URL.createObjectURL(rawFiles[0]));
         toast({
           title: "Processing complete",
           description: "Your video is ready for review!",
@@ -109,7 +117,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     }, 100);
 
     // Process videos with music beats
-    for (const file of videoFiles) {
+    for (const file of rawFiles) {
       const metadata = await getVideoMetadata(file);
       const slowMotionFactor = calculateSlowMotionSpeed(metadata.fps);
       console.log(`Processing ${file.name} with slow motion factor: ${slowMotionFactor}`);
@@ -161,15 +169,17 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
               onDrop={handleReferenceDrop}
               onDragOver={handleDragOver}
               videoFiles={referenceFiles}
+              onContinue={handleContinue}
             />
-            {referenceFiles.length === 3 && (
-              <RawFilesSection
-                onDrop={handleRawDrop}
-                onDragOver={handleDragOver}
-                videoFiles={rawFiles}
-              />
-            )}
           </div>
+        )}
+
+        {currentStep === 'raw' && (
+          <RawFilesSection
+            onDrop={handleRawDrop}
+            onDragOver={handleDragOver}
+            videoFiles={rawFiles}
+          />
         )}
 
         {currentStep === 'edit' && (
