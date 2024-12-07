@@ -159,8 +159,8 @@ const VideoEditor = ({ targetDuration, editingMode }: VideoEditorProps) => {
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white p-6">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-300 to-purple-400 font-['Orbitron']">
-            SMART WEDDING FILMS
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
+            QZ TEMPLATEZ VIDEO EDITOR
           </h1>
           <p className="text-gray-400">
             {editingMode === 'ai' 
