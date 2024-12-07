@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Upload, Wand2, Type, Clock, Sparkles, Timer, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import LoadingScreen from './LoadingScreen';
+import EditingInterface from './EditingInterface';
+import EditingProgress from './EditingProgress';
 import {
   Select,
   SelectContent,
@@ -18,6 +19,7 @@ const VideoEditor = () => {
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [selectedDuration, setSelectedDuration] = useState('');
   const [currentStep, setCurrentStep] = useState('loading');
+  const [editingProgress, setEditingProgress] = useState(0);
   const { toast } = useToast();
 
   const templates = [
@@ -60,11 +62,26 @@ const VideoEditor = () => {
   const handleCommand = () => {
     if (!command.trim()) return;
     
+    setCurrentStep('processing');
+    
+    // Simulate editing progress
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 1;
+      setEditingProgress(progress);
+      if (progress >= 100) {
+        clearInterval(interval);
+        toast({
+          title: "Processing complete",
+          description: "Your video has been edited successfully!",
+        });
+      }
+    }, 100);
+
     toast({
       title: "Processing command",
       description: `Applying: ${command}`,
     });
-    setCommand('');
   };
 
   const handleTemplateChange = (value: string) => {
@@ -95,6 +112,10 @@ const VideoEditor = () => {
         break;
       case 'edit':
         setCurrentStep('preview');
+        break;
+      case 'processing':
+        setCurrentStep('edit');
+        setEditingProgress(0);
         break;
       default:
         break;
@@ -191,10 +212,10 @@ const VideoEditor = () => {
 
         {currentStep === 'edit' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <Select onValueChange={handleTemplateChange} value={selectedTemplate}>
                 <SelectTrigger className="bg-editor-timeline/40 border-purple-500/20 backdrop-blur-sm">
-                  <SelectValue placeholder="Choose editing template" />
+                  <SelectValue placeholder="Choose editing template or use AI commands below" />
                 </SelectTrigger>
                 <SelectContent>
                   {templates.map((template) => (
@@ -210,28 +231,20 @@ const VideoEditor = () => {
                 </SelectContent>
               </Select>
 
-              <div className="flex gap-4">
-                <Input
-                  value={command}
-                  onChange={(e) => setCommand(e.target.value)}
-                  placeholder="Enter custom editing command..."
-                  className="flex-1 bg-editor-timeline/40 border-purple-500/20 backdrop-blur-sm"
-                />
-                <Button 
-                  onClick={handleCommand}
-                  className="bg-purple-500 hover:bg-purple-600 transition-colors"
-                >
-                  Apply
-                </Button>
-              </div>
-            </div>
-
-            <div className="bg-editor-timeline/40 rounded-xl p-4 backdrop-blur-md border border-purple-500/20">
-              <div className="h-2 bg-purple-500/20 rounded-full">
-                <div className="h-full w-1/3 bg-purple-500 rounded-full" />
-              </div>
+              <EditingInterface
+                command={command}
+                onCommandChange={setCommand}
+                onSubmit={handleCommand}
+              />
             </div>
           </div>
+        )}
+
+        {currentStep === 'processing' && (
+          <EditingProgress
+            videoFiles={videoFiles}
+            progress={editingProgress}
+          />
         )}
       </div>
     </div>
