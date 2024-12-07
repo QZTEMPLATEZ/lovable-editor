@@ -8,7 +8,9 @@ const VideoEditorContainer = () => {
   const [selectedSize, setSelectedSize] = useState<VideoSizeRange>({
     min: 4,
     max: 6,
-    label: "4-6 minutes"
+    label: "4-6 minutes",
+    description: "Perfect for social media highlights",
+    icon: null
   });
   const [editingMode, setEditingMode] = useState<EditingMode>('ai');
   const { toast } = useToast();

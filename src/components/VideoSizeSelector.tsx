@@ -1,18 +1,45 @@
 import React from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Clock, Film, Video } from "lucide-react";
 
 export interface VideoSizeRange {
   min: number;
   max: number;
   label: string;
+  description: string;
+  icon: React.ReactNode;
 }
 
 const VIDEO_SIZES: VideoSizeRange[] = [
-  { min: 4, max: 6, label: "4-6 minutes" },
-  { min: 8, max: 12, label: "8-12 minutes" },
-  { min: 15, max: 20, label: "15-20 minutes" },
-  { min: 30, max: 40, label: "30-40 minutes" }
+  {
+    min: 4,
+    max: 6,
+    label: "4-6 minutes",
+    description: "Perfect for social media highlights",
+    icon: <Video className="w-6 h-6 text-purple-400" />
+  },
+  {
+    min: 8,
+    max: 12,
+    label: "8-12 minutes",
+    description: "Ideal for ceremony highlights",
+    icon: <Film className="w-6 h-6 text-purple-400" />
+  },
+  {
+    min: 15,
+    max: 20,
+    label: "15-20 minutes",
+    description: "Complete ceremony coverage",
+    icon: <Clock className="w-6 h-6 text-purple-400" />
+  },
+  {
+    min: 30,
+    max: 40,
+    label: "30-40 minutes",
+    description: "Full wedding documentary",
+    icon: <Film className="w-6 h-6 text-purple-400" />
+  }
 ];
 
 interface VideoSizeSelectorProps {
@@ -48,10 +75,11 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
             />
             <Label
               htmlFor={`size-${size.min}-${size.max}`}
-              className="flex flex-col items-center justify-center rounded-xl border-2 border-purple-500/30 bg-editor-bg/50 p-4 hover:bg-editor-bg/70 hover:border-purple-500/50 peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-purple-500/20 transition-all cursor-pointer"
+              className="flex flex-col items-center justify-center rounded-xl border-2 border-purple-500/30 bg-editor-bg/50 p-6 hover:bg-editor-bg/70 hover:border-purple-500/50 peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-purple-500/20 transition-all cursor-pointer"
             >
-              <span className="text-lg font-semibold text-purple-300">{size.label}</span>
-              <span className="text-sm text-gray-400">Duration Range</span>
+              {size.icon}
+              <span className="text-lg font-semibold text-purple-300 mt-3">{size.label}</span>
+              <span className="text-sm text-gray-400 mt-2 text-center">{size.description}</span>
             </Label>
           </div>
         ))}
