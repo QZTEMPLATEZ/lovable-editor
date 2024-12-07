@@ -28,7 +28,7 @@ export const getVideoMetadata = async (file: File): Promise<VideoMetadata> => {
     video.preload = 'metadata';
     video.onloadedmetadata = () => {
       resolve({
-        fps: 30, // This would need to be extracted from the actual video
+        fps: 23.976, // Changed from 30 to 23.976 (commonly known as 23.9)
         resolution: {
           width: video.videoWidth,
           height: video.videoHeight
