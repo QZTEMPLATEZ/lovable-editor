@@ -25,12 +25,12 @@ const EditingInterface = ({
 }: EditingInterfaceProps) => {
   const examples = [
     {
-      en: "Create an exciting film with instrumental music and lots of slow motion, stabilize shaky footage and select the best scenes",
-      pt: "Crie um filme emocionante com música instrumental e muito slow motion, estabilize imagens tremidas e selecione as melhores cenas"
+      en: "Create a romantic film with natural transitions, focusing on authentic moments and cinematic compositions. Enhance the ambiance with soft lighting and gentle color grading",
+      pt: "Crie um filme romântico com transições naturais, focando em momentos autênticos e composições cinematográficas. Realce o ambiente com iluminação suave e correção de cor delicada"
     },
     {
-      en: "Add dramatic transitions between scenes and enhance colors",
-      pt: "Adicione transições dramáticas entre as cenas e realce as cores"
+      en: "Tell a story through intimate close-ups and wide scenic shots, maintaining a natural pace with smooth transitions between scenes",
+      pt: "Conte uma história através de close-ups íntimos e cenas panorâmicas, mantendo um ritmo natural com transições suaves entre as cenas"
     }
   ];
 
