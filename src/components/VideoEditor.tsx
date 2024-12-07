@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Film, Info } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import LoadingScreen from './LoadingScreen';
 import EditingInterface from './EditingInterface';
@@ -9,6 +7,7 @@ import ProcessingStatus from './ProcessingStatus';
 import VideoPreview from './VideoPreview';
 import PreApprovalView from './PreApprovalView';
 import ReferenceFilmsSection from './ReferenceFilmsSection';
+import RawFilesSection from './RawFilesSection';
 import EditorHeader from './EditorHeader';
 import { VideoSizeRange } from './VideoSizeSelector';
 import { EditingMode } from './EditingModeSelector';
@@ -21,9 +20,10 @@ interface VideoEditorProps {
 }
 
 const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEditorProps) => {
-  const [videoFiles, setVideoFiles] = useState<File[]>([]);
+  const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
+  const [rawFiles, setRawFiles] = useState<File[]>([]);
   const [command, setCommand] = useState('');
-  const [currentStep, setCurrentStep] = useState('loading');
+  const [currentStep, setCurrentStep] = useState('upload');
   const [editingProgress, setEditingProgress] = useState(0);
   const [videoMetadata, setVideoMetadata] = useState<VideoMetadata[]>([]);
   const [finalVideoUrl, setFinalVideoUrl] = useState<string>('');
@@ -31,45 +31,37 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
   const [musicBeats, setMusicBeats] = useState<any[]>([]);
   const { toast } = useToast();
 
-  useEffect(() => {
-    const analyzeVideos = async () => {
-      if (videoFiles.length > 0 && currentStep === 'preview') {
-        const metadataPromises = videoFiles.map(file => getVideoMetadata(file));
-        const metadata = await Promise.all(metadataPromises);
-        setVideoMetadata(metadata);
-      }
-    };
-    analyzeVideos();
-  }, [videoFiles, currentStep]);
-
-  const handleDrop = async (e: React.DragEvent) => {
+  const handleReferenceDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
     
     if (files.length > 0) {
-      if (editingMode === 'ai' && videoFiles.length >= 3) {
+      if (referenceFiles.length >= 3) {
         toast({
           variant: "destructive",
-          title: "Maximum videos reached",
+          title: "Maximum reference videos reached",
           description: "You can only upload up to 3 reference videos",
         });
         return;
       }
 
-      setVideoFiles(prev => [...prev, ...files]);
+      setReferenceFiles(prev => [...prev, ...files].slice(0, 3));
       toast({
-        title: "Videos uploaded",
-        description: `Successfully loaded ${files.length} video(s)`,
+        title: "Reference videos uploaded",
+        description: `Successfully loaded ${files.length} reference video(s)`,
       });
-      setCurrentStep('preview');
+    }
+  };
 
-      const stabilityAnalysis = await Promise.all(files.map(analyzeVideoStability));
-      console.log('Stability analysis complete:', stabilityAnalysis);
-    } else {
+  const handleRawDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
+    
+    if (files.length > 0) {
+      setRawFiles(prev => [...prev, ...files]);
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Please upload valid video files",
+        title: "Raw footage uploaded",
+        description: `Successfully loaded ${files.length} raw video file(s)`,
       });
     }
   };
@@ -164,33 +156,19 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
         />
 
         {currentStep === 'upload' && (
-          <ReferenceFilmsSection
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            videoFiles={videoFiles}
-          />
-        )}
-
-        {currentStep === 'preview' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {videoFiles.map((file, index) => (
-                <VideoPreview
-                  key={index}
-                  file={file}
-                  metadata={{
-                    stability: Math.random(),
-                    slowMotionFactor: videoMetadata[index]?.fps ? calculateSlowMotionSpeed(videoMetadata[index].fps) : undefined
-                  }}
-                />
-              ))}
-            </div>
-            <Button 
-              className="w-full bg-purple-500 hover:bg-purple-600"
-              onClick={() => setCurrentStep('edit')}
-            >
-              Continue to Editing
-            </Button>
+          <div className="space-y-8">
+            <ReferenceFilmsSection
+              onDrop={handleReferenceDrop}
+              onDragOver={handleDragOver}
+              videoFiles={referenceFiles}
+            />
+            {referenceFiles.length === 3 && (
+              <RawFilesSection
+                onDrop={handleRawDrop}
+                onDragOver={handleDragOver}
+                videoFiles={rawFiles}
+              />
+            )}
           </div>
         )}
 
@@ -206,7 +184,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
         {currentStep === 'processing' && (
           <div className="space-y-8">
             <EditingProgress
-              videoFiles={videoFiles}
+              videoFiles={rawFiles}
               progress={editingProgress}
             />
             <ProcessingStatus
