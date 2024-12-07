@@ -44,8 +44,16 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
               } border-2 border-dashed`}
             >
               {videoFiles.length >= slot ? (
-                <div className="absolute inset-0 bg-editor-bg/80 backdrop-blur-sm flex items-center justify-center">
-                  <span className="text-purple-300">Reference {slot}</span>
+                <div className="relative w-full h-full">
+                  <video 
+                    src={URL.createObjectURL(videoFiles[slot - 1])} 
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                    <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                      <span className="text-lg font-bold text-white">Reference {slot}</span>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
