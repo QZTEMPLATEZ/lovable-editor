@@ -28,9 +28,9 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
-              className="absolute top-0 right-0 bg-gradient-to-bl from-purple-500/20 to-transparent p-4 rounded-bl-3xl"
+              className="absolute top-0 right-0 bg-gradient-to-bl from-pink-500/20 to-transparent p-4 rounded-bl-3xl"
             >
-              <span className="text-sm font-medium text-purple-300 animate-pulse">QZ TEMPLATEZ</span>
+              <span className="text-sm font-medium text-pink-300 animate-pulse">WEDDING TEMPLATEZ</span>
             </motion.div>
 
             {/* Animated Grid Background */}
@@ -44,8 +44,8 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
             >
               <div className="w-full h-[80vh] relative overflow-hidden rounded-2xl">
                 <img
-                  src="/lovable-uploads/d5e6e89d-8f9e-4d89-b4b8-97dd63c74c53.png"
-                  alt="AI Video Editor"
+                  src="/lovable-uploads/862aebf7-0d0b-4881-add7-261b860643d5.png"
+                  alt="Wedding Video Editor"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
@@ -55,15 +55,15 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.8 }}
-                  className="p-8 backdrop-blur-lg bg-black/30 rounded-3xl border border-purple-500/20"
+                  className="p-8 backdrop-blur-lg bg-black/30 rounded-3xl border border-pink-500/20"
                 >
                   <motion.h1 
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 1 }}
-                    className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-4"
+                    className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-4"
                   >
-                    QZ TEMPLATEZ VIDEO EDITOR
+                    WEDDING TEMPLATEZ VIDEO EDITOR
                   </motion.h1>
                   <motion.p 
                     initial={{ y: 20, opacity: 0 }}
@@ -71,11 +71,11 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                     transition={{ delay: 1.2 }}
                     className="text-gray-300 mb-6"
                   >
-                    AI-Powered Professional Video Editing
+                    AI-Powered Professional Wedding Video Editing
                   </motion.p>
-                  <div className="w-64 h-1.5 mx-auto bg-purple-500/20 rounded-full overflow-hidden">
+                  <div className="w-64 h-1.5 mx-auto bg-pink-500/20 rounded-full overflow-hidden">
                     <motion.div
-                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                      className="h-full bg-gradient-to-r from-pink-500 to-rose-500"
                       initial={{ width: "0%" }}
                       animate={{ width: "100%" }}
                       transition={{ duration: 2.5 }}

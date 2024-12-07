@@ -30,8 +30,8 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         >
           <div className="w-full h-[80vh] relative overflow-hidden rounded-2xl">
             <img
-              src="/lovable-uploads/d5e6e89d-8f9e-4d89-b4b8-97dd63c74c53.png"
-              alt="AI Video Editor"
+              src="/lovable-uploads/862aebf7-0d0b-4881-add7-261b860643d5.png"
+              alt="Wedding Video Editor"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
@@ -41,17 +41,17 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="p-8 backdrop-blur-lg bg-black/30 rounded-3xl border border-purple-500/20"
+              className="p-8 backdrop-blur-lg bg-black/30 rounded-3xl border border-pink-500/20"
             >
               <motion.h1 
-                className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-4"
+                className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-4"
               >
-                QZ TEMPLATEZ VIDEO EDITOR
+                WEDDING TEMPLATEZ VIDEO EDITOR
               </motion.h1>
               <motion.p 
                 className="text-gray-300"
               >
-                AI-Powered Professional Video Editing
+                AI-Powered Professional Wedding Video Editing
               </motion.p>
             </motion.div>
           </div>
