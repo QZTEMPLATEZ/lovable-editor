@@ -22,16 +22,21 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-editor-bg flex items-center justify-center z-50"
         >
-          <div className="text-center space-y-6 max-w-4xl mx-auto p-8">
+          <div className="text-center space-y-6 max-w-7xl mx-auto p-8 relative">
+            {/* Corner Flag */}
+            <div className="absolute top-0 right-0 bg-gradient-to-bl from-purple-500/20 to-transparent p-4 rounded-bl-3xl">
+              <span className="text-sm font-medium text-purple-300">QZ TEMPLATEZ</span>
+            </div>
+
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5 }}
               className="relative"
             >
-              <div className="w-full h-[40vh] relative overflow-hidden rounded-2xl">
+              <div className="w-full h-[80vh] relative overflow-hidden rounded-2xl">
                 <img
-                  src="/lovable-uploads/7d06eae9-28af-4918-8b91-daf3cc00b249.png"
+                  src="/lovable-uploads/d5e6e89d-8f9e-4d89-b4b8-97dd63c74c53.png"
                   alt="AI Video Editor"
                   className="w-full h-full object-cover"
                 />
