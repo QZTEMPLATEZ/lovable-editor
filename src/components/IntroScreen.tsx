@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 interface IntroScreenProps {
   onComplete: () => void;
@@ -10,7 +11,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   const { theme } = useTheme();
   
   React.useEffect(() => {
-    const timer = setTimeout(onComplete, 3000);
+    const timer = setTimeout(onComplete, 3000); // Set to exactly 3 seconds
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -21,21 +22,21 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <div className="relative z-10 max-w-4xl mx-auto p-8 text-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto p-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
           className="relative"
         >
-          <div className="w-full h-[80vh] relative overflow-hidden rounded-2xl">
+          <AspectRatio ratio={16/9} className="overflow-hidden rounded-2xl">
             <img
               src="/lovable-uploads/862aebf7-0d0b-4881-add7-261b860643d5.png"
               alt="Wedding Video Editor"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
-          </div>
+          </AspectRatio>
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div 
               initial={{ opacity: 0 }}
