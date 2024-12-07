@@ -9,6 +9,7 @@ import ProcessingStatus from './ProcessingStatus';
 import VideoPreview from './VideoPreview';
 import PreApprovalView from './PreApprovalView';
 import ReferenceFilmsSection from './ReferenceFilmsSection';
+import EditorHeader from './EditorHeader';
 import { VideoSizeRange } from './VideoSizeSelector';
 import { EditingMode } from './EditingModeSelector';
 import { analyzeVideoStability, calculateSlowMotionSpeed, getVideoMetadata, type VideoMetadata } from '@/utils/videoProcessing';
@@ -159,19 +160,10 @@ const VideoEditor = ({ targetDuration, editingMode }: VideoEditorProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white p-6">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-            QZ TEMPLATEZ VIDEO EDITOR
-          </h1>
-          <p className="text-gray-400">
-            {editingMode === 'ai' 
-              ? 'Upload up to 3 reference videos for AI-powered editing'
-              : 'Choose from our professional templates'}
-          </p>
-          <p className="text-sm text-purple-300">
-            Target Duration: {targetDuration.min}-{targetDuration.max} minutes
-          </p>
-        </div>
+        <EditorHeader 
+          editingMode={editingMode}
+          targetDuration={targetDuration}
+        />
 
         {currentStep === 'upload' && (
           <ReferenceFilmsSection
