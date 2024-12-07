@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Music, Waveform } from 'lucide-react';
+import { Music, AudioWaveform } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { detectBeats } from '@/utils/audioProcessing';
@@ -69,7 +69,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
                   <p className="text-purple-300 font-medium">{selectedMusic.name}</p>
                   {isAnalyzing ? (
                     <div className="flex items-center justify-center gap-2">
-                      <Waveform className="w-4 h-4 text-purple-400 animate-pulse" />
+                      <AudioWaveform className="w-4 h-4 text-purple-400 animate-pulse" />
                       <span className="text-sm text-gray-400">Analyzing beats...</span>
                     </div>
                   ) : (
