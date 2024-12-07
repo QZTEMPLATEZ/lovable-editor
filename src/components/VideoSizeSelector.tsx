@@ -1,7 +1,7 @@
 import React from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Clock, Film, Video } from "lucide-react";
+import { Clock } from "lucide-react";
 
 export interface VideoSizeRange {
   min: number;
@@ -17,28 +17,28 @@ const VIDEO_SIZES: VideoSizeRange[] = [
     max: 6,
     label: "4-6 minutes",
     description: "Perfect for social media highlights",
-    icon: <Video className="w-6 h-6 text-purple-400" />
+    icon: <Clock className="w-5 h-5 text-purple-400" />
   },
   {
     min: 8,
     max: 12,
     label: "8-12 minutes",
     description: "Ideal for ceremony highlights",
-    icon: <Film className="w-6 h-6 text-purple-400" />
+    icon: <Clock className="w-5 h-5 text-purple-400" />
   },
   {
     min: 15,
     max: 20,
     label: "15-20 minutes",
     description: "Complete ceremony coverage",
-    icon: <Clock className="w-6 h-6 text-purple-400" />
+    icon: <Clock className="w-5 h-5 text-purple-400" />
   },
   {
     min: 30,
     max: 40,
     label: "30-40 minutes",
     description: "Full wedding documentary",
-    icon: <Film className="w-6 h-6 text-purple-400" />
+    icon: <Clock className="w-5 h-5 text-purple-400" />
   }
 ];
 
@@ -58,7 +58,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
       </div>
       
       <RadioGroup
-        className="grid grid-cols-2 gap-4"
+        className="grid grid-cols-1 md:grid-cols-2 gap-4"
         value={selectedSize ? `${selectedSize.min}-${selectedSize.max}` : undefined}
         onValueChange={(value) => {
           const [min, max] = value.split('-').map(Number);
@@ -75,11 +75,13 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
             />
             <Label
               htmlFor={`size-${size.min}-${size.max}`}
-              className="flex flex-col items-center justify-center rounded-xl border-2 border-purple-500/30 bg-editor-bg/50 p-6 hover:bg-editor-bg/70 hover:border-purple-500/50 peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-purple-500/20 transition-all cursor-pointer"
+              className="flex items-center gap-4 rounded-xl border-2 border-purple-500/30 bg-editor-bg/50 p-4 hover:bg-editor-bg/70 hover:border-purple-500/50 peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-purple-500/20 transition-all cursor-pointer"
             >
               {size.icon}
-              <span className="text-lg font-semibold text-purple-300 mt-3">{size.label}</span>
-              <span className="text-sm text-gray-400 mt-2 text-center">{size.description}</span>
+              <div className="flex-1">
+                <span className="block text-lg font-semibold text-purple-300">{size.label}</span>
+                <span className="block text-sm text-gray-400 mt-1">{size.description}</span>
+              </div>
             </Label>
           </div>
         ))}
