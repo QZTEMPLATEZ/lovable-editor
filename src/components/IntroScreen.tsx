@@ -44,14 +44,14 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               className="p-8 backdrop-blur-lg bg-black/30 rounded-3xl border border-pink-500/20"
             >
               <motion.h1 
-                className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-4"
+                className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-2"
               >
-                WEDDING TEMPLATEZ VIDEO EDITOR
+                QZ TEMPLATEZ
               </motion.h1>
               <motion.p 
-                className="text-gray-300"
+                className="text-lg text-gray-300 tracking-wider uppercase"
               >
-                AI-Powered Professional Wedding Video Editing
+                Wedding Smart Templates
               </motion.p>
             </motion.div>
           </div>
