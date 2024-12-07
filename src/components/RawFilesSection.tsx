@@ -1,5 +1,6 @@
 import React from 'react';
 import { Upload, Film, Info } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -11,9 +12,10 @@ interface RawFilesSectionProps {
   onDrop: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   videoFiles: File[];
+  onContinue?: () => void;
 }
 
-const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProps) => {
+const RawFilesSection = ({ onDrop, onDragOver, videoFiles, onContinue }: RawFilesSectionProps) => {
   return (
     <div className="space-y-6">
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-8 border border-purple-500/30">
@@ -45,12 +47,12 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
           <p className="text-sm text-gray-400 relative z-10">or click to browse</p>
           
           <div className="mt-8 p-6 bg-editor-bg/50 rounded-lg border border-purple-500/20">
-            <h3 className="text-lg font-semibold text-purple-300 mb-4">Tips for Raw Footage:</h3>
+            <h3 className="text-lg font-semibold text-purple-300 mb-4">How Reference Films Help:</h3>
             <ul className="text-sm text-gray-400 space-y-2 text-left list-disc list-inside">
-              <li>Upload high-quality, uncompressed footage</li>
-              <li>Include key moments from the ceremony</li>
-              <li>Add reception highlights and special moments</li>
-              <li>Include both wide shots and close-ups</li>
+              <li>AI analyzes visual style and composition</li>
+              <li>Learns transition preferences and timing</li>
+              <li>Understands color grading and mood</li>
+              <li>Adapts to your preferred editing pace</li>
             </ul>
           </div>
         </div>
@@ -69,6 +71,18 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {videoFiles.length > 0 && onContinue && (
+          <div className="mt-6 flex justify-center">
+            <Button 
+              onClick={onContinue}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all duration-300 py-6 text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-lg px-8"
+            >
+              Continue to AI Editor
+              <Film className="w-4 h-4" />
+            </Button>
           </div>
         )}
       </div>

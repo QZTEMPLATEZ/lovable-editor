@@ -31,6 +31,14 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
   const [musicBeats, setMusicBeats] = useState<any[]>([]);
   const { toast } = useToast();
 
+  const handleRawContinue = () => {
+    setCurrentStep('edit');
+    toast({
+      title: "Moving to AI Editor",
+      description: "Let's start editing your wedding video with AI",
+    });
+  };
+
   const handleReferenceDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
@@ -179,6 +187,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             onDrop={handleRawDrop}
             onDragOver={handleDragOver}
             videoFiles={rawFiles}
+            onContinue={handleRawContinue}
           />
         )}
 
