@@ -23,10 +23,18 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
           className="fixed inset-0 bg-editor-bg flex items-center justify-center z-50"
         >
           <div className="text-center space-y-6 max-w-7xl mx-auto p-8 relative">
-            {/* Corner Flag */}
-            <div className="absolute top-0 right-0 bg-gradient-to-bl from-purple-500/20 to-transparent p-4 rounded-bl-3xl">
-              <span className="text-sm font-medium text-purple-300">QZ TEMPLATEZ</span>
-            </div>
+            {/* Animated Corner Flag */}
+            <motion.div 
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
+              className="absolute top-0 right-0 bg-gradient-to-bl from-purple-500/20 to-transparent p-4 rounded-bl-3xl"
+            >
+              <span className="text-sm font-medium text-purple-300 animate-pulse">QZ TEMPLATEZ</span>
+            </motion.div>
+
+            {/* Animated Grid Background */}
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.1)_1px,transparent_1px)] bg-[size:100px_100px] opacity-20 animate-[pulse_4s_ease-in-out_infinite]" />
 
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -43,11 +51,28 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                 <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="p-8 backdrop-blur-lg bg-black/30 rounded-3xl border border-purple-500/20">
-                  <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-4">
+                <motion.div 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.8 }}
+                  className="p-8 backdrop-blur-lg bg-black/30 rounded-3xl border border-purple-500/20"
+                >
+                  <motion.h1 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 1 }}
+                    className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-4"
+                  >
                     QZ TEMPLATEZ VIDEO EDITOR
-                  </h1>
-                  <p className="text-gray-300 mb-6">AI-Powered Professional Video Editing</p>
+                  </motion.h1>
+                  <motion.p 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 1.2 }}
+                    className="text-gray-300 mb-6"
+                  >
+                    AI-Powered Professional Video Editing
+                  </motion.p>
                   <div className="w-64 h-1.5 mx-auto bg-purple-500/20 rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
@@ -56,9 +81,32 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                       transition={{ duration: 2.5 }}
                     />
                   </div>
-                </div>
+                </motion.div>
               </div>
             </motion.div>
+
+            {/* Animated Particles */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {[...Array(20)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-1 h-1 bg-purple-500/30 rounded-full"
+                  initial={{
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight,
+                  }}
+                  animate={{
+                    y: [null, -20, 0],
+                    opacity: [0, 1, 0],
+                  }}
+                  transition={{
+                    duration: 2 + Math.random() * 2,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </motion.div>
       )}
