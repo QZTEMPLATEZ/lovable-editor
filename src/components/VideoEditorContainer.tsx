@@ -43,6 +43,7 @@ const VideoEditorContainer = () => {
     <VideoEditor
       targetDuration={selectedSize}
       editingMode={editingMode}
+      onDurationChange={handleSizeSelect}
     />
   );
 };

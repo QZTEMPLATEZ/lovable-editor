@@ -17,9 +17,10 @@ import { analyzeVideoStability, calculateSlowMotionSpeed, getVideoMetadata, type
 interface VideoEditorProps {
   targetDuration: VideoSizeRange;
   editingMode: EditingMode;
+  onDurationChange: (duration: VideoSizeRange) => void;
 }
 
-const VideoEditor = ({ targetDuration, editingMode }: VideoEditorProps) => {
+const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEditorProps) => {
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
   const [command, setCommand] = useState('');
   const [currentStep, setCurrentStep] = useState('loading');
@@ -153,16 +154,13 @@ const VideoEditor = ({ targetDuration, editingMode }: VideoEditorProps) => {
     setCurrentStep('edit');
   };
 
-  if (currentStep === 'loading') {
-    return <LoadingScreen onComplete={() => setCurrentStep('upload')} />;
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white p-6">
       <div className="max-w-6xl mx-auto space-y-8">
         <EditorHeader 
           editingMode={editingMode}
           targetDuration={targetDuration}
+          onDurationChange={onDurationChange}
         />
 
         {currentStep === 'upload' && (
