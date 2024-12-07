@@ -23,11 +23,11 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
           className="fixed inset-0 bg-editor-bg flex items-center justify-center z-50"
         >
           <div className="text-center space-y-4">
-            <div className="w-64 h-64 mx-auto relative">
+            <div className="w-96 h-64 mx-auto relative">
               <img
-                src="/bride-animation.gif"
-                alt="Bride in garden"
-                className="w-full h-full object-cover rounded-full shadow-lg"
+                src="/lovable-uploads/7d06eae9-28af-4918-8b91-daf3cc00b249.png"
+                alt="Artistic representation of connection"
+                className="w-full h-full object-cover rounded-lg shadow-lg"
               />
             </div>
             <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
