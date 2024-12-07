@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Wand2, Film, Music, Zap } from 'lucide-react';
 
 interface EditingProgressProps {
@@ -8,6 +8,7 @@ interface EditingProgressProps {
 }
 
 const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
+  const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
   const steps = [
     { icon: Film, label: 'Analyzing Footage', description: 'Identifying stable scenes and key moments' },
     { icon: Music, label: 'Processing Audio', description: 'Detecting beats and synchronizing clips' },
@@ -17,28 +18,48 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
 
   const currentStep = Math.floor((progress / 100) * steps.length);
 
+  // Effect to cycle through frames
+  useEffect(() => {
+    if (videoFiles.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setCurrentFrameIndex((prev) => (prev + 1) % videoFiles.length);
+    }, 2000); // Change frame every 2 seconds
+
+    return () => clearInterval(interval);
+  }, [videoFiles.length]);
+
   return (
     <div className="space-y-8 w-full max-w-6xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {videoFiles.map((file, index) => (
+      <div className="relative h-64 overflow-hidden rounded-xl border border-purple-500/30">
+        <AnimatePresence mode="wait">
           <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="relative rounded-xl overflow-hidden group transform hover:scale-105 transition-all duration-300"
+            key={currentFrameIndex}
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0"
           >
             <video 
-              src={URL.createObjectURL(file)} 
-              className="w-full h-48 object-cover"
+              src={URL.createObjectURL(videoFiles[currentFrameIndex])} 
+              className="w-full h-full object-cover"
+              autoPlay
+              muted
+              playsInline
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="absolute bottom-0 left-0 right-0 p-4">
-                <p className="text-white text-sm truncate font-medium">{file.name}</p>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+              <div className="absolute bottom-4 left-4 right-4">
+                <p className="text-white text-lg font-medium">
+                  Processing Frame {currentFrameIndex + 1} of {videoFiles.length}
+                </p>
+                <p className="text-purple-300 text-sm">
+                  Enhancing video quality and applying AI effects
+                </p>
               </div>
             </div>
           </motion.div>
-        ))}
+        </AnimatePresence>
       </div>
 
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-2xl p-8 backdrop-blur-lg border border-purple-500/30 shadow-2xl relative overflow-hidden">
