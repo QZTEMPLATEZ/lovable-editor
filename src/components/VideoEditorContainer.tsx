@@ -5,8 +5,12 @@ import VideoEditor from './VideoEditor';
 import { useToast } from '@/components/ui/use-toast';
 
 const VideoEditorContainer = () => {
-  const [selectedSize, setSelectedSize] = useState<VideoSizeRange | null>(null);
-  const [editingMode, setEditingMode] = useState<EditingMode | null>(null);
+  const [selectedSize, setSelectedSize] = useState<VideoSizeRange>({
+    min: 4,
+    max: 6,
+    label: "4-6 minutes"
+  });
+  const [editingMode, setEditingMode] = useState<EditingMode>('ai');
   const { toast } = useToast();
 
   const handleSizeSelect = (size: VideoSizeRange) => {

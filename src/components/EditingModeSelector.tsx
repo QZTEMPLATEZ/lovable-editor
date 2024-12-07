@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Wand2, Template } from 'lucide-react';
+import { Wand2, LayoutTemplate } from 'lucide-react';
 
 export type EditingMode = 'ai' | 'template';
 
@@ -47,7 +47,7 @@ const EditingModeSelector = ({ selectedMode, onModeSelect }: EditingModeSelector
               : 'border-purple-500/30 hover:border-purple-500/50'
           } transition-colors`}
         >
-          <Template className="w-8 h-8 mb-4 text-purple-400" />
+          <LayoutTemplate className="w-8 h-8 mb-4 text-purple-400" />
           <h4 className="text-xl font-semibold text-purple-300 mb-2">QZ Templates</h4>
           <p className="text-gray-400">
             Choose from our collection of pre-designed professional templates
