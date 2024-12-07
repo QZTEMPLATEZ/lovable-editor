@@ -1,5 +1,5 @@
 import { useState } from "react";
-import VideoEditor from "@/components/VideoEditor";
+import VideoEditorContainer from "@/components/VideoEditorContainer";
 import IntroScreen from "@/components/IntroScreen";
 
 const Index = () => {
@@ -10,7 +10,7 @@ const Index = () => {
       {showIntro ? (
         <IntroScreen onComplete={() => setShowIntro(false)} />
       ) : (
-        <VideoEditor />
+        <VideoEditorContainer />
       )}
     </>
   );

@@ -8,9 +8,16 @@ import EditingProgress from './EditingProgress';
 import ProcessingStatus from './ProcessingStatus';
 import VideoPreview from './VideoPreview';
 import PreApprovalView from './PreApprovalView';
+import { VideoSizeRange } from './VideoSizeSelector';
+import { EditingMode } from './EditingModeSelector';
 import { analyzeVideoStability, calculateSlowMotionSpeed, getVideoMetadata, type VideoMetadata } from '@/utils/videoProcessing';
 
-const VideoEditor = () => {
+interface VideoEditorProps {
+  targetDuration: VideoSizeRange;
+  editingMode: EditingMode;
+}
+
+const VideoEditor = ({ targetDuration, editingMode }: VideoEditorProps) => {
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
   const [command, setCommand] = useState('');
   const [currentStep, setCurrentStep] = useState('loading');
@@ -37,6 +44,15 @@ const VideoEditor = () => {
     const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
     
     if (files.length > 0) {
+      if (editingMode === 'ai' && videoFiles.length >= 3) {
+        toast({
+          variant: "destructive",
+          title: "Maximum videos reached",
+          description: "You can only upload up to 3 reference videos",
+        });
+        return;
+      }
+
       setVideoFiles(prev => [...prev, ...files]);
       toast({
         title: "Videos uploaded",
@@ -142,19 +158,32 @@ const VideoEditor = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white p-6">
       <div className="max-w-6xl mx-auto space-y-8">
-        <h1 className="text-4xl font-bold text-center mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-          QZ TEMPLATEZ VIDEO EDITOR
-        </h1>
-        <p className="text-center text-gray-400 mb-8">Transform your videos with AI-powered editing</p>
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
+            QZ TEMPLATEZ VIDEO EDITOR
+          </h1>
+          <p className="text-gray-400">
+            {editingMode === 'ai' 
+              ? 'Upload up to 3 reference videos for AI-powered editing'
+              : 'Choose from our professional templates'}
+          </p>
+          <p className="text-sm text-purple-300">
+            Target Duration: {targetDuration.min}-{targetDuration.max} minutes
+          </p>
+        </div>
 
         {currentStep === 'upload' && (
           <div 
             onDrop={handleDrop}
-            onDragOver={handleDragOver}
+            onDragOver={(e) => e.preventDefault()}
             className="border-2 border-dashed border-purple-500/50 rounded-xl p-12 text-center cursor-pointer hover:bg-purple-500/5 transition-all duration-300 backdrop-blur-sm"
           >
             <Upload className="w-16 h-16 mx-auto mb-6 text-purple-400 animate-bounce" />
-            <p className="text-xl mb-2 font-medium">Drag and drop your videos here</p>
+            <p className="text-xl mb-2 font-medium">
+              {editingMode === 'ai'
+                ? 'Drag and drop your reference videos here'
+                : 'Drag and drop your footage here'}
+            </p>
             <p className="text-sm text-gray-400">or click to browse</p>
           </div>
         )}
