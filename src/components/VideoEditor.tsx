@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Upload } from 'lucide-react';
+import { Upload, Film, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import LoadingScreen from './LoadingScreen';
@@ -8,6 +8,7 @@ import EditingProgress from './EditingProgress';
 import ProcessingStatus from './ProcessingStatus';
 import VideoPreview from './VideoPreview';
 import PreApprovalView from './PreApprovalView';
+import ReferenceFilmsSection from './ReferenceFilmsSection';
 import { VideoSizeRange } from './VideoSizeSelector';
 import { EditingMode } from './EditingModeSelector';
 import { analyzeVideoStability, calculateSlowMotionSpeed, getVideoMetadata, type VideoMetadata } from '@/utils/videoProcessing';
@@ -173,19 +174,11 @@ const VideoEditor = ({ targetDuration, editingMode }: VideoEditorProps) => {
         </div>
 
         {currentStep === 'upload' && (
-          <div 
+          <ReferenceFilmsSection
             onDrop={handleDrop}
-            onDragOver={(e) => e.preventDefault()}
-            className="border-2 border-dashed border-purple-500/50 rounded-xl p-12 text-center cursor-pointer hover:bg-purple-500/5 transition-all duration-300 backdrop-blur-sm"
-          >
-            <Upload className="w-16 h-16 mx-auto mb-6 text-purple-400 animate-bounce" />
-            <p className="text-xl mb-2 font-medium">
-              {editingMode === 'ai'
-                ? 'Drag and drop your reference videos here'
-                : 'Drag and drop your footage here'}
-            </p>
-            <p className="text-sm text-gray-400">or click to browse</p>
-          </div>
+            onDragOver={handleDragOver}
+            videoFiles={videoFiles}
+          />
         )}
 
         {currentStep === 'preview' && (
