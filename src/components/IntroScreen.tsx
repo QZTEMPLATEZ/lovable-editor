@@ -35,8 +35,8 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           className="absolute w-full h-full"
           animate={{
             background: [
-              'radial-gradient(circle at 30% 30%, rgba(155, 135, 245, 0.15) 0%, transparent 50%)',
-              'radial-gradient(circle at 70% 70%, rgba(155, 135, 245, 0.15) 0%, transparent 50%)',
+              'radial-gradient(circle at 30% 30%, rgba(255, 105, 180, 0.25) 0%, transparent 50%)',
+              'radial-gradient(circle at 70% 70%, rgba(255, 20, 147, 0.25) 0%, transparent 50%)',
             ],
           }}
           transition={{
@@ -58,7 +58,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               exit={{ scale: 0, opacity: 0 }}
               className="relative"
             >
-              <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-r from-editor-accent/30 to-purple-500/30 backdrop-blur-3xl border border-editor-accent/40 animate-pulse" />
+              <div className="w-48 h-48 mx-auto rounded-full bg-gradient-to-r from-pink-500/30 to-purple-500/30 backdrop-blur-3xl border border-pink-500/40 animate-pulse" />
             </motion.div>
           )}
 
@@ -70,7 +70,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               exit={{ opacity: 0, scale: 0.8 }}
               className="space-y-6"
             >
-              <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-editor-accent to-purple-500 shadow-lg shadow-purple-500/20" />
+              <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-pink-500 to-purple-500 shadow-lg shadow-pink-500/20" />
             </motion.div>
           )}
 
@@ -83,14 +83,22 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               className="space-y-8"
             >
               <motion.p
-                className="text-4xl font-light tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-editor-accent to-purple-400"
+                className="text-5xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-400 font-[Orbitron]"
                 animate={{
                   backgroundPosition: ["0%", "100%"],
+                  textShadow: [
+                    "0 0 20px rgba(255,105,180,0.5)",
+                    "0 0 40px rgba(255,105,180,0.5)",
+                    "0 0 20px rgba(255,105,180,0.5)"
+                  ]
                 }}
                 transition={{
                   duration: 3,
                   repeat: Infinity,
                   repeatType: "reverse"
+                }}
+                style={{
+                  WebkitTextStroke: "1px rgba(255,105,180,0.3)"
                 }}
               >
                 The Future of Video Editing
@@ -111,6 +119,11 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                 animate={{
                   scale: [1, 1.1, 1],
                   opacity: [0.8, 1, 0.8],
+                  boxShadow: [
+                    "0 0 20px rgba(255,105,180,0.5)",
+                    "0 0 40px rgba(255,105,180,0.5)",
+                    "0 0 20px rgba(255,105,180,0.5)"
+                  ]
                 }}
                 transition={{
                   duration: 2,
@@ -118,7 +131,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                   repeatType: "reverse",
                 }}
               >
-                <div className="w-full h-full rounded-full bg-gradient-to-r from-editor-accent to-purple-500 shadow-lg shadow-purple-500/20" />
+                <div className="w-full h-full rounded-full bg-gradient-to-r from-pink-500 to-purple-500 shadow-lg shadow-pink-500/20" />
               </motion.div>
             </motion.div>
           )}
