@@ -7,7 +7,7 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onComplete, 500); // Allow exit animation to complete
+      setTimeout(onComplete, 500);
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -22,25 +22,38 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-editor-bg flex items-center justify-center z-50"
         >
-          <div className="text-center space-y-4">
-            <div className="w-96 h-64 mx-auto relative">
-              <img
-                src="/lovable-uploads/7d06eae9-28af-4918-8b91-daf3cc00b249.png"
-                alt="Artistic representation of connection"
-                className="w-full h-full object-cover rounded-lg shadow-lg"
-              />
-            </div>
-            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-              QZ TEMPLATEZ VIDEO EDITOR
-            </h1>
-            <div className="w-48 h-1 mx-auto bg-purple-500/20 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-purple-500"
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 2.5 }}
-              />
-            </div>
+          <div className="text-center space-y-6 max-w-4xl mx-auto p-8">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="relative"
+            >
+              <div className="w-full h-[40vh] relative overflow-hidden rounded-2xl">
+                <img
+                  src="/lovable-uploads/7d06eae9-28af-4918-8b91-daf3cc00b249.png"
+                  alt="AI Video Editor"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="p-8 backdrop-blur-lg bg-black/30 rounded-3xl border border-purple-500/20">
+                  <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-4">
+                    QZ TEMPLATEZ VIDEO EDITOR
+                  </h1>
+                  <p className="text-gray-300 mb-6">AI-Powered Professional Video Editing</p>
+                  <div className="w-64 h-1.5 mx-auto bg-purple-500/20 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 2.5 }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </motion.div>
       )}

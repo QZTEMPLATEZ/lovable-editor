@@ -7,8 +7,8 @@ import EditingInterface from './EditingInterface';
 import EditingProgress from './EditingProgress';
 import ProcessingStatus from './ProcessingStatus';
 import VideoPreview from './VideoPreview';
+import PreApprovalView from './PreApprovalView';
 import { analyzeVideoStability, calculateSlowMotionSpeed, getVideoMetadata, type VideoMetadata } from '@/utils/videoProcessing';
-import { detectBeats, synchronizeToBeats } from '@/utils/audioProcessing';
 
 const VideoEditor = () => {
   const [videoFiles, setVideoFiles] = useState<File[]>([]);
@@ -16,6 +16,7 @@ const VideoEditor = () => {
   const [currentStep, setCurrentStep] = useState('loading');
   const [editingProgress, setEditingProgress] = useState(0);
   const [videoMetadata, setVideoMetadata] = useState<VideoMetadata[]>([]);
+  const [finalVideoUrl, setFinalVideoUrl] = useState<string>('');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -41,7 +42,6 @@ const VideoEditor = () => {
       });
       setCurrentStep('preview');
 
-      // Analyze stability for each video
       const stabilityAnalysis = await Promise.all(files.map(analyzeVideoStability));
       console.log('Stability analysis complete:', stabilityAnalysis);
     } else {
@@ -63,21 +63,21 @@ const VideoEditor = () => {
     setCurrentStep('processing');
     let progress = 0;
 
-    // Simulate processing steps
     const interval = setInterval(() => {
       progress += 1;
       setEditingProgress(progress);
       
       if (progress >= 100) {
         clearInterval(interval);
+        setCurrentStep('pre-approval');
+        setFinalVideoUrl(URL.createObjectURL(videoFiles[0]));
         toast({
           title: "Processing complete",
-          description: "Your video has been edited successfully!",
+          description: "Your video is ready for review!",
         });
       }
     }, 100);
 
-    // Process videos with advanced features
     for (const file of videoFiles) {
       const metadata = await getVideoMetadata(file);
       const slowMotionFactor = calculateSlowMotionSpeed(metadata.fps);
@@ -88,6 +88,30 @@ const VideoEditor = () => {
       title: "Processing command",
       description: `Applying: ${command}`,
     });
+  };
+
+  const handleApprove = () => {
+    toast({
+      title: "Video Approved",
+      description: "Your video will now be rendered in full quality.",
+    });
+    // Handle final rendering and download
+  };
+
+  const handleReject = () => {
+    toast({
+      title: "Video Rejected",
+      description: "Please start over with new settings.",
+    });
+    setCurrentStep('upload');
+  };
+
+  const handleRequestChanges = () => {
+    toast({
+      title: "Changes Requested",
+      description: "Please provide new instructions for editing.",
+    });
+    setCurrentStep('edit');
   };
 
   if (currentStep === 'loading') {
@@ -122,7 +146,7 @@ const VideoEditor = () => {
                   key={index}
                   file={file}
                   metadata={{
-                    stability: Math.random(), // This would come from actual analysis
+                    stability: Math.random(),
                     slowMotionFactor: videoMetadata[index]?.fps ? calculateSlowMotionSpeed(videoMetadata[index].fps) : undefined
                   }}
                 />
@@ -157,6 +181,15 @@ const VideoEditor = () => {
               metadata={videoMetadata[0]}
             />
           </div>
+        )}
+
+        {currentStep === 'pre-approval' && (
+          <PreApprovalView
+            videoUrl={finalVideoUrl}
+            onApprove={handleApprove}
+            onReject={handleReject}
+            onRequestChanges={handleRequestChanges}
+          />
         )}
       </div>
     </div>
