@@ -68,7 +68,7 @@ const VideoEditor = () => {
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white p-6">
       <div className="max-w-6xl mx-auto space-y-8">
         <h1 className="text-4xl font-bold text-center mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-          AI Video Editor
+          QZ TEMPLATEZ VIDEO EDITOR
         </h1>
         <p className="text-center text-gray-400 mb-8">Transform your videos with AI-powered editing</p>
         
