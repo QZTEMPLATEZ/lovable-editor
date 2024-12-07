@@ -17,6 +17,8 @@ const VideoEditor = () => {
   const [editingProgress, setEditingProgress] = useState(0);
   const [videoMetadata, setVideoMetadata] = useState<VideoMetadata[]>([]);
   const [finalVideoUrl, setFinalVideoUrl] = useState<string>('');
+  const [musicTrack, setMusicTrack] = useState<File | null>(null);
+  const [musicBeats, setMusicBeats] = useState<any[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -57,8 +59,25 @@ const VideoEditor = () => {
     e.preventDefault();
   };
 
+  const handleMusicSelect = (file: File, beats: any[]) => {
+    setMusicTrack(file);
+    setMusicBeats(beats);
+    toast({
+      title: "Music Track Added",
+      description: "The AI will synchronize video cuts with the music beats",
+    });
+  };
+
   const handleCommand = async () => {
     if (!command.trim()) return;
+    if (!musicTrack && currentStep === 'edit') {
+      toast({
+        variant: "destructive",
+        title: "Music Required",
+        description: "Please select a music track for beat synchronization",
+      });
+      return;
+    }
     
     setCurrentStep('processing');
     let progress = 0;
@@ -78,10 +97,12 @@ const VideoEditor = () => {
       }
     }, 100);
 
+    // Process videos with music beats
     for (const file of videoFiles) {
       const metadata = await getVideoMetadata(file);
       const slowMotionFactor = calculateSlowMotionSpeed(metadata.fps);
       console.log(`Processing ${file.name} with slow motion factor: ${slowMotionFactor}`);
+      console.log('Synchronizing with music beats:', musicBeats.length);
     }
 
     toast({
@@ -166,6 +187,7 @@ const VideoEditor = () => {
             command={command}
             onCommandChange={setCommand}
             onSubmit={handleCommand}
+            onMusicSelect={handleMusicSelect}
           />
         )}
 
