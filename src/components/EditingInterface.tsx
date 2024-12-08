@@ -4,14 +4,15 @@ import ProcessingStatus from './ProcessingStatus';
 import MusicTrackSelector from './MusicTrackSelector';
 
 interface EditingInterfaceProps {
-  // Add any props if needed
+  onMusicSelect: (file: File, beats: any[]) => void;
 }
 
-const EditingInterface: React.FC<EditingInterfaceProps> = () => {
+const EditingInterface: React.FC<EditingInterfaceProps> = ({ onMusicSelect }) => {
   const [selectedTracks, setSelectedTracks] = useState<{ file: File; beats: any[] }[]>([]);
 
   const handleTrackSelect = (file: File, beats: any[]) => {
     setSelectedTracks(prev => [...prev, { file, beats }]);
+    onMusicSelect(file, beats);
   };
 
   return (
