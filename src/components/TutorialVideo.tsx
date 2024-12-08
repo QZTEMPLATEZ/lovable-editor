@@ -32,14 +32,18 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
     >
       <div className="max-w-4xl w-full mx-auto p-6">
         <div className="relative rounded-lg overflow-hidden bg-editor-bg border border-editor-border">
-          <video
-            className="w-full aspect-video"
-            controls
-            autoPlay
-            src="/tutorial-video.mp4"
-          >
-            Your browser does not support the video tag.
-          </video>
+          <div className="aspect-video w-full">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/UJAUV_D5ynQ"
+              title="QZ TEMPLATEZ Tutorial"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            />
+          </div>
           
           <div className="absolute top-4 right-4">
             <Button
