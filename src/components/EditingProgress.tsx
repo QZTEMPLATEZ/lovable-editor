@@ -13,7 +13,7 @@ interface EditingProgressProps {
 
 const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
-  const [remainingTime, setRemainingTime] = useState(300); // 5 minutes in seconds
+  const [remainingTime, setRemainingTime] = useState(300);
   const { toast } = useToast();
   
   useEffect(() => {
@@ -47,7 +47,6 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
       description: "Your video processing has been cancelled.",
       variant: "destructive",
     });
-    // Add your stop processing logic here
   };
 
   return (
@@ -57,63 +56,83 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
       exit={{ opacity: 0 }}
       className="min-h-screen bg-gradient-to-br from-editor-bg via-editor-bg/95 to-editor-bg relative overflow-hidden"
     >
-      {/* Decorative Elements */}
+      {/* Background Elements */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
       
-      <div className="relative max-w-7xl mx-auto p-6">
-        {/* Header Section */}
-        <div className="mb-8">
-          <motion.div 
-            initial={{ y: -20 }}
-            animate={{ y: 0 }}
-            className="flex justify-between items-center bg-editor-panel/50 backdrop-blur-lg rounded-xl p-4 border border-purple-500/20"
-          >
-            <div className="flex items-center space-x-4">
-              <div className="h-12 w-12 rounded-full bg-purple-500/10 flex items-center justify-center">
-                <Film className="h-6 w-6 text-purple-400" />
+      <div className="relative max-w-[1920px] mx-auto p-4 lg:p-6">
+        {/* Top Info Bar */}
+        <motion.div 
+          initial={{ y: -20 }}
+          animate={{ y: 0 }}
+          className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4"
+        >
+          {/* Status */}
+          <div className="bg-editor-panel/50 backdrop-blur-lg rounded-xl p-4 border border-purple-500/20">
+            <div className="flex items-center space-x-3">
+              <div className="h-10 w-10 rounded-full bg-purple-500/10 flex items-center justify-center">
+                <Film className="h-5 w-5 text-purple-400" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-purple-300">Processing Your Video</h2>
-                <p className="text-sm text-gray-400">AI-powered video editing in progress</p>
+                <h2 className="text-lg font-semibold text-purple-300">Processing Video</h2>
+                <p className="text-sm text-gray-400">AI-powered editing in progress</p>
               </div>
             </div>
-            
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2 bg-editor-panel/70 px-4 py-2 rounded-lg border border-purple-500/20">
-                <Clock className="h-4 w-4 text-purple-400" />
-                <span className="text-purple-300 font-mono">{formatTime(remainingTime)}</span>
+          </div>
+
+          {/* Timer */}
+          <div className="bg-editor-panel/50 backdrop-blur-lg rounded-xl p-4 border border-purple-500/20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="h-10 w-10 rounded-full bg-purple-500/10 flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-purple-400" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-purple-300">Remaining Time</h2>
+                  <p className="text-sm font-mono text-gray-400">{formatTime(remainingTime)}</p>
+                </div>
               </div>
-              
-              <Button
-                onClick={handleStopProcessing}
-                variant="destructive"
-                className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30"
-              >
-                <StopCircle className="h-4 w-4 mr-2" />
-                Stop Processing
-              </Button>
             </div>
-          </motion.div>
-        </div>
+          </div>
+
+          {/* Controls */}
+          <div className="bg-editor-panel/50 backdrop-blur-lg rounded-xl p-4 border border-purple-500/20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="h-10 w-10 rounded-full bg-red-500/10 flex items-center justify-center">
+                  <StopCircle className="h-5 w-5 text-red-400" />
+                </div>
+                <Button
+                  onClick={handleStopProcessing}
+                  variant="destructive"
+                  className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30"
+                >
+                  Stop Processing
+                </Button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Large Preview */}
+          <div className="lg:col-span-8 space-y-4">
             <ProcessingPreview 
               videoFiles={videoFiles}
               currentFrameIndex={currentFrameIndex}
             />
           </div>
           
-          <div className="space-y-6">
+          {/* Side Info */}
+          <div className="lg:col-span-4 space-y-4">
             <ProcessingSteps progress={progress} />
           </div>
         </div>
 
-        {/* Progress Indicator */}
+        {/* Progress Bar */}
         <motion.div 
-          className="mt-8 bg-editor-panel/30 rounded-full h-2 overflow-hidden"
+          className="mt-6 bg-editor-panel/30 rounded-full h-2 overflow-hidden"
           initial={{ width: 0 }}
           animate={{ width: "100%" }}
         >
