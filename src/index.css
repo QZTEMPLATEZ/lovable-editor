@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -51,4 +53,23 @@
 
 .adobe-timeline {
   @apply bg-[#232323] border-t border-[#2A2A2A];
+}
+
+.brand-text {
+  font-family: 'Righteous', cursive;
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500;
+  animation: gradient 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
