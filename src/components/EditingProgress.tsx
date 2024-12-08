@@ -35,15 +35,10 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
       <div className="relative max-w-7xl mx-auto p-6 space-y-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-6">
-            <div className="adobe-style-panel backdrop-blur-xl">
-              <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-6">
-                AI Video Processing
-              </h2>
-              <AIInstructionsInput 
-                value={aiInstructions}
-                onChange={setAiInstructions}
-              />
-            </div>
+            <AIInstructionsInput 
+              value={aiInstructions}
+              onChange={setAiInstructions}
+            />
           </div>
 
           <div className="space-y-6">
