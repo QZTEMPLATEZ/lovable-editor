@@ -13,11 +13,14 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
   return (
     <div className="mb-8">
       <div className="relative">
+        {/* Timeline line */}
         <div className="absolute top-5 left-0 right-0 h-0.5 bg-purple-500/20" />
         <div 
           className="absolute top-5 left-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500"
           style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
         />
+        
+        {/* Step indicators */}
         <div className="relative flex justify-between">
           {steps.map((step, index) => (
             <div key={step.title} className="flex flex-col items-center">
