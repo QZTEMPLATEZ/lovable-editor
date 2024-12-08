@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Upload, Film, Info } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,25 @@ interface RawFilesSectionProps {
 }
 
 const RawFilesSection = ({ onDrop, onDragOver, videoFiles, onContinue }: RawFilesSectionProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      // Create a synthetic drag event to reuse the existing onDrop handler
+      const dragEvent = new DragEvent('drop');
+      Object.defineProperty(dragEvent, 'dataTransfer', {
+        value: {
+          files: e.target.files
+        }
+      });
+      onDrop(dragEvent as unknown as React.DragEvent);
+    }
+  };
+
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-8 border border-purple-500/30">
@@ -37,8 +56,17 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles, onContinue }: RawFile
         <div 
           onDrop={onDrop}
           onDragOver={onDragOver}
+          onClick={handleClick}
           className="border-2 border-dashed border-purple-500/50 rounded-xl p-12 text-center cursor-pointer hover:bg-purple-500/5 transition-all duration-300 backdrop-blur-sm relative overflow-hidden group"
         >
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileSelect}
+            accept="video/*"
+            multiple
+            className="hidden"
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 transform group-hover:scale-105 transition-transform duration-300" />
           <Upload className="w-16 h-16 mx-auto mb-6 text-purple-400 animate-bounce" />
           <p className="text-xl mb-2 font-medium relative z-10">
