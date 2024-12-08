@@ -11,7 +11,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   const { theme } = useTheme();
   
   React.useEffect(() => {
-    const timer = setTimeout(onComplete, 10000); // Doubled from 5000 to 10000
+    const timer = setTimeout(onComplete, 10000);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -21,12 +21,12 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 1.0 }} // Doubled from 0.5 to 1.0
+      transition={{ duration: 1.0 }}
     >
       <div className="relative w-full max-w-7xl mx-auto">
         <AspectRatio ratio={16/9} className="overflow-hidden">
           <img
-            src="/lovable-uploads/69458f16-0038-42f9-a188-fdd128045605.png"
+            src="/lovable-uploads/4c2b915b-2b27-4e92-8620-6538a47b76cf.png"
             alt="Wedding Editor Intro"
             className="w-full h-full object-cover"
           />
@@ -35,7 +35,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 1.0, duration: 1.6 }} // Doubled from 0.5 and 0.8
+              transition={{ delay: 1.0, duration: 1.6 }}
               className="text-center"
             >
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-2">AI-POWERED EDITOR</h1>
@@ -57,10 +57,10 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                   ]
                 }}
                 transition={{ 
-                  duration: 10, // Doubled from 5
+                  duration: 10,
                   ease: "linear",
                   background: {
-                    duration: 4, // Doubled from 2
+                    duration: 4,
                     repeat: Infinity,
                     repeatType: "reverse"
                   }
