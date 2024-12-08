@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import AIInstructionsInput from './processing/AIInstructionsInput';
 import ProcessingPreview from './processing/ProcessingPreview';
 import ProcessingSteps from './processing/ProcessingSteps';
 
@@ -11,7 +10,6 @@ interface EditingProgressProps {
 
 const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
-  const [aiInstructions, setAiInstructions] = useState('');
   
   useEffect(() => {
     if (videoFiles.length === 0) return;
@@ -34,13 +32,6 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
       
       <div className="relative max-w-7xl mx-auto p-6 space-y-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <AIInstructionsInput 
-              value={aiInstructions}
-              onChange={setAiInstructions}
-            />
-          </div>
-
           <div className="space-y-6">
             <ProcessingPreview 
               videoFiles={videoFiles}
