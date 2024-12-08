@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import VideoEditorContainer from "@/components/VideoEditorContainer";
 import IntroScreen from "@/components/IntroScreen";
 import TutorialVideo from "@/components/TutorialVideo";
-import { PageOpeningDialog } from "@/components/PageOpeningDialog";
 
 const Index = () => {
   const [showIntro, setShowIntro] = useState(true);
@@ -27,7 +26,6 @@ const Index = () => {
 
   return (
     <>
-      <PageOpeningDialog />
       {showIntro ? (
         <IntroScreen onComplete={handleIntroComplete} />
       ) : showTutorial ? (
