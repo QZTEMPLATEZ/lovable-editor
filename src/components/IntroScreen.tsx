@@ -47,7 +47,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                 </h1>
                 <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-white to-transparent my-8" />
                 <p className="text-xl md:text-2xl text-gray-200 font-light tracking-wide mb-8">
-                  Create Your Perfect Wedding Story
+                  Powered AI
                 </p>
               </div>
             </motion.div>

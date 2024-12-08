@@ -62,7 +62,7 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                       <motion.p 
                         className="text-gray-300 mb-6 tracking-wide"
                       >
-                        Your Wedding Story Begins Here
+                        Powered AI
                       </motion.p>
                       
                       {showLoadingBar && (
