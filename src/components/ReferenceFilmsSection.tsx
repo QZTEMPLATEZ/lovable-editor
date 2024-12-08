@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 
 interface ReferenceFilmsSectionProps {
-  onDrop: (e: React.DragEvent) => void;
+  onDrop: (e: React.DragEvent<Element>) => void;
   onDragOver: (e: React.DragEvent) => void;
   videoFiles: File[];
   onContinue: () => void;
@@ -23,28 +23,28 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
     const videoFiles = files.filter(file => file.type.startsWith('video/'));
     
     if (videoFiles.length > 0) {
-      // Create a synthetic drag event to reuse existing logic
-      const dummyEvent = new DragEvent('drop');
-      Object.defineProperty(dummyEvent, 'dataTransfer', {
-        value: {
+      const syntheticEvent = {
+        preventDefault: () => {},
+        dataTransfer: {
           files: videoFiles
         }
-      });
-      onDrop(dummyEvent);
+      } as React.DragEvent<Element>;
+      
+      onDrop(syntheticEvent);
     }
   };
 
   const handleDeleteVideo = (index: number) => {
     const newFiles = [...videoFiles];
     newFiles.splice(index, 1);
-    // Create a synthetic drag event with the updated files
-    const dummyEvent = new DragEvent('drop');
-    Object.defineProperty(dummyEvent, 'dataTransfer', {
-      value: {
+    const syntheticEvent = {
+      preventDefault: () => {},
+      dataTransfer: {
         files: newFiles
       }
-    });
-    onDrop(dummyEvent);
+    } as React.DragEvent<Element>;
+    
+    onDrop(syntheticEvent);
   };
 
   const handleClick = () => {
