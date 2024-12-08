@@ -1,28 +1,43 @@
 import React, { useState } from 'react';
-import { Music, AudioWaveform } from 'lucide-react';
+import { Music, AudioWaveform, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { detectBeats } from '@/utils/audioProcessing';
 import { useToast } from '@/components/ui/use-toast';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
+  recommendedTracks: number;
 }
 
-const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
-  const [selectedMusic, setSelectedMusic] = useState<File | null>(null);
+const MusicTrackSelector = ({ onMusicSelect, recommendedTracks }: MusicTrackSelectorProps) => {
+  const [selectedMusic, setSelectedMusic] = useState<File[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { toast } = useToast();
 
   const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && file.type.startsWith('audio/')) {
-      setSelectedMusic(file);
+    const files = event.target.files;
+    if (files) {
+      const newFiles = Array.from(files).filter(file => file.type.startsWith('audio/'));
+      
+      if (selectedMusic.length + newFiles.length > recommendedTracks) {
+        toast({
+          variant: "destructive",
+          title: "Too many tracks",
+          description: `Maximum ${recommendedTracks} tracks allowed for this video duration`,
+        });
+        return;
+      }
+
+      setSelectedMusic(prev => [...prev, ...newFiles]);
       setIsAnalyzing(true);
       
       try {
-        const beats = await detectBeats(file);
-        onMusicSelect(file, beats);
+        for (const file of newFiles) {
+          const beats = await detectBeats(file);
+          onMusicSelect(file, beats);
+        }
         toast({
           title: "Music Analysis Complete",
           description: "Beat patterns detected and ready for synchronization",
@@ -47,9 +62,16 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
         <div className="flex items-center gap-3 mb-6">
           <Music className="w-5 h-5 text-purple-400" />
           <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-            Select Music Track
+            Select Music Tracks
           </h3>
         </div>
+
+        <Alert className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Recommended number of tracks for this video duration: {recommendedTracks}
+          </AlertDescription>
+        </Alert>
 
         <div className="relative">
           <input
@@ -58,50 +80,44 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
             onChange={handleMusicUpload}
             className="hidden"
             id="music-upload"
+            multiple
           />
           <label
             htmlFor="music-upload"
             className="block w-full"
           >
             <div className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300">
-              {selectedMusic ? (
-                <div className="space-y-2">
-                  <p className="text-purple-300 font-medium">{selectedMusic.name}</p>
-                  {isAnalyzing ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <AudioWaveform className="w-4 h-4 text-purple-400 animate-pulse" />
-                      <span className="text-sm text-gray-400">Analyzing beats...</span>
-                    </div>
-                  ) : (
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="flex justify-center"
-                    >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => document.getElementById('music-upload')?.click()}
-                      >
-                        Change Track
-                      </Button>
-                    </motion.div>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <Music className="w-12 h-12 mx-auto text-purple-400 mb-2" />
-                  <p className="text-base text-gray-400">
-                    Upload a music track for AI-powered beat synchronization
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Supported formats: MP3, WAV
-                  </p>
-                </div>
-              )}
+              <div className="space-y-2">
+                <Music className="w-12 h-12 mx-auto text-purple-400 mb-2" />
+                <p className="text-base text-gray-400">
+                  Upload music tracks for AI-powered beat synchronization
+                </p>
+                <p className="text-sm text-gray-500">
+                  {selectedMusic.length} / {recommendedTracks} tracks uploaded
+                </p>
+              </div>
             </div>
           </label>
         </div>
+
+        {selectedMusic.length > 0 && (
+          <div className="mt-4 space-y-2">
+            {selectedMusic.map((file, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between p-3 bg-purple-500/10 rounded-lg"
+              >
+                <div className="flex items-center gap-2">
+                  <AudioWaveform className="w-4 h-4 text-purple-400" />
+                  <span className="text-purple-300">{file.name}</span>
+                </div>
+                {isAnalyzing && (
+                  <span className="text-sm text-gray-400">Analyzing...</span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
