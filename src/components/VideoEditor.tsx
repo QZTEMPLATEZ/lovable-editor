@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
@@ -41,6 +41,13 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
   const [musicTrack, setMusicTrack] = useState<File | null>(null);
   const [musicBeats, setMusicBeats] = useState<any[]>([]);
   const { toast } = useToast();
+
+  // Add useEffect to watch for targetDuration changes
+  useEffect(() => {
+    if (currentStep === 0 && targetDuration) {
+      handleNextStep();
+    }
+  }, [targetDuration]);
 
   const handleReferenceDrop = async (e: React.DragEvent<Element>) => {
     e.preventDefault();
@@ -124,9 +131,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             <EditorHeader 
               editingMode={editingMode}
               targetDuration={targetDuration}
-              onDurationChange={(duration) => {
-                onDurationChange(duration);
-              }}
+              onDurationChange={onDurationChange}
             />
           </div>
         );

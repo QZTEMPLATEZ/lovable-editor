@@ -12,10 +12,10 @@ interface EditorHeaderProps {
 }
 
 const VIDEO_DURATIONS: VideoSizeRange[] = [
-  { min: 4, max: 6, label: "4-6 minutes", description: "Perfect for social media highlights", icon: null },
-  { min: 8, max: 12, label: "8-12 minutes", description: "Ideal for ceremony highlights", icon: null },
-  { min: 15, max: 20, label: "15-20 minutes", description: "Complete ceremony coverage", icon: null },
-  { min: 30, max: 40, label: "30-40 minutes", description: "Full wedding documentary", icon: null }
+  { min: 4, max: 6, label: "4-6 minutes", description: "Perfect for social media highlights", icon: null, recommendedTracks: 2 },
+  { min: 8, max: 12, label: "8-12 minutes", description: "Ideal for ceremony highlights", icon: null, recommendedTracks: 3 },
+  { min: 15, max: 20, label: "15-20 minutes", description: "Complete ceremony coverage", icon: null, recommendedTracks: 4 },
+  { min: 30, max: 40, label: "30-40 minutes", description: "Full wedding documentary", icon: null, recommendedTracks: 6 }
 ];
 
 const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorHeaderProps) => {
