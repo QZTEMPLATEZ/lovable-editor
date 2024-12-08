@@ -11,7 +11,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   const { theme } = useTheme();
   
   React.useEffect(() => {
-    const timer = setTimeout(onComplete, 3000); // Set to exactly 3 seconds
+    const timer = setTimeout(onComplete, 3000);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -21,42 +21,22 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <div className="relative z-10 w-full max-w-7xl mx-auto p-8">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative"
-        >
-          <AspectRatio ratio={16/9} className="overflow-hidden rounded-2xl">
-            <img
-              src="/lovable-uploads/862aebf7-0d0b-4881-add7-261b860643d5.png"
-              alt="Wedding Video Editor"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
-          </AspectRatio>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="p-8 backdrop-blur-lg bg-black/30 rounded-3xl border border-pink-500/20"
-            >
-              <motion.h1 
-                className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-2"
-              >
-                QZ TEMPLATEZ
-              </motion.h1>
-              <motion.p 
-                className="text-lg text-gray-300 tracking-wider uppercase"
-              >
-                Wedding Smart Templates
-              </motion.p>
-            </motion.div>
-          </div>
-        </motion.div>
+      <div className="relative w-full max-w-7xl mx-auto">
+        <AspectRatio ratio={16/9} className="overflow-hidden">
+          <img
+            src="/lovable-uploads/32ed6cd5-489f-4f20-849f-f03c97b8994a.png"
+            alt="Wedding Editor Intro"
+            className="w-full h-full object-cover"
+          />
+          <motion.div 
+            className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/10 backdrop-blur-sm"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 3, ease: "linear" }}
+          />
+        </AspectRatio>
       </div>
     </motion.div>
   );
