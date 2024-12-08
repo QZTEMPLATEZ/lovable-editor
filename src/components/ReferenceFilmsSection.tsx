@@ -1,5 +1,5 @@
-import React from 'react';
-import { Upload, Film, Info } from 'lucide-react';
+import React, { useRef } from 'react';
+import { Upload, Film, Info, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -16,6 +16,41 @@ interface ReferenceFilmsSectionProps {
 }
 
 const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: ReferenceFilmsSectionProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    const videoFiles = files.filter(file => file.type.startsWith('video/'));
+    
+    if (videoFiles.length > 0) {
+      // Create a synthetic drag event to reuse existing logic
+      const dummyEvent = new DragEvent('drop');
+      Object.defineProperty(dummyEvent, 'dataTransfer', {
+        value: {
+          files: videoFiles
+        }
+      });
+      onDrop(dummyEvent);
+    }
+  };
+
+  const handleDeleteVideo = (index: number) => {
+    const newFiles = [...videoFiles];
+    newFiles.splice(index, 1);
+    // Create a synthetic drag event with the updated files
+    const dummyEvent = new DragEvent('drop');
+    Object.defineProperty(dummyEvent, 'dataTransfer', {
+      value: {
+        files: newFiles
+      }
+    });
+    onDrop(dummyEvent);
+  };
+
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-8 border border-purple-500/30">
@@ -44,7 +79,7 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
               } border-2 border-dashed`}
             >
               {videoFiles.length >= slot ? (
-                <div className="relative w-full h-full">
+                <div className="relative w-full h-full group">
                   <video 
                     src={URL.createObjectURL(videoFiles[slot - 1])} 
                     className="absolute inset-0 w-full h-full object-cover"
@@ -54,6 +89,12 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
                       <span className="text-lg font-bold text-white">Reference {slot}</span>
                     </div>
                   </div>
+                  <button
+                    onClick={() => handleDeleteVideo(slot - 1)}
+                    className="absolute top-2 right-2 p-1 bg-red-500/80 hover:bg-red-600 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
@@ -66,10 +107,19 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
         </div>
 
         <div 
+          onClick={handleClick}
           onDrop={onDrop}
           onDragOver={onDragOver}
           className="border-2 border-dashed border-purple-500/50 rounded-xl p-12 text-center cursor-pointer hover:bg-purple-500/5 transition-all duration-300 backdrop-blur-sm relative overflow-hidden group"
         >
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileSelect}
+            accept="video/*"
+            multiple
+            className="hidden"
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 transform group-hover:scale-105 transition-transform duration-300" />
           <Upload className="w-16 h-16 mx-auto mb-6 text-purple-400 animate-bounce" />
           <p className="text-xl mb-2 font-medium relative z-10">
