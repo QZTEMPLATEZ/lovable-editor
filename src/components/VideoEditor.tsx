@@ -17,26 +17,11 @@ import { EditingMode } from './EditingModeSelector';
 import { analyzeVideoStability, calculateSlowMotionSpeed, getVideoMetadata, type VideoMetadata } from '@/utils/videoProcessing';
 
 const EDITOR_STEPS = [
-  {
-    title: 'Duration',
-    description: 'Choose video length'
-  },
-  {
-    title: 'References',
-    description: 'Add style examples'
-  },
-  {
-    title: 'Music',
-    description: 'Select soundtrack'
-  },
-  {
-    title: 'Raw Files',
-    description: 'Upload footage'
-  },
-  {
-    title: 'Edit',
-    description: 'AI processing'
-  }
+  { title: 'Duration', description: 'Choose video length' },
+  { title: 'References', description: 'Add style examples' },
+  { title: 'Music', description: 'Select soundtrack' },
+  { title: 'Raw Files', description: 'Upload footage' },
+  { title: 'Edit', description: 'AI processing' }
 ];
 
 interface VideoEditorProps {
@@ -167,32 +152,43 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white p-6">
-      <div className="max-w-6xl mx-auto space-y-8">
-        <StepIndicator currentStep={currentStep} steps={EDITOR_STEPS} />
-        {renderCurrentStep()}
-        
-        <div className="flex justify-between mt-8">
-          <Button
-            onClick={handlePreviousStep}
-            disabled={currentStep === 0}
-            className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back
-          </Button>
-          
-          {currentStep < EDITOR_STEPS.length - 1 && (
-            <Button
-              onClick={handleNextStep}
-              disabled={!canProceedToNextStep()}
-              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-            >
-              Next Step
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          )}
+    <div className="min-h-screen bg-[#1A1A1A] text-white">
+      <div className="adobe-style-panel">
+        <div className="adobe-style-header mb-6">
+          <StepIndicator currentStep={currentStep} steps={EDITOR_STEPS} />
         </div>
+
+        <div className="space-y-8">
+          {renderCurrentStep()}
+          
+          <div className="flex justify-between mt-8 border-t border-[#2A2A2A] pt-4">
+            <Button
+              onClick={handlePreviousStep}
+              disabled={currentStep === 0}
+              className="adobe-style-button flex items-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+            
+            {currentStep < EDITOR_STEPS.length - 1 && (
+              <Button
+                onClick={handleNextStep}
+                disabled={!canProceedToNextStep()}
+                className="adobe-style-button flex items-center gap-2"
+              >
+                Next Step
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      <div className="adobe-timeline mt-8 p-4">
+        <div className="text-sm text-gray-400">Timeline</div>
+        {/* Timeline placeholder for future implementation */}
+        <div className="h-24 bg-[#2A2A2A] rounded-md mt-2"></div>
       </div>
     </div>
   );

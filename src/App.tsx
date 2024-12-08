@@ -11,14 +11,18 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <TopNavigation />
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-        </Routes>
-      </BrowserRouter>
+      <div className="min-h-screen bg-[#1A1A1A] text-white">
+        <TopNavigation />
+        <main className="container mx-auto px-4 py-6">
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+            </Routes>
+          </BrowserRouter>
+        </main>
+      </div>
     </TooltipProvider>
   </QueryClientProvider>
 );
