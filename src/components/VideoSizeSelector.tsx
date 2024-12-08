@@ -8,7 +8,7 @@ export interface VideoSizeRange {
   max: number;
   label: string;
   description: string;
-  icon: React.ReactNode;
+  icon: React.ReactNode | null;
   recommendedTracks: number;
 }
 

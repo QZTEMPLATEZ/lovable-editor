@@ -161,13 +161,14 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
         <div className="space-y-8">
           {renderCurrentStep()}
           
-          <div className="flex justify-between mt-8 border-t border-[#2A2A2A] pt-4">
+          <div className="flex justify-between mt-8 border-t border-purple-500/20 pt-6">
             <Button
               onClick={handlePreviousStep}
               disabled={currentStep === 0}
-              className="adobe-style-button flex items-center gap-2"
+              className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 transition-all duration-300"
+              variant="outline"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
             
@@ -175,20 +176,20 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
               <Button
                 onClick={handleNextStep}
                 disabled={!canProceedToNextStep()}
-                className="adobe-style-button flex items-center gap-2"
+                className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 transition-all duration-300"
+                variant="outline"
               >
                 Next Step
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             )}
           </div>
         </div>
       </div>
       
-      <div className="adobe-timeline mt-8 p-4">
-        <div className="text-sm text-gray-400">Timeline</div>
-        {/* Timeline placeholder for future implementation */}
-        <div className="h-24 bg-[#2A2A2A] rounded-md mt-2"></div>
+      <div className="adobe-timeline mt-8 p-4 border border-purple-500/20 rounded-lg backdrop-blur-sm">
+        <div className="text-sm text-purple-300 font-medium">Timeline</div>
+        <div className="h-24 bg-purple-500/5 rounded-md mt-2 border border-purple-500/20"></div>
       </div>
     </div>
   );

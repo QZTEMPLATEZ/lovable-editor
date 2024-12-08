@@ -10,7 +10,8 @@ const VideoEditorContainer = () => {
     max: 6,
     label: "4-6 minutes",
     description: "Perfect for social media highlights",
-    icon: null
+    icon: null,
+    recommendedTracks: 2
   });
   const [editingMode, setEditingMode] = useState<EditingMode>('ai');
   const { toast } = useToast();
