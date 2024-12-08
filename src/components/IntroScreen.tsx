@@ -11,7 +11,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   const { theme } = useTheme();
   
   React.useEffect(() => {
-    const timer = setTimeout(onComplete, 5000);
+    const timer = setTimeout(onComplete, 10000); // Doubled from 5000 to 10000
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -21,7 +21,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 1.0 }} // Doubled from 0.5 to 1.0
     >
       <div className="relative w-full max-w-7xl mx-auto">
         <AspectRatio ratio={16/9} className="overflow-hidden">
@@ -35,15 +35,14 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 1.0, duration: 1.6 }} // Doubled from 0.5 and 0.8
               className="text-center"
             >
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-2">QZ TEMPLATEZ</h1>
-              <p className="text-xl md:text-2xl text-gray-200">AI-POWERED WEDDING EDITOR</p>
+              <h1 className="text-4xl md:text-6xl font-bold text-white mb-2">AI-POWERED EDITOR</h1>
+              <p className="text-xl md:text-2xl text-gray-200">WEDDING VIDEO EDITION</p>
               <p className="text-sm text-gray-300 mt-2">VERSION 7.12 • 2025</p>
             </motion.div>
             
-            {/* Futuristic loading bar */}
             <div className="w-full max-w-md h-1 bg-white/20 rounded-full overflow-hidden">
               <motion.div 
                 className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500"
@@ -58,10 +57,10 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                   ]
                 }}
                 transition={{ 
-                  duration: 5,
+                  duration: 10, // Doubled from 5
                   ease: "linear",
                   background: {
-                    duration: 2,
+                    duration: 4, // Doubled from 2
                     repeat: Infinity,
                     repeatType: "reverse"
                   }
