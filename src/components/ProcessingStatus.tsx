@@ -10,7 +10,7 @@ interface ProcessingStatusProps {
 
 const ProcessingStatus: React.FC<ProcessingStatusProps> = ({ currentStep, progress, metadata }) => {
   return (
-    <div className="space-y-6 bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30">
+    <div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="h-3 w-3 rounded-full bg-purple-500 animate-pulse" />
