@@ -36,7 +36,7 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
             <iframe
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/UJAUV_D5ynQ"
+              src="https://www.youtube.com/embed/UJAUV_D5ynQ?modestbranding=1&showinfo=0&rel=0"
               title="QZ TEMPLATEZ Tutorial"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
