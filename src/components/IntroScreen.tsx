@@ -39,37 +39,16 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               className="text-center space-y-8"
             >
               <div>
-                <p className="text-sm md:text-base text-gray-400 tracking-[0.3em] uppercase mb-4">The Art of Cinematic Storytelling</p>
-                <h2 className="text-xl md:text-2xl text-gray-300 tracking-widest font-light mb-3">QZ TEMPLATEZ PRESENTS</h2>
                 <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight leading-tight">
                   WEDDING CINEMA
-                  <br />
-                  ARTISTRY SUITE
                 </h1>
                 <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-white to-transparent my-8" />
                 <p className="text-xl md:text-2xl text-gray-200 font-light tracking-wide italic mb-8">
-                  "Where Every Frame Tells Your Story"
+                  "Crafting Timeless Moments"
                 </p>
-                <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed mb-12">
-                  Embark on a journey where artificial intelligence meets artistic vision, 
-                  crafting wedding films that transcend traditional videography. 
-                  Our suite combines cutting-edge AI technology with timeless cinematographic principles 
-                  to create breathtaking narratives that capture the essence of your special day.
+                <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                  AI-powered cinematic storytelling for your perfect day
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left max-w-4xl mx-auto">
-                  <div className="space-y-2">
-                    <h3 className="text-purple-300 text-lg font-semibold">Artistic Vision</h3>
-                    <p className="text-gray-400 text-sm">Blending contemporary aesthetics with timeless storytelling techniques</p>
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-purple-300 text-lg font-semibold">Technical Excellence</h3>
-                    <p className="text-gray-400 text-sm">AI-powered color grading and composition enhancement</p>
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-purple-300 text-lg font-semibold">Emotional Impact</h3>
-                    <p className="text-gray-400 text-sm">Intelligent moment detection for perfect emotional timing</p>
-                  </div>
-                </div>
               </div>
             </motion.div>
             
@@ -97,7 +76,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                 }}
               />
             </div>
-            <p className="text-xs text-gray-500 tracking-wider">INITIALIZING ARTISTIC VISION • PREPARING CREATIVE ENVIRONMENT</p>
+            <p className="text-xs text-gray-500 tracking-wider">INITIALIZING</p>
           </div>
         </AspectRatio>
       </div>
