@@ -30,18 +30,27 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             alt="Wedding Editor Intro"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center gap-4 p-8">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center gap-6 p-12">
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 1.0, duration: 1.6 }}
-              className="text-center"
+              className="text-center space-y-6"
             >
-              <h1 className="text-2xl md:text-3xl font-bold text-white mb-4">QZ TEMPLATEZ</h1>
-              <p className="text-xl md:text-4xl text-gray-200 font-bold mb-2">WEDDING VIDEO</p>
-              <p className="text-lg md:text-2xl text-gray-300">POWERED BY AI</p>
-              <p className="text-sm text-gray-300 mt-4">VERSION 7.12 • 2025</p>
+              <div>
+                <h2 className="text-lg md:text-xl text-gray-300 tracking-widest font-light mb-2">QZ TEMPLATEZ PRESENTS</h2>
+                <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+                  PROFESSIONAL WEDDING
+                  <br />
+                  CINEMATOGRAPHY SUITE
+                </h1>
+                <div className="h-px w-24 mx-auto bg-gradient-to-r from-transparent via-white to-transparent my-6" />
+                <p className="text-xl md:text-2xl text-gray-200 font-light tracking-wide">
+                  ADVANCED AI-DRIVEN EDITING SUITE
+                </p>
+              </div>
+              <p className="text-sm text-gray-400 tracking-wider mt-8">VERSION 7.12 • 2025</p>
             </motion.div>
             
             <div className="w-full max-w-md h-1 bg-white/20 rounded-full overflow-hidden">
