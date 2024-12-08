@@ -39,9 +39,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               className="text-center space-y-8"
             >
               <div>
-                <p className="text-sm md:text-base text-gray-400 tracking-[0.3em] uppercase mb-4">
-                  QZ TEMPLATEZ
-                </p>
                 <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight leading-tight">
                   WEDDING TEMPLATEZ - POWERED BY AI SMART EDITOR
                 </h1>

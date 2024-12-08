@@ -9,7 +9,7 @@ const TopNavigation = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <h1 className="brand-text text-2xl font-bold">
-              QZ Templatez
+              Wedding Templatez
             </h1>
           </div>
           <div className="hidden md:flex items-center space-x-4">
