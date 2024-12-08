@@ -40,17 +40,14 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             >
               <div>
                 <p className="text-sm md:text-base text-gray-400 tracking-[0.3em] uppercase mb-4">
-                  QZ Smart Templatez • Premium Suite
+                  Smart Templates
                 </p>
                 <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight leading-tight">
-                  CINEMATIC WEDDING EDITOR
+                  WEDDING EDITOR
                 </h1>
                 <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-white to-transparent my-8" />
-                <p className="text-xl md:text-2xl text-gray-200 font-light tracking-wide italic mb-8">
-                  "Elevate Your Wedding Stories with Advanced AI Technology"
-                </p>
-                <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
-                  Experience the future of wedding cinematography with our state-of-the-art AI-driven editing suite
+                <p className="text-xl md:text-2xl text-gray-200 font-light tracking-wide mb-8">
+                  AI-Powered Editing
                 </p>
               </div>
             </motion.div>
@@ -79,7 +76,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                 }}
               />
             </div>
-            <p className="text-xs text-gray-500 tracking-wider">INITIALIZING PROFESSIONAL SUITE</p>
+            <p className="text-xs text-gray-500 tracking-wider">INITIALIZING</p>
           </div>
         </AspectRatio>
       </div>

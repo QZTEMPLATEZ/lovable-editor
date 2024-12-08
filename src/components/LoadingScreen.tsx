@@ -57,12 +57,12 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                       <motion.h1 
                         className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-4"
                       >
-                        PROFESSIONAL WEDDING CINEMATOGRAPHY SUITE
+                        WEDDING EDITOR
                       </motion.h1>
                       <motion.p 
-                        className="text-gray-300 mb-6"
+                        className="text-gray-300 mb-6 tracking-wide"
                       >
-                        Transform Your Wedding Footage into Cinematic Masterpieces
+                        AI-Powered Editing Suite
                       </motion.p>
                       
                       {showLoadingBar && (
