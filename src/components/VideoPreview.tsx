@@ -14,7 +14,7 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ file, metadata }) => {
   if (!file) {
     return (
       <div className="w-full h-48 bg-gray-800 rounded-lg flex items-center justify-center">
-        <p className="text-gray-400">No video file selected</p>
+        <p className="text-gray-400 font-['Montserrat'] text-lg">Select your wedding soundtrack</p>
       </div>
     );
   }
