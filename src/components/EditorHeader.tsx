@@ -21,11 +21,11 @@ const VIDEO_DURATIONS: VideoSizeRange[] = [
 const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorHeaderProps) => {
   return (
     <div className="text-center space-y-6">
-      <div className="flex items-center justify-center gap-3">
-        <Logo className="animate-pulse" />
+      <div className="flex items-center justify-center">
         <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-300 to-blue-400">
           WEDDING TEMPLATEZ
         </h1>
+        <Logo className="w-6 h-6 ml-2 opacity-50" />
       </div>
       
       <div className="max-w-2xl mx-auto bg-purple-950/10 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20">
