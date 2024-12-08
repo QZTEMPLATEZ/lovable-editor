@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import VideoSizeSelector, { VideoSizeRange } from './VideoSizeSelector';
 import EditingModeSelector, { EditingMode } from './EditingModeSelector';
 import VideoEditor from './VideoEditor';
-import { useToast } from '@/components/ui/use-toast';
 
 const VideoEditorContainer = () => {
   const [selectedSize, setSelectedSize] = useState<VideoSizeRange>({
@@ -14,22 +13,13 @@ const VideoEditorContainer = () => {
     recommendedTracks: 2
   });
   const [editingMode, setEditingMode] = useState<EditingMode>('ai');
-  const { toast } = useToast();
 
   const handleSizeSelect = (size: VideoSizeRange) => {
     setSelectedSize(size);
-    toast({
-      title: "Duration Selected",
-      description: `Target video duration: ${size.min}-${size.max} minutes`,
-    });
   };
 
   const handleModeSelect = (mode: EditingMode) => {
     setEditingMode(mode);
-    toast({
-      title: "Editing Mode Selected",
-      description: mode === 'ai' ? "AI-powered editing enabled" : "Template mode enabled",
-    });
   };
 
   if (!selectedSize) {
@@ -41,11 +31,13 @@ const VideoEditorContainer = () => {
   }
 
   return (
-    <VideoEditor
-      targetDuration={selectedSize}
-      editingMode={editingMode}
-      onDurationChange={handleSizeSelect}
-    />
+    <div className="bg-editor-bg/95 rounded-3xl border border-purple-500/20 shadow-xl backdrop-blur-lg overflow-hidden">
+      <VideoEditor
+        targetDuration={selectedSize}
+        editingMode={editingMode}
+        onDurationChange={handleSizeSelect}
+      />
+    </div>
   );
 };
 

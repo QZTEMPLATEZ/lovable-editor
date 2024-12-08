@@ -9,15 +9,15 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <div className="min-h-screen bg-[#1A1A1A] text-white">
+      <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95">
         <TopNavigation />
-        <main className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-8">
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
             </Routes>
           </BrowserRouter>
-        </main>
+        </div>
       </div>
     </TooltipProvider>
   </QueryClientProvider>
