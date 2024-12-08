@@ -53,11 +53,13 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
               <TabsTrigger
                 key={`${duration.min}-${duration.max}`}
                 value={`${duration.min}-${duration.max}`}
-                className="group relative p-6 data-[state=active]:bg-purple-500/10 data-[state=active]:shadow-lg data-[state=active]:backdrop-blur-sm transition-all duration-300 rounded-xl border border-purple-500/20 hover:border-purple-500/30 h-full"
+                className="group relative p-6 transition-all duration-500 rounded-xl border border-purple-500/20 hover:border-purple-500/30 h-full
+                  data-[state=active]:scale-[1.02] data-[state=active]:bg-purple-500/10 data-[state=active]:shadow-[0_0_30px_rgba(168,85,247,0.15)] data-[state=active]:backdrop-blur-sm
+                  data-[state=inactive]:opacity-50 data-[state=inactive]:hover:opacity-75"
               >
                 <div className="flex flex-col items-start text-left space-y-4 w-full">
                   <div className="flex justify-between items-center w-full">
-                    <Badge variant="secondary" className="bg-pink-500/10 text-pink-300 border-pink-500/20">
+                    <Badge variant="secondary" className="bg-pink-500/10 text-pink-300 border-pink-500/20 group-data-[state=active]:bg-pink-500/20 group-data-[state=active]:border-pink-500/30">
                       {index === 0 && "PRO"}
                       {index === 1 && "PRO MAX"}
                       {index === 2 && "BUSINESS"}
@@ -70,7 +72,7 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
                   </div>
                   
                   <div className="space-y-2">
-                    <h3 className="text-base font-medium text-gray-200">
+                    <h3 className="text-base font-medium text-gray-200 group-data-[state=active]:text-purple-200">
                       {duration.description}
                     </h3>
                     <ul className="space-y-2 text-sm">
