@@ -60,24 +60,19 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
     
     if (files.length > 0) {
-      if (referenceFiles.length >= 3) {
+      if (referenceFiles.length >= 1) {
         toast({
           variant: "destructive",
-          title: "Maximum reference videos reached",
-          description: "You can only upload up to 3 reference videos",
+          title: "Reference video already added",
+          description: "You can only upload one reference video",
         });
         return;
       }
 
-      setReferenceFiles(prev => {
-        const newFiles = [...prev, ...files].slice(0, 3);
-        if (newFiles.length === 3) {
-          toast({
-            title: "Ready to continue",
-            description: "You've added all reference videos. You can proceed to the next step.",
-          });
-        }
-        return newFiles;
+      setReferenceFiles([files[0]]);
+      toast({
+        title: "Reference video added",
+        description: "Your inspiration video has been uploaded successfully.",
       });
     }
   };
@@ -130,6 +125,15 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             onDrop={handleReferenceDrop}
             onDragOver={handleDragOver}
             videoFiles={referenceFiles}
+            onContinue={handleNextStep}
+          />
+        );
+      case 2:
+        return (
+          <RawFilesSection
+            onDrop={handleRawDrop}
+            onDragOver={handleDragOver}
+            videoFiles={rawFiles}
             onContinue={handleNextStep}
           />
         );
