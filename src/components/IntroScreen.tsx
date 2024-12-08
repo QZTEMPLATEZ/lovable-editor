@@ -50,8 +50,13 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                 <p className="text-xl md:text-2xl text-gray-200 font-light tracking-wide">
                   ADVANCED AI-DRIVEN EDITING SUITE
                 </p>
-                <p className="text-xs md:text-sm text-gray-400 mt-4 tracking-wider">OPTIMIZED FOR PROFESSIONAL WEDDING CINEMATOGRAPHY</p>
-                <p className="text-xs md:text-sm text-gray-400 tracking-wider">REAL-TIME RENDERING • AI COLOR GRADING • SMART TRANSITIONS</p>
+                <div className="mt-8 space-y-3">
+                  <p className="text-sm md:text-base text-gray-300 tracking-wider">REAL-TIME RENDERING • Instant preview of all edits and effects</p>
+                  <p className="text-sm md:text-base text-gray-300 tracking-wider">AI COLOR GRADING • Professional color correction powered by AI</p>
+                  <p className="text-sm md:text-base text-gray-300 tracking-wider">SMART TRANSITIONS • Intelligent scene detection and smooth transitions</p>
+                  <p className="text-sm md:text-base text-gray-300 tracking-wider">AUDIO SYNC • Advanced audio-visual synchronization technology</p>
+                  <p className="text-sm md:text-base text-gray-300 tracking-wider">MOTION TRACKING • Automated subject tracking and stabilization</p>
+                </div>
               </div>
               <p className="text-sm text-gray-400 tracking-wider mt-8">VERSION 7.12 • 2025</p>
               <p className="text-[10px] text-gray-500 tracking-wider">LOADING PROFESSIONAL EDITING ENVIRONMENT...</p>
