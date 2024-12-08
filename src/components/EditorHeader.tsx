@@ -129,12 +129,6 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
             ))}
           </TabsList>
         </Tabs>
-
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-400">
-            All options include professional editing, color grading, and licensed music
-          </p>
-        </div>
       </div>
     </div>
   );
