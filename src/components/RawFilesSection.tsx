@@ -101,6 +101,18 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles, onContinue }: RawFile
             ))}
           </div>
         )}
+
+        {videoFiles.length > 0 && onContinue && (
+          <div className="mt-6 flex justify-center">
+            <Button 
+              onClick={onContinue}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transition-all duration-300 py-6 text-lg font-medium flex items-center justify-center gap-3 rounded-xl shadow-lg px-8"
+            >
+              Continue to AI Editor
+              <Film className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

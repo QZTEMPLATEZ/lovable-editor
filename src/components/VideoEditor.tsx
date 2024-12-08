@@ -59,15 +59,6 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     });
   };
 
-  const handleStopProcessing = () => {
-    setIsProcessing(false);
-    setCurrentStep(3); // Return to Raw Files step
-    toast({
-      title: "Processing Cancelled",
-      description: "You can restart the process when ready.",
-    });
-  };
-
   const handleReferenceDrop = async (e: React.DragEvent<Element>) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
@@ -94,13 +85,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
 
   const renderCurrentStep = () => {
     if (isProcessing) {
-      return (
-        <EditingProgress 
-          videoFiles={rawFiles} 
-          progress={0} 
-          onStopProcessing={handleStopProcessing}
-        />
-      );
+      return <EditingProgress videoFiles={rawFiles} progress={0} />;
     }
 
     return (
@@ -166,7 +151,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
       <div className="max-w-7xl mx-auto p-6 space-y-8">
         {renderCurrentStep()}
         
-        {!isProcessing && currentStep !== 0 && (
+        {!isProcessing && (
           <div className="flex justify-between mt-8 border-t border-purple-500/20 pt-6">
             <Button
               onClick={handlePreviousStep}

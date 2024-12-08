@@ -2,16 +2,13 @@ import React from 'react';
 import { EditingMode } from './EditingModeSelector';
 import { VideoSizeRange } from './VideoSizeSelector';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, ArrowRight } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
 
 interface EditorHeaderProps {
   editingMode: EditingMode;
   targetDuration: VideoSizeRange;
   onDurationChange: (duration: VideoSizeRange) => void;
-  onContinue?: () => void;
 }
 
 const VIDEO_DURATIONS: VideoSizeRange[] = [
@@ -21,21 +18,7 @@ const VIDEO_DURATIONS: VideoSizeRange[] = [
   { min: 30, max: 40, label: "30-40 minutes", description: "Full wedding documentary", icon: null, recommendedTracks: 6 }
 ];
 
-const EditorHeader = ({ editingMode, targetDuration, onDurationChange, onContinue }: EditorHeaderProps) => {
-  const { toast } = useToast();
-
-  const handleDurationChange = (value: string) => {
-    const [min, max] = value.split('-').map(Number);
-    const newDuration = VIDEO_DURATIONS.find(d => d.min === min && d.max === max);
-    if (newDuration) {
-      onDurationChange(newDuration);
-      toast({
-        title: "Duration Selected",
-        description: `Video duration set to ${newDuration.min}-${newDuration.max} minutes`,
-      });
-    }
-  };
-
+const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorHeaderProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -59,7 +42,11 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, onContinu
         <Tabs 
           defaultValue={`${targetDuration.min}-${targetDuration.max}`}
           className="w-full"
-          onValueChange={handleDurationChange}
+          onValueChange={(value) => {
+            const [min, max] = value.split('-').map(Number);
+            const newDuration = VIDEO_DURATIONS.find(d => d.min === min && d.max === max);
+            if (newDuration) onDurationChange(newDuration);
+          }}
         >
           <TabsList className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full bg-transparent">
             {VIDEO_DURATIONS.map((duration, index) => (
@@ -144,18 +131,6 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, onContinu
             ))}
           </TabsList>
         </Tabs>
-
-        <div className="flex justify-between mt-8 border-t border-purple-500/20 pt-6">
-          <div></div>
-          <Button
-            onClick={onContinue}
-            className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30"
-            variant="outline"
-          >
-            Next Step
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-        </div>
       </div>
     </div>
   );
