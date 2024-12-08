@@ -11,7 +11,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   const { theme } = useTheme();
   
   React.useEffect(() => {
-    const timer = setTimeout(onComplete, 3000);
+    const timer = setTimeout(onComplete, 5000); // Extended to 5 seconds
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -30,12 +30,57 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             alt="Wedding Editor Intro"
             className="w-full h-full object-cover"
           />
-          <motion.div 
-            className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/10 backdrop-blur-sm"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 3, ease: "linear" }}
-          />
+          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center gap-2 p-4">
+            {/* Futuristic loading bar container */}
+            <div className="w-full max-w-md h-1.5 bg-black/20 backdrop-blur-sm rounded-full overflow-hidden">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+                initial={{ scaleX: 0, x: "-100%" }}
+                animate={{ 
+                  scaleX: 1, 
+                  x: "0%",
+                  background: [
+                    "linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899)",
+                    "linear-gradient(to right, #ec4899, #3b82f6, #8b5cf6)",
+                    "linear-gradient(to right, #8b5cf6, #ec4899, #3b82f6)"
+                  ]
+                }}
+                transition={{ 
+                  duration: 5,
+                  ease: "linear",
+                  background: {
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }
+                }}
+              />
+            </div>
+            
+            {/* Animated dots */}
+            <motion.div 
+              className="flex gap-1"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              {[...Array(3)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="w-1.5 h-1.5 bg-white/50 rounded-full"
+                  animate={{ 
+                    scale: [1, 1.5, 1],
+                    opacity: [0.5, 1, 0.5]
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    delay: i * 0.2
+                  }}
+                />
+              ))}
+            </motion.div>
+          </div>
         </AspectRatio>
       </div>
     </motion.div>
