@@ -3,7 +3,6 @@ import { EditingMode } from './EditingModeSelector';
 import { VideoSizeRange } from './VideoSizeSelector';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Clock } from 'lucide-react';
-import Logo from './Logo';
 import { Badge } from "@/components/ui/badge";
 
 interface EditorHeaderProps {
@@ -22,21 +21,18 @@ const VIDEO_DURATIONS: VideoSizeRange[] = [
 const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorHeaderProps) => {
   return (
     <div className="text-center space-y-6">
-      <div className="flex items-center justify-center">
-        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-300 to-blue-400">
-          WEDDING TEMPLATEZ
-        </h1>
-        <Logo className="w-6 h-6 ml-2 opacity-50" />
-      </div>
+      <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-300 to-blue-400">
+        WEDDING TEMPLATEZ
+      </h1>
       
-      <div className="max-w-2xl mx-auto bg-purple-950/10 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20">
-        <div className="flex flex-col items-center gap-4">
+      <div className="max-w-2xl mx-auto bg-purple-950/10 backdrop-blur-sm rounded-xl p-8 border border-purple-500/20">
+        <div className="flex flex-col items-center gap-6">
           <div className="flex items-center gap-2">
-            <Clock className="w-6 h-6 text-purple-400 animate-pulse" />
+            <Clock className="w-5 h-5 text-purple-400 animate-pulse" />
             <h2 className="text-xl font-semibold text-purple-300">Select Video Duration</h2>
           </div>
           
-          <p className="text-sm text-gray-400 mb-4">
+          <p className="text-sm text-gray-400">
             {editingMode === 'ai' 
               ? 'Choose the perfect duration for your wedding video'
               : 'Select a duration template for your wedding video'}
@@ -56,29 +52,29 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
                 <TabsTrigger
                   key={`${duration.min}-${duration.max}`}
                   value={`${duration.min}-${duration.max}`}
-                  className="data-[state=active]:bg-purple-500 data-[state=active]:text-white relative group"
+                  className="relative group py-6 data-[state=active]:bg-purple-500/80 data-[state=active]:backdrop-blur-sm data-[state=active]:text-white transition-all duration-300"
                 >
-                  <div className="flex flex-col items-center">
-                    <span>{duration.min}-{duration.max}m</span>
+                  <div className="flex flex-col items-center gap-1">
                     {duration.min === 4 && (
-                      <Badge variant="secondary" className="absolute -top-3 text-[10px] bg-gradient-to-r from-purple-400 to-pink-400 text-white">
+                      <Badge variant="secondary" className="absolute -top-2 text-[10px] bg-gradient-to-r from-purple-400 to-pink-400 text-white font-semibold px-3 shadow-lg">
                         PRO
                       </Badge>
                     )}
                     {duration.min === 8 && (
-                      <Badge variant="secondary" className="absolute -top-3 text-[10px] bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                      <Badge variant="secondary" className="absolute -top-2 text-[10px] bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold px-3 shadow-lg">
                         PRO MAX
                       </Badge>
                     )}
                     {(duration.min === 15 || duration.min === 30) && (
-                      <Badge variant="secondary" className="absolute -top-3 text-[10px] bg-gradient-to-r from-yellow-400 to-orange-400 text-white">
+                      <Badge variant="secondary" className="absolute -top-2 text-[10px] bg-gradient-to-r from-yellow-400 to-orange-400 text-white font-semibold px-3 shadow-lg">
                         BUSINESS
                       </Badge>
                     )}
+                    <span className="text-lg font-medium mt-2">{duration.min}-{duration.max}m</span>
+                    <span className="text-xs text-gray-400 opacity-80 group-hover:opacity-100 transition-opacity">
+                      {duration.description}
+                    </span>
                   </div>
-                  <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                    {duration.description}
-                  </span>
                 </TabsTrigger>
               ))}
             </TabsList>
