@@ -16,28 +16,28 @@ const VIDEO_SIZES: VideoSizeRange[] = [
     min: 4,
     max: 6,
     label: "4-6 minutes",
-    description: "Perfect for social media highlights",
+    description: "Perfect for social media highlights\n• Quick overview of key moments\n• Ideal for Instagram and TikTok\n• Captures essential highlights\n• Fast-paced editing style\n• Optimized for mobile viewing",
     icon: <Clock className="w-5 h-5 text-purple-400" />
   },
   {
     min: 8,
     max: 12,
     label: "8-12 minutes",
-    description: "Ideal for ceremony highlights",
+    description: "Ideal for ceremony highlights\n• Complete ceremony coverage\n• Key reception moments\n• Guest interviews included\n• Extended dance sequences\n• Perfect for family sharing",
     icon: <Clock className="w-5 h-5 text-purple-400" />
   },
   {
     min: 15,
     max: 20,
     label: "15-20 minutes",
-    description: "Complete ceremony coverage",
+    description: "Complete ceremony coverage\n• Full ceremony and vows\n• Extended reception coverage\n• Family moments & speeches\n• Detailed venue shots\n• Comprehensive storytelling",
     icon: <Clock className="w-5 h-5 text-purple-400" />
   },
   {
     min: 30,
     max: 40,
     label: "30-40 minutes",
-    description: "Full wedding documentary",
+    description: "Full wedding documentary\n• Complete event coverage\n• Behind-the-scenes footage\n• Extended family interviews\n• Multiple camera angles\n• Cinematic storytelling",
     icon: <Clock className="w-5 h-5 text-purple-400" />
   }
 ];
@@ -80,7 +80,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
               {size.icon}
               <div className="flex-1">
                 <span className="block text-lg font-semibold text-purple-300 mb-2">{size.label}</span>
-                <span className="block text-sm text-gray-400">{size.description}</span>
+                <span className="block text-sm text-gray-400 whitespace-pre-line">{size.description}</span>
               </div>
             </Label>
           </div>
