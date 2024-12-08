@@ -39,12 +39,15 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               className="text-center space-y-8"
             >
               <div>
-                <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight leading-tight">
-                  WEDDING TEMPLATEZ - POWERED BY AI SMART EDITOR
+                <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight leading-tight">
+                  Professional Wedding Video Editor
                 </h1>
-                <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-white to-transparent my-8" />
-                <p className="text-xl md:text-2xl text-gray-200 font-light tracking-wide mb-8">
-                  Edit in hours instead of days
+                <h2 className="text-xl md:text-2xl text-gray-200 font-light mb-2">
+                  Powered by AI Smart Editor
+                </h2>
+                <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-white to-transparent my-6" />
+                <p className="text-lg md:text-xl text-gray-300 font-light tracking-wide">
+                  Transform your footage into cinematic memories
                 </p>
               </div>
             </motion.div>
