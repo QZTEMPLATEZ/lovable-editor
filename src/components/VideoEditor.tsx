@@ -1,27 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import LoadingScreen from './LoadingScreen';
-import EditingInterface from './EditingInterface';
-import EditingProgress from './EditingProgress';
-import ProcessingStatus from './ProcessingStatus';
-import VideoPreview from './VideoPreview';
-import PreApprovalView from './PreApprovalView';
-import ReferenceFilmsSection from './ReferenceFilmsSection';
-import RawFilesSection from './RawFilesSection';
-import EditorHeader from './EditorHeader';
-import StepIndicator from './StepIndicator';
+import StepLayout from './editor/StepLayout';
+import StartEditingButton from './editor/StartEditingButton';
+import AIScriptWindow from './editor/AIScriptWindow';
 import { VideoSizeRange } from './VideoSizeSelector';
 import { EditingMode } from './EditingModeSelector';
-import { analyzeVideoStability, calculateSlowMotionSpeed, getVideoMetadata, type VideoMetadata } from '@/utils/videoProcessing';
+import EditingProgress from './EditingProgress';
+import EditorHeader from './EditorHeader';
+import ReferenceFilmsSection from './ReferenceFilmsSection';
+import EditingInterface from './EditingInterface';
+import RawFilesSection from './RawFilesSection';
 
 const EDITOR_STEPS = [
-  { title: 'Duration', description: 'Choose video length' },
-  { title: 'References', description: 'Add style examples' },
-  { title: 'Music', description: 'Select soundtrack' },
-  { title: 'Raw Files', description: 'Upload footage' },
-  { title: 'Edit', description: 'AI processing' }
+  { title: 'Duration', description: 'Choose your ideal video length' },
+  { title: 'References', description: 'Add style examples for inspiration' },
+  { title: 'Music', description: 'Select the perfect soundtrack' },
+  { title: 'Raw Files', description: 'Upload your footage' },
+  { title: 'AI Edit', description: 'Let AI work its magic' }
 ];
 
 interface VideoEditorProps {
@@ -32,79 +29,14 @@ interface VideoEditorProps {
 
 const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEditorProps) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [aiScript, setAiScript] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
   const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
   const [rawFiles, setRawFiles] = useState<File[]>([]);
-  const [command, setCommand] = useState('');
-  const [editingProgress, setEditingProgress] = useState(0);
-  const [videoMetadata, setVideoMetadata] = useState<VideoMetadata[]>([]);
-  const [finalVideoUrl, setFinalVideoUrl] = useState<string>('');
-  const [musicTrack, setMusicTrack] = useState<File | null>(null);
-  const [musicBeats, setMusicBeats] = useState<any[]>([]);
   const { toast } = useToast();
 
-  // Add useEffect to watch for targetDuration changes
-  useEffect(() => {
-    if (currentStep === 0 && targetDuration) {
-      handleNextStep();
-    }
-  }, [targetDuration]);
-
-  const handleReferenceDrop = async (e: React.DragEvent<Element>) => {
-    e.preventDefault();
-    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
-    
-    if (files.length > 0) {
-      if (referenceFiles.length >= 1) {
-        toast({
-          variant: "destructive",
-          title: "Reference video already added",
-          description: "You can only upload one reference video",
-        });
-        return;
-      }
-
-      setReferenceFiles([files[0]]);
-      toast({
-        title: "Reference video added",
-        description: "Your inspiration video has been uploaded successfully.",
-      });
-    }
-  };
-
-  const handleRawDrop = async (e: React.DragEvent<Element>) => {
-    e.preventDefault();
-    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
-    
-    if (files.length > 0) {
-      setRawFiles(prev => [...prev, ...files]);
-      toast({
-        title: "Raw footage uploaded",
-        description: `Successfully loaded ${files.length} raw video file(s)`,
-      });
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const canProceedToNextStep = () => {
-    switch (currentStep) {
-      case 0:
-        return true; // Duration is always selected
-      case 1:
-        return referenceFiles.length > 0;
-      case 2:
-        return true; // Music is optional
-      case 3:
-        return rawFiles.length > 0;
-      default:
-        return false;
-    }
-  };
-
   const handleNextStep = () => {
-    if (currentStep < EDITOR_STEPS.length - 1 && canProceedToNextStep()) {
+    if (currentStep < EDITOR_STEPS.length - 1) {
       setCurrentStep(prev => prev + 1);
       toast({
         title: `Step ${currentStep + 2}: ${EDITOR_STEPS[currentStep + 1].title}`,
@@ -116,26 +48,53 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
   const handlePreviousStep = () => {
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1);
+    }
+  };
+
+  const handleStartEditing = () => {
+    setIsProcessing(true);
+    toast({
+      title: "AI Processing Started",
+      description: "Your video is being edited by our AI...",
+    });
+  };
+
+  const handleReferenceDrop = async (e: React.DragEvent<Element>) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
+    if (files.length > 0) {
+      setReferenceFiles([files[0]]);
       toast({
-        title: `Step ${currentStep}: ${EDITOR_STEPS[currentStep - 1].title}`,
-        description: EDITOR_STEPS[currentStep - 1].description,
+        title: "Reference video added",
+        description: "Your inspiration video has been uploaded successfully.",
       });
     }
   };
 
-  const handleMusicSelect = (file: File, beats: any[]) => {
-    setMusicTrack(file);
-    setMusicBeats(beats);
-    toast({
-      title: "Music track added",
-      description: "Your soundtrack has been successfully uploaded.",
-    });
+  const handleRawDrop = async (e: React.DragEvent<Element>) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
+    if (files.length > 0) {
+      setRawFiles(prev => [...prev, ...files]);
+      toast({
+        title: "Raw footage uploaded",
+        description: `Successfully loaded ${files.length} raw video file(s)`,
+      });
+    }
   };
 
   const renderCurrentStep = () => {
-    switch (currentStep) {
-      case 0:
-        return (
+    if (isProcessing) {
+      return <EditingProgress videoFiles={rawFiles} progress={0} />;
+    }
+
+    return (
+      <StepLayout
+        currentStep={currentStep}
+        title={EDITOR_STEPS[currentStep].title}
+        description={EDITOR_STEPS[currentStep].description}
+      >
+        {currentStep === 0 && (
           <div className="space-y-8">
             <EditorHeader 
               editingMode={editingMode}
@@ -143,48 +102,61 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
               onDurationChange={onDurationChange}
             />
           </div>
-        );
-      case 1:
-        return (
+        )}
+        
+        {currentStep === 1 && (
           <ReferenceFilmsSection
             onDrop={handleReferenceDrop}
-            onDragOver={handleDragOver}
+            onDragOver={(e) => e.preventDefault()}
             videoFiles={referenceFiles}
           />
-        );
-      case 2:
-        return (
-          <EditingInterface onMusicSelect={handleMusicSelect} />
-        );
-      case 3:
-        return (
+        )}
+        
+        {currentStep === 2 && (
+          <EditingInterface onMusicSelect={(file, beats) => {
+            toast({
+              title: "Music track added",
+              description: "Your soundtrack has been successfully uploaded.",
+            });
+          }} />
+        )}
+        
+        {currentStep === 3 && (
           <RawFilesSection
             onDrop={handleRawDrop}
-            onDragOver={handleDragOver}
+            onDragOver={(e) => e.preventDefault()}
             videoFiles={rawFiles}
             onContinue={handleNextStep}
           />
-        );
-      default:
-        return null;
-    }
+        )}
+        
+        {currentStep === 4 && (
+          <div className="space-y-8">
+            <AIScriptWindow 
+              value={aiScript}
+              onChange={setAiScript}
+            />
+            <StartEditingButton 
+              onClick={handleStartEditing}
+              disabled={!aiScript}
+            />
+          </div>
+        )}
+      </StepLayout>
+    );
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1A1A] text-white">
-      <div className="adobe-style-panel">
-        <div className="adobe-style-header mb-6">
-          <StepIndicator currentStep={currentStep} steps={EDITOR_STEPS} />
-        </div>
-
-        <div className="space-y-8">
-          {renderCurrentStep()}
-          
+    <div className="min-h-screen bg-editor-bg text-white">
+      <div className="max-w-7xl mx-auto p-6 space-y-8">
+        {renderCurrentStep()}
+        
+        {!isProcessing && (
           <div className="flex justify-between mt-8 border-t border-purple-500/20 pt-6">
             <Button
               onClick={handlePreviousStep}
               disabled={currentStep === 0}
-              className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 transition-all duration-300"
+              className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30"
               variant="outline"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -194,8 +166,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             {currentStep < EDITOR_STEPS.length - 1 && (
               <Button
                 onClick={handleNextStep}
-                disabled={!canProceedToNextStep()}
-                className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 transition-all duration-300"
+                className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30"
                 variant="outline"
               >
                 Next Step
@@ -203,12 +174,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
               </Button>
             )}
           </div>
-        </div>
-      </div>
-      
-      <div className="adobe-timeline mt-8 p-4 border border-purple-500/20 rounded-lg backdrop-blur-sm">
-        <div className="text-sm text-purple-300 font-medium">Timeline</div>
-        <div className="h-24 bg-purple-500/5 rounded-md mt-2 border border-purple-500/20"></div>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import AIInstructionsInput from './processing/AIInstructionsInput';
 import ProcessingPreview from './processing/ProcessingPreview';
 import ProcessingSteps from './processing/ProcessingSteps';
@@ -23,14 +24,20 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
   }, [videoFiles.length]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-editor-bg via-editor-bg/95 to-editor-bg">
-      <div className="max-w-7xl mx-auto p-6 space-y-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen bg-gradient-to-br from-editor-bg via-editor-bg/95 to-editor-bg relative"
+    >
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+      
+      <div className="relative max-w-7xl mx-auto p-6 space-y-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - AI Instructions */}
           <div className="space-y-6">
             <div className="adobe-style-panel backdrop-blur-xl">
               <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-6">
-                AI Video Editor
+                AI Video Processing
               </h2>
               <AIInstructionsInput 
                 value={aiInstructions}
@@ -39,7 +46,6 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
             </div>
           </div>
 
-          {/* Right Column - Preview and Progress */}
           <div className="space-y-6">
             <ProcessingPreview 
               videoFiles={videoFiles}
@@ -49,7 +55,7 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
