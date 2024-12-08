@@ -23,18 +23,32 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
   }, [videoFiles.length]);
 
   return (
-    <div className="space-y-8 w-full max-w-6xl mx-auto">
-      <AIInstructionsInput 
-        value={aiInstructions}
-        onChange={setAiInstructions}
-      />
-      
-      <ProcessingPreview 
-        videoFiles={videoFiles}
-        currentFrameIndex={currentFrameIndex}
-      />
-      
-      <ProcessingSteps progress={progress} />
+    <div className="min-h-screen bg-gradient-to-br from-editor-bg via-editor-bg/95 to-editor-bg">
+      <div className="max-w-7xl mx-auto p-6 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column - AI Instructions */}
+          <div className="space-y-6">
+            <div className="adobe-style-panel backdrop-blur-xl">
+              <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-6">
+                AI Video Editor
+              </h2>
+              <AIInstructionsInput 
+                value={aiInstructions}
+                onChange={setAiInstructions}
+              />
+            </div>
+          </div>
+
+          {/* Right Column - Preview and Progress */}
+          <div className="space-y-6">
+            <ProcessingPreview 
+              videoFiles={videoFiles}
+              currentFrameIndex={currentFrameIndex}
+            />
+            <ProcessingSteps progress={progress} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

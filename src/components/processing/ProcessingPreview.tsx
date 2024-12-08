@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface ProcessingPreviewProps {
   videoFiles: File[];
@@ -8,48 +8,46 @@ interface ProcessingPreviewProps {
 
 const ProcessingPreview = ({ videoFiles, currentFrameIndex }: ProcessingPreviewProps) => {
   return (
-    <div className="relative h-64 overflow-hidden rounded-xl border border-purple-500/30 bg-editor-bg shadow-2xl">
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5" />
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500 opacity-50" />
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentFrameIndex}
-          initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -100 }}
-          transition={{ duration: 0.5 }}
-          className="absolute inset-0"
-        >
-          {videoFiles[currentFrameIndex] && (
-            <video 
-              src={URL.createObjectURL(videoFiles[currentFrameIndex])} 
-              className="w-full h-full object-cover opacity-90"
-              autoPlay
-              muted
-              playsInline
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-            <div className="absolute bottom-4 left-4 right-4">
-              <p className="text-white text-lg font-medium">
-                Processing Frame {currentFrameIndex + 1} of {videoFiles.length}
-              </p>
-              <p className="text-purple-300 text-sm">
-                Enhancing video quality and applying AI effects
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+    <div className="relative rounded-2xl overflow-hidden border border-purple-500/30 bg-editor-bg/80 backdrop-blur-xl">
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
       
-      <div className="absolute top-4 right-4 flex gap-2">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div 
-            key={i}
-            className="w-2 h-2 rounded-full bg-purple-500/50 animate-pulse"
-            style={{ animationDelay: `${i * 0.2}s` }}
+      <div className="relative aspect-video overflow-hidden">
+        {videoFiles[currentFrameIndex] && (
+          <motion.video
+            key={currentFrameIndex}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.5 }}
+            className="w-full h-full object-cover"
+            src={URL.createObjectURL(videoFiles[currentFrameIndex])}
+            autoPlay
+            muted
+            playsInline
           />
-        ))}
+        )}
+        
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        
+        {/* Processing Overlay */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative w-24 h-24">
+            <div className="absolute inset-0 border-4 border-purple-500/30 rounded-full animate-spin" 
+                 style={{ animationDuration: '3s' }} />
+            <div className="absolute inset-2 border-4 border-pink-500/30 rounded-full animate-spin" 
+                 style={{ animationDuration: '2s', animationDirection: 'reverse' }} />
+            <div className="absolute inset-4 border-4 border-purple-400/30 rounded-full animate-spin" 
+                 style={{ animationDuration: '1.5s' }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Processing Info */}
+      <div className="p-6">
+        <div className="flex justify-between items-center text-sm text-purple-300/70">
+          <span>Processing Frame {currentFrameIndex + 1}</span>
+          <span>{videoFiles.length} Total Frames</span>
+        </div>
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ const ProcessingSteps = ({ progress }: ProcessingStepsProps) => {
       <div className="relative space-y-8">
         <div className="flex justify-between items-center">
           <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-            AI Processing
+            Processing Status
           </h3>
           <span className="text-xl font-bold text-purple-300">{Math.round(progress)}%</span>
         </div>
