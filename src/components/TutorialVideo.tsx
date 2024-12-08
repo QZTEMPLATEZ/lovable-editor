@@ -37,6 +37,8 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
               width="100%"
               height="100%"
               controls
+              playsInline
+              muted
               autoPlay
               className="w-full h-full"
               src="https://www.dropbox.com/scl/fi/zvk8h0g2yjgcxawavez0g/Where-Intelligence-Meets-Art.mp4?rlkey=m7qay3rbn2gtbl36y4tr7lu23&raw=1"
