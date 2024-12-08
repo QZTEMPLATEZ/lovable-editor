@@ -50,12 +50,12 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
             if (newDuration) onDurationChange(newDuration);
           }}
         >
-          <TabsList className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full bg-transparent">
+          <TabsList className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full bg-transparent max-w-4xl mx-auto">
             {VIDEO_DURATIONS.map((duration, index) => (
               <TabsTrigger
                 key={`${duration.min}-${duration.max}`}
                 value={`${duration.min}-${duration.max}`}
-                className="relative group p-6 data-[state=active]:bg-purple-500/90 data-[state=active]:shadow-lg data-[state=active]:backdrop-blur-sm data-[state=active]:scale-[1.02] transition-all duration-300 rounded-xl hover:bg-purple-500/20 border border-purple-500/20 hover:border-purple-500/40 h-auto flex flex-col items-center justify-between"
+                className="relative group p-6 data-[state=active]:bg-purple-500/90 data-[state=active]:shadow-lg data-[state=active]:backdrop-blur-sm data-[state=active]:scale-[1.02] transition-all duration-300 rounded-xl hover:bg-purple-500/20 border border-purple-500/20 hover:border-purple-500/40 h-full flex flex-col items-center justify-between"
               >
                 <div className="flex flex-col items-center gap-4 w-full">
                   {/* Package Icons */}
