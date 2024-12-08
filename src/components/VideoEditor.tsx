@@ -174,10 +174,9 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
         
         <div className="flex justify-between mt-8">
           <Button
-            variant="outline"
             onClick={handlePreviousStep}
             disabled={currentStep === 0}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
           >
             <ArrowLeft className="w-4 h-4" />
             Back
