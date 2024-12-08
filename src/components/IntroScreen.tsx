@@ -38,8 +38,16 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               transition={{ delay: 0.5, duration: 1.6 }}
               className="text-center"
             >
+              <motion.p
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3, duration: 1 }}
+                className="font-['Montserrat'] text-sm tracking-[0.3em] text-purple-300/80 uppercase mb-6"
+              >
+                Powered by AI Smart Editor
+              </motion.p>
               <h1 className="font-['Playfair_Display'] text-6xl md:text-7xl font-light text-white mb-4 tracking-tight">
-                Wedding Editor
+                Wedding Editor Pro
               </h1>
               <div className="h-px w-32 mx-auto bg-white/20 my-6" />
               <p className="font-['Montserrat'] text-lg text-gray-300 font-light tracking-wider uppercase">
