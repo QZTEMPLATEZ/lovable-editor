@@ -42,18 +42,18 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               <div className="relative space-y-6">
                 <Sparkles className="absolute -top-8 right-0 w-6 h-6 text-pink-400 animate-pulse" />
                 
-                <h1 className="font-['Playfair_Display'] text-6xl md:text-8xl font-bold text-white tracking-tight leading-tight">
+                <h1 className="font-['Playfair_Display'] text-4xl md:text-5xl font-bold text-white tracking-tight leading-tight">
                   Wedding Video Editor Pro
                 </h1>
                 
                 <div className="space-y-2 opacity-80">
-                  <h2 className="font-['Great_Vibes'] text-2xl md:text-3xl text-pink-200 font-light">
+                  <h2 className="font-['Great_Vibes'] text-xl md:text-2xl text-pink-200 font-light">
                     Crafting Your Perfect Moments
                   </h2>
                   
-                  <div className="h-px w-24 mx-auto bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
+                  <div className="h-px w-16 mx-auto bg-gradient-to-r from-transparent via-pink-300 to-transparent" />
                   
-                  <p className="font-['Montserrat'] text-lg md:text-xl text-gray-300 font-light tracking-wider">
+                  <p className="font-['Montserrat'] text-sm md:text-base text-gray-300 font-light tracking-wider">
                     AI-Powered Wedding Video Suite
                   </p>
                 </div>
@@ -61,7 +61,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             </motion.div>
             
             <div className="absolute bottom-16 w-full max-w-md">
-              <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
+              <div className="w-full h-0.5 bg-white/20 rounded-full overflow-hidden">
                 <motion.div 
                   className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500"
                   initial={{ scaleX: 0, x: "-100%" }}
@@ -85,7 +85,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                   }}
                 />
               </div>
-              <p className="font-['Montserrat'] text-sm text-pink-300/70 tracking-widest mt-4">
+              <p className="font-['Montserrat'] text-xs text-pink-300/70 tracking-widest mt-4">
                 INITIALIZING YOUR CREATIVE SUITE
               </p>
             </div>
