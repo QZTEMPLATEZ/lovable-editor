@@ -43,7 +43,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                   QZ TEMPLATEZ
                 </p>
                 <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight leading-tight">
-                  WEDDING EDITOR
+                  WEDDING AI EDITOR
                 </h1>
                 <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-white to-transparent my-8" />
                 <p className="text-xl md:text-2xl text-gray-200 font-light tracking-wide mb-8">
