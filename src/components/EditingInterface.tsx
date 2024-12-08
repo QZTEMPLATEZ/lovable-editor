@@ -1,38 +1,38 @@
 import React from 'react';
-import MusicTrackSelector from './MusicTrackSelector';
 import VideoPreview from './VideoPreview';
 import ProcessingStatus from './ProcessingStatus';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
+import MusicTrackSelector from './MusicTrackSelector';
 
 interface EditingInterfaceProps {
-  onMusicSelect: (file: File, beats: any[]) => void;
+  // Add any props if needed
 }
 
-const EditingInterface: React.FC<EditingInterfaceProps> = ({
-  onMusicSelect
-}) => {
+const EditingInterface: React.FC<EditingInterfaceProps> = () => {
+  // Sample data for demonstration
+  const videoFile = {
+    name: 'sample-video.mp4',
+    size: 1024,
+    type: 'video/mp4',
+    // Add other required properties
+  };
+
   const recommendedTracks = [
-    { id: 1, name: "Track 1", url: "..." },
-    { id: 2, name: "Track 2", url: "..." },
-    { id: 3, name: "Track 3", url: "..." }
+    { id: 1, name: 'Romantic Piano', url: '/music/romantic-piano.mp3' },
+    { id: 2, name: 'Wedding March', url: '/music/wedding-march.mp3' },
+    { id: 3, name: 'Classical Romance', url: '/music/classical-romance.mp3' },
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="adobe-style-panel">
-        <AspectRatio ratio={16/9}>
-          <VideoPreview />
-        </AspectRatio>
-      </div>
-      
-      <div className="adobe-style-panel">
-        <MusicTrackSelector 
-          onMusicSelect={onMusicSelect}
-          recommendedTracks={recommendedTracks}
-        />
-      </div>
-
-      <ProcessingStatus />
+    <div className="space-y-6">
+      <VideoPreview file={videoFile} />
+      <MusicTrackSelector 
+        recommendedTracks={recommendedTracks}
+        onTrackSelect={(track) => console.log('Selected track:', track)}
+      />
+      <ProcessingStatus 
+        currentStep={1}
+        progress={0}
+      />
     </div>
   );
 };
