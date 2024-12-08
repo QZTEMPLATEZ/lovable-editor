@@ -41,16 +41,16 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             >
               <div className="relative">
                 <Sparkles className="absolute -top-8 right-0 w-6 h-6 text-pink-400 animate-pulse" />
-                <h1 className="font-['Playfair_Display'] text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight leading-tight">
-                  Wedding Video Editor Pro
-                </h1>
                 <h2 className="font-['Great_Vibes'] text-3xl md:text-4xl text-pink-200 font-light mb-2">
                   Crafting Your Perfect Moments
                 </h2>
-                <div className="h-px w-48 mx-auto bg-gradient-to-r from-transparent via-pink-300 to-transparent my-8" />
-                <p className="font-['Montserrat'] text-xl md:text-2xl text-gray-300 font-light tracking-wide">
+                <p className="font-['Montserrat'] text-xl md:text-2xl text-gray-300 font-light tracking-wide opacity-70">
                   AI-Powered Wedding Video Suite
                 </p>
+                <div className="h-px w-48 mx-auto bg-gradient-to-r from-transparent via-pink-300 to-transparent my-8" />
+                <h1 className="font-['Playfair_Display'] text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight leading-tight">
+                  Wedding Video Editor Pro
+                </h1>
               </div>
             </motion.div>
             
