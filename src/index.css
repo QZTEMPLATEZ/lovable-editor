@@ -4,90 +4,15 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --radius: 0.5rem;
-  }
+.background-animate {
+  background-size: 200%;
+  -webkit-animation: AnimateBackground 3s ease infinite;
+  -moz-animation: AnimateBackground 3s ease infinite;
+  animation: AnimateBackground 3s ease infinite;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
-}
-
-.adobe-style-panel {
-  @apply bg-[#1A1A1A] border border-purple-500/20 rounded-lg p-6 backdrop-blur-sm;
-}
-
-.adobe-style-header {
-  @apply bg-purple-500/10 text-purple-300 px-6 py-3 text-sm font-medium rounded-lg border border-purple-500/20;
-}
-
-.adobe-style-button {
-  @apply bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 px-4 py-2 rounded-md transition-all duration-300 border border-purple-500/30;
-}
-
-.adobe-timeline {
-  @apply bg-[#232323] border-t border-purple-500/20;
-}
-
-.brand-text {
-  font-family: 'Righteous', cursive;
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500;
-  animation: gradient 3s ease infinite;
-  background-size: 200% 200%;
-}
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Add consistent form styling */
-input[type="text"],
-input[type="number"],
-select,
-textarea {
-  @apply bg-purple-500/5 border border-purple-500/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500/40 transition-all duration-300;
-}
-
-/* Add consistent button styling */
-button:not(.custom-button) {
-  @apply bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-lg px-4 py-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed;
-}
-
-/* Add consistent card styling */
-.card {
-  @apply bg-purple-500/5 border border-purple-500/20 rounded-lg p-6 backdrop-blur-sm;
+@keyframes AnimateBackground {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
