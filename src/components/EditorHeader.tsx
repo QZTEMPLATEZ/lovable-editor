@@ -43,16 +43,16 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
               if (newDuration) onDurationChange(newDuration);
             }}
           >
-            <TabsList className="grid grid-cols-2 lg:grid-cols-4 w-full bg-purple-950/20 p-1.5 rounded-xl">
+            <TabsList className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full bg-purple-950/10 p-3 rounded-2xl">
               {VIDEO_DURATIONS.map((duration) => (
                 <TabsTrigger
                   key={`${duration.min}-${duration.max}`}
                   value={`${duration.min}-${duration.max}`}
-                  className="relative group py-6 px-4 data-[state=active]:bg-purple-500/90 data-[state=active]:backdrop-blur-sm data-[state=active]:text-white transition-all duration-300 rounded-lg"
+                  className="relative group py-6 px-4 data-[state=active]:bg-purple-500/90 data-[state=active]:shadow-lg data-[state=active]:backdrop-blur-sm data-[state=active]:text-white transition-all duration-300 rounded-xl hover:bg-purple-500/20"
                 >
                   <div className="flex flex-col items-center gap-2">
                     {duration.min === 4 && (
-                      <Badge variant="secondary" className="absolute -top-2.5 text-[10px] bg-gradient-to-r from-purple-400 to-pink-400 text-white font-medium px-2.5 py-0.5 shadow-lg rounded-full border border-white/10">
+                      <Badge variant="secondary" className="absolute -top-2.5 text-[10px] bg-gradient-to-r from-purple-400 to-pink-400 text-white font-medium px-2.5 py-0.5 shadow-lg rounded-full border border-white/10 animate-pulse">
                         PRO
                       </Badge>
                     )}
