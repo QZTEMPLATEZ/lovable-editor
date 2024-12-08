@@ -145,17 +145,15 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, onContinu
           </TabsList>
         </Tabs>
 
-        {onContinue && (
-          <div className="flex justify-center mt-8">
-            <Button
-              onClick={onContinue}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-6 rounded-xl shadow-lg shadow-purple-500/20 transition-all duration-300 hover:scale-105"
-            >
-              Continue to Next Step
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </div>
-        )}
+        <div className="flex justify-center mt-8">
+          <Button
+            onClick={onContinue}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-6 rounded-xl shadow-lg shadow-purple-500/20 transition-all duration-300 hover:scale-105"
+          >
+            Continue to Next Step
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
       </div>
     </div>
   );
