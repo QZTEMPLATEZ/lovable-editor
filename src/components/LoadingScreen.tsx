@@ -57,12 +57,12 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                       <motion.h1 
                         className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-4"
                       >
-                        WEDDING EDITOR
+                        QZ TEMPLATEZ
                       </motion.h1>
                       <motion.p 
                         className="text-gray-300 mb-6 tracking-wide"
                       >
-                        AI-Powered Editing Suite
+                        Your Wedding Story Begins Here
                       </motion.p>
                       
                       {showLoadingBar && (
