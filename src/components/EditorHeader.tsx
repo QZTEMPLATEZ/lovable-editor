@@ -20,22 +20,22 @@ const VIDEO_DURATIONS: VideoSizeRange[] = [
 
 const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorHeaderProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 py-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header Section - More minimal with smaller text */}
-        <div className="text-center space-y-6 mb-24">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-purple-500/10 rounded-full animate-fade-in">
-            <Clock className="w-4 h-4 text-purple-400" />
-            <span className="text-sm font-medium bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
+        {/* Header Section */}
+        <div className="text-center space-y-4 mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/10 rounded-full animate-fade-in">
+            <Clock className="w-3 h-3 text-purple-400" />
+            <span className="text-xs font-medium bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
               Create Your Perfect Wedding Film
             </span>
           </div>
           
-          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white max-w-2xl mx-auto leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white max-w-xl mx-auto leading-tight">
             Choose the Perfect Duration for Your Story
           </h1>
           
-          <p className="text-base text-purple-200/70 max-w-xl mx-auto">
+          <p className="text-sm text-purple-200/70 max-w-lg mx-auto">
             Select the ideal length for your wedding video. Each option is carefully designed to capture your special moments.
           </p>
         </div>
@@ -55,10 +55,10 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
               <TabsTrigger
                 key={`${duration.min}-${duration.max}`}
                 value={`${duration.min}-${duration.max}`}
-                className="relative group p-6 data-[state=active]:bg-purple-500/90 data-[state=active]:shadow-lg data-[state=active]:backdrop-blur-sm data-[state=active]:scale-[1.02] transition-all duration-300 rounded-xl hover:bg-purple-500/20 border border-purple-500/20 hover:border-purple-500/40"
+                className="relative group p-4 data-[state=active]:bg-purple-500/90 data-[state=active]:shadow-lg data-[state=active]:backdrop-blur-sm data-[state=active]:scale-[1.02] transition-all duration-300 rounded-xl hover:bg-purple-500/20 border border-purple-500/20 hover:border-purple-500/40 h-auto min-h-[280px] flex flex-col items-center justify-between"
               >
-                <div className="flex flex-col items-center gap-3">
-                  {/* Package Icons - More minimal */}
+                <div className="flex flex-col items-center gap-2 w-full">
+                  {/* Package Icons */}
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     {index === 0 && (
                       <div className="p-2 bg-gradient-to-r from-purple-500/90 to-pink-500/90 rounded-full shadow-lg">
@@ -82,7 +82,7 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
                     )}
                   </div>
 
-                  {/* Package Labels - More minimal */}
+                  {/* Package Labels */}
                   {index === 0 && (
                     <Badge variant="secondary" className="absolute -top-2 right-2 text-[10px] bg-gradient-to-r from-purple-400/90 to-pink-400/90 text-white font-medium px-2 py-0.5 shadow-sm rounded-full">
                       STARTER
@@ -104,28 +104,28 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
                     </Badge>
                   )}
                   
-                  {/* Duration Info - More minimal */}
+                  {/* Duration Info */}
                   <div className="mt-8 text-center">
-                    <span className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200 group-hover:from-white group-hover:to-white transition-colors">
+                    <span className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200 group-hover:from-white group-hover:to-white transition-colors">
                       {duration.min}-{duration.max}
                     </span>
-                    <span className="text-base text-white/90 ml-1">min</span>
+                    <span className="text-sm text-white/90 ml-1">min</span>
                   </div>
                   
-                  <span className="text-sm text-purple-200/80 group-hover:text-white/90 transition-colors text-center max-w-[180px]">
+                  <span className="text-xs text-purple-200/80 group-hover:text-white/90 transition-colors text-center max-w-[160px] mt-1">
                     {duration.description}
                   </span>
 
-                  {/* Features List - More minimal */}
-                  <ul className="mt-3 space-y-1.5 text-sm text-left w-full">
+                  {/* Features List */}
+                  <ul className="mt-3 space-y-1.5 text-xs text-left w-full px-4">
                     {index === 0 && (
                       <>
                         <li className="flex items-center text-purple-200/70">
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
+                          <span className="w-1 h-1 bg-purple-400 rounded-full mr-2"></span>
                           Social media optimized
                         </li>
                         <li className="flex items-center text-purple-200/70">
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
+                          <span className="w-1 h-1 bg-purple-400 rounded-full mr-2"></span>
                           Key moments highlight
                         </li>
                       </>
@@ -133,11 +133,11 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
                     {index === 1 && (
                       <>
                         <li className="flex items-center text-purple-200/70">
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
+                          <span className="w-1 h-1 bg-purple-400 rounded-full mr-2"></span>
                           Extended highlights
                         </li>
                         <li className="flex items-center text-purple-200/70">
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
+                          <span className="w-1 h-1 bg-purple-400 rounded-full mr-2"></span>
                           Ceremony coverage
                         </li>
                       </>
@@ -145,11 +145,11 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
                     {index === 2 && (
                       <>
                         <li className="flex items-center text-purple-200/70">
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
+                          <span className="w-1 h-1 bg-purple-400 rounded-full mr-2"></span>
                           Full ceremony
                         </li>
                         <li className="flex items-center text-purple-200/70">
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
+                          <span className="w-1 h-1 bg-purple-400 rounded-full mr-2"></span>
                           Reception highlights
                         </li>
                       </>
@@ -157,11 +157,11 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
                     {index === 3 && (
                       <>
                         <li className="flex items-center text-purple-200/70">
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
+                          <span className="w-1 h-1 bg-purple-400 rounded-full mr-2"></span>
                           Complete coverage
                         </li>
                         <li className="flex items-center text-purple-200/70">
-                          <span className="w-1.5 h-1.5 bg-purple-400 rounded-full mr-2"></span>
+                          <span className="w-1 h-1 bg-purple-400 rounded-full mr-2"></span>
                           Multiple angles
                         </li>
                       </>
@@ -173,8 +173,8 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
           </TabsList>
         </Tabs>
 
-        {/* Bottom Section - More minimal */}
-        <div className="mt-12 text-center">
+        {/* Bottom Section */}
+        <div className="mt-8 text-center">
           <p className="text-purple-200/60 text-xs">
             All packages include professional editing, color grading, and licensed music
           </p>
