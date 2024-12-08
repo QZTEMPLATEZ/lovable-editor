@@ -57,11 +57,11 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
               >
                 <div className="flex flex-col items-start text-left space-y-4 w-full">
                   <div className="flex justify-between items-center w-full">
-                    <Badge variant="secondary" className="bg-purple-500/10 text-purple-300 border-purple-500/20">
-                      {index === 0 && "ESSENTIAL"}
-                      {index === 1 && "STANDARD"}
-                      {index === 2 && "PREMIUM"}
-                      {index === 3 && "COMPLETE"}
+                    <Badge variant="secondary" className="bg-pink-500/10 text-pink-300 border-pink-500/20">
+                      {index === 0 && "PRO"}
+                      {index === 1 && "PRO MAX"}
+                      {index === 2 && "BUSINESS"}
+                      {index === 3 && "BUSINESS PLUS"}
                     </Badge>
                     <span className="text-lg font-medium text-white group-data-[state=active]:text-purple-300 transition-colors">
                       {duration.min}-{duration.max}
