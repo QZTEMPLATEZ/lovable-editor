@@ -22,7 +22,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
           {steps.map((step, index) => (
             <div key={step.title} className="flex flex-col items-center">
               <div 
-                className={`w-10 h-10 rounded-full flex items-center justify-center relative z-10 transition-colors duration-300 ${
+                className={`w-12 h-12 rounded-full flex items-center justify-center relative z-10 transition-colors duration-300 ${
                   index < currentStep 
                     ? 'bg-purple-500 text-white' 
                     : index === currentStep 
@@ -33,10 +33,16 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                 {index < currentStep ? (
                   <Check className="w-5 h-5" />
                 ) : (
-                  <span>{index + 1}</span>
+                  <div className="flex flex-col items-center">
+                    <span className="text-sm font-medium">Step</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-lg font-bold">{index + 1}</span>
+                      <span className="text-xs">/ {steps.length}</span>
+                    </div>
+                  </div>
                 )}
               </div>
-              <div className="mt-2 text-center">
+              <div className="mt-3 text-center">
                 <h3 className={`font-medium ${index <= currentStep ? 'text-purple-300' : 'text-gray-400'}`}>
                   {step.title}
                 </h3>
