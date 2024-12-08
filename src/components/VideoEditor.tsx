@@ -145,6 +145,10 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
         );
       case 2:
         return (
+          <EditingInterface />
+        );
+      case 3:
+        return (
           <RawFilesSection
             onDrop={handleRawDrop}
             onDragOver={handleDragOver}
