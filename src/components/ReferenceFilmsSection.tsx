@@ -20,11 +20,11 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
   return (
     <div className="space-y-8">
       <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
-          Your Inspiration Corner
+        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-300 to-pink-500">
+          Your Wedding Film Inspiration
         </h2>
         <p className="text-gray-400 max-w-2xl mx-auto">
-          Share the wedding films that inspire you. Upload videos that capture the style, mood, and moments you love.
+          Share a wedding film that captures your dream style. We'll use it as inspiration to create your perfect wedding video.
         </p>
       </div>
 
@@ -37,37 +37,39 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
         <div
           onDrop={onDrop}
           onDragOver={onDragOver}
-          className="relative group cursor-pointer rounded-xl overflow-hidden min-h-[400px]"
+          className="relative group cursor-pointer rounded-xl overflow-hidden min-h-[500px]"
         >
           {/* Background image */}
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1498050108023-c5249f4df085')] bg-cover bg-center opacity-10" />
+          <div 
+            className="absolute inset-0 bg-[url('/lovable-uploads/4e81f6f9-f013-4f4f-ab48-027c35513dce.png')] bg-cover bg-center opacity-20 transition-opacity duration-300 group-hover:opacity-30"
+          />
           
           {/* Content Container */}
-          <div className="relative border-2 border-dashed border-purple-500/30 rounded-xl p-12 text-center space-y-6 backdrop-blur-sm transition-all duration-300 group-hover:border-purple-500/50 min-h-[400px] flex flex-col items-center justify-center">
+          <div className="relative border-2 border-dashed border-pink-300/30 rounded-xl p-12 text-center space-y-6 backdrop-blur-sm transition-all duration-300 group-hover:border-pink-300/50 min-h-[500px] flex flex-col items-center justify-center">
             {/* Icon Container */}
-            <div className="w-24 h-24 mx-auto bg-purple-500/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <Video className="w-12 h-12 text-purple-400" />
+            <div className="w-24 h-24 mx-auto bg-pink-300/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <Video className="w-12 h-12 text-pink-400" />
             </div>
 
             {/* Text Content */}
             <div className="space-y-4 max-w-lg mx-auto">
-              <h3 className="text-2xl font-semibold text-purple-300">
-                Drop Your Favorite Wedding Films Here
+              <h3 className="text-2xl font-semibold text-pink-300">
+                Drop Your Favorite Wedding Film Here
               </h3>
               <p className="text-gray-400">
-                Share up to 3 wedding videos that inspire you. We'll use their style to create your perfect wedding film.
+                Share a wedding video that inspires you. We'll use its style to create your perfect wedding film.
               </p>
             </div>
 
-            {/* Example Features */}
+            {/* Features Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 w-full max-w-3xl">
               {[
-                { icon: Heart, text: "Capture your preferred style" },
-                { icon: Film, text: "Match your favorite transitions" },
+                { icon: Heart, text: "We'll match your preferred style" },
+                { icon: Film, text: "Capture similar transitions" },
                 { icon: Video, text: "Mirror the perfect pacing" }
               ].map((feature, index) => (
-                <div key={index} className="bg-purple-500/5 p-4 rounded-lg border border-purple-500/20">
-                  <feature.icon className="w-6 h-6 text-purple-400 mb-2 mx-auto" />
+                <div key={index} className="bg-pink-300/5 p-4 rounded-lg border border-pink-300/20">
+                  <feature.icon className="w-6 h-6 text-pink-400 mb-2 mx-auto" />
                   <p className="text-sm text-gray-400">{feature.text}</p>
                 </div>
               ))}
@@ -88,8 +90,8 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative rounded-lg overflow-hidden bg-editor-bg border border-purple-500/30 group"
+              transition={{ duration: 0.5 }}
+              className="relative rounded-lg overflow-hidden bg-editor-bg border border-pink-300/30 group"
             >
               <video
                 src={URL.createObjectURL(file)}
@@ -111,7 +113,7 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
         </motion.div>
       )}
 
-      {videoFiles.length >= 1 && onContinue && (
+      {videoFiles.length > 0 && onContinue && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -120,7 +122,7 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
         >
           <Button
             onClick={onContinue}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-6 rounded-xl shadow-lg shadow-purple-500/20 transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white px-8 py-6 rounded-xl shadow-lg shadow-pink-500/20 transition-all duration-300 hover:scale-105"
           >
             Continue to Next Step
             <Film className="w-4 h-4 ml-2" />
