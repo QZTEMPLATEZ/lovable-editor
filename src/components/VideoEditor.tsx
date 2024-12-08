@@ -123,6 +123,15 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     }
   };
 
+  const handleMusicSelect = (file: File, beats: any[]) => {
+    setMusicTrack(file);
+    setMusicBeats(beats);
+    toast({
+      title: "Music track added",
+      description: "Your soundtrack has been successfully uploaded.",
+    });
+  };
+
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 0:
@@ -145,7 +154,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
         );
       case 2:
         return (
-          <EditingInterface />
+          <EditingInterface onMusicSelect={handleMusicSelect} />
         );
       case 3:
         return (
@@ -153,6 +162,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             onDrop={handleRawDrop}
             onDragOver={handleDragOver}
             videoFiles={rawFiles}
+            onContinue={handleNextStep}
           />
         );
       default:
