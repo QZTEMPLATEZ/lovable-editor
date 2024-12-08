@@ -2,8 +2,9 @@ import React from 'react';
 import { EditingMode } from './EditingModeSelector';
 import { VideoSizeRange } from './VideoSizeSelector';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock } from 'lucide-react';
+import { Clock, ArrowRight } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
 interface EditorHeaderProps {
@@ -32,10 +33,6 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, onContinu
         title: "Duration Selected",
         description: `Video duration set to ${newDuration.min}-${newDuration.max} minutes`,
       });
-      // Automatically continue to next step after a short delay
-      setTimeout(() => {
-        onContinue?.();
-      }, 500);
     }
   };
 
@@ -147,6 +144,18 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, onContinu
             ))}
           </TabsList>
         </Tabs>
+
+        {onContinue && (
+          <div className="flex justify-center mt-8">
+            <Button
+              onClick={onContinue}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-6 rounded-xl shadow-lg shadow-purple-500/20 transition-all duration-300 hover:scale-105"
+            >
+              Continue to Next Step
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
