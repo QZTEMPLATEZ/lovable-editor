@@ -4,6 +4,7 @@ import { VideoSizeRange } from './VideoSizeSelector';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Clock } from 'lucide-react';
 import Logo from './Logo';
+import { Badge } from "@/components/ui/badge";
 
 interface EditorHeaderProps {
   editingMode: EditingMode;
@@ -57,7 +58,24 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
                   value={`${duration.min}-${duration.max}`}
                   className="data-[state=active]:bg-purple-500 data-[state=active]:text-white relative group"
                 >
-                  <span>{duration.min}-{duration.max}m</span>
+                  <div className="flex flex-col items-center">
+                    <span>{duration.min}-{duration.max}m</span>
+                    {duration.min === 4 && (
+                      <Badge variant="secondary" className="absolute -top-3 text-[10px] bg-gradient-to-r from-purple-400 to-pink-400 text-white">
+                        PRO
+                      </Badge>
+                    )}
+                    {duration.min === 8 && (
+                      <Badge variant="secondary" className="absolute -top-3 text-[10px] bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                        PRO MAX
+                      </Badge>
+                    )}
+                    {(duration.min === 15 || duration.min === 30) && (
+                      <Badge variant="secondary" className="absolute -top-3 text-[10px] bg-gradient-to-r from-yellow-400 to-orange-400 text-white">
+                        BUSINESS
+                      </Badge>
+                    )}
+                  </div>
                   <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                     {duration.description}
                   </span>
