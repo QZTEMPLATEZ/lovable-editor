@@ -55,7 +55,7 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
             </Button>
           </div>
           
-          <div className="p-4 bg-black/50 absolute bottom-0 left-0 right-0 flex items-center justify-between">
+          <div className="absolute bottom-4 left-4">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="dontShowAgain"
