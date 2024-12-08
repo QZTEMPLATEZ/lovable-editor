@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button } from './ui/button';
+import { HelpCircle, LogIn, Rocket } from 'lucide-react';
 
 const TopNavigation = () => {
   return (
@@ -10,11 +12,19 @@ const TopNavigation = () => {
               QZ Templatez
             </h1>
           </div>
-          <div className="hidden md:flex space-x-4">
-            <a href="/" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
-            <a href="/about" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About</a>
-            <a href="/services" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Services</a>
-            <a href="/contact" className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+          <div className="hidden md:flex items-center space-x-4">
+            <Button variant="ghost" className="text-gray-300 hover:text-white flex items-center gap-2">
+              <LogIn className="w-4 h-4" />
+              Log In
+            </Button>
+            <Button variant="ghost" className="text-gray-300 hover:text-white flex items-center gap-2">
+              <HelpCircle className="w-4 h-4" />
+              Help
+            </Button>
+            <Button variant="default" className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2">
+              <Rocket className="w-4 h-4" />
+              Upgrade
+            </Button>
           </div>
         </div>
       </div>
