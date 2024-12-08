@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Sparkles } from 'lucide-react';
 
 interface IntroScreenProps {
   onComplete: () => void;
@@ -38,31 +39,32 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               transition={{ delay: 0.5, duration: 1.6 }}
               className="text-center space-y-8"
             >
-              <div>
-                <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight leading-tight">
-                  Professional Wedding Video Editor
+              <div className="relative">
+                <Sparkles className="absolute -top-8 right-0 w-6 h-6 text-pink-400 animate-pulse" />
+                <h1 className="font-['Playfair_Display'] text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight leading-tight">
+                  Wedding Video Editor Pro
                 </h1>
-                <h2 className="text-xl md:text-2xl text-gray-200 font-light mb-2">
-                  Powered by AI Smart Editor
+                <h2 className="font-['Great_Vibes'] text-3xl md:text-4xl text-pink-200 font-light mb-2">
+                  Crafting Your Perfect Moments
                 </h2>
-                <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-white to-transparent my-6" />
-                <p className="text-lg md:text-xl text-gray-300 font-light tracking-wide">
-                  WEDDING TEMPLATEZ
+                <div className="h-px w-48 mx-auto bg-gradient-to-r from-transparent via-pink-300 to-transparent my-8" />
+                <p className="font-['Montserrat'] text-xl md:text-2xl text-gray-300 font-light tracking-wide">
+                  AI-Powered Wedding Video Suite
                 </p>
               </div>
             </motion.div>
             
             <div className="w-full max-w-md h-1 bg-white/20 rounded-full overflow-hidden">
               <motion.div 
-                className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"
+                className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500"
                 initial={{ scaleX: 0, x: "-100%" }}
                 animate={{ 
                   scaleX: 1, 
                   x: "0%",
                   background: [
-                    "linear-gradient(to right, #8b5cf6, #ec4899, #8b5cf6)",
                     "linear-gradient(to right, #ec4899, #8b5cf6, #ec4899)",
-                    "linear-gradient(to right, #8b5cf6, #ec4899, #8b5cf6)"
+                    "linear-gradient(to right, #8b5cf6, #ec4899, #8b5cf6)",
+                    "linear-gradient(to right, #ec4899, #8b5cf6, #ec4899)"
                   ]
                 }}
                 transition={{ 
@@ -76,7 +78,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                 }}
               />
             </div>
-            <p className="text-xs text-gray-500 tracking-wider">INITIALIZING</p>
+            <p className="font-['Montserrat'] text-sm text-pink-300/70 tracking-widest">INITIALIZING YOUR CREATIVE SUITE</p>
           </div>
         </AspectRatio>
       </div>
