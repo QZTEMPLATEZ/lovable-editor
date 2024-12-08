@@ -7,13 +7,8 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Show text after 1 second
     const textTimer = setTimeout(() => setShowText(true), 1000);
-    
-    // Show loading bar after 2 seconds
     const loadingTimer = setTimeout(() => setShowLoadingBar(true), 2000);
-    
-    // Complete loading after 4 seconds
     const completeTimer = setTimeout(() => {
       setIsVisible(false);
       setTimeout(onComplete, 500);
@@ -58,7 +53,7 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                     animate={{ y: 0, opacity: 1 }}
                     className="absolute inset-0 flex items-center justify-center"
                   >
-                    <div className="p-8 backdrop-blur-lg bg-black/30 rounded-3xl border border-pink-500/20">
+                    <div className="p-8 backdrop-blur-lg bg-black/50 rounded-3xl border border-pink-500/20">
                       <motion.h1 
                         className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-4"
                       >
