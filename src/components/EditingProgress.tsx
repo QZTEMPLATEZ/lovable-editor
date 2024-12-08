@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import AIInstructionsInput from './processing/AIInstructionsInput';
+import { Square } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 import ProcessingPreview from './processing/ProcessingPreview';
 import ProcessingSteps from './processing/ProcessingSteps';
 
 interface EditingProgressProps {
   videoFiles: File[];
   progress: number;
+  onStopProcessing?: () => void;
 }
 
-const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
+const EditingProgress = ({ videoFiles, progress, onStopProcessing }: EditingProgressProps) => {
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
-  const [aiInstructions, setAiInstructions] = useState('');
+  const { toast } = useToast();
   
   useEffect(() => {
     if (videoFiles.length === 0) return;
@@ -23,6 +26,16 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
     return () => clearInterval(interval);
   }, [videoFiles.length]);
 
+  const handleStopProcessing = () => {
+    if (onStopProcessing) {
+      onStopProcessing();
+      toast({
+        title: "Processing Stopped",
+        description: "Video processing has been cancelled.",
+      });
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -33,25 +46,22 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
       
       <div className="relative max-w-7xl mx-auto p-6 space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-6">
-            <div className="adobe-style-panel backdrop-blur-xl">
-              <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-6">
-                AI Video Processing
-              </h2>
-              <AIInstructionsInput 
-                value={aiInstructions}
-                onChange={setAiInstructions}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <ProcessingPreview 
-              videoFiles={videoFiles}
-              currentFrameIndex={currentFrameIndex}
-            />
-            <ProcessingSteps progress={progress} />
+        <div className="space-y-6">
+          <ProcessingPreview 
+            videoFiles={videoFiles}
+            currentFrameIndex={currentFrameIndex}
+          />
+          <ProcessingSteps progress={progress} />
+          
+          <div className="flex justify-center mt-8">
+            <Button
+              onClick={handleStopProcessing}
+              variant="destructive"
+              className="bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/30"
+            >
+              <Square className="w-4 h-4 mr-2" />
+              Stop Processing
+            </Button>
           </div>
         </div>
       </div>
