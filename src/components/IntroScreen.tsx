@@ -39,6 +39,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               className="text-center space-y-6"
             >
               <div>
+                <p className="text-xs md:text-sm text-gray-400 tracking-[0.2em] mb-1">POWERED BY ARTIFICIAL INTELLIGENCE</p>
                 <h2 className="text-lg md:text-xl text-gray-300 tracking-widest font-light mb-2">QZ TEMPLATEZ PRESENTS</h2>
                 <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
                   PROFESSIONAL WEDDING
@@ -49,8 +50,11 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                 <p className="text-xl md:text-2xl text-gray-200 font-light tracking-wide">
                   ADVANCED AI-DRIVEN EDITING SUITE
                 </p>
+                <p className="text-xs md:text-sm text-gray-400 mt-4 tracking-wider">OPTIMIZED FOR PROFESSIONAL WEDDING CINEMATOGRAPHY</p>
+                <p className="text-xs md:text-sm text-gray-400 tracking-wider">REAL-TIME RENDERING • AI COLOR GRADING • SMART TRANSITIONS</p>
               </div>
               <p className="text-sm text-gray-400 tracking-wider mt-8">VERSION 7.12 • 2025</p>
+              <p className="text-[10px] text-gray-500 tracking-wider">LOADING PROFESSIONAL EDITING ENVIRONMENT...</p>
             </motion.div>
             
             <div className="w-full max-w-md h-1 bg-white/20 rounded-full overflow-hidden">
