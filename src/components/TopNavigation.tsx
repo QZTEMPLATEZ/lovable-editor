@@ -1,6 +1,12 @@
 import React from 'react';
 import { Button } from './ui/button';
-import { HelpCircle, LogIn, Rocket } from 'lucide-react';
+import { HelpCircle, LogIn, Rocket, Languages } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const TopNavigation = () => {
   return (
@@ -13,6 +19,20 @@ const TopNavigation = () => {
             </h1>
           </div>
           <div className="hidden md:flex items-center space-x-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="text-gray-300 hover:text-white flex items-center gap-2">
+                  <Languages className="w-4 h-4" />
+                  Language
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem>English</DropdownMenuItem>
+                <DropdownMenuItem>Italiano</DropdownMenuItem>
+                <DropdownMenuItem>Português</DropdownMenuItem>
+                <DropdownMenuItem>日本語</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="ghost" className="text-gray-300 hover:text-white flex items-center gap-2">
               <LogIn className="w-4 h-4" />
               Log In
