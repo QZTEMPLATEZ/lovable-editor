@@ -13,8 +13,28 @@ const VideoPreview: React.FC<VideoPreviewProps> = ({ file, metadata }) => {
   // Early return if no file is provided
   if (!file) {
     return (
-      <div className="w-full h-48 bg-gray-800 rounded-lg flex items-center justify-center">
-        <p className="text-gray-400 font-['Montserrat'] text-lg">Select your wedding soundtrack</p>
+      <div className="w-full h-48 bg-gray-800 rounded-lg flex items-center justify-center relative overflow-hidden">
+        {/* Decorative Waveform */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-20">
+          {[...Array(12)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="w-2 mx-1 bg-purple-400 rounded-full"
+              initial={{ height: 20 }}
+              animate={{ 
+                height: [20, 40, 20],
+                backgroundColor: ['#9b87f5', '#d946ef', '#9b87f5']
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                delay: i * 0.1,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
+        </div>
+        <p className="text-gray-400 font-['Montserrat'] text-lg relative z-10">Select your wedding soundtrack</p>
       </div>
     );
   }
