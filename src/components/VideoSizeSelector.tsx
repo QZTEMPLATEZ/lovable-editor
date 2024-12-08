@@ -16,28 +16,28 @@ const VIDEO_SIZES: VideoSizeRange[] = [
     min: 4,
     max: 6,
     label: "4-6 minutes",
-    description: "Perfect for social media highlights\n• Quick overview of key moments\n• Ideal for Instagram and TikTok\n• Captures essential highlights\n• Fast-paced editing style\n• Optimized for mobile viewing",
+    description: "Perfect for social media highlights\n• Quick overview of key moments\n• Ideal for Instagram and TikTok\n• Fast-paced, engaging edits\n• Captures ceremony highlights\n• Perfect for sharing with friends",
     icon: <Clock className="w-5 h-5 text-purple-400" />
   },
   {
     min: 8,
     max: 12,
     label: "8-12 minutes",
-    description: "Ideal for ceremony highlights\n• Complete ceremony coverage\n• Key reception moments\n• Guest interviews included\n• Extended dance sequences\n• Perfect for family sharing",
+    description: "Ideal for ceremony highlights\n• Complete ceremony coverage\n• Key reception moments included\n• Special family moments captured\n• Guest interviews and wishes\n• Perfect blend of emotions",
     icon: <Clock className="w-5 h-5 text-purple-400" />
   },
   {
     min: 15,
     max: 20,
     label: "15-20 minutes",
-    description: "Complete ceremony coverage\n• Full ceremony and vows\n• Extended reception coverage\n• Family moments & speeches\n• Detailed venue shots\n• Comprehensive storytelling",
+    description: "Complete ceremony coverage\n• Full ceremony with vows\n• Extended reception highlights\n• Detailed family moments\n• All important speeches\n• Beautiful venue coverage",
     icon: <Clock className="w-5 h-5 text-purple-400" />
   },
   {
     min: 30,
     max: 40,
     label: "30-40 minutes",
-    description: "Full wedding documentary\n• Complete event coverage\n• Behind-the-scenes footage\n• Extended family interviews\n• Multiple camera angles\n• Cinematic storytelling",
+    description: "Full wedding documentary\n• Complete event documentation\n• Behind-the-scenes footage\n• Multiple camera perspectives\n• Extended family interviews\n• Comprehensive storytelling",
     icon: <Clock className="w-5 h-5 text-purple-400" />
   }
 ];
