@@ -31,7 +31,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             className="w-full h-full object-cover opacity-50"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent" />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-8">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-6">
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -42,21 +42,21 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3, duration: 1 }}
-                className="font-['Montserrat'] text-sm tracking-[0.3em] text-purple-300/80 uppercase mb-6"
+                className="font-['Montserrat'] text-xs tracking-[0.2em] text-purple-300/70 uppercase mb-4"
               >
                 Powered by AI Smart Editor
               </motion.p>
-              <h1 className="font-['Playfair_Display'] text-6xl md:text-7xl font-light text-white mb-4 tracking-tight">
+              <h1 className="font-['Playfair_Display'] text-4xl md:text-5xl font-light text-white mb-3 tracking-tight">
                 Wedding Editor Pro
               </h1>
-              <div className="h-px w-32 mx-auto bg-white/20 my-6" />
-              <p className="font-['Montserrat'] text-lg text-gray-300 font-light tracking-wider uppercase">
+              <div className="h-px w-24 mx-auto bg-white/20 my-4" />
+              <p className="font-['Montserrat'] text-sm text-gray-300 font-light tracking-wide uppercase">
                 AI Video Suite
               </p>
             </motion.div>
             
             <motion.div 
-              className="w-full max-w-xs h-0.5 bg-white/10 rounded-full overflow-hidden mt-12"
+              className="w-full max-w-xs h-0.5 bg-white/10 rounded-full overflow-hidden mt-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
