@@ -62,7 +62,7 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                       <motion.p 
                         className="text-gray-300 mb-6 tracking-wide"
                       >
-                        Powered AI
+                        Powered by AI
                       </motion.p>
                       
                       {showLoadingBar && (
