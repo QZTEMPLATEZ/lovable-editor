@@ -47,7 +47,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                 </h2>
                 <div className="h-px w-32 mx-auto bg-gradient-to-r from-transparent via-white to-transparent my-6" />
                 <p className="text-lg md:text-xl text-gray-300 font-light tracking-wide">
-                  Transform your footage into cinematic memories
+                  WEDDING TEMPLATEZ
                 </p>
               </div>
             </motion.div>

@@ -54,6 +54,7 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                     className="absolute inset-0 flex items-center justify-center"
                   >
                     <div className="p-8 backdrop-blur-lg bg-black/50 rounded-3xl border border-pink-500/20">
+
                       <motion.h1 
                         className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-4"
                       >
@@ -67,9 +68,9 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                       <motion.p 
                         className="text-lg text-gray-300 mb-6 tracking-wide"
                       >
-                        Transform your footage into cinematic memories
+                        WEDDING TEMPLATEZ
                       </motion.p>
-                      
+
                       {showLoadingBar && (
                         <motion.div
                           initial={{ scaleX: 0, opacity: 0 }}

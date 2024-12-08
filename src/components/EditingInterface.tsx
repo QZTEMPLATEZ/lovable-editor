@@ -16,12 +16,12 @@ const EditingInterface: React.FC<EditingInterfaceProps> = () => {
 
   return (
     <div className="space-y-6">
-      <VideoPreview />
+      <VideoPreview file={null} />
       <MusicTrackSelector 
         onMusicSelect={handleTrackSelect}
       />
       <ProcessingStatus 
-        currentStep={1}
+        currentStep="1"
         progress={0}
       />
     </div>
