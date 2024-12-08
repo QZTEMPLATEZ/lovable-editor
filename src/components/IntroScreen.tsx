@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { Sparkles } from 'lucide-react';
 
 interface IntroScreenProps {
   onComplete: () => void;
@@ -12,7 +11,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   const { theme } = useTheme();
   
   React.useEffect(() => {
-    const timer = setTimeout(onComplete, 10000);
+    const timer = setTimeout(onComplete, 8000);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -29,56 +28,41 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           <img
             src="/lovable-uploads/e2c0ab7b-c4f0-418d-9d71-1c673bfddabe.png"
             alt="Wedding Editor Intro"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-50"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center gap-8 p-16">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-8">
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5, duration: 1.6 }}
-              className="text-center space-y-8"
+              className="text-center"
             >
-              <div className="relative">
-                <Sparkles className="absolute -top-8 right-0 w-6 h-6 text-pink-400 animate-pulse" />
-                <h1 className="font-['Playfair_Display'] text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight leading-tight">
-                  Wedding Video Editor Pro
-                </h1>
-                <h2 className="font-['Great_Vibes'] text-3xl md:text-4xl text-pink-200 font-light mb-2">
-                  Crafting Your Perfect Moments
-                </h2>
-                <div className="h-px w-48 mx-auto bg-gradient-to-r from-transparent via-pink-300 to-transparent my-8" />
-                <p className="font-['Montserrat'] text-xl md:text-2xl text-gray-300 font-light tracking-wide">
-                  AI-Powered Wedding Video Suite
-                </p>
-              </div>
+              <h1 className="font-['Playfair_Display'] text-6xl md:text-7xl font-light text-white mb-4 tracking-tight">
+                Wedding Editor
+              </h1>
+              <div className="h-px w-32 mx-auto bg-white/20 my-6" />
+              <p className="font-['Montserrat'] text-lg text-gray-300 font-light tracking-wider uppercase">
+                AI Video Suite
+              </p>
             </motion.div>
             
-            <div className="w-full max-w-md h-1 bg-white/20 rounded-full overflow-hidden">
+            <motion.div 
+              className="w-full max-w-xs h-0.5 bg-white/10 rounded-full overflow-hidden mt-12"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+            >
               <motion.div 
-                className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500"
-                initial={{ scaleX: 0, x: "-100%" }}
-                animate={{ 
-                  scaleX: 1, 
-                  x: "0%",
-                  background: [
-                    "linear-gradient(to right, #ec4899, #8b5cf6, #ec4899)",
-                    "linear-gradient(to right, #8b5cf6, #ec4899, #8b5cf6)",
-                    "linear-gradient(to right, #ec4899, #8b5cf6, #ec4899)"
-                  ]
-                }}
+                className="h-full bg-white/30"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
                 transition={{ 
-                  duration: 10,
-                  ease: "linear",
-                  background: {
-                    duration: 4,
-                    repeat: Infinity,
-                    repeatType: "reverse"
-                  }
+                  duration: 7,
+                  ease: "linear"
                 }}
               />
-            </div>
-            <p className="font-['Montserrat'] text-sm text-pink-300/70 tracking-widest">INITIALIZING YOUR CREATIVE SUITE</p>
+            </motion.div>
           </div>
         </AspectRatio>
       </div>
