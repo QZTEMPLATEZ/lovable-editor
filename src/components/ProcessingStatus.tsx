@@ -19,23 +19,6 @@ const ProcessingStatus: React.FC<ProcessingStatusProps> = ({ currentStep, progre
       )}
       
       <Progress value={progress} className="h-2 bg-purple-950 mt-4" />
-      
-      <div className="grid grid-cols-4 gap-2 mt-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-1 bg-purple-500/20 rounded-full overflow-hidden"
-          >
-            <div
-              className="h-full bg-purple-500/50 animate-pulse"
-              style={{
-                width: `${progress}%`,
-                transition: 'width 0.5s ease-out',
-              }}
-            />
-          </div>
-        ))}
-      </div>
     </div>
   );
 };
