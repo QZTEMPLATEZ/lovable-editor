@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import VideoPreview from './VideoPreview';
 import ProcessingStatus from './ProcessingStatus';
 import MusicTrackSelector from './MusicTrackSelector';
@@ -8,26 +8,17 @@ interface EditingInterfaceProps {
 }
 
 const EditingInterface: React.FC<EditingInterfaceProps> = () => {
-  // Sample data for demonstration
-  const videoFile = {
-    name: 'sample-video.mp4',
-    size: 1024,
-    type: 'video/mp4',
-    // Add other required properties
-  };
+  const [selectedTracks, setSelectedTracks] = useState<{ file: File; beats: any[] }[]>([]);
 
-  const recommendedTracks = [
-    { id: 1, name: 'Romantic Piano', url: '/music/romantic-piano.mp3' },
-    { id: 2, name: 'Wedding March', url: '/music/wedding-march.mp3' },
-    { id: 3, name: 'Classical Romance', url: '/music/classical-romance.mp3' },
-  ];
+  const handleTrackSelect = (file: File, beats: any[]) => {
+    setSelectedTracks(prev => [...prev, { file, beats }]);
+  };
 
   return (
     <div className="space-y-6">
-      <VideoPreview file={videoFile} />
+      <VideoPreview />
       <MusicTrackSelector 
-        recommendedTracks={recommendedTracks}
-        onTrackSelect={(track) => console.log('Selected track:', track)}
+        onMusicSelect={handleTrackSelect}
       />
       <ProcessingStatus 
         currentStep={1}
