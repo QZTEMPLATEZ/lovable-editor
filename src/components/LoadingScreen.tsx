@@ -57,12 +57,12 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                       <motion.h1 
                         className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-4"
                       >
-                        WEDDING TEMPLATEZ VIDEO EDITOR
+                        PROFESSIONAL WEDDING CINEMATOGRAPHY SUITE
                       </motion.h1>
                       <motion.p 
                         className="text-gray-300 mb-6"
                       >
-                        AI-Powered Professional Wedding Video Editing
+                        Transform Your Wedding Footage into Cinematic Masterpieces
                       </motion.p>
                       
                       {showLoadingBar && (
