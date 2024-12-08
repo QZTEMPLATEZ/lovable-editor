@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import LoadingScreen from './LoadingScreen';
 import EditingInterface from './EditingInterface';
 import EditingProgress from './EditingProgress';
@@ -94,12 +96,37 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     e.preventDefault();
   };
 
+  const canProceedToNextStep = () => {
+    switch (currentStep) {
+      case 0:
+        return true; // Duration is always selected
+      case 1:
+        return referenceFiles.length > 0;
+      case 2:
+        return true; // Music is optional
+      case 3:
+        return rawFiles.length > 0;
+      default:
+        return false;
+    }
+  };
+
   const handleNextStep = () => {
-    if (currentStep < EDITOR_STEPS.length - 1) {
+    if (currentStep < EDITOR_STEPS.length - 1 && canProceedToNextStep()) {
       setCurrentStep(prev => prev + 1);
       toast({
         title: `Step ${currentStep + 2}: ${EDITOR_STEPS[currentStep + 1].title}`,
         description: EDITOR_STEPS[currentStep + 1].description,
+      });
+    }
+  };
+
+  const handlePreviousStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(prev => prev - 1);
+      toast({
+        title: `Step ${currentStep}: ${EDITOR_STEPS[currentStep - 1].title}`,
+        description: EDITOR_STEPS[currentStep - 1].description,
       });
     }
   };
@@ -114,7 +141,6 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
               targetDuration={targetDuration}
               onDurationChange={(duration) => {
                 onDurationChange(duration);
-                handleNextStep();
               }}
             />
           </div>
@@ -125,7 +151,6 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             onDrop={handleReferenceDrop}
             onDragOver={handleDragOver}
             videoFiles={referenceFiles}
-            onContinue={handleNextStep}
           />
         );
       case 2:
@@ -134,10 +159,8 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             onDrop={handleRawDrop}
             onDragOver={handleDragOver}
             videoFiles={rawFiles}
-            onContinue={handleNextStep}
           />
         );
-      // Future steps will be implemented here
       default:
         return null;
     }
@@ -148,6 +171,29 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
       <div className="max-w-6xl mx-auto space-y-8">
         <StepIndicator currentStep={currentStep} steps={EDITOR_STEPS} />
         {renderCurrentStep()}
+        
+        <div className="flex justify-between mt-8">
+          <Button
+            variant="outline"
+            onClick={handlePreviousStep}
+            disabled={currentStep === 0}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+          
+          {currentStep < EDITOR_STEPS.length - 1 && (
+            <Button
+              onClick={handleNextStep}
+              disabled={!canProceedToNextStep()}
+              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+            >
+              Next Step
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
