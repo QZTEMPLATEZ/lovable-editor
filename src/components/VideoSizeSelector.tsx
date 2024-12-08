@@ -50,7 +50,7 @@ interface VideoSizeSelectorProps {
 const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProps) => {
   return (
     <div className="space-y-6 w-full max-w-4xl mx-auto bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl">
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-8">
         <div className="h-3 w-3 rounded-full bg-purple-500 animate-pulse" />
         <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
           Select Video Duration
@@ -58,7 +58,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
       </div>
       
       <RadioGroup
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-6"
         value={selectedSize ? `${selectedSize.min}-${selectedSize.max}` : undefined}
         onValueChange={(value) => {
           const [min, max] = value.split('-').map(Number);
@@ -75,12 +75,12 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
             />
             <Label
               htmlFor={`size-${size.min}-${size.max}`}
-              className="flex items-center gap-4 rounded-xl border-2 border-purple-500/30 bg-editor-bg/50 p-4 hover:bg-editor-bg/70 hover:border-purple-500/50 peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-purple-500/20 transition-all cursor-pointer"
+              className="flex items-start gap-4 rounded-xl border-2 border-purple-500/30 bg-editor-bg/50 p-6 hover:bg-editor-bg/70 hover:border-purple-500/50 peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-purple-500/20 transition-all cursor-pointer h-full"
             >
               {size.icon}
               <div className="flex-1">
-                <span className="block text-lg font-semibold text-purple-300">{size.label}</span>
-                <span className="block text-sm text-gray-400 mt-1">{size.description}</span>
+                <span className="block text-lg font-semibold text-purple-300 mb-2">{size.label}</span>
+                <span className="block text-sm text-gray-400">{size.description}</span>
               </div>
             </Label>
           </div>
