@@ -10,6 +10,15 @@ interface VideoPreviewProps {
 }
 
 const VideoPreview: React.FC<VideoPreviewProps> = ({ file, metadata }) => {
+  // Early return if no file is provided
+  if (!file) {
+    return (
+      <div className="w-full h-48 bg-gray-800 rounded-lg flex items-center justify-center">
+        <p className="text-gray-400">No video file selected</p>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
