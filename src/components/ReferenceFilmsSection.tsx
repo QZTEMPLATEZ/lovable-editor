@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Upload, Film, Info, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import Logo from './Logo';
 import {
   Tooltip,
   TooltipContent,
@@ -28,7 +29,7 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
         dataTransfer: {
           files: videoFiles
         }
-      } as React.DragEvent<Element>;
+      } as unknown as React.DragEvent<Element>;
       
       onDrop(syntheticEvent);
     }
@@ -42,7 +43,7 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
       dataTransfer: {
         files: newFiles
       }
-    } as React.DragEvent<Element>;
+    } as unknown as React.DragEvent<Element>;
     
     onDrop(syntheticEvent);
   };
@@ -55,6 +56,7 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
     <div className="space-y-6">
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-8 border border-purple-500/30">
         <div className="flex items-center gap-4 mb-6">
+          <Logo className="w-8 h-8" />
           <Film className="w-6 h-6 text-purple-400" />
           <h2 className="text-2xl font-semibold text-purple-300">Reference Films</h2>
           <TooltipProvider>
