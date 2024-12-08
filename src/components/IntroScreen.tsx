@@ -38,9 +38,10 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               transition={{ delay: 1.0, duration: 1.6 }}
               className="text-center"
             >
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-2">AI-POWERED EDITOR</h1>
-              <p className="text-xl md:text-2xl text-gray-200">WEDDING VIDEO EDITION</p>
-              <p className="text-sm text-gray-300 mt-2">VERSION 7.12 • 2025</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-4">QZ TEMPLATEZ</h1>
+              <p className="text-xl md:text-4xl text-gray-200 font-bold mb-2">WEDDING VIDEO</p>
+              <p className="text-lg md:text-2xl text-gray-300">POWERED BY AI</p>
+              <p className="text-sm text-gray-300 mt-4">VERSION 7.12 • 2025</p>
             </motion.div>
             
             <div className="w-full max-w-md h-1 bg-white/20 rounded-full overflow-hidden">
