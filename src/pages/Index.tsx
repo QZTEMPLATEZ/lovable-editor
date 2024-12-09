@@ -72,7 +72,7 @@ const Index = () => {
               transition={{ delay: 0.2 }}
               className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue animate-gradient"
             >
-              Wedding Video Editor
+              TREASURE YOUR TIME
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0 }}
