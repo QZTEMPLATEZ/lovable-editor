@@ -31,8 +31,8 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             className="absolute inset-0"
           >
             <img
-              src="/lovable-uploads/1f142290-0fb1-4c70-9b8f-eee90b97009c.png"
-              alt="Wedding Editor Intro"
+              src="/lovable-uploads/ceaa41bb-a4c4-4b1f-a64a-7a78bd7011c4.png"
+              alt="Artistic Wedding Portrait"
               className="w-full h-full object-cover"
             />
           </motion.div>
@@ -45,55 +45,43 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           />
           
           <motion.div 
-            className="absolute top-8 left-8 text-white space-y-4"
+            className="absolute top-1/4 left-8 text-white space-y-6"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1 }}
           >
-            <h1 className="text-4xl font-bold text-pink-400">WEDDING DREAMS</h1>
-            <div className="text-lg text-pink-300/80 font-light tracking-wider">
-              <p>ウェディングドリームズ</p>
-              <p>永遠の愛の物語</p>
-              <p>美しい瞬間を永遠に</p>
+            <h1 className="text-6xl font-artistic text-pink-300">Wedding Dreams</h1>
+            <div className="text-xl text-pink-200/90 font-light tracking-wider space-y-2">
+              <p className="font-artistic">Where Dreams Come True</p>
+              <p className="text-sm uppercase tracking-[0.2em]">Professional Wedding Video Editor</p>
             </div>
           </motion.div>
 
           <motion.div 
-            className="absolute bottom-16 left-8 text-white space-y-4"
+            className="absolute bottom-16 left-8 text-white space-y-4 max-w-lg"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.5 }}
           >
-            <h2 className="text-2xl font-medium text-pink-400">ETERNAL MOMENTS</h2>
-            <div className="text-lg text-pink-300/80 font-light tracking-wider">
-              <p>愛と美の調和</p>
-              <p>思い出を紡ぐ</p>
-              <p>心に刻む瞬間</p>
-            </div>
+            <h2 className="text-2xl font-artistic text-pink-300">Capture Your Love Story</h2>
+            <p className="text-sm text-pink-200/80 leading-relaxed">
+              Transform your precious moments into timeless memories with our professional 
+              wedding video editing service. Let us tell your unique love story.
+            </p>
           </motion.div>
           
           <motion.div 
-            className="absolute bottom-16 w-full max-w-md mx-auto px-8"
+            className="absolute bottom-8 w-full max-w-md mx-auto px-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1 }}
           >
             <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
               <motion.div 
-                className="h-full"
+                className="h-full bg-gradient-to-r from-pink-400 via-pink-300 to-pink-400"
                 initial={{ scaleX: 0, x: "-100%" }}
-                animate={{ 
-                  scaleX: 1, 
-                  x: "0%"
-                }}
-                transition={{ 
-                  duration: 6,
-                  ease: "linear"
-                }}
-                style={{
-                  background: "linear-gradient(90deg, #9b87f5, #D946EF, #9b87f5)",
-                  backgroundSize: "200% 100%"
-                }}
+                animate={{ scaleX: 1, x: "0%" }}
+                transition={{ duration: 6, ease: "linear" }}
               />
             </div>
           </motion.div>
