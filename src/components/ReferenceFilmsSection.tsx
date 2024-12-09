@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Upload, Film, Info, Video, Heart, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -19,6 +19,7 @@ interface ReferenceFilmsSectionProps {
 
 const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: ReferenceFilmsSectionProps) => {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -26,6 +27,23 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
       return; // Prevent adding more than one video
     }
     onDrop(e);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      // Create a synthetic drag event to reuse the existing onDrop handler
+      const dragEvent = new DragEvent('drop');
+      Object.defineProperty(dragEvent, 'dataTransfer', {
+        value: {
+          files: e.target.files
+        }
+      });
+      onDrop(dragEvent as unknown as React.DragEvent);
+    }
+  };
+
+  const handleClick = () => {
+    fileInputRef.current?.click();
   };
 
   const handleRemoveVideo = () => {
@@ -63,10 +81,18 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
       >
         {videoFiles.length === 0 && (
           <div
+            onClick={handleClick}
             onDrop={handleDrop}
             onDragOver={onDragOver}
             className="relative group cursor-pointer rounded-xl overflow-hidden min-h-[500px]"
           >
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              accept="video/*"
+              className="hidden"
+            />
             <div 
               className="absolute inset-0 bg-[url('/lovable-uploads/4e81f6f9-f013-4f4f-ab48-027c35513dce.png')] bg-cover bg-center opacity-20 transition-opacity duration-300 group-hover:opacity-30"
             />
