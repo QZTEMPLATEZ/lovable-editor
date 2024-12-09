@@ -18,7 +18,18 @@ const PricingPlans = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 rounded-2xl" />
         <div className="relative space-y-6">
           <h3 className="text-2xl font-bold text-white">Basic</h3>
-          <PriceDisplay price={29.99} />
+          <div className="space-y-1">
+            <div className="flex items-baseline gap-1">
+              <motion.span 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-2xl font-bold bg-gradient-to-r from-editor-glow-pink to-editor-glow-purple bg-clip-text text-transparent"
+              >
+                Try for Free
+              </motion.span>
+            </div>
+            <div className="text-sm text-gray-400">Limited features</div>
+          </div>
           <ul className="space-y-4">
             <li className="flex items-center gap-2 text-gray-300">
               <Check className="w-4 h-4 text-editor-accent" />
