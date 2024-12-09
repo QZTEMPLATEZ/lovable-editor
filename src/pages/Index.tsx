@@ -74,14 +74,19 @@ const Index = () => {
             >
               TREASURE YOUR TIME
             </motion.h1>
-            <motion.p 
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="text-xl text-gray-300 max-w-2xl mx-auto"
+              className="space-y-4"
             >
-              Create stunning wedding videos with our AI-powered editor. Choose your plan to get started.
-            </motion.p>
+              <p className="text-xl text-gray-300">
+                Create stunning wedding videos with our AI-powered editor
+              </p>
+              <p className="text-lg text-gray-400">
+                Choose your plan to get started today
+              </p>
+            </motion.div>
           </div>
 
           <motion.div 
