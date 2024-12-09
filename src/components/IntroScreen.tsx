@@ -85,9 +85,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                   }}
                 />
               </div>
-              <p className="font-['Montserrat'] text-xs text-pink-300/70 tracking-widest mt-4">
-                INITIALIZING YOUR CREATIVE SUITE
-              </p>
             </div>
           </div>
         </AspectRatio>
