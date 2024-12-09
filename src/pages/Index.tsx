@@ -21,13 +21,6 @@ const Index = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const skipTutorial = localStorage.getItem('skipTutorial') === 'true';
-    if (!skipTutorial) {
-      setShowTutorial(true);
-    }
-  }, []);
-
   const handleIntroComplete = () => {
     setShowIntro(false);
     const skipTutorial = localStorage.getItem('skipTutorial') === 'true';
