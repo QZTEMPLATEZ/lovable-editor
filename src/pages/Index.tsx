@@ -41,40 +41,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-editor-bg relative overflow-hidden">
-      {/* Animated background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 animate-gradient" />
+    <div className="min-h-screen bg-editor-bg relative">
+      {/* Simple gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-editor-bg via-editor-bg/95 to-editor-bg" />
       
-      {/* Geometric patterns */}
-      <div className="absolute inset-0">
-        <div className="absolute w-full h-full">
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-64 h-64 border border-editor-accent/10 rounded-lg"
-              initial={{
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                rotate: 0,
-                opacity: 0.1,
-              }}
-              animate={{
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                rotate: 360,
-                opacity: [0.1, 0.2, 0.1],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                repeatType: "reverse",
-                delay: i * 2,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto relative z-10">
         {showIntro && (
           <IntroScreen onComplete={handleIntroComplete} />
@@ -83,69 +53,60 @@ const Index = () => {
           <TutorialVideo onComplete={handleTutorialComplete} />
         )}
         {!showIntro && !showTutorial && (
-          <div className="space-y-12 p-6">
+          <div className="p-6 space-y-8">
+            {/* Welcome Section */}
             <motion.div 
-              className="space-y-2 text-center"
+              className="text-center mb-12"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 inline-flex items-center gap-2">
+              <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 inline-flex items-center gap-2 mb-4">
                 {greeting}
                 <Sparkles className="w-6 h-6 text-purple-400 animate-pulse" />
               </h1>
+              <p className="text-editor-text/80 max-w-2xl mx-auto">
+                Create stunning wedding videos with our AI-powered editor
+              </p>
             </motion.div>
             
+            {/* Steps Grid */}
             <motion.div 
-              className="max-w-4xl mx-auto space-y-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <h2 className="text-2xl font-semibold text-center text-purple-300">
-                5 Steps to Your Perfect Wedding Film
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                {[
-                  { step: 1, title: "Upload", desc: "Upload your raw wedding footage and photos" },
-                  { step: 2, title: "Select Style", desc: "Choose your preferred editing style" },
-                  { step: 3, title: "Music", desc: "Pick the perfect soundtrack" },
-                  { step: 4, title: "AI Edit", desc: "Let our AI create your first draft" },
-                  { step: 5, title: "Refine", desc: "Fine-tune your video to perfection" }
-                ].map((item) => (
-                  <motion.div
-                    key={item.step}
-                    className="relative group"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: item.step * 0.1 }}
-                  >
-                    <div className="bg-editor-panel p-6 rounded-lg border border-editor-border/50 hover:border-editor-accent/50 transition-all duration-300 transform hover:-translate-y-1">
-                      <div className="absolute -top-3 -right-3 w-8 h-8 bg-editor-accent rounded-full flex items-center justify-center text-white font-bold text-sm group-hover:scale-110 transition-transform">
-                        {item.step}
-                      </div>
-                      <h3 className="text-lg font-medium text-purple-200 mb-2">{item.title}</h3>
-                      <p className="text-sm text-editor-text">{item.desc}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.p 
-              className="text-center text-gray-400 max-w-2xl mx-auto"
+              className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-12"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
             >
-              Create stunning wedding videos with our AI-powered editor
-            </motion.p>
-            
+              {[
+                { step: 1, title: "Upload", desc: "Upload your raw footage" },
+                { step: 2, title: "Style", desc: "Choose editing style" },
+                { step: 3, title: "Music", desc: "Pick perfect soundtrack" },
+                { step: 4, title: "AI Edit", desc: "Let AI create first draft" },
+                { step: 5, title: "Refine", desc: "Fine-tune to perfection" }
+              ].map((item) => (
+                <motion.div
+                  key={item.step}
+                  className="bg-editor-panel p-4 rounded-lg border border-editor-border/30 hover:border-editor-accent/30 transition-all duration-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: item.step * 0.1 }}
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-sm font-medium text-editor-accent">
+                      {item.step.toString().padStart(2, '0')}
+                    </span>
+                    <h3 className="text-purple-200">{item.title}</h3>
+                  </div>
+                  <p className="text-sm text-editor-text/70">{item.desc}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Editor Container */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
             >
               <VideoEditorContainer />
             </motion.div>
