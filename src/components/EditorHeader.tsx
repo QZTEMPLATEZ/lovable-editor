@@ -69,7 +69,7 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier 
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center space-y-4 mb-12">
+        <div className="text-center space-y-6 mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-purple-500/5 rounded-full border border-purple-500/10">
             <Clock className="w-3.5 h-3.5 text-purple-400" />
             <span className="text-sm font-medium text-purple-300">
@@ -77,11 +77,11 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier 
             </span>
           </div>
           
-          <h1 className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-semibold text-white tracking-tight">
             Select Video Duration
           </h1>
           
-          <p className="text-base text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed font-light">
             Choose the ideal length for your wedding film. Each option is carefully crafted to capture the essence of your special day.
           </p>
         </div>
