@@ -4,62 +4,64 @@
 @tailwind components;
 @tailwind utilities;
 
-.background-animate {
-  background-size: 200%;
-  -webkit-animation: AnimateBackground 3s ease infinite;
-  -moz-animation: AnimateBackground 3s ease infinite;
-  animation: AnimateBackground 3s ease infinite;
+@layer components {
+  .background-animate {
+    background-size: 200%;
+    -webkit-animation: AnimateBackground 3s ease infinite;
+    -moz-animation: AnimateBackground 3s ease infinite;
+    animation: AnimateBackground 3s ease infinite;
+  }
+
+  /* Futuristic scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #9b87f5, #D946EF);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #8B5CF6, #D946EF);
+  }
+
+  /* Glass morphism utility classes */
+  .glass-panel {
+    @apply backdrop-blur-xl bg-editor-glass-dark border border-editor-border;
+  }
+
+  .glass-panel-light {
+    @apply backdrop-blur-xl bg-editor-glass-light border border-editor-border;
+  }
+
+  /* Gradient text utility class */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue animate-gradient;
+  }
+
+  /* Glow effects */
+  .glow-purple {
+    @apply shadow-lg shadow-editor-glow-purple/50;
+  }
+
+  .glow-pink {
+    @apply shadow-lg shadow-editor-glow-pink/50;
+  }
+
+  .glow-blue {
+    @apply shadow-lg shadow-editor-glow-blue/50;
+  }
 }
 
 @keyframes AnimateBackground {
   0%{background-position:0% 50%}
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
-}
-
-/* Futuristic scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #9b87f5, #D946EF);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #8B5CF6, #D946EF);
-}
-
-/* Glass morphism utility classes */
-.glass-panel {
-  @apply backdrop-blur-xl bg-editor-glass.dark border border-editor-border;
-}
-
-.glass-panel-light {
-  @apply backdrop-blur-xl bg-editor-glass.light border border-editor-border;
-}
-
-/* Gradient text utility class */
-.gradient-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-editor-glow.purple via-editor-glow.pink to-editor-glow.blue animate-gradient;
-}
-
-/* Glow effects */
-.glow-purple {
-  @apply shadow-lg shadow-editor-glow.purple/50;
-}
-
-.glow-pink {
-  @apply shadow-lg shadow-editor-glow.pink/50;
-}
-
-.glow-blue {
-  @apply shadow-lg shadow-editor-glow.blue/50;
 }

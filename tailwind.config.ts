@@ -35,14 +35,15 @@ export default {
           border: "#2A2A2A",
           button: "#3A3A3A",
           text: "#CCCCCC",
+          glass: {
+            DEFAULT: "rgba(0, 0, 0, 0.2)",
+            dark: "rgba(0, 0, 0, 0.2)",
+            light: "rgba(255, 255, 255, 0.05)"
+          },
           glow: {
             purple: "#9b87f5",
             pink: "#D946EF",
             blue: "#0EA5E9"
-          },
-          glass: {
-            light: "rgba(255, 255, 255, 0.05)",
-            dark: "rgba(0, 0, 0, 0.2)"
           }
         },
         primary: {
