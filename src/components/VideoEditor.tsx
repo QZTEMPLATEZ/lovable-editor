@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import StepLayout from './editor/StepLayout';
+import { ArrowLeft, ArrowRight, Film, Music, Upload, Wand2, Zap } from 'lucide-react';
+import EditorStepsLayout from './editor/EditorStepsLayout';
 import StartEditingButton from './editor/StartEditingButton';
 import AIScriptWindow from './editor/AIScriptWindow';
 import { VideoSizeRange } from './VideoSizeSelector';
@@ -14,11 +14,31 @@ import EditingInterface from './EditingInterface';
 import RawFilesSection from './RawFilesSection';
 
 const EDITOR_STEPS = [
-  { title: 'Duration', description: 'Choose your ideal video length' },
-  { title: 'References', description: 'Add style examples for inspiration' },
-  { title: 'Music', description: 'Select the perfect soundtrack' },
-  { title: 'Raw Files', description: 'Upload your footage' },
-  { title: 'AI Edit', description: 'Let AI work its magic' }
+  { 
+    title: 'Duration',
+    description: 'Choose your ideal video length',
+    icon: <Film className="w-5 h-5" />
+  },
+  { 
+    title: 'References',
+    description: 'Add style examples',
+    icon: <Upload className="w-5 h-5" />
+  },
+  { 
+    title: 'Music',
+    description: 'Select soundtrack',
+    icon: <Music className="w-5 h-5" />
+  },
+  { 
+    title: 'Raw Files',
+    description: 'Upload footage',
+    icon: <Film className="w-5 h-5" />
+  },
+  { 
+    title: 'AI Edit',
+    description: 'Magic happens',
+    icon: <Wand2 className="w-5 h-5" />
+  }
 ];
 
 interface VideoEditorProps {
@@ -128,19 +148,13 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     }
 
     return (
-      <StepLayout
-        currentStep={currentStep}
-        title={EDITOR_STEPS[currentStep].title}
-        description={EDITOR_STEPS[currentStep].description}
-      >
+      <div className="space-y-8">
         {currentStep === 0 && (
-          <div className="space-y-8">
-            <EditorHeader 
-              editingMode={editingMode}
-              targetDuration={targetDuration}
-              onDurationChange={onDurationChange}
-            />
-          </div>
+          <EditorHeader 
+            editingMode={editingMode}
+            targetDuration={targetDuration}
+            onDurationChange={onDurationChange}
+          />
         )}
         
         {currentStep === 1 && (
@@ -166,7 +180,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
         )}
         
         {currentStep === 4 && (
-          <div className="space-y-8">
+          <>
             <AIScriptWindow 
               value={aiScript}
               onChange={setAiScript}
@@ -175,24 +189,16 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
               onClick={handleStartEditing}
               disabled={!aiScript}
             />
-          </div>
+          </>
         )}
-      </StepLayout>
-    );
-  };
 
-  return (
-    <div className="min-h-screen bg-editor-bg text-white">
-      <div className="max-w-7xl mx-auto p-6 space-y-8">
-        {renderCurrentStep()}
-        
-        {!isProcessing && (
-          <div className="flex justify-between mt-8 border-t border-purple-500/20 pt-6">
+        {!isProcessing && currentStep < EDITOR_STEPS.length && (
+          <div className="flex justify-between pt-6 border-t border-editor-border/30">
             <Button
               onClick={handlePreviousStep}
               disabled={currentStep === 0}
-              className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30"
               variant="outline"
+              className="bg-editor-panel/50 hover:bg-editor-panel"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
@@ -202,10 +208,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
               <Button
                 onClick={handleNextStep}
                 disabled={!isStepCompleted(currentStep)}
-                className={`bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 ${
-                  !isStepCompleted(currentStep) ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-                variant="outline"
+                className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90"
               >
                 Next Step
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -214,7 +217,16 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
           </div>
         )}
       </div>
-    </div>
+    );
+  };
+
+  return (
+    <EditorStepsLayout
+      currentStep={currentStep}
+      steps={EDITOR_STEPS}
+    >
+      {renderCurrentStep()}
+    </EditorStepsLayout>
   );
 };
 
