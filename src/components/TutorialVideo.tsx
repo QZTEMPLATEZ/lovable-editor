@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
 
 interface TutorialVideoProps {
   onComplete: () => void;
@@ -18,13 +16,6 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
     onComplete();
   };
 
-  const handleSkip = () => {
-    if (dontShowAgain) {
-      localStorage.setItem('skipTutorial', 'true');
-    }
-    onComplete();
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -34,7 +25,7 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
     >
       <div className="max-w-4xl w-full mx-auto p-6">
         <div className="relative rounded-lg overflow-hidden bg-editor-bg border border-editor-border">
-          <div className="absolute top-4 right-4 z-10 flex items-center gap-4">
+          <div className="absolute top-4 right-4 z-10">
             <div className="flex items-center space-x-2 bg-black/50 rounded-lg px-3 py-2">
               <Checkbox
                 id="dontShowAgain"
@@ -49,14 +40,6 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
                 Don't show again
               </label>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:bg-white/10"
-              onClick={handleSkip}
-            >
-              <X className="h-5 w-5" />
-            </Button>
           </div>
           
           <div className="aspect-video w-full">
