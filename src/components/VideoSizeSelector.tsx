@@ -84,7 +84,10 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
             >
               {size.icon}
               <div className="flex-1">
-                <span className="block text-lg font-semibold text-purple-300 mb-2">{size.label}</span>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg font-semibold text-purple-300">{size.label}</span>
+                  <Clock className="w-4 h-4 text-purple-400/60" />
+                </div>
                 <span className="block text-sm text-gray-400 whitespace-pre-line mb-4">{size.description}</span>
                 <div className="flex items-center gap-2 text-sm text-purple-300 mt-2 bg-purple-500/10 p-2 rounded-lg">
                   <Music className="w-4 h-4" />
