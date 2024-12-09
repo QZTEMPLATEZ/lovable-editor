@@ -12,13 +12,13 @@ interface StepIndicatorProps {
 
 const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
   return (
-    <div className="relative mb-12">
+    <div className="relative mb-8">
       {/* Background line */}
-      <div className="absolute top-[45px] left-0 right-0 h-[2px] bg-gradient-to-r from-purple-500/5 via-purple-500/10 to-purple-500/5" />
+      <div className="absolute top-[25px] left-0 right-0 h-[1px] bg-editor-border" />
       
       {/* Progress line */}
       <motion.div 
-        className="absolute top-[45px] left-0 h-[2px] bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"
+        className="absolute top-[25px] left-0 h-[1px] bg-gradient-to-r from-purple-500 to-pink-500"
         initial={{ width: 0 }}
         animate={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -34,57 +34,46 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
               transition={{ delay: index * 0.1 }}
               className="relative"
             >
-              {/* Outer ring with gradient */}
+              {/* Step circle */}
               <div 
-                className={`w-24 h-24 rounded-full flex items-center justify-center relative
-                  ${index <= currentStep ? 'bg-gradient-to-br from-purple-500 to-pink-500' : 'bg-editor-panel'}
-                  p-[2px]`}
+                className={`w-12 h-12 rounded-full flex items-center justify-center relative
+                  ${index <= currentStep ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-editor-panel border border-editor-border'}
+                  transition-colors duration-300`}
               >
-                {/* Inner circle */}
-                <div 
-                  className={`w-full h-full rounded-full flex flex-col items-center justify-center
-                    ${index <= currentStep ? 'bg-editor-bg text-white' : 'bg-editor-panel text-gray-400'}
-                    transition-colors duration-300`}
-                >
-                  {index < currentStep ? (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                    >
-                      <Check className="w-8 h-8 text-purple-400" />
-                    </motion.div>
-                  ) : (
-                    <>
-                      <span className="text-sm font-medium opacity-60">Step</span>
-                      <div className="flex items-center gap-1">
-                        <span className="text-2xl font-bold">{index + 1}</span>
-                        <span className="text-xs opacity-60">/ {steps.length}</span>
-                      </div>
-                    </>
-                  )}
-                </div>
+                {index < currentStep ? (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                  >
+                    <Check className="w-5 h-5 text-white" />
+                  </motion.div>
+                ) : (
+                  <span className={`text-sm font-medium ${index === currentStep ? 'text-white' : 'text-gray-400'}`}>
+                    {index + 1}
+                  </span>
+                )}
               </div>
 
-              {/* Glowing effect for active step */}
+              {/* Subtle glow for active step */}
               {index === currentStep && (
-                <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-xl -z-10 animate-pulse" />
+                <div className="absolute inset-0 rounded-full bg-purple-500/10 blur-md -z-10" />
               )}
             </motion.div>
 
             {/* Step title and description */}
             <motion.div 
-              initial={{ y: 20, opacity: 0 }}
+              initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: index * 0.1 + 0.2 }}
-              className="mt-6 text-center"
+              className="mt-4 text-center"
             >
-              <h3 className={`font-medium text-lg mb-1
+              <h3 className={`text-sm font-medium mb-1
                 ${index <= currentStep ? 'text-purple-300' : 'text-gray-400'}`}
               >
                 {step.title}
               </h3>
-              <p className="text-sm text-gray-400 max-w-[150px] mx-auto">
+              <p className="text-xs text-gray-400 max-w-[120px] mx-auto">
                 {step.description}
               </p>
             </motion.div>
