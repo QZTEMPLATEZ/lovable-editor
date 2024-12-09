@@ -19,18 +19,13 @@ const StepsGrid = () => {
       {steps.map((item) => (
         <motion.div
           key={item.step}
-          className="bg-editor-panel p-4 rounded-lg border border-editor-border/30 hover:border-editor-accent/30 transition-all duration-300"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: item.step * 0.1 }}
         >
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-sm font-medium text-editor-accent">
-              {item.step.toString().padStart(2, '0')}
-            </span>
-            <h3 className="text-purple-200">{item.title}</h3>
-          </div>
-          <p className="text-sm text-editor-text/70">{item.desc}</p>
+          <span className="text-sm font-medium text-editor-accent">
+            {item.step.toString().padStart(2, '0')}
+          </span>
         </motion.div>
       ))}
     </motion.div>
