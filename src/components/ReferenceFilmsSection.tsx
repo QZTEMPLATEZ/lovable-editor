@@ -139,16 +139,6 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
           </div>
         </div>
       </div>
-
-      <div className="flex justify-end">
-        <Button
-          onClick={onContinue}
-          disabled={videoFiles.length === 0}
-          className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90"
-        >
-          Continue
-        </Button>
-      </div>
     </motion.div>
   );
 };
