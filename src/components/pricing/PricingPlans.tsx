@@ -1,9 +1,62 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Crown, Check, Sparkles } from 'lucide-react';
+import { Crown, Check, Sparkles, Info } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import PriceDisplay from './PriceDisplay';
+
+interface PlanFeature {
+  text: string;
+  tooltip: string;
+}
+
+const basicFeatures: PlanFeature[] = [
+  { text: "30s - 1:30min videos", tooltip: "Perfect duration for social media content" },
+  { text: "Basic editing features", tooltip: "Essential tools for quick edits" },
+  { text: "720p export quality", tooltip: "Standard HD resolution export" },
+  { text: "5 video uploads", tooltip: "Upload up to 5 videos per project" }
+];
+
+const maxFeatures: PlanFeature[] = [
+  { text: "8-12 minutes films", tooltip: "Ideal for detailed event coverage" },
+  { text: "Unlimited edits", tooltip: "Make as many edits as you need" },
+  { text: "10 premium movie styles", tooltip: "Access to our premium collection of video styles" },
+  { text: "4K sequence export", tooltip: "Export in ultra-high definition" }
+];
+
+const businessFeatures: PlanFeature[] = [
+  { text: "Up to 40min videos", tooltip: "Perfect for full event documentation" },
+  { text: "Premium features", tooltip: "Access to all advanced editing tools" },
+  { text: "4K HDR quality", tooltip: "Highest quality export with HDR support" },
+  { text: "Priority support", tooltip: "24/7 dedicated support team" }
+];
+
+const FeatureList = ({ features }: { features: PlanFeature[] }) => (
+  <ul className="space-y-4">
+    {features.map((feature, index) => (
+      <li key={index} className="flex items-center gap-2 text-gray-300">
+        <Check className="w-4 h-4 text-editor-accent" />
+        {feature.text}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Info className="w-4 h-4 text-gray-400 hover:text-editor-accent transition-colors" />
+            </TooltipTrigger>
+            <TooltipContent className="bg-editor-glass-dark border border-editor-border">
+              <p>{feature.tooltip}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </li>
+    ))}
+  </ul>
+);
 
 const PricingPlans = () => {
   return (
@@ -30,24 +83,7 @@ const PricingPlans = () => {
             </div>
             <div className="text-sm text-gray-400">Limited features</div>
           </div>
-          <ul className="space-y-4">
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              30s - 1:30min videos
-            </li>
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              Basic editing features
-            </li>
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              720p export quality
-            </li>
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              5 video uploads
-            </li>
-          </ul>
+          <FeatureList features={basicFeatures} />
           <Button className="w-full bg-editor-accent hover:bg-editor-accent/80">
             Start Free
           </Button>
@@ -63,24 +99,7 @@ const PricingPlans = () => {
             <Crown className="w-5 h-5 text-editor-accent" />
           </div>
           <PriceDisplay price={29.99} originalPrice={39.99} />
-          <ul className="space-y-4">
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              8-12 minutes films
-            </li>
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              Unlimited edits
-            </li>
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              10 premium movie styles
-            </li>
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              4K sequence export
-            </li>
-          </ul>
+          <FeatureList features={maxFeatures} />
           <Button className="w-full bg-editor-accent hover:bg-editor-accent/80">
             Choose MAX
           </Button>
@@ -96,24 +115,7 @@ const PricingPlans = () => {
             <Sparkles className="w-5 h-5 text-editor-accent" />
           </div>
           <PriceDisplay price={35.99} />
-          <ul className="space-y-4">
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              Up to 40min videos
-            </li>
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              Premium features
-            </li>
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              4K HDR quality
-            </li>
-            <li className="flex items-center gap-2 text-gray-300">
-              <Check className="w-4 h-4 text-editor-accent" />
-              Priority support
-            </li>
-          </ul>
+          <FeatureList features={businessFeatures} />
           <Button className="w-full bg-editor-accent hover:bg-editor-accent/80">
             Contact Sales
           </Button>
