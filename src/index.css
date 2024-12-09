@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply text-white bg-editor-bg;
+  }
+}
+
 @layer components {
   .background-animate {
     background-size: 200%;
@@ -34,11 +40,11 @@
 
   /* Glass morphism utility classes */
   .glass-panel {
-    @apply backdrop-blur-xl bg-editor-glass-dark border border-editor-border;
+    @apply backdrop-blur-xl bg-editor-glass-dark border border-editor-border text-white;
   }
 
   .glass-panel-light {
-    @apply backdrop-blur-xl bg-editor-glass-light border border-editor-border;
+    @apply backdrop-blur-xl bg-editor-glass-light border border-editor-border text-white;
   }
 
   /* Gradient text utility class */

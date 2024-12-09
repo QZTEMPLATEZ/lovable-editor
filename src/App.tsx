@@ -9,7 +9,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
         {/* Background grid pattern */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
         {/* Gradient overlay */}

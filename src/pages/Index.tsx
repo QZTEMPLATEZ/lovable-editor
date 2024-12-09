@@ -24,7 +24,6 @@ const Index = () => {
 
   const handleIntroComplete = () => {
     setShowIntro(false);
-    // Always show tutorial after intro unless explicitly skipped before
     const skipTutorial = localStorage.getItem('skipTutorial') === 'true';
     setShowTutorial(!skipTutorial);
   };
@@ -35,7 +34,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-editor-bg relative">
-      {/* Simple gradient background */}
       <div className="absolute inset-0 bg-gradient-to-b from-editor-bg via-editor-bg/95 to-editor-bg" />
       
       <div className="max-w-7xl mx-auto relative z-10">
@@ -53,6 +51,7 @@ const Index = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
+              className="bg-editor-panel/50 backdrop-blur-xl rounded-3xl border border-editor-border/50 overflow-hidden shadow-2xl"
             >
               <VideoEditorContainer />
             </motion.div>
