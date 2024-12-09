@@ -12,13 +12,13 @@ interface StepIndicatorProps {
 
 const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
   return (
-    <div className="relative mb-8">
+    <div className="relative mb-6">
       {/* Background line */}
-      <div className="absolute top-[25px] left-0 right-0 h-[1px] bg-editor-border" />
+      <div className="absolute top-4 left-0 right-0 h-[2px] bg-editor-border/30 rounded-full" />
       
       {/* Progress line */}
       <motion.div 
-        className="absolute top-[25px] left-0 h-[1px] bg-gradient-to-r from-purple-500 to-pink-500"
+        className="absolute top-4 left-0 h-[2px] bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-full"
         initial={{ width: 0 }}
         animate={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -36,9 +36,11 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
             >
               {/* Step circle */}
               <div 
-                className={`w-12 h-12 rounded-full flex items-center justify-center relative
-                  ${index <= currentStep ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-editor-panel border border-editor-border'}
-                  transition-colors duration-300`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center relative
+                  ${index <= currentStep 
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/20' 
+                    : 'bg-editor-panel border border-editor-border'}
+                  transition-all duration-300 hover:scale-110`}
               >
                 {index < currentStep ? (
                   <motion.div
@@ -46,19 +48,19 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 200, damping: 10 }}
                   >
-                    <Check className="w-5 h-5 text-white" />
+                    <Check className="w-4 h-4 text-white" />
                   </motion.div>
                 ) : (
-                  <span className={`text-sm font-medium ${index === currentStep ? 'text-white' : 'text-gray-400'}`}>
+                  <span className={`text-xs font-medium ${index === currentStep ? 'text-white' : 'text-gray-400'}`}>
                     {index + 1}
                   </span>
                 )}
-              </div>
 
-              {/* Subtle glow for active step */}
-              {index === currentStep && (
-                <div className="absolute inset-0 rounded-full bg-purple-500/10 blur-md -z-10" />
-              )}
+                {/* Pulse effect for current step */}
+                {index === currentStep && (
+                  <div className="absolute inset-0 rounded-full animate-ping bg-purple-500/30" />
+                )}
+              </div>
             </motion.div>
 
             {/* Step title and description */}
@@ -66,14 +68,14 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: index * 0.1 + 0.2 }}
-              className="mt-4 text-center"
+              className="mt-3 text-center"
             >
-              <h3 className={`text-sm font-medium mb-1
+              <h3 className={`text-xs font-medium mb-0.5
                 ${index <= currentStep ? 'text-purple-300' : 'text-gray-400'}`}
               >
                 {step.title}
               </h3>
-              <p className="text-xs text-gray-400 max-w-[120px] mx-auto">
+              <p className="text-[10px] text-gray-400 max-w-[100px] mx-auto leading-tight">
                 {step.description}
               </p>
             </motion.div>
