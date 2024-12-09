@@ -34,14 +34,30 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
     >
       <div className="max-w-4xl w-full mx-auto p-6">
         <div className="relative rounded-lg overflow-hidden bg-editor-bg border border-editor-border">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 z-10 text-white hover:bg-white/10"
-            onClick={handleSkip}
-          >
-            <X className="h-5 w-5" />
-          </Button>
+          <div className="absolute top-4 right-4 z-10 flex items-center gap-4">
+            <div className="flex items-center space-x-2 bg-black/50 rounded-lg px-3 py-2">
+              <Checkbox
+                id="dontShowAgain"
+                checked={dontShowAgain}
+                onCheckedChange={(checked) => setDontShowAgain(checked as boolean)}
+                className="border-purple-500/50"
+              />
+              <label
+                htmlFor="dontShowAgain"
+                className="text-sm text-purple-200 cursor-pointer select-none"
+              >
+                Don't show again
+              </label>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/10"
+              onClick={handleSkip}
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
           
           <div className="aspect-video w-full">
             <iframe
@@ -55,22 +71,6 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
               className="w-full h-full"
               onEnded={handleVideoEnded}
             />
-          </div>
-          
-          <div className="absolute bottom-4 left-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="dontShowAgain"
-                checked={dontShowAgain}
-                onCheckedChange={(checked) => setDontShowAgain(checked as boolean)}
-              />
-              <label
-                htmlFor="dontShowAgain"
-                className="text-sm text-white cursor-pointer"
-              >
-                Don't show again
-              </label>
-            </div>
           </div>
         </div>
       </div>
