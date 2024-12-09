@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Sparkles } from 'lucide-react';
 
 interface IntroScreenProps {
   onComplete: () => void;
@@ -39,6 +40,8 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               className="text-center space-y-12"
             >
               <div className="relative space-y-6">
+                <Sparkles className="absolute -top-8 right-0 w-6 h-6 text-pink-400 animate-pulse" />
+                
                 <h2 className="font-['Montserrat'] text-xl md:text-2xl text-pink-200 font-light tracking-wider mb-4">
                   ARTISTIC AI EDITOR PRO FOR WEDDINGS
                 </h2>
