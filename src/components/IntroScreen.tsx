@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface IntroScreenProps {
   onComplete: () => void;
@@ -25,6 +26,13 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       transition={{ duration: 1.0 }}
     >
       <div className="relative w-full max-w-7xl mx-auto">
+        <Button
+          onClick={onComplete}
+          className="absolute top-8 right-8 z-50 bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-sm rounded-full px-6 py-2 font-light tracking-wider transition-all duration-300 hover:scale-105"
+        >
+          Skip Intro
+        </Button>
+
         <AspectRatio ratio={16/9} className="overflow-hidden">
           <img
             src="/lovable-uploads/c924af7f-305d-40de-aadf-110a0bc2f001.png"
