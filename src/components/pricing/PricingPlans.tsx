@@ -78,14 +78,14 @@ const PricingPlans = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-2xl font-bold bg-gradient-to-r from-editor-glow-pink to-editor-glow-purple bg-clip-text text-transparent"
               >
-                Try for Free
+                $9.99
               </motion.span>
             </div>
             <div className="text-sm text-gray-400">Limited features</div>
           </div>
           <FeatureList features={basicFeatures} />
           <Button className="w-full bg-editor-accent hover:bg-editor-accent/80">
-            Start Free
+            Start Now
           </Button>
         </div>
       </div>
