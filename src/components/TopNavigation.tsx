@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
-import { HelpCircle, LogIn, Rocket, Languages } from 'lucide-react';
+import { Gift, HelpCircle, LogIn, Users, Building2, LogOut } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,47 +19,64 @@ const TopNavigation = () => {
               WEDDING TEMPLATEZ
             </h1>
           </div>
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="flex items-center space-x-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="text-gray-300 hover:text-white flex items-center gap-2">
-                  <Languages className="w-4 h-4" />
-                  Language
+                  <div className="w-8 h-8 rounded-full bg-editor-accent flex items-center justify-center text-white font-medium">
+                    GQ
+                  </div>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent 
                 align="end" 
-                className="w-48 bg-editor-panel border border-editor-border"
+                className="w-64 bg-editor-panel border border-editor-border"
               >
+                <div className="px-4 py-3 border-b border-editor-border">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-editor-text">PRO</span>
+                  </div>
+                  <div className="mt-1 text-sm text-editor-text/70">
+                    user@example.com
+                  </div>
+                </div>
+                
                 <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
-                  English
+                  <Gift className="w-4 h-4 mr-3" />
+                  Refer a Friend
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-editor-border" />
+                
                 <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
-                  Italiano
+                  My Account
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-editor-border" />
+                
                 <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
-                  Português
+                  Clearlist
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-editor-border" />
+                
                 <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
-                  日本語
+                  <Users className="w-4 h-4 mr-3" />
+                  Team
+                </DropdownMenuItem>
+                
+                <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
+                  <Building2 className="w-4 h-4 mr-3" />
+                  Business
+                </DropdownMenuItem>
+                
+                <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
+                  <HelpCircle className="w-4 h-4 mr-3" />
+                  Help
+                </DropdownMenuItem>
+                
+                <DropdownMenuSeparator className="bg-editor-border" />
+                
+                <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
+                  <LogOut className="w-4 h-4 mr-3" />
+                  Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant="ghost" className="text-gray-300 hover:text-white flex items-center gap-2">
-              <LogIn className="w-4 h-4" />
-              Log In
-            </Button>
-            <Button variant="ghost" className="text-gray-300 hover:text-white flex items-center gap-2">
-              <HelpCircle className="w-4 h-4" />
-              Help
-            </Button>
-            <Button variant="default" className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2">
-              <Rocket className="w-4 h-4" />
-              Upgrade
-            </Button>
           </div>
         </div>
       </div>
