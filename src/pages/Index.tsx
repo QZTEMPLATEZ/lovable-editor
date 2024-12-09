@@ -21,8 +21,8 @@ const Index = () => {
 
   useEffect(() => {
     const skipTutorial = localStorage.getItem('skipTutorial') === 'true';
-    if (skipTutorial) {
-      setShowTutorial(false);
+    if (!skipTutorial) {
+      setShowTutorial(true);
     }
   }, []);
 
