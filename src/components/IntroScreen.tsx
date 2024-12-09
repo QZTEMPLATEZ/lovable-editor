@@ -31,7 +31,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             className="absolute inset-0"
           >
             <img
-              src="/lovable-uploads/c924af7f-305d-40de-aadf-110a0bc2f001.png"
+              src="/lovable-uploads/8d72e406-120c-4cf2-bcc4-c345954f8e83.png"
               alt="Wedding Editor Intro"
               className="w-full h-full object-cover"
             />
@@ -43,6 +43,34 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5, delay: 0.5 }}
           />
+          
+          <motion.div 
+            className="absolute top-8 left-8 text-white space-y-4"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1 }}
+          >
+            <h1 className="text-4xl font-bold text-pink-400">WEDDING TEMPLATEZ</h1>
+            <div className="text-lg text-pink-300/80 font-light tracking-wider">
+              <p>ヴァンメムでさす たヴタ.モヴ゜</p>
+              <p>ふみンナ-ナオョベ゜</p>
+              <p>タフ'キチ.カセダ</p>
+            </div>
+          </motion.div>
+
+          <motion.div 
+            className="absolute bottom-16 left-8 text-white space-y-4"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.5 }}
+          >
+            <h2 className="text-2xl font-medium text-pink-400">VIDEO VIIDO SUIITE</h2>
+            <div className="text-lg text-pink-300/80 font-light tracking-wider">
+              <p>阪伊系災力ホカル</p>
+              <p>アヴイニフバンシイプ</p>
+              <p>雨屋姿互高奈ホ示父</p>
+            </div>
+          </motion.div>
           
           <motion.div 
             className="absolute bottom-16 w-full max-w-md mx-auto px-8"
