@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 
 const steps = [
-  { step: 1, title: "Upload", desc: "Upload your raw footage" },
-  { step: 2, title: "Style", desc: "Choose editing style" },
-  { step: 3, title: "Music", desc: "Pick perfect soundtrack" },
-  { step: 4, title: "AI Edit", desc: "Let AI create first draft" },
-  { step: 5, title: "Refine", desc: "Fine-tune to perfection" }
+  { step: 1 },
+  { step: 2 },
+  { step: 3 },
+  { step: 4 },
+  { step: 5 }
 ];
 
 const StepsGrid = () => {
