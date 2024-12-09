@@ -5,15 +5,21 @@ import TutorialVideo from "@/components/TutorialVideo";
 
 const Index = () => {
   const [showIntro, setShowIntro] = useState(true);
-  const [showTutorial, setShowTutorial] = useState(true);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   useEffect(() => {
     const skipTutorial = localStorage.getItem('skipTutorial') === 'true';
-    setShowTutorial(!skipTutorial);
+    if (skipTutorial) {
+      setShowTutorial(false);
+    }
   }, []);
 
   const handleIntroComplete = () => {
     setShowIntro(false);
+    const skipTutorial = localStorage.getItem('skipTutorial') === 'true';
+    if (!skipTutorial) {
+      setShowTutorial(true);
+    }
   };
 
   const handleTutorialComplete = () => {
@@ -23,10 +29,10 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto space-y-8">
-        {showTutorial ? (
-          <TutorialVideo onComplete={handleTutorialComplete} />
-        ) : showIntro ? (
+        {showIntro ? (
           <IntroScreen onComplete={handleIntroComplete} />
+        ) : showTutorial ? (
+          <TutorialVideo onComplete={handleTutorialComplete} />
         ) : (
           <div className="space-y-8">
             <h1 className="text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
