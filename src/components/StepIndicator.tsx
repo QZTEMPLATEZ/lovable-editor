@@ -13,12 +13,6 @@ interface StepIndicatorProps {
 const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
   return (
     <div className="relative mb-8">
-      {/* Futuristic background line with glow effect */}
-      <div className="absolute top-4 left-0 right-0">
-        <div className="h-[2px] bg-editor-border rounded-full" />
-        <div className="h-[2px] bg-gradient-to-r from-editor-glow.purple via-editor-glow.pink to-editor-glow.blue blur-sm" />
-      </div>
-      
       {/* Animated progress line */}
       <motion.div 
         className="absolute top-4 left-0 h-[2px] bg-gradient-to-r from-editor-glow.purple via-editor-glow.pink to-editor-glow.purple"
