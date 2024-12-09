@@ -6,6 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 const TopNavigation = () => {
@@ -26,11 +27,25 @@ const TopNavigation = () => {
                   Language
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem>English</DropdownMenuItem>
-                <DropdownMenuItem>Italiano</DropdownMenuItem>
-                <DropdownMenuItem>Português</DropdownMenuItem>
-                <DropdownMenuItem>日本語</DropdownMenuItem>
+              <DropdownMenuContent 
+                align="end" 
+                className="w-48 bg-editor-panel border border-editor-border"
+              >
+                <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
+                  English
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-editor-border" />
+                <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
+                  Italiano
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-editor-border" />
+                <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
+                  Português
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-editor-border" />
+                <DropdownMenuItem className="px-4 py-2.5 text-sm text-editor-text hover:bg-purple-500/10 hover:text-purple-400 cursor-pointer focus:bg-purple-500/10 focus:text-purple-400">
+                  日本語
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Button variant="ghost" className="text-gray-300 hover:text-white flex items-center gap-2">
