@@ -13,7 +13,6 @@ interface StepIndicatorProps {
 const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
   return (
     <div className="relative mb-8">
-      {/* Animated progress line */}
       <motion.div 
         className="absolute top-4 left-0 h-[2px] bg-gradient-to-r from-editor-glow.purple via-editor-glow.pink to-editor-glow.purple"
         style={{
@@ -24,7 +23,6 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
         transition={{ duration: 0.5, ease: "easeInOut" }}
       />
 
-      {/* Steps */}
       <div className="relative flex justify-between">
         {steps.map((step, index) => (
           <div key={step.title} className="flex flex-col items-center">
@@ -34,7 +32,6 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
               transition={{ delay: index * 0.1 }}
               className="relative"
             >
-              {/* Hexagonal step indicator */}
               <div 
                 className={`w-8 h-8 flex items-center justify-center relative transition-all duration-300
                   ${index <= currentStep 
@@ -59,7 +56,6 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                   </span>
                 )}
 
-                {/* Futuristic pulse effect for current step */}
                 {index === currentStep && (
                   <>
                     <div className="absolute inset-0 animate-ping opacity-20 bg-gradient-to-br from-editor-glow.purple to-editor-glow.pink"
@@ -75,7 +71,6 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
               </div>
             </motion.div>
 
-            {/* Step title and description with hover effect */}
             <motion.div 
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
