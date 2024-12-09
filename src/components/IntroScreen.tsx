@@ -31,7 +31,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             className="absolute inset-0"
           >
             <img
-              src="/lovable-uploads/64eddcfd-5bb4-4236-bf5b-c2424f14eea2.png"
+              src="/lovable-uploads/1f142290-0fb1-4c70-9b8f-eee90b97009c.png"
               alt="Wedding Editor Intro"
               className="w-full h-full object-cover"
             />
