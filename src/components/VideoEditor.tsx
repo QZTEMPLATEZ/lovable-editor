@@ -57,18 +57,12 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
 
   const isStepCompleted = (step: number): boolean => {
     switch (step) {
-      case 0: // Duration
-        return true; // Always allow proceeding from duration step
-      case 1: // References
-        return referenceFiles.length > 0;
-      case 2: // Music
-        return selectedMusic.length > 0;
-      case 3: // Raw Files
-        return rawFiles.length > 0;
-      case 4: // AI Edit
-        return aiScript.length > 0;
-      default:
-        return false;
+      case 0: return true;
+      case 1: return referenceFiles.length > 0;
+      case 2: return selectedMusic.length > 0;
+      case 3: return rawFiles.length > 0;
+      case 4: return aiScript.length > 0;
+      default: return false;
     }
   };
 
