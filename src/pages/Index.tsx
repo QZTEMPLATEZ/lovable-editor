@@ -7,8 +7,6 @@ const Index = () => {
   const [showIntro, setShowIntro] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
   const [greeting, setGreeting] = useState("Good evening");
-  // This is a placeholder - in a real app, this would come from your auth system
-  const username = "John"; // Placeholder username
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -50,9 +48,9 @@ const Index = () => {
         ) : (
           <div className="space-y-12">
             <div className="space-y-2">
-              <p className="text-lg text-editor-text/80">{`${greeting}, ${username}`}</p>
+              <p className="text-lg text-editor-text/80">{greeting}</p>
               <h1 className="text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-                {`${greeting}, ${username}`}
+                {greeting}
               </h1>
             </div>
             
