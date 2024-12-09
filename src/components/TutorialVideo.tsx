@@ -29,15 +29,13 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
           <div className="flex flex-col">
             {/* Video Container */}
             <div className="aspect-video w-full bg-editor-panel">
-              <video
-                className="w-full h-full object-cover"
-                autoPlay
-                controls
-                onEnded={handleVideoEnded}
-              >
-                <source src="/tutorial.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/txBOuZWJcXg?autoplay=1&enablejsapi=1"
+                title="Tutorial Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
             </div>
             
             {/* Controls Footer */}
