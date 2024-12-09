@@ -114,17 +114,26 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier 
                 >
                   <div className="flex flex-col items-start text-left space-y-4 w-full">
                     <div className="flex justify-between items-center w-full">
-                      <Badge variant="secondary" className="bg-pink-500/10 text-pink-300 border-pink-500/20 group-data-[state=active]:bg-pink-500/20 group-data-[state=active]:border-pink-500/30">
+                      <Badge variant="secondary" className="text-lg font-semibold bg-pink-500/10 text-pink-300 border-pink-500/20 group-data-[state=active]:bg-pink-500/20 group-data-[state=active]:border-pink-500/30">
                         {duration.name}
                       </Badge>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-medium text-white group-data-[state=active]:text-purple-300 transition-colors">
-                          {duration.label}
-                        </span>
-                        {duration.tier !== 'basic' && (
-                          <Crown className="w-4 h-4 text-yellow-400" />
-                        )}
-                      </div>
+                      <Badge variant="outline" className={`
+                        ${duration.tier === 'basic' ? 'bg-blue-500/10 text-blue-300 border-blue-500/20' : 
+                          duration.tier === 'pro' ? 'bg-purple-500/10 text-purple-300 border-purple-500/20' : 
+                          'bg-yellow-500/10 text-yellow-300 border-yellow-500/20'}
+                        px-3 py-1 text-sm font-medium uppercase tracking-wider`}
+                      >
+                        {duration.tier}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-xl font-bold text-white group-data-[state=active]:text-purple-300 transition-colors">
+                        {duration.label}
+                      </span>
+                      {duration.tier !== 'basic' && (
+                        <Crown className="w-5 h-5 text-yellow-400" />
+                      )}
                     </div>
                     
                     <div className="space-y-2">
@@ -135,10 +144,6 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier 
                         <li className="flex items-center text-gray-400">
                           <span className="w-1 h-1 bg-purple-400/50 rounded-full mr-2"></span>
                           Recommended Tracks: {duration.recommendedTracks}
-                        </li>
-                        <li className="flex items-center text-gray-400">
-                          <span className="w-1 h-1 bg-purple-400/50 rounded-full mr-2"></span>
-                          {duration.tier === 'basic' ? 'Basic Plan' : `${duration.tier.charAt(0).toUpperCase() + duration.tier.slice(1)} Plan`}
                         </li>
                       </ul>
                     </div>
