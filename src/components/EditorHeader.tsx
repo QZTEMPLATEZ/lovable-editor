@@ -2,7 +2,7 @@ import React from 'react';
 import { EditingMode } from './EditingModeSelector';
 import { VideoSizeRange } from './VideoSizeSelector';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, Crown, Check } from 'lucide-react';
+import { Clock, Crown, Check, Sparkles } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { motion } from 'framer-motion';
 
@@ -10,7 +10,7 @@ interface EditorHeaderProps {
   editingMode: EditingMode;
   targetDuration: VideoSizeRange;
   onDurationChange: (duration: VideoSizeRange) => void;
-  userTier?: 'basic' | 'max' | 'business';
+  userTier?: 'basic' | 'pro' | 'business';
 }
 
 const VIDEO_DURATIONS: VideoSizeRange[] = [
@@ -32,7 +32,7 @@ const VIDEO_DURATIONS: VideoSizeRange[] = [
     description: "Dynamic event summary",
     icon: null,
     recommendedTracks: 2,
-    tier: 'max'
+    tier: 'pro'
   },
   {
     min: 8,
@@ -42,7 +42,7 @@ const VIDEO_DURATIONS: VideoSizeRange[] = [
     description: "Detailed artistic edit",
     icon: null,
     recommendedTracks: 3,
-    tier: 'max'
+    tier: 'pro'
   },
   {
     min: 15,
@@ -66,18 +66,47 @@ const VIDEO_DURATIONS: VideoSizeRange[] = [
   }
 ];
 
+const getPlanBadge = (tier: 'basic' | 'pro' | 'business') => {
+  switch (tier) {
+    case 'basic':
+      return (
+        <Badge variant="secondary" className="bg-blue-500/10 text-blue-400 border border-blue-500/20">
+          Basic
+        </Badge>
+      );
+    case 'pro':
+      return (
+        <Badge variant="secondary" className="bg-purple-500/10 text-purple-400 border border-purple-500/20">
+          <Crown className="w-3 h-3 mr-1" />
+          Pro
+        </Badge>
+      );
+    case 'business':
+      return (
+        <Badge variant="secondary" className="bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          <Sparkles className="w-3 h-3 mr-1" />
+          Business
+        </Badge>
+      );
+  }
+};
+
 const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier = 'basic' }: EditorHeaderProps) => {
   return (
-    <div className="min-h-screen bg-editor-bg py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
           <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue animate-gradient mb-4">
             Select Your Video Duration
           </h1>
           <p className="text-gray-400 text-lg">
             Choose the perfect duration for your wedding story
           </p>
-        </div>
+        </motion.div>
 
         <div className="space-y-6">
           <Tabs 
@@ -91,37 +120,47 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier 
               }
             }}
           >
-            <TabsList className="w-full bg-transparent grid grid-cols-1 md:grid-cols-2 gap-4">
+            <TabsList className="w-full bg-transparent grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {VIDEO_DURATIONS.map((duration) => {
                 const isLocked = userTier === 'basic' && duration.tier !== 'basic';
                 
                 return (
-                  <TabsTrigger
+                  <motion.div
                     key={`${duration.min}-${duration.max}`}
-                    value={`${duration.min}-${duration.max}`}
-                    disabled={isLocked}
-                    className={`relative w-full p-6 transition-all duration-300 rounded-xl
-                      ${isLocked 
-                        ? 'opacity-50' 
-                        : 'hover:bg-editor-accent/10'} 
-                      data-[state=active]:bg-editor-accent/20
-                      data-[state=active]:shadow-[0_0_20px_rgba(155,135,245,0.2)]
-                      h-full flex flex-col items-start gap-3 border border-editor-border/30`}
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <div className="flex items-center justify-between w-full">
-                      <span className="font-medium text-xl">{duration.name}</span>
-                      <Badge variant="secondary" className="bg-editor-panel/50">
+                    <TabsTrigger
+                      value={`${duration.min}-${duration.max}`}
+                      disabled={isLocked}
+                      className={`relative w-full p-6 transition-all duration-300 rounded-xl
+                        ${isLocked 
+                          ? 'opacity-50' 
+                          : 'hover:bg-editor-accent/10'} 
+                        data-[state=active]:bg-editor-accent/20
+                        data-[state=active]:shadow-[0_0_20px_rgba(155,135,245,0.2)]
+                        h-full flex flex-col items-start gap-3 border border-editor-border/30
+                        backdrop-blur-sm bg-editor-panel/30`}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <span className="font-medium text-xl text-white">{duration.name}</span>
+                        {getPlanBadge(duration.tier)}
+                      </div>
+                      
+                      <Badge variant="secondary" className="bg-editor-panel/50 mt-2">
                         {duration.label}
                       </Badge>
-                    </div>
-                    <p className="text-sm text-gray-400 text-left">
-                      {duration.description}
-                    </p>
-                    <div className="flex items-center gap-2 text-sm text-editor-accent mt-2">
-                      <Clock className="w-4 h-4" />
-                      <span>Recommended Tracks: {duration.recommendedTracks}</span>
-                    </div>
-                  </TabsTrigger>
+                      
+                      <p className="text-sm text-gray-400 text-left">
+                        {duration.description}
+                      </p>
+                      
+                      <div className="flex items-center gap-2 text-sm text-editor-accent mt-2 bg-editor-accent/10 px-3 py-2 rounded-lg">
+                        <Clock className="w-4 h-4" />
+                        <span>Recommended Tracks: {duration.recommendedTracks}</span>
+                      </div>
+                    </TabsTrigger>
+                  </motion.div>
                 );
               })}
             </TabsList>
