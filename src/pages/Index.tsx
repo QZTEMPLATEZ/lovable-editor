@@ -41,11 +41,13 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto space-y-8">
-        {showIntro ? (
+        {showIntro && (
           <IntroScreen onComplete={handleIntroComplete} />
-        ) : showTutorial ? (
+        )}
+        {!showIntro && showTutorial && (
           <TutorialVideo onComplete={handleTutorialComplete} />
-        ) : (
+        )}
+        {!showIntro && !showTutorial && (
           <div className="space-y-12">
             <div className="space-y-2">
               <h1 className="text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
