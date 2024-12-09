@@ -160,6 +160,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             onDrop={handleReferenceDrop}
             onDragOver={(e) => e.preventDefault()}
             videoFiles={referenceFiles}
+            onContinue={handleNextStep}
           />
         )}
         
