@@ -8,9 +8,10 @@ import ProcessingProgressBar from './processing/ProcessingProgressBar';
 interface EditingProgressProps {
   videoFiles: File[];
   progress: number;
+  onStopProcessing: () => void;
 }
 
-const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
+const EditingProgress = ({ videoFiles, progress, onStopProcessing }: EditingProgressProps) => {
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
   const [remainingTime, setRemainingTime] = useState(300);
   
@@ -46,7 +47,10 @@ const EditingProgress = ({ videoFiles, progress }: EditingProgressProps) => {
       
       <div className="relative max-w-[1920px] mx-auto p-6 space-y-8">
         {/* Header Section */}
-        <ProcessingHeader remainingTime={remainingTime} />
+        <ProcessingHeader 
+          remainingTime={remainingTime} 
+          onStopProcessing={onStopProcessing}
+        />
         
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

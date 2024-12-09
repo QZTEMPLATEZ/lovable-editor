@@ -5,9 +5,10 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface ProcessingHeaderProps {
   remainingTime: number;
+  onStopProcessing: () => void;
 }
 
-const ProcessingHeader = ({ remainingTime }: ProcessingHeaderProps) => {
+const ProcessingHeader = ({ remainingTime, onStopProcessing }: ProcessingHeaderProps) => {
   const { toast } = useToast();
 
   const formatTime = (seconds: number) => {
@@ -17,6 +18,7 @@ const ProcessingHeader = ({ remainingTime }: ProcessingHeaderProps) => {
   };
 
   const handleStopProcessing = () => {
+    onStopProcessing();
     toast({
       title: "Processing Stopped",
       description: "Your video processing has been cancelled.",

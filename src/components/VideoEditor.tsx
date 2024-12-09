@@ -84,6 +84,11 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     });
   };
 
+  const handleStopProcessing = () => {
+    setIsProcessing(false);
+    setCurrentStep(0);
+  };
+
   const handleReferenceDrop = async (e: React.DragEvent<Element>) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
@@ -114,7 +119,13 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
 
   const renderCurrentStep = () => {
     if (isProcessing) {
-      return <EditingProgress videoFiles={rawFiles} progress={0} />;
+      return (
+        <EditingProgress 
+          videoFiles={rawFiles} 
+          progress={0} 
+          onStopProcessing={handleStopProcessing}
+        />
+      );
     }
 
     return (
