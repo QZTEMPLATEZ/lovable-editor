@@ -33,14 +33,39 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
   const [isProcessing, setIsProcessing] = useState(false);
   const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
   const [rawFiles, setRawFiles] = useState<File[]>([]);
+  const [selectedMusic, setSelectedMusic] = useState<File[]>([]);
   const { toast } = useToast();
 
+  // Track completion status for each step
+  const isStepCompleted = (step: number): boolean => {
+    switch (step) {
+      case 0: // Duration
+        return true; // Always allow proceeding from duration step
+      case 1: // References
+        return referenceFiles.length > 0;
+      case 2: // Music
+        return selectedMusic.length > 0;
+      case 3: // Raw Files
+        return rawFiles.length > 0;
+      case 4: // AI Edit
+        return aiScript.length > 0;
+      default:
+        return false;
+    }
+  };
+
   const handleNextStep = () => {
-    if (currentStep < EDITOR_STEPS.length - 1) {
+    if (currentStep < EDITOR_STEPS.length - 1 && isStepCompleted(currentStep)) {
       setCurrentStep(prev => prev + 1);
       toast({
         title: `Step ${currentStep + 2}: ${EDITOR_STEPS[currentStep + 1].title}`,
         description: EDITOR_STEPS[currentStep + 1].description,
+      });
+    } else if (!isStepCompleted(currentStep)) {
+      toast({
+        variant: "destructive",
+        title: "Cannot Proceed",
+        description: "Please complete the current step before continuing.",
       });
     }
   };
@@ -83,6 +108,10 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     }
   };
 
+  const handleMusicSelect = (file: File, beats: any[]) => {
+    setSelectedMusic(prev => [...prev, file]);
+  };
+
   const renderCurrentStep = () => {
     if (isProcessing) {
       return <EditingProgress videoFiles={rawFiles} progress={0} />;
@@ -113,12 +142,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
         )}
         
         {currentStep === 2 && (
-          <EditingInterface onMusicSelect={(file, beats) => {
-            toast({
-              title: "Music track added",
-              description: "Your soundtrack has been successfully uploaded.",
-            });
-          }} />
+          <EditingInterface onMusicSelect={handleMusicSelect} />
         )}
         
         {currentStep === 3 && (
@@ -166,7 +190,10 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             {currentStep < EDITOR_STEPS.length - 1 && (
               <Button
                 onClick={handleNextStep}
-                className="bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                disabled={!isStepCompleted(currentStep)}
+                className={`bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 ${
+                  !isStepCompleted(currentStep) ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
                 variant="outline"
               >
                 Next Step
