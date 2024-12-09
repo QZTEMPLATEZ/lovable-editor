@@ -1,6 +1,7 @@
 import React from 'react';
-import { Upload, Film, Info, Video, Heart } from 'lucide-react';
+import { Upload, Film, Info, Video, Heart, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import {
   Tooltip,
   TooltipContent,
@@ -17,12 +18,30 @@ interface ReferenceFilmsSectionProps {
 }
 
 const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: ReferenceFilmsSectionProps) => {
+  const { toast } = useToast();
+  
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     if (videoFiles.length >= 1) {
       return; // Prevent adding more than one video
     }
     onDrop(e);
+  };
+
+  const handleRemoveVideo = () => {
+    // Create a new drop event with empty files
+    const emptyDropEvent = new DragEvent('drop');
+    Object.defineProperty(emptyDropEvent, 'dataTransfer', {
+      value: {
+        files: []
+      }
+    });
+    onDrop(emptyDropEvent as unknown as React.DragEvent);
+    
+    toast({
+      title: "Video Removed",
+      description: "Your inspiration video has been removed",
+    });
   };
 
   return (
@@ -84,7 +103,7 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
 
         {videoFiles.length > 0 && (
           <motion.div 
-            className="rounded-xl overflow-hidden"
+            className="rounded-xl overflow-hidden relative group"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -97,6 +116,17 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
               muted
               playsInline
             />
+            
+            {/* Remove button */}
+            <Button
+              variant="destructive"
+              size="icon"
+              className="absolute top-4 right-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              onClick={handleRemoveVideo}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+
             <div className="mt-4 p-4 bg-editor-bg/50 rounded-lg border border-pink-300/20">
               <p className="text-pink-300 font-medium">{videoFiles[0].name}</p>
               <p className="text-sm text-gray-400">
