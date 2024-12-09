@@ -86,7 +86,6 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
 
   const handleStopProcessing = () => {
     setIsProcessing(false);
-    setCurrentStep(0);
   };
 
   const handleReferenceDrop = async (e: React.DragEvent<Element>) => {
