@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Upload, Film, Info, Video, Heart, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ReferenceFilmsSectionProps {
   onDrop: (e: React.DragEvent) => void;
@@ -14,7 +14,17 @@ interface ReferenceFilmsSectionProps {
 const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: ReferenceFilmsSectionProps) => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   
+  useEffect(() => {
+    if (videoFiles.length > 0) {
+      const url = URL.createObjectURL(videoFiles[0]);
+      setVideoUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+  }, [videoFiles]);
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     if (videoFiles.length > 0) {
@@ -49,6 +59,7 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
       fileInputRef.current.value = '';
     }
     videoFiles.length = 0;
+    setVideoUrl(null);
     toast({
       title: "Video removed",
       description: "Your video has been removed successfully."
@@ -60,9 +71,32 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="space-y-6"
+      className="space-y-6 relative"
     >
-      <div className="flex items-center justify-between mb-8">
+      {/* Background Video Effect */}
+      <AnimatePresence>
+        {videoUrl && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 -z-10 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-10" />
+            <video
+              src={videoUrl}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover scale-105"
+              onPlay={() => setIsPlaying(true)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="flex items-center justify-between mb-8 relative z-10">
         <div>
           <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
             Reference Films
@@ -129,7 +163,11 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
               </div>
             </div>
           ) : (
-            <div className="relative rounded-xl overflow-hidden bg-editor-bg/50 p-6">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative rounded-xl overflow-hidden bg-editor-bg/50 p-6"
+            >
               <div className="flex items-center gap-4">
                 <Film className="w-8 h-8 text-purple-400" />
                 <div>
@@ -141,7 +179,7 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           <div className="flex items-center justify-between pt-6">
