@@ -71,21 +71,10 @@ const PricingPlans = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 rounded-lg" />
         <div className="relative space-y-4">
           <h3 className="text-lg font-bold text-white">Basic</h3>
-          <div className="space-y-1">
-            <div className="flex items-baseline gap-1">
-              <motion.span 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-xl font-bold bg-gradient-to-r from-editor-glow-pink to-editor-glow-purple bg-clip-text text-transparent"
-              >
-                $9.99
-              </motion.span>
-            </div>
-            <div className="text-xs text-gray-400">Limited features</div>
-          </div>
+          <PriceDisplay price={9.99} />
           <FeatureList features={basicFeatures} />
-          <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1">
-            Start Now
+          <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full">
+            Select
           </Button>
         </div>
       </div>
@@ -100,8 +89,8 @@ const PricingPlans = () => {
           </div>
           <PriceDisplay price={29.99} originalPrice={39.99} />
           <FeatureList features={maxFeatures} />
-          <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1">
-            Choose MAX
+          <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full">
+            Select
           </Button>
         </div>
       </div>
@@ -116,8 +105,8 @@ const PricingPlans = () => {
           </div>
           <PriceDisplay price={35.99} />
           <FeatureList features={businessFeatures} />
-          <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1">
-            Contact Sales
+          <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full">
+            Select
           </Button>
         </div>
       </div>
