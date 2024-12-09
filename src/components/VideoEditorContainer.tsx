@@ -5,12 +5,14 @@ import VideoEditor from './VideoEditor';
 
 const VideoEditorContainer = () => {
   const [selectedSize, setSelectedSize] = useState<VideoSizeRange>({
-    min: 4,
-    max: 6,
-    label: "4-6 minutes",
-    description: "Perfect for social media highlights",
+    min: 0.5,
+    max: 1.5,
+    name: "Social",
+    label: "30s - 1:30min",
+    description: "Quick, high-energy edit for social media",
     icon: null,
-    recommendedTracks: 2
+    recommendedTracks: 1,
+    tier: 'basic'
   });
   const [editingMode, setEditingMode] = useState<EditingMode>('ai');
 
