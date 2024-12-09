@@ -1,129 +1,149 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Bot, Sparkles, Zap, Brain, Cpu, Wand2 } from 'lucide-react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import AIScriptWindow from './AIScriptWindow';
+import { Wand2, Download, AlertCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useToast } from "@/components/ui/use-toast";
+import { createHighlightReel } from '@/utils/videoEditingLogic';
+import { exportProject } from '@/utils/projectExport';
 
 interface AIEditStepProps {
   aiScript: string;
-  onChange: (value: string) => void;
+  onChange: (script: string) => void;
   onStartEditing: () => void;
+  rawFiles?: File[];
+  musicFile?: File;
 }
 
-const AIEditStep = ({ aiScript, onChange, onStartEditing }: AIEditStepProps) => {
+const AIEditStep: React.FC<AIEditStepProps> = ({
+  aiScript,
+  onChange,
+  onStartEditing,
+  rawFiles = [],
+  musicFile
+}) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
+  const { toast } = useToast();
+
+  const handleStartEditing = async () => {
+    if (!musicFile || rawFiles.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Missing Files",
+        description: "Please ensure you have uploaded both raw footage and music.",
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      const project = await createHighlightReel(
+        rawFiles,
+        musicFile,
+        { min: 4, max: 6 }
+      );
+      setEditingProject(project);
+      onStartEditing();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Processing Error",
+        description: "Failed to process video files. Please try again.",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleExport = async () => {
+    if (!editingProject) return;
+
+    try {
+      const projectBlob = await exportProject(editingProject, { format: 'premiere' });
+      const url = URL.createObjectURL(projectBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'wedding_highlights.prproj';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Export Successful",
+        description: "Your project has been exported for Adobe Premiere Pro.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Export Failed",
+        description: error.message,
+      });
+    }
+  };
+
   return (
-    <div className="space-y-8 max-w-[1920px] mx-auto">
-      {/* Enhanced Header Section with Gradient Animation */}
-      <motion.div 
+    <div className="space-y-6 max-w-4xl mx-auto">
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center space-y-6 relative"
+        className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-2xl p-8 backdrop-blur-lg border border-purple-500/30"
       >
-        <div className="relative inline-block">
-          <motion.div
-            animate={{ 
-              boxShadow: ["0 0 20px #9b87f5", "0 0 40px #9b87f5", "0 0 20px #9b87f5"]
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="p-4 rounded-full bg-gradient-to-br from-editor-glow-purple/20 to-editor-glow-pink/20 backdrop-blur-xl"
-          >
-            <Bot className="w-16 h-16 text-editor-glow-purple" />
-            <motion.div
-              animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
-              transition={{ duration: 3, repeat: Infinity }}
-              className="absolute -top-2 -right-2"
-            >
-              <Sparkles className="w-8 h-8 text-editor-glow-pink" />
-            </motion.div>
-          </motion.div>
-        </div>
-        <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue animate-gradient">
-          AI Video Editor
-        </h2>
-        <p className="text-lg md:text-xl text-editor-text/70 max-w-2xl mx-auto font-light">
-          Describe your vision and let our AI transform your footage into a masterpiece
-        </p>
-      </motion.div>
-
-      {/* Enhanced Features Grid with Responsive Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {[
-          { icon: Brain, title: "Smart Scene Detection", desc: "Automatically identifies key moments and transitions" },
-          { icon: Cpu, title: "Advanced Processing", desc: "Real-time video enhancement and optimization" },
-          { icon: Wand2, title: "Magic Editing", desc: "Professional transitions & cinematic effects" }
-        ].map((feature, index) => (
-          <motion.div
-            key={feature.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="group relative p-6 rounded-xl border border-editor-border/30 
-                     backdrop-blur-sm overflow-hidden
-                     bg-gradient-to-br from-editor-bg/95 to-editor-bg/80"
-          >
-            {/* Animated gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 
-                          opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
-            
-            {/* Animated border glow */}
-            <motion.div
-              animate={{
-                boxShadow: [
-                  "0 0 0px #9b87f5",
-                  "0 0 20px #9b87f5",
-                  "0 0 0px #9b87f5"
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
+              AI Edit Configuration
+            </h3>
+            <textarea
+              value={aiScript}
+              onChange={(e) => onChange(e.target.value)}
+              className="w-full h-40 bg-editor-bg/50 border border-purple-500/30 rounded-xl p-4 text-white resize-none focus:outline-none focus:border-purple-500/50"
+              placeholder="Describe your editing preferences..."
             />
+          </div>
 
-            <feature.icon className="w-10 h-10 text-editor-glow-purple mb-4 transform group-hover:scale-110 transition-transform duration-300" />
-            <h3 className="text-xl font-semibold text-white mb-2 relative z-10">{feature.title}</h3>
-            <p className="text-sm text-editor-text/70 relative z-10">{feature.desc}</p>
-          </motion.div>
-        ))}
-      </div>
+          <div className="space-y-6">
+            <div className="bg-purple-500/10 rounded-xl p-6 border border-purple-500/30">
+              <h4 className="text-lg font-semibold text-purple-300 mb-4">4-6 Minutes Highlight Reel</h4>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li className="flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-purple-400" />
+                  Dynamic editing synced with music
+                </li>
+                <li className="flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-purple-400" />
+                  Key moments automatically selected
+                </li>
+                <li className="flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-purple-400" />
+                  Export to Adobe Premiere Pro
+                </li>
+              </ul>
+            </div>
 
-      {/* Enhanced AI Script Editor with Glass Morphism */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="relative rounded-xl overflow-hidden backdrop-blur-xl
-                 border border-editor-border/30 bg-editor-bg/30"
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 opacity-30" />
-        <AIScriptWindow 
-          value={aiScript}
-          onChange={onChange}
-        />
-      </motion.div>
+            <div className="flex flex-col gap-4">
+              <Button
+                onClick={handleStartEditing}
+                disabled={isProcessing}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition-opacity"
+              >
+                <Wand2 className="w-4 h-4 mr-2" />
+                {isProcessing ? "Processing..." : "Start AI Edit"}
+              </Button>
 
-      {/* Enhanced Start Editing Button */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="flex justify-center py-6"
-      >
-        <Button
-          onClick={onStartEditing}
-          disabled={!aiScript}
-          className="relative group px-8 py-6 bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue 
-                   hover:opacity-90 transition-all duration-300 rounded-xl text-lg shadow-lg
-                   disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <motion.span 
-            className="relative z-10 flex items-center gap-3 font-medium"
-            animate={{ scale: aiScript ? [1, 1.02, 1] : 1 }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            Start AI Processing
-            <Zap className="w-6 h-6 animate-pulse" />
-          </motion.span>
-          <div className="absolute inset-0 bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue 
-                       opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded-xl blur-xl" />
-        </Button>
+              {editingProject && (
+                <Button
+                  onClick={handleExport}
+                  variant="outline"
+                  className="w-full border-purple-500/30 hover:bg-purple-500/10"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Export for Premiere Pro
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
       </motion.div>
     </div>
   );

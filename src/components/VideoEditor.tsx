@@ -175,6 +175,8 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             aiScript={aiScript}
             onChange={setAiScript}
             onStartEditing={handleStartEditing}
+            rawFiles={rawFiles}
+            musicFile={selectedMusic[0]}
           />
         )}
 
