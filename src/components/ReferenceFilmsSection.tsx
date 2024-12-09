@@ -2,19 +2,13 @@ import React, { useRef } from 'react';
 import { Upload, Film, Info, Video, Heart, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 interface ReferenceFilmsSectionProps {
   onDrop: (e: React.DragEvent) => void;
   onDragOver: (e: React.DragEvent) => void;
   videoFiles: File[];
-  onContinue?: () => void;
+  onContinue: () => void;
 }
 
 const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: ReferenceFilmsSectionProps) => {
@@ -23,15 +17,19 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
   
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    if (videoFiles.length >= 1) {
-      return; // Prevent adding more than one video
+    if (videoFiles.length > 0) {
+      toast({
+        title: "Maximum files reached",
+        description: "You can only upload one video at a time.",
+        variant: "destructive"
+      });
+      return;
     }
     onDrop(e);
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      // Create a synthetic drag event to reuse the existing onDrop handler
       const dragEvent = new DragEvent('drop');
       Object.defineProperty(dragEvent, 'dataTransfer', {
         value: {
@@ -47,139 +45,123 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
   };
 
   const handleRemoveVideo = () => {
-    // Create a new drop event with empty files
-    const emptyDropEvent = new DragEvent('drop');
-    Object.defineProperty(emptyDropEvent, 'dataTransfer', {
-      value: {
-        files: []
-      }
-    });
-    onDrop(emptyDropEvent as unknown as React.DragEvent);
-    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    videoFiles.length = 0;
     toast({
-      title: "Video Removed",
-      description: "Your inspiration video has been removed",
+      title: "Video removed",
+      description: "Your video has been removed successfully."
     });
   };
 
   return (
-    <div className="space-y-8">
-      <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-300 to-pink-500">
-          Your Wedding Film Inspiration
-        </h2>
-        <p className="text-gray-400 max-w-2xl mx-auto">
-          Share a wedding film that captures your dream style. We'll use it as inspiration to create your perfect wedding video.
-        </p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-6"
+    >
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
+            Reference Films
+          </h2>
+          <p className="text-gray-400 mt-1">
+            Upload your favorite wedding videos for inspiration
+          </p>
+        </div>
+        {videoFiles.length > 0 && (
+          <Button
+            variant="outline"
+            className="text-red-400 hover:text-red-500 border-red-400/20"
+            onClick={handleRemoveVideo}
+          >
+            <X className="w-4 h-4 mr-2" />
+            Remove Video
+          </Button>
+        )}
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative"
-      >
-        {videoFiles.length === 0 && (
-          <div
-            onClick={handleClick}
-            onDrop={handleDrop}
-            onDragOver={onDragOver}
-            className="relative group cursor-pointer rounded-xl overflow-hidden min-h-[500px]"
-          >
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileSelect}
-              accept="video/*"
-              className="hidden"
-            />
-            <div 
-              className="absolute inset-0 bg-[url('/lovable-uploads/4e81f6f9-f013-4f4f-ab48-027c35513dce.png')] bg-cover bg-center opacity-20 transition-opacity duration-300 group-hover:opacity-30"
-            />
-            
-            <div className="relative border-2 border-dashed border-pink-300/30 rounded-xl p-12 text-center space-y-6 backdrop-blur-sm transition-all duration-300 group-hover:border-pink-300/50 min-h-[500px] flex flex-col items-center justify-center">
-              <div className="w-24 h-24 mx-auto bg-pink-300/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Video className="w-12 h-12 text-pink-400" />
-              </div>
-
-              <div className="space-y-4 max-w-lg mx-auto">
-                <h3 className="text-2xl font-semibold text-pink-300">
-                  Drop Your Favorite Wedding Film Here
-                </h3>
-                <p className="text-gray-400">
-                  Share a wedding video that inspires you. We'll use its style to create your perfect wedding film.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 w-full max-w-3xl">
-                {[
-                  { icon: Heart, text: "We'll match your preferred style" },
-                  { icon: Film, text: "Capture similar transitions" },
-                  { icon: Video, text: "Mirror the perfect pacing" }
-                ].map((feature, index) => (
-                  <div key={index} className="bg-pink-300/5 p-4 rounded-lg border border-pink-300/20">
-                    <feature.icon className="w-6 h-6 text-pink-400 mb-2 mx-auto" />
-                    <p className="text-sm text-gray-400">{feature.text}</p>
-                  </div>
-                ))}
+      <div className="relative bg-editor-panel rounded-xl p-6">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 rounded-xl" />
+        
+        <div className="relative space-y-6">
+          {videoFiles.length === 0 ? (
+            <div
+              onClick={handleClick}
+              onDrop={handleDrop}
+              onDragOver={onDragOver}
+              className="relative group cursor-pointer rounded-xl overflow-hidden"
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                accept="video/*"
+                className="hidden"
+              />
+              
+              <div className="min-h-[400px] border-2 border-dashed border-editor-border/50 rounded-xl flex flex-col items-center justify-center gap-4 transition-all duration-300 group-hover:border-purple-500/50 bg-editor-bg/50">
+                <div className="w-16 h-16 rounded-full bg-editor-button/50 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors duration-300">
+                  <Upload className="w-8 h-8 text-editor-text/50 group-hover:text-purple-400" />
+                </div>
+                
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-editor-text mb-2">
+                    Drop your video here
+                  </h3>
+                  <p className="text-sm text-editor-text/70 max-w-md mx-auto">
+                    Drag and drop your video file, or click to browse
+                  </p>
+                </div>
+                
+                <div className="flex items-center gap-4 mt-4 text-sm text-editor-text/50">
+                  <span className="flex items-center gap-2">
+                    <Video className="w-4 h-4" />
+                    MP4, MOV up to 500MB
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Heart className="w-4 h-4" />
+                    High quality recommended
+                  </span>
+                </div>
               </div>
             </div>
+          ) : (
+            <div className="relative rounded-xl overflow-hidden bg-editor-bg/50 p-6">
+              <div className="flex items-center gap-4">
+                <Film className="w-8 h-8 text-purple-400" />
+                <div>
+                  <h3 className="font-medium text-editor-text">
+                    {videoFiles[0].name}
+                  </h3>
+                  <p className="text-sm text-editor-text/70">
+                    {(videoFiles[0].size / (1024 * 1024)).toFixed(2)} MB
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-6">
+            <div className="flex items-center gap-2 text-sm text-editor-text/70">
+              <Info className="w-4 h-4" />
+              <span>Your video will be processed securely</span>
+            </div>
+            
+            {videoFiles.length > 0 && (
+              <Button
+                onClick={onContinue}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              >
+                Continue
+              </Button>
+            )}
           </div>
-        )}
-
-        {videoFiles.length > 0 && (
-          <motion.div 
-            className="rounded-xl overflow-hidden relative group"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <video
-              src={URL.createObjectURL(videoFiles[0])}
-              className="w-full h-[500px] object-cover rounded-xl border border-pink-300/30"
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
-            
-            {/* Remove button */}
-            <Button
-              variant="destructive"
-              size="icon"
-              className="absolute top-4 right-4 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-              onClick={handleRemoveVideo}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-
-            <div className="mt-4 p-4 bg-editor-bg/50 rounded-lg border border-pink-300/20">
-              <p className="text-pink-300 font-medium">{videoFiles[0].name}</p>
-              <p className="text-sm text-gray-400">
-                {(videoFiles[0].size / (1024 * 1024)).toFixed(2)} MB
-              </p>
-            </div>
-          </motion.div>
-        )}
-
-        {videoFiles.length > 0 && onContinue && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex justify-center mt-8"
-          >
-            <Button
-              onClick={onContinue}
-              className="bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white px-8 py-6 rounded-xl shadow-lg shadow-pink-500/20 transition-all duration-300 hover:scale-105"
-            >
-              Continue to Next Step
-              <Film className="w-4 h-4 ml-2" />
-            </Button>
-          </motion.div>
-        )}
-      </motion.div>
-    </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
