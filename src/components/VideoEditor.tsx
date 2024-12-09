@@ -180,15 +180,18 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
 
         {!isProcessing && currentStep < EDITOR_STEPS.length && (
           <div className="flex justify-between pt-6 border-t border-editor-border/30">
-            <Button
-              onClick={handlePreviousStep}
-              disabled={currentStep === 0}
-              variant="outline"
-              className="bg-editor-panel/50 hover:bg-editor-panel"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
-            </Button>
+            {currentStep > 0 && (
+              <Button
+                onClick={handlePreviousStep}
+                variant="outline"
+                className="bg-editor-panel/50 hover:bg-editor-panel"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
+            )}
+            
+            {currentStep === 0 && <div />} {/* Empty div to maintain flex spacing when back button is hidden */}
             
             {currentStep < EDITOR_STEPS.length - 1 && (
               <Button
