@@ -24,10 +24,9 @@ const Index = () => {
 
   const handleIntroComplete = () => {
     setShowIntro(false);
+    // Always show tutorial after intro unless explicitly skipped before
     const skipTutorial = localStorage.getItem('skipTutorial') === 'true';
-    if (!skipTutorial) {
-      setShowTutorial(true);
-    }
+    setShowTutorial(!skipTutorial);
   };
 
   const handleTutorialComplete = () => {
