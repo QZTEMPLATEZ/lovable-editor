@@ -6,13 +6,15 @@ import TutorialVideo from "@/components/TutorialVideo";
 const Index = () => {
   const [showIntro, setShowIntro] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
-  const [greeting, setGreeting] = useState("Good morning");
+  const [greeting, setGreeting] = useState("Good evening");
 
   useEffect(() => {
     const hour = new Date().getHours();
-    if (hour >= 12 && hour < 17) {
+    if (hour >= 5 && hour < 12) {
+      setGreeting("Good morning");
+    } else if (hour >= 12 && hour < 17) {
       setGreeting("Good afternoon");
-    } else if (hour >= 17 || hour < 5) {
+    } else {
       setGreeting("Good evening");
     }
   }, []);
@@ -48,7 +50,7 @@ const Index = () => {
             <div className="space-y-2">
               <p className="text-lg text-editor-text/80">{greeting}, Guest</p>
               <h1 className="text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-                Professional Wedding Editor
+                Good Evening Guest
               </h1>
             </div>
             
