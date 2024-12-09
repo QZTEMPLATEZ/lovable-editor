@@ -112,31 +112,35 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier 
                     data-[state=active]:shadow-[0_0_30px_rgba(168,85,247,0.15)] data-[state=active]:backdrop-blur-sm
                     data-[state=inactive]:opacity-50 data-[state=inactive]:hover:opacity-75 h-full`}
                 >
-                  <div className="flex flex-col items-start text-left space-y-4 w-full">
-                    <div className="flex justify-between items-center w-full">
-                      <Badge variant="secondary" className="text-xl font-bold bg-yellow-500/10 text-yellow-300 border-yellow-500/20">
-                        {duration.name}
-                      </Badge>
-                      <Badge variant="outline" className="px-3 py-1 text-sm font-medium uppercase tracking-wider bg-yellow-500/10 text-yellow-300 border-yellow-500/20">
-                        {duration.tier}
-                      </Badge>
+                  <div className="flex flex-col items-start text-left w-full">
+                    <div className="w-full mb-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-2xl font-bold text-yellow-300">
+                          {duration.name}
+                        </h3>
+                        <Badge 
+                          variant="outline" 
+                          className="px-3 py-1 text-sm font-medium uppercase tracking-wider bg-yellow-500/10 text-yellow-300 border-yellow-500/20"
+                        >
+                          {duration.tier}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-base font-medium text-gray-400">
+                          {duration.label}
+                        </span>
+                        {duration.tier !== 'basic' && (
+                          <Crown className="w-4 h-4 text-yellow-400" />
+                        )}
+                      </div>
                     </div>
                     
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg font-medium text-gray-300 group-data-[state=active]:text-purple-300 transition-colors">
-                        {duration.label}
-                      </span>
-                      {duration.tier !== 'basic' && (
-                        <Crown className="w-4 h-4 text-yellow-400" />
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-400">
+                    <div className="w-full pt-4 border-t border-purple-500/20">
+                      <p className="text-sm text-gray-400 mb-3">
                         {duration.description}
                       </p>
                       <div className="flex items-center text-gray-400 text-sm">
-                        <span className="w-1 h-1 bg-yellow-400/50 rounded-full mr-2"></span>
+                        <span className="w-1.5 h-1.5 bg-yellow-400/50 rounded-full mr-2"></span>
                         Recommended Tracks: {duration.recommendedTracks}
                       </div>
                     </div>
