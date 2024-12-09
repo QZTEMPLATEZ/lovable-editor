@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { ArrowLeft, ArrowRight, Film, Music, Upload, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Film, Music, Upload, Wand2, Zap } from 'lucide-react';
 import EditorStepsLayout from './editor/EditorStepsLayout';
-import StartEditingButton from './editor/StartEditingButton';
-import AIScriptWindow from './editor/AIScriptWindow';
 import { VideoSizeRange } from './VideoSizeSelector';
 import { EditingMode } from './EditingModeSelector';
 import EditingProgress from './EditingProgress';
@@ -12,6 +10,7 @@ import EditorHeader from './EditorHeader';
 import ReferenceFilmsSection from './ReferenceFilmsSection';
 import EditingInterface from './EditingInterface';
 import RawFilesSection from './RawFilesSection';
+import AIEditStep from './editor/AIEditStep';
 
 const EDITOR_STEPS = [
   { 
@@ -56,7 +55,6 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
   const [selectedMusic, setSelectedMusic] = useState<File[]>([]);
   const { toast } = useToast();
 
-  // Track completion status for each step
   const isStepCompleted = (step: number): boolean => {
     switch (step) {
       case 0: // Duration
@@ -162,7 +160,6 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             onDrop={handleReferenceDrop}
             onDragOver={(e) => e.preventDefault()}
             videoFiles={referenceFiles}
-            onContinue={handleNextStep}
           />
         )}
         
@@ -175,21 +172,15 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             onDrop={handleRawDrop}
             onDragOver={(e) => e.preventDefault()}
             videoFiles={rawFiles}
-            onContinue={handleNextStep}
           />
         )}
         
         {currentStep === 4 && (
-          <>
-            <AIScriptWindow 
-              value={aiScript}
-              onChange={setAiScript}
-            />
-            <StartEditingButton 
-              onClick={handleStartEditing}
-              disabled={!aiScript}
-            />
-          </>
+          <AIEditStep 
+            aiScript={aiScript}
+            onChange={setAiScript}
+            onStartEditing={handleStartEditing}
+          />
         )}
 
         {!isProcessing && currentStep < EDITOR_STEPS.length && (
