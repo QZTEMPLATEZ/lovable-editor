@@ -35,6 +35,15 @@ export default {
           border: "#2A2A2A",
           button: "#3A3A3A",
           text: "#CCCCCC",
+          glow: {
+            purple: "#9b87f5",
+            pink: "#D946EF",
+            blue: "#0EA5E9"
+          },
+          glass: {
+            light: "rgba(255, 255, 255, 0.05)",
+            dark: "rgba(0, 0, 0, 0.2)"
+          }
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -87,11 +96,29 @@ export default {
             backgroundPosition: "100% 50%",
           },
         },
+        "glow-pulse": {
+          "0%, 100%": {
+            opacity: "1",
+          },
+          "50%": {
+            opacity: "0.5",
+          },
+        },
+        "float": {
+          "0%, 100%": {
+            transform: "translateY(0)",
+          },
+          "50%": {
+            transform: "translateY(-10px)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "gradient": "gradient 15s ease infinite",
+        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
+        "float": "float 3s ease-in-out infinite",
       },
     },
   },
