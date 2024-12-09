@@ -31,7 +31,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             className="absolute inset-0"
           >
             <img
-              src="/lovable-uploads/8d72e406-120c-4cf2-bcc4-c345954f8e83.png"
+              src="/lovable-uploads/64eddcfd-5bb4-4236-bf5b-c2424f14eea2.png"
               alt="Wedding Editor Intro"
               className="w-full h-full object-cover"
             />
@@ -50,11 +50,11 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1 }}
           >
-            <h1 className="text-4xl font-bold text-pink-400">WEDDING TEMPLATEZ</h1>
+            <h1 className="text-4xl font-bold text-pink-400">WEDDING DREAMS</h1>
             <div className="text-lg text-pink-300/80 font-light tracking-wider">
-              <p>ヴァンメムでさす たヴタ.モヴ゜</p>
-              <p>ふみンナ-ナオョベ゜</p>
-              <p>タフ'キチ.カセダ</p>
+              <p>ウェディングドリームズ</p>
+              <p>永遠の愛の物語</p>
+              <p>美しい瞬間を永遠に</p>
             </div>
           </motion.div>
 
@@ -64,11 +64,11 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.5 }}
           >
-            <h2 className="text-2xl font-medium text-pink-400">VIDEO VIIDO SUIITE</h2>
+            <h2 className="text-2xl font-medium text-pink-400">ETERNAL MOMENTS</h2>
             <div className="text-lg text-pink-300/80 font-light tracking-wider">
-              <p>阪伊系災力ホカル</p>
-              <p>アヴイニフバンシイプ</p>
-              <p>雨屋姿互高奈ホ示父</p>
+              <p>愛と美の調和</p>
+              <p>思い出を紡ぐ</p>
+              <p>心に刻む瞬間</p>
             </div>
           </motion.div>
           
