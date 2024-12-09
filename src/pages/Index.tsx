@@ -48,9 +48,9 @@ const Index = () => {
         ) : (
           <div className="space-y-12">
             <div className="space-y-2">
-              <p className="text-lg text-editor-text/80">{greeting}, Guest</p>
+              <p className="text-lg text-editor-text/80">{greeting}</p>
               <h1 className="text-4xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-                {greeting}, Guest
+                {greeting}
               </h1>
             </div>
             
