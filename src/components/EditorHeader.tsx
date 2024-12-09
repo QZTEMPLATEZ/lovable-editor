@@ -67,22 +67,14 @@ const VIDEO_DURATIONS: VideoSizeRange[] = [
 
 const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier = 'basic' }: EditorHeaderProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center space-y-8 mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 rounded-full border border-purple-500/20 backdrop-blur-sm">
-            <Clock className="w-4 h-4 text-purple-300" />
-            <span className="text-sm font-medium text-purple-200">
-              Duration Selection
-            </span>
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl font-bold text-white tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-white animate-gradient">
+    <div className="min-h-screen bg-editor-bg py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-medium text-white mb-4">
             Select Video Duration
           </h1>
-          
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed font-light">
-            Choose the ideal length for your wedding film. Each option is carefully crafted to capture the essence of your special day.
+          <p className="text-gray-400 text-lg">
+            Choose the perfect length for your wedding story
           </p>
         </div>
 
@@ -97,7 +89,7 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier 
             }
           }}
         >
-          <TabsList className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full bg-transparent">
+          <TabsList className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full bg-transparent">
             {VIDEO_DURATIONS.map((duration, index) => {
               const isLocked = userTier === 'basic' && duration.tier !== 'basic';
               
@@ -106,44 +98,41 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier 
                   key={`${duration.min}-${duration.max}`}
                   value={`${duration.min}-${duration.max}`}
                   disabled={isLocked}
-                  className={`group relative p-8 transition-all duration-500 rounded-2xl border-2
-                    ${isLocked ? 'opacity-50 border-purple-500/10' : 'hover:border-purple-400/50 border-purple-500/20'} 
-                    data-[state=active]:scale-[1.02] data-[state=active]:bg-purple-500/10 
-                    data-[state=active]:shadow-[0_0_40px_rgba(168,85,247,0.2)] data-[state=active]:backdrop-blur-lg
-                    data-[state=inactive]:opacity-70 data-[state=inactive]:hover:opacity-90 h-full
-                    hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300`}
+                  className={`relative p-6 transition-all duration-300 rounded-lg border
+                    ${isLocked 
+                      ? 'border-editor-border/20 opacity-50' 
+                      : 'hover:border-editor-accent/50 border-editor-border/30'} 
+                    data-[state=active]:border-editor-accent data-[state=active]:bg-editor-accent/10
+                    data-[state=active]:shadow-[0_0_20px_rgba(155,135,245,0.2)]
+                    data-[state=inactive]:hover:bg-editor-panel/50
+                    h-full flex flex-col justify-between`}
                 >
-                  <div className="flex flex-col items-center text-center w-full space-y-6">
-                    <div className="w-full space-y-4">
-                      <div className="flex flex-col items-center gap-3">
-                        <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-yellow-200 via-yellow-300 to-yellow-200 animate-gradient">
-                          {duration.name}
-                        </h3>
-                        <Badge 
-                          variant="outline" 
-                          className="px-4 py-1 text-sm font-medium uppercase tracking-wider bg-yellow-500/5 text-yellow-200/90 border-yellow-500/20"
-                        >
-                          {duration.tier}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center justify-center gap-2">
-                        <span className="text-lg font-medium text-gray-300">
-                          {duration.label}
-                        </span>
-                        {duration.tier !== 'basic' && (
-                          <Crown className="w-5 h-5 text-yellow-400/80" />
-                        )}
-                      </div>
+                  <div className="space-y-3 text-left">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-medium text-white">
+                        {duration.name}
+                      </h3>
+                      {duration.tier !== 'basic' && (
+                        <Crown className="w-4 h-4 text-editor-accent/80" />
+                      )}
                     </div>
                     
-                    <div className="w-full pt-6 border-t border-purple-500/20">
-                      <p className="text-base text-gray-300/90 mb-4 leading-relaxed">
-                        {duration.description}
-                      </p>
-                      <div className="flex items-center justify-center text-gray-300/80 text-sm gap-2">
-                        <span className="w-2 h-2 bg-yellow-400/50 rounded-full"></span>
-                        Recommended Tracks: {duration.recommendedTracks}
-                      </div>
+                    <Badge 
+                      variant="secondary" 
+                      className="bg-editor-panel/50 text-xs font-normal text-gray-300"
+                    >
+                      {duration.label}
+                    </Badge>
+                    
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                      {duration.description}
+                    </p>
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-editor-border/20">
+                    <div className="flex items-center text-sm text-gray-400">
+                      <Clock className="w-4 h-4 mr-2 text-editor-accent/70" />
+                      {duration.recommendedTracks} track{duration.recommendedTracks > 1 ? 's' : ''}
                     </div>
                   </div>
                 </TabsTrigger>
