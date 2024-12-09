@@ -118,35 +118,39 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Pro Plan */}
+            {/* MAX Plan */}
             <div className="relative p-8 rounded-2xl border border-editor-glow-purple bg-editor-panel/50 backdrop-blur-xl">
               <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/10 via-transparent to-editor-glow-pink/10 rounded-2xl" />
               <div className="relative space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-bold text-white">Pro Plan</h3>
+                  <h3 className="text-2xl font-bold text-white">MAX Plan</h3>
                   <span className="px-3 py-1 text-sm bg-editor-glow-purple/20 text-editor-glow-purple rounded-full">
-                    Popular
+                    Premium
                   </span>
                 </div>
                 <ul className="space-y-4 text-left text-gray-300">
                   <li className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-editor-glow-purple rounded-full" />
-                    Advanced AI features
+                    8-12 minutes films
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-editor-glow-purple rounded-full" />
-                    4K export quality
+                    Unlimited edits
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-editor-glow-purple rounded-full" />
-                    Unlimited video uploads
+                    10 premium movie styles
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-editor-glow-purple rounded-full" />
+                    4K sequence export
                   </li>
                 </ul>
                 <Button
                   onClick={handleSkipTutorial}
                   className="w-full bg-editor-accent hover:bg-editor-accent/80 text-white"
                 >
-                  Upgrade to Pro
+                  Upgrade to MAX
                 </Button>
               </div>
             </div>
