@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useToast } from '@/components/ui/use-toast';
 
 interface TutorialVideoProps {
   onComplete: () => void;
@@ -10,15 +8,10 @@ interface TutorialVideoProps {
 
 const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
   const [dontShowAgain, setDontShowAgain] = useState(false);
-  const { toast } = useToast();
 
-  const handleSkip = () => {
+  const handleVideoEnded = () => {
     if (dontShowAgain) {
       localStorage.setItem('skipTutorial', 'true');
-      toast({
-        title: "Tutorial preferences saved",
-        description: "The tutorial will not be shown again",
-      });
     }
     onComplete();
   };
@@ -33,28 +26,14 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
       <div className="max-w-4xl w-full mx-auto p-6">
         <div className="relative rounded-lg overflow-hidden bg-editor-bg border border-editor-border">
           <div className="aspect-video w-full">
-            <video
+            <iframe
               width="100%"
               height="100%"
-              controls
-              playsInline
-              muted
-              autoPlay
+              src="https://www.youtube.com/embed/txBOuZWJcXg?autoplay=1&controls=0&rel=0&showinfo=0&modestbranding=1"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               className="w-full h-full"
-              src="https://www.dropbox.com/scl/fi/zvk8h0g2yjgcxawavez0g/Where-Intelligence-Meets-Art.mp4?rlkey=m7qay3rbn2gtbl36y4tr7lu23&raw=1"
-            >
-              Your browser does not support the video tag.
-            </video>
-          </div>
-          
-          <div className="absolute top-4 right-4">
-            <Button
-              variant="secondary"
-              onClick={handleSkip}
-              className="bg-black/50 hover:bg-black/70 text-white"
-            >
-              Skip Tutorial
-            </Button>
+              onEnded={handleVideoEnded}
+            />
           </div>
           
           <div className="absolute bottom-4 left-4">
@@ -68,7 +47,7 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
                 htmlFor="dontShowAgain"
                 className="text-sm text-white cursor-pointer"
               >
-                Don't show this again
+                Don't show again
               </label>
             </div>
           </div>
