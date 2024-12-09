@@ -27,7 +27,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       <div className="relative w-full max-w-7xl mx-auto">
         <AspectRatio ratio={16/9} className="overflow-hidden">
           <img
-            src="/lovable-uploads/e2c0ab7b-c4f0-418d-9d71-1c673bfddabe.png"
+            src="/lovable-uploads/c924af7f-305d-40de-aadf-110a0bc2f001.png"
             alt="Wedding Editor Intro"
             className="w-full h-full object-cover"
           />
