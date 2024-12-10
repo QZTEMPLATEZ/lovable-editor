@@ -25,12 +25,8 @@ const AppContent = () => {
         return 1;
       case '/music':
         return 2;
-      case '/upload':
-        return 3;
-      case '/edit':
-        return 4;
       default:
-        return -1; // Return -1 for paths that aren't part of the steps
+        return -1;
     }
   };
 
@@ -69,6 +65,15 @@ const AppContent = () => {
                   onStyleSelect={handleStyleSelect}
                   onCustomVideoUpload={handleCustomVideoUpload}
                 />
+              } 
+            />
+            <Route 
+              path="/music" 
+              element={
+                <div className="text-center py-12">
+                  <h2 className="text-2xl font-bold mb-4">Music Selection</h2>
+                  <p>Music selection step is being rebuilt...</p>
+                </div>
               } 
             />
           </Routes>

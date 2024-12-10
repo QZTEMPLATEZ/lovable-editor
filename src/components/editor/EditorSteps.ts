@@ -10,13 +10,5 @@ export const EDITOR_STEPS = [
   {
     title: "Music",
     description: "Add soundtrack"
-  },
-  {
-    title: "Upload",
-    description: "Add your footage"
-  },
-  {
-    title: "Edit",
-    description: "AI creates edit"
   }
 ];
