@@ -39,8 +39,8 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
             >
               <div className="w-full h-[50vh] relative overflow-hidden rounded-2xl">
                 <img
-                  src="/lovable-uploads/862aebf7-0d0b-4881-add7-261b860643d5.png"
-                  alt="Wedding Video Editor"
+                  src="/lovable-uploads/262e15da-89b9-4313-a691-3a5e90f238d7.png"
+                  alt="OSÍRIZ EDITION"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
