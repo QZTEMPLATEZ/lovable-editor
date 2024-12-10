@@ -30,10 +30,10 @@ const StyleHeader = () => {
       {/* Content Layer */}
       <div className="relative z-[3] container mx-auto h-full">
         <div className="flex flex-col justify-center h-full max-w-2xl px-6 py-16">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-cinzel font-bold text-white mb-6 leading-tight">
             Choose Your Style
           </h1>
-          <p className="text-xl text-white/80 mb-8 max-w-xl">
+          <p className="text-xl text-white/80 mb-8 max-w-xl font-italiana">
             Select a cinematic style that matches your vision. Each style offers a unique way to tell your story.
           </p>
           <div className="flex flex-wrap gap-4">
