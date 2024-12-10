@@ -7,6 +7,7 @@ import IntroScreen from '../components/IntroScreen';
 import SearchBar from '../components/dashboard/SearchBar';
 import RecentProjects, { Project } from '../components/dashboard/RecentProjects';
 import TutorialSection, { Tutorial } from '../components/dashboard/TutorialSection';
+import PricingPlans from '../components/pricing/PricingPlans';
 
 const RECENT_PROJECTS: Project[] = [
   {
@@ -70,6 +71,7 @@ const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showMainContent, setShowMainContent] = useState(!showIntro);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [showPricing, setShowPricing] = useState(false);
 
   const handleNewProject = () => {
     navigate('/duration');
@@ -84,14 +86,22 @@ const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
     setShowTutorial(true);
   };
 
+  const handleIntroComplete = () => {
+    setShowPricing(true);
+  };
+
+  const handlePricingComplete = () => {
+    setShowMainContent(true);
+  };
+
   const filteredProjects = RECENT_PROJECTS.filter(project =>
     project.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (!showMainContent) {
+  if (!showMainContent && !showPricing) {
     return (
       <div className="space-y-4">
-        <IntroScreen onComplete={() => setShowMainContent(true)} />
+        <IntroScreen onComplete={handleIntroComplete} />
         <div className="flex items-center space-x-2 justify-center">
           <Checkbox 
             id="dontShow" 
@@ -106,6 +116,10 @@ const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
         </div>
       </div>
     );
+  }
+
+  if (showPricing) {
+    return <PricingPlans onComplete={handlePricingComplete} />;
   }
 
   return (

@@ -59,11 +59,19 @@ const FeatureList = ({ features }: { features: PlanFeature[] }) => (
   </ul>
 );
 
-const PricingPlans = () => {
+interface PricingPlansProps {
+  onComplete?: () => void;
+}
+
+const PricingPlans = ({ onComplete }: PricingPlansProps) => {
   const navigate = useNavigate();
 
   const handlePlanSelect = () => {
-    navigate('/dashboard');
+    if (onComplete) {
+      onComplete();
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (
