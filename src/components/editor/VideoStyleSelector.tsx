@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +24,10 @@ const VIDEO_STYLES = [
       'Balanced framing & composition',
       'Smooth, intentional movements',
       'Emotional storytelling flow',
-      'Scene-specific pacing'
+      'Scene-specific pacing',
+      'Natural transitions',
+      'Elegant sound design',
+      'Traditional editing rhythm'
     ]
   },
   {
@@ -40,7 +43,9 @@ const VIDEO_STYLES = [
       'Bold storytelling approach',
       'Artistic scene sequencing',
       'Enhanced emotional peaks',
-      'Scene-specific pacing'
+      'Scene-specific pacing',
+      'Cinematic sound design',
+      'Advanced color treatment'
     ]
   },
   {
@@ -56,7 +61,9 @@ const VIDEO_STYLES = [
       'Long, uninterrupted takes',
       'Minimal transitions',
       'Ambient sound focus',
-      'Real-time pacing'
+      'Real-time pacing',
+      'Candid moment preservation',
+      'Natural lighting emphasis'
     ]
   },
   {
@@ -69,7 +76,12 @@ const VIDEO_STYLES = [
       'Bold color treatment',
       'Fast-paced cuts',
       'Music-driven timing',
-      'Creative effects'
+      'Creative effects',
+      'Dynamic transitions',
+      'Rhythmic sequencing',
+      'Vibrant aesthetics',
+      'Motion-focused scenes',
+      'Contemporary style'
     ]
   }
 ];
@@ -93,7 +105,9 @@ const VideoStyleSelector = ({
         ? "Your wedding film will be edited with a focus on authenticity and natural storytelling, preserving real moments and ambient sounds."
         : style?.id === 'cinematic'
           ? "Your wedding film will be edited with advanced cinematic techniques, emphasizing dramatic storytelling and dynamic visuals."
-          : "Your wedding film will be edited with this cinematic style.",
+          : style?.id === 'dynamic'
+            ? "Your wedding film will be edited with high-energy pacing and creative transitions for a contemporary feel."
+            : "Your wedding film will be edited with timeless cinematic techniques for an elegant result.",
     });
 
     if (onNext) {
