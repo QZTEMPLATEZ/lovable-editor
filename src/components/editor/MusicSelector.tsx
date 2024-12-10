@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, Upload, Waveform, Clock, AlertCircle, ChevronRight, Trash2, Play, Pause, Volume2 } from 'lucide-react';
+import { Music, Upload, Clock, AlertCircle, ChevronRight, Trash2, Play, Pause, Volume2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -221,7 +221,7 @@ const MusicSelector = () => {
                     {track.duration}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Waveform className="h-4 w-4" />
+                    <Music className="h-4 w-4" />
                     {track.bpm} BPM
                   </span>
                   <span className="flex items-center gap-1">
