@@ -96,7 +96,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
         {/* Hero Content */}
         <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center">
           <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl font-medium text-white mb-4 font-cinzel tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-semibold text-white mb-4 font-italiana tracking-wide">
               Choose Your Film Length
             </h1>
             <p className="text-lg text-white/80 mb-8 leading-relaxed max-w-2xl">
