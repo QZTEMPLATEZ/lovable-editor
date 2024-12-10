@@ -136,14 +136,14 @@ const VideoStyleItem = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onStyleSelect();
+          }}
         >
           <Button 
             variant="outline" 
             className="border border-white text-white hover:bg-white/10 uppercase tracking-wider text-xs"
-            onClick={(e) => {
-              e.stopPropagation();
-              window.location.href = `/explore/${style.id}`;
-            }}
           >
             EXPLORE
           </Button>

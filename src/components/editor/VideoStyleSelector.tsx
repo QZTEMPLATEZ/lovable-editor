@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
@@ -75,30 +75,16 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             isMuted={isMuted}
             onMouseEnter={() => handleMouseEnter(style.id)}
             onMouseLeave={() => handleMouseLeave(style.id)}
-            onStyleSelect={() => onStyleSelect(style.id as VideoStyle)}
+            onStyleSelect={() => {
+              onStyleSelect(style.id as VideoStyle);
+              navigate('/edit');
+            }}
             onToggleMute={(e) => {
               e.stopPropagation();
               setIsMuted(!isMuted);
             }}
           />
         ))}
-      </div>
-
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex gap-4">
-        <Button
-          onClick={() => navigate('/duration')}
-          variant="outline"
-          className="bg-black/50 border border-white/20 text-white hover:bg-white/10 backdrop-blur-sm"
-        >
-          Back
-        </Button>
-        <Button
-          onClick={() => navigate('/edit')}
-          className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90"
-          disabled={!selectedStyle}
-        >
-          Next Step
-        </Button>
       </div>
 
       <input
