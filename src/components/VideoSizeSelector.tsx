@@ -1,10 +1,10 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
-import { Clock } from 'lucide-react';
+import { Clock, Check } from 'lucide-react';
 
 export interface VideoSizeRange {
   min: number;
@@ -81,8 +81,11 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
   const navigate = useNavigate();
 
   const handleSizeSelect = (size: VideoSizeRange) => {
-    // Remove tier restriction for testing
     onSizeSelect(size);
+    toast({
+      title: "Duration Selected",
+      description: `Selected ${size.name} (${size.label})`,
+    });
   };
 
   const handleBack = () => {
@@ -102,61 +105,53 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {VIDEO_SIZES.map((size) => {
-          // Remove isLocked for testing
-          const isLocked = false;
           const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
           
           return (
             <motion.div
               key={`${size.min}-${size.max}`}
               whileHover={{ scale: 1.02 }}
-              className={`relative rounded-xl border ${
-                isSelected 
-                  ? 'border-purple-500 bg-purple-500/10' 
-                  : 'border-gray-700 bg-gray-800/50'
-              } p-6 cursor-pointer transition-all duration-300`}
-              onClick={() => !isLocked && handleSizeSelect(size)}
+              whileTap={{ scale: 0.98 }}
+              className={`relative rounded-xl border transition-all duration-300 cursor-pointer
+                ${isSelected 
+                  ? 'border-editor-glow-purple shadow-lg shadow-editor-glow-purple/20 bg-editor-glow-purple/10' 
+                  : 'border-gray-700 bg-gray-800/50 hover:border-editor-glow-purple/50 hover:bg-gray-800/70'
+                }`}
+              onClick={() => handleSizeSelect(size)}
             >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold text-white">{size.name}</h3>
-                <PlanBadge tier={size.tier} />
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-xl font-semibold text-white">{size.name}</h3>
+                  <PlanBadge tier={size.tier} />
+                </div>
+
+                <div className="flex items-center gap-2 text-gray-300 mb-4">
+                  <Clock className="w-4 h-4" />
+                  <span>{size.label}</span>
+                </div>
+
+                <p className="text-gray-400 text-sm mb-4 whitespace-pre-line">
+                  {size.description}
+                </p>
+
+                <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg">
+                  <Clock className="w-4 h-4" />
+                  <span>Recommended Tracks: {size.recommendedTracks}</span>
+                </div>
+
+                <AnimatePresence>
+                  {isSelected && (
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      className="absolute -top-2 -right-2 bg-editor-glow-purple rounded-full p-2 shadow-lg shadow-editor-glow-purple/50"
+                    >
+                      <Check className="w-4 h-4 text-white" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-
-              <div className="flex items-center gap-2 text-gray-300 mb-4">
-                <Clock className="w-4 h-4" />
-                <span>{size.label}</span>
-              </div>
-
-              <p className="text-gray-400 text-sm mb-4 whitespace-pre-line">
-                {size.description}
-              </p>
-
-              <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg">
-                <Clock className="w-4 h-4" />
-                <span>Recommended Tracks: {size.recommendedTracks}</span>
-              </div>
-
-              {isSelected && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="absolute -top-2 -right-2 bg-purple-500 rounded-full p-2"
-                >
-                  <svg
-                    className="w-4 h-4 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </motion.div>
-              )}
             </motion.div>
           );
         })}
@@ -173,7 +168,11 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
         
         <Button
           onClick={() => navigate('/style')}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+          className={`transition-all duration-300 ${
+            selectedSize
+              ? 'bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 shadow-lg shadow-editor-glow-purple/20'
+              : 'bg-gray-700 opacity-50 cursor-not-allowed'
+          }`}
           disabled={!selectedSize}
         >
           Next: Choose Style
