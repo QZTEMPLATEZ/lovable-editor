@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { VideoStyle } from '@/types/video';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const VIDEO_STYLES = [
   {
@@ -41,12 +44,21 @@ interface VideoStyleSelectorProps {
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-bg min-h-screen">
-      <div className="text-center py-12 px-4 bg-editor-bg border-b border-editor-border">
+      <div className="text-center py-12 px-4 bg-editor-bg border-b border-editor-border relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-purple-300 transition-colors"
+          onClick={() => navigate('/duration')}
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </Button>
         <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase mb-3">
-          Select Your Visual Direction
+          SELECT MOOD FILM
         </h1>
         <p className="text-xs text-white/60 tracking-wider font-light">
           Choose the perfect aesthetic to bring your vision to life
