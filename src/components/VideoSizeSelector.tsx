@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 
-interface VideoSize {
+export interface VideoSizeRange {
   name: string;
   label: string;
   min: number;
   max: number;
-  musicTracks: number;
+  description: string;
+  icon: React.ReactNode | null;
+  recommendedTracks: number;
   tier: 'basic' | 'pro' | 'business';
 }
 
@@ -21,9 +23,36 @@ interface VideoSizeSelectorProps {
 }
 
 const VIDEO_SIZES: VideoSize[] = [
-  { name: "short", label: "Short", min: 0, max: 1.5, musicTracks: 1, tier: 'basic' },
-  { name: "medium", label: "Medium", min: 1.5, max: 5, musicTracks: 2, tier: 'pro' },
-  { name: "long", label: "Long", min: 5, max: 12, musicTracks: 3, tier: 'business' },
+  { 
+    name: "short", 
+    label: "Short", 
+    min: 0, 
+    max: 1.5, 
+    description: "Quick, high-energy edit for social media",
+    icon: null,
+    musicTracks: 1, 
+    tier: 'basic' 
+  },
+  { 
+    name: "medium", 
+    label: "Medium", 
+    min: 1.5, 
+    max: 5, 
+    description: "Dynamic event summary",
+    icon: null,
+    musicTracks: 2, 
+    tier: 'pro' 
+  },
+  { 
+    name: "long", 
+    label: "Long", 
+    min: 5, 
+    max: 12, 
+    description: "Detailed artistic edit",
+    icon: null,
+    musicTracks: 3, 
+    tier: 'business' 
+  },
 ];
 
 const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: VideoSizeSelectorProps) => {
