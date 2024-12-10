@@ -74,7 +74,7 @@ const PricingPlans = () => {
           <PriceDisplay price={9.99} />
           <FeatureList features={basicFeatures} />
           <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full">
-            Select
+            Try Free
           </Button>
         </div>
       </div>
