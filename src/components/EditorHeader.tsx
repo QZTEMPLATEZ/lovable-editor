@@ -1,40 +1,32 @@
 import React from 'react';
 import { EditingMode } from './EditingModeSelector';
 import { VideoSizeRange } from './VideoSizeSelector';
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Clock, Crown, Check, Sparkles } from 'lucide-react';
-import { Badge } from "@/components/ui/badge";
+import { Tabs } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-
-interface EditorHeaderProps {
-  editingMode: EditingMode;
-  targetDuration: VideoSizeRange;
-  onDurationChange: (duration: VideoSizeRange) => void;
-  userTier?: 'basic' | 'pro' | 'business';
-}
+import DurationGrid from './editor/DurationGrid';
 
 const VIDEO_DURATIONS: VideoSizeRange[] = [
-  {
-    min: 0.5,
-    max: 1.5,
-    name: "Social",
-    label: "30s - 1:30min",
-    description: "Quick, high-energy edit for social media",
-    icon: null,
-    recommendedTracks: 1,
-    tier: 'basic'
-  },
   {
     min: 3,
     max: 5,
     name: "Trailer",
     label: "3-5 minutes",
-    description: "Dynamic event summary",
+    description: "Dynamic event summary\n• Best moment highlights\n• Engaging transitions\n• Emotional storytelling\n• Professional pacing\n• Perfect for sharing",
     icon: null,
     recommendedTracks: 2,
     tier: 'pro'
+  },
+  {
+    min: 0.5,
+    max: 1.5,
+    name: "Social",
+    label: "30s - 1:30min",
+    description: "Quick, high-energy edit for social media\n• Perfect for Instagram/TikTok\n• Fast-paced highlights\n• Key moments only\n• Music-driven edits\n• Vertical format ready",
+    icon: null,
+    recommendedTracks: 1,
+    tier: 'basic'
   },
   {
     min: 8,
@@ -68,32 +60,14 @@ const VIDEO_DURATIONS: VideoSizeRange[] = [
   }
 ];
 
-const getPlanBadge = (tier: 'basic' | 'pro' | 'business') => {
-  switch (tier) {
-    case 'basic':
-      return (
-        <Badge variant="secondary" className="bg-blue-500/10 text-blue-400 border border-blue-500/20">
-          Basic
-        </Badge>
-      );
-    case 'pro':
-      return (
-        <Badge variant="secondary" className="bg-purple-500/10 text-purple-400 border border-purple-500/20">
-          <Crown className="w-3 h-3 mr-1" />
-          Pro
-        </Badge>
-      );
-    case 'business':
-      return (
-        <Badge variant="secondary" className="bg-amber-500/10 text-amber-400 border border-amber-500/20">
-          <Sparkles className="w-3 h-3 mr-1" />
-          Business
-        </Badge>
-      );
-  }
-};
+interface EditorHeaderProps {
+  editingMode: EditingMode;
+  targetDuration: VideoSizeRange;
+  onDurationChange: (duration: VideoSizeRange) => void;
+  userTier?: 'basic' | 'pro' | 'business';
+}
 
-const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier = 'basic' }: EditorHeaderProps) => {
+const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorHeaderProps) => {
   const navigate = useNavigate();
   
   return (
@@ -119,67 +93,17 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange, userTier 
             onValueChange={(value) => {
               const [min, max] = value.split('-').map(Number);
               const newDuration = VIDEO_DURATIONS.find(d => d.min === min && d.max === max);
-              if (newDuration && (userTier !== 'basic' || newDuration.tier === 'basic')) {
+              if (newDuration) {
                 onDurationChange(newDuration);
               }
             }}
           >
-            <TabsList className="w-full bg-transparent grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {VIDEO_DURATIONS.map((duration) => {
-                const isLocked = userTier === 'basic' && duration.tier !== 'basic';
-                const isSelected = duration.min === targetDuration.min && duration.max === targetDuration.max;
-                
-                return (
-                  <motion.div
-                    key={`${duration.min}-${duration.max}`}
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <TabsTrigger
-                      value={`${duration.min}-${duration.max}`}
-                      disabled={isLocked}
-                      className={`relative w-full p-6 transition-all duration-300 rounded-xl
-                        ${isLocked 
-                          ? 'opacity-50' 
-                          : 'hover:bg-editor-accent/10'} 
-                        data-[state=active]:bg-editor-accent/20
-                        data-[state=active]:shadow-[0_0_20px_rgba(155,135,245,0.2)]
-                        h-full flex flex-col items-start gap-3 border border-editor-border/30
-                        backdrop-blur-sm bg-editor-panel/30`}
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <span className="font-medium text-xl text-white">{duration.name}</span>
-                        {getPlanBadge(duration.tier)}
-                      </div>
-                      
-                      <Badge variant="secondary" className="bg-editor-panel/50">
-                        <Clock className="w-4 h-4 mr-2" />
-                        {duration.label}
-                      </Badge>
-                      
-                      <p className="text-sm text-gray-400 text-left">
-                        {duration.description}
-                      </p>
-                      
-                      <div className="flex items-center gap-2 text-sm text-editor-accent mt-2 bg-editor-accent/10 px-3 py-2 rounded-lg">
-                        <Clock className="w-4 h-4" />
-                        <span>Recommended Tracks: {duration.recommendedTracks}</span>
-                      </div>
-
-                      {isSelected && (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="absolute -top-2 -right-2 bg-editor-glow-purple rounded-full p-1"
-                        >
-                          <Check className="w-4 h-4 text-white" />
-                        </motion.div>
-                      )}
-                    </TabsTrigger>
-                  </motion.div>
-                );
-              })}
-            </TabsList>
+            <DurationGrid
+              durations={VIDEO_DURATIONS}
+              selectedDuration={targetDuration}
+              userTier="pro" // Force pro tier access
+              onDurationSelect={onDurationChange}
+            />
           </Tabs>
 
           <motion.div
