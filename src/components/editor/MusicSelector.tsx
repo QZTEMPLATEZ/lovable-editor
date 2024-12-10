@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, Upload, Clock, AlertCircle, ChevronRight, Trash2, Play, Pause, Volume2 } from 'lucide-react';
+import { Clock, AlertCircle, ChevronRight, Volume2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,9 @@ import { Slider } from "@/components/ui/slider";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { detectBeats, analyzeMusicTrack } from '@/utils/audioProcessing';
 import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
+import TrackAnalysis from './music/TrackAnalysis';
+import TrackControls from './music/TrackControls';
+import UploadSection from './music/UploadSection';
 
 interface Track {
   file: File;
@@ -161,33 +164,7 @@ const MusicSelector = () => {
       </div>
 
       {/* Upload Section */}
-      <div className="relative">
-        <input
-          type="file"
-          accept=".mp3,.wav,.aac,audio/*"
-          onChange={handleFileUpload}
-          className="hidden"
-          id="music-upload"
-          multiple
-        />
-        <label
-          htmlFor="music-upload"
-          className="block w-full"
-        >
-          <motion.div
-            whileHover={{ scale: 1.01 }}
-            className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300 bg-purple-500/5"
-          >
-            <Upload className="w-12 h-12 mx-auto text-purple-400 mb-2" />
-            <p className="text-purple-200">
-              Drag and drop your music files here or click to browse
-            </p>
-            <p className="text-sm text-purple-300/70 mt-2">
-              Supported formats: MP3, WAV, AAC
-            </p>
-          </motion.div>
-        </label>
-      </div>
+      <UploadSection onUpload={handleFileUpload} />
 
       {/* Tracks List */}
       <AnimatePresence>
@@ -200,18 +177,11 @@ const MusicSelector = () => {
             className="bg-purple-500/10 rounded-lg p-6 border border-purple-500/20"
           >
             <div className="flex items-center gap-4 mb-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-10 w-10 rounded-full"
-                onClick={() => handleTrackPlay(track.file.name)}
-              >
-                {playingTrack === track.file.name ? (
-                  <Pause className="h-5 w-5" />
-                ) : (
-                  <Play className="h-5 w-5" />
-                )}
-              </Button>
+              <TrackControls 
+                isPlaying={playingTrack === track.file.name}
+                onPlay={() => handleTrackPlay(track.file.name)}
+                onRemove={() => handleTrackRemove(index)}
+              />
 
               <div className="flex-1">
                 <h3 className="font-medium text-purple-200">{track.file.name}</h3>
@@ -220,25 +190,9 @@ const MusicSelector = () => {
                     <Clock className="h-4 w-4" />
                     {track.duration}
                   </span>
-                  <span className="flex items-center gap-1">
-                    <Music className="h-4 w-4" />
-                    {track.bpm} BPM
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Music className="h-4 w-4" />
-                    {track.key}
-                  </span>
+                  <TrackAnalysis bpm={track.bpm || 0} key={track.key || ''} />
                 </div>
               </div>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-red-400/70 hover:text-red-400"
-                onClick={() => handleTrackRemove(index)}
-              >
-                <Trash2 className="h-5 w-5" />
-              </Button>
             </div>
 
             <div className="space-y-2">
