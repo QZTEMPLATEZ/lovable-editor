@@ -37,7 +37,7 @@ const StyleCard = ({ style, isHovered, isMuted, onHover, onToggleMute, onStyleSe
       <div className="absolute inset-0 flex items-center px-24">
         <div className="space-y-2 z-10">
           <motion.h2 
-            className="text-4xl font-cinzel tracking-wider text-black"
+            className={`text-4xl font-cinzel tracking-wider ${isHovered ? 'text-white' : 'text-black'} transition-colors duration-300`}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -45,7 +45,7 @@ const StyleCard = ({ style, isHovered, isMuted, onHover, onToggleMute, onStyleSe
             {style.title}
           </motion.h2>
           <motion.p 
-            className="text-sm tracking-[0.2em] uppercase text-black/70 font-italiana"
+            className={`text-sm tracking-[0.2em] uppercase ${isHovered ? 'text-white/90' : 'text-black/70'} font-italiana transition-colors duration-300`}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -59,7 +59,7 @@ const StyleCard = ({ style, isHovered, isMuted, onHover, onToggleMute, onStyleSe
           >
             <Button 
               variant="outline" 
-              className="mt-4 border border-black text-black hover:bg-black/10 uppercase tracking-wider text-xs"
+              className={`mt-4 border ${isHovered ? 'border-white text-white hover:bg-white/10' : 'border-black text-black hover:bg-black/10'} uppercase tracking-wider text-xs transition-colors duration-300`}
               onClick={(e) => {
                 e.stopPropagation();
                 window.location.href = `/explore/${style.id}`;
