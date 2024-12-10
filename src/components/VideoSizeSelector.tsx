@@ -89,7 +89,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
             loop 
             muted 
             playsInline
-            className="w-[3000px] h-[1300px] object-cover object-center"
+            className="w-[3000px] h-[1000px] object-cover object-center"
             style={{ filter: 'brightness(0.4)' }}
           >
             <source 
