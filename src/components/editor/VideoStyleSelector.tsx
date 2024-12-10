@@ -68,15 +68,15 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
   };
 
   return (
-    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4 bg-gradient-to-br from-editor-bg to-editor-bg/95 relative">
+    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-[#0A0A0A]">
+      <div className="text-center py-12 px-4 relative border-b border-gray-800">
         <button
           onClick={() => navigate('/duration')}
-          className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-editor-panel hover:bg-editor-button border border-editor-border transition-colors duration-300 hover:border-editor-glow-purple/50"
+          className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-gray-900 hover:bg-gray-800 border border-gray-800 transition-colors duration-300"
         >
-          <ChevronLeft className="w-6 h-6 text-white" />
+          <ChevronLeft className="w-6 h-6 text-gray-400" />
         </button>
-        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-editor-glow-purple to-editor-glow-pink">
+        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
           Choose Your Style
         </h1>
       </div>
@@ -85,44 +85,44 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
         {VIDEO_STYLES.map((style) => (
           <div
             key={style.id}
-            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-gradient-to-br from-editor-bg to-editor-bg/95 transition-colors duration-300 border-y border-editor-border"
+            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#0A0A0A] transition-colors duration-300 border-b border-gray-800"
             onMouseEnter={() => handleMouseEnter(style.id)}
             onMouseLeave={handleMouseLeave}
             onClick={() => handleStyleSelectAndNext(style.id)}
           >
             {/* Background grid pattern */}
             <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
-            {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
             
-            <video
-              key={style.id}
-              src={style.previewVideo}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-                hoveredStyle === style.id ? 'opacity-100' : 'opacity-0'
-              }`}
-              loop
-              muted
-              playsInline
-              onMouseEnter={(e) => e.currentTarget.play()}
-              onMouseLeave={(e) => {
-                e.currentTarget.pause();
-                e.currentTarget.currentTime = 0;
-              }}
-            />
+            {/* Video with hover overlay */}
+            <div className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-100 opacity-60">
+              <video
+                key={style.id}
+                src={style.previewVideo}
+                className="w-full h-full object-cover"
+                loop
+                muted
+                playsInline
+                onMouseEnter={(e) => e.currentTarget.play()}
+                onMouseLeave={(e) => {
+                  e.currentTarget.pause();
+                  e.currentTarget.currentTime = 0;
+                }}
+              />
+              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300" />
+            </div>
 
             <div className="relative z-10 flex items-center justify-between h-full w-full px-16 md:px-32">
               <div className="space-y-1">
-                <h2 className="text-3xl md:text-4xl font-cinzel tracking-wider text-white">
+                <h2 className="text-3xl md:text-4xl font-cinzel tracking-wider text-white group-hover:text-white/90 transition-colors">
                   {style.title}
                 </h2>
-                <p className="text-sm md:text-base tracking-[0.2em] uppercase text-gray-400 font-italiana">
+                <p className="text-sm md:text-base tracking-[0.2em] uppercase text-gray-400 font-italiana group-hover:text-gray-300 transition-colors">
                   {style.description}
                 </p>
               </div>
               <button
                 onClick={(e) => handleExploreClick(style.id, e)}
-                className="bg-editor-panel hover:bg-editor-button border border-editor-border text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-editor-glow-purple hover:shadow-lg hover:shadow-editor-glow-purple/20"
+                className="bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10"
               >
                 Explore
               </button>
