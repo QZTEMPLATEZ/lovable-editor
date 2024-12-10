@@ -69,7 +69,7 @@ const VideoStyleItem = ({
         )}
       </AnimatePresence>
 
-      <div className="relative z-10 flex items-center justify-between h-full max-w-full mx-auto w-full px-12">
+      <div className="relative z-10 flex items-center justify-between h-full w-full px-4">
         <div className="space-y-1">
           <motion.h2 
             className="text-3xl font-cinzel tracking-wider text-white"
