@@ -97,7 +97,7 @@ const PricingPlans = () => {
         <div className="relative space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white">MAX</h3>
-            <Bird className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+            <Bird className="w-4 h-4 text-gray-300 fill-gray-300" />
           </div>
           <PriceDisplay 
             price={69.99} 
@@ -119,7 +119,7 @@ const PricingPlans = () => {
         <div className="relative space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white">Business</h3>
-            <Sparkles className="w-4 h-4 text-editor-accent" />
+            <Bird className="w-4 h-4 text-yellow-400 fill-yellow-400" />
           </div>
           <PriceDisplay 
             price={99.99} 
