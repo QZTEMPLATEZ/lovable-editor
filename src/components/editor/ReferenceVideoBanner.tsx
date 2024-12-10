@@ -49,14 +49,19 @@ const ReferenceVideoBanner = ({ onFileInputClick }: ReferenceVideoBannerProps) =
             </div>
           </motion.div>
 
-          {/* Right Column - Decorative Element */}
+          {/* Right Column - Decorative Element with Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative aspect-square hidden md:block"
+            className="relative aspect-square hidden md:block overflow-hidden rounded-3xl"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/20 via-editor-glow-pink/10 to-editor-glow-blue/20 rounded-3xl" />
+            <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/20 via-editor-glow-pink/10 to-editor-glow-blue/20" />
+            <img 
+              src="/lovable-uploads/c90cde09-455d-48c3-9ec2-c1399cc388bd.png"
+              alt="Artistic reference"
+              className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-80"
+            />
             <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
           </motion.div>
         </div>
