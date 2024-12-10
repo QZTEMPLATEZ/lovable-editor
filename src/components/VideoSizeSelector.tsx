@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Clock, Music, Lock, Diamond } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface VideoSizeRange {
   name: string;
@@ -17,40 +18,40 @@ export interface VideoSizeRange {
 }
 
 interface VideoSizeSelectorProps {
-  selectedSize: VideoSize | null;
-  onSizeSelect: (size: VideoSize) => void;
+  selectedSize: VideoSizeRange | null;
+  onSizeSelect: (size: VideoSizeRange) => void;
   userTier?: 'basic' | 'pro' | 'business';
 }
 
-const VIDEO_SIZES: VideoSize[] = [
+const VIDEO_SIZES: VideoSizeRange[] = [
   { 
-    name: "short", 
-    label: "Short", 
-    min: 0, 
+    name: "Social", 
+    label: "30s - 1:30min", 
+    min: 0.5, 
     max: 1.5, 
     description: "Quick, high-energy edit for social media",
     icon: null,
-    musicTracks: 1, 
+    recommendedTracks: 1, 
     tier: 'basic' 
   },
   { 
-    name: "medium", 
-    label: "Medium", 
-    min: 1.5, 
+    name: "Trailer", 
+    label: "3-5 minutes", 
+    min: 3, 
     max: 5, 
     description: "Dynamic event summary",
     icon: null,
-    musicTracks: 2, 
+    recommendedTracks: 2, 
     tier: 'pro' 
   },
   { 
-    name: "long", 
-    label: "Long", 
-    min: 5, 
+    name: "Feature", 
+    label: "8-12 minutes", 
+    min: 8, 
     max: 12, 
     description: "Detailed artistic edit",
     icon: null,
-    musicTracks: 3, 
+    recommendedTracks: 3, 
     tier: 'business' 
   },
 ];
@@ -58,16 +59,18 @@ const VIDEO_SIZES: VideoSize[] = [
 const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: VideoSizeSelectorProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [expandedSize, setExpandedSize] = useState<string | null>(null);
 
-  const handleSizeSelect = (size: VideoSize) => {
+  const handleSizeSelect = (size: VideoSizeRange) => {
+    setExpandedSize(size.name);
     onSizeSelect(size);
   };
 
   const handleNext = () => {
     if (!selectedSize) {
       toast({
-        title: "Select a size",
-        description: "Please select a video size before proceeding.",
+        title: "Select a duration",
+        description: "Please select a video duration before proceeding.",
         variant: "destructive",
       });
       return;
@@ -75,95 +78,91 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
     navigate('/style');
   };
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   return (
-    <div className="space-y-8">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold gradient-text">Choose Video Duration</h2>
-        <p className="text-gray-400">Select the perfect length for your video</p>
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink">
+          Choose Video Duration
+        </h2>
+        <p className="text-gray-400 mt-2">Select the perfect length for your story</p>
       </div>
 
-      <RadioGroup
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-        value={selectedSize?.name}
-        onValueChange={(value) => {
-          const size = VIDEO_SIZES.find((s) => s.name === value);
-          if (size) handleSizeSelect(size);
-        }}
-      >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {VIDEO_SIZES.map((size) => {
           const isLocked = userTier === 'basic' && size.tier !== 'basic';
+          const isSelected = selectedSize?.name === size.name;
+          const isExpanded = expandedSize === size.name;
           
           return (
-            <div
+            <motion.div
               key={size.name}
-              className={`relative group ${
-                isLocked ? 'opacity-75' : ''
-              }`}
+              layout
+              className={`
+                relative rounded-xl border transition-all duration-200 overflow-hidden
+                ${isSelected 
+                  ? 'border-editor-glow-purple bg-editor-panel/50 shadow-lg shadow-editor-glow-purple/20' 
+                  : 'border-editor-border bg-editor-panel/30 hover:border-editor-glow-purple/50'}
+                ${isLocked ? 'opacity-50' : ''}
+              `}
+              onClick={() => !isLocked && handleSizeSelect(size)}
             >
-              <div
-                className={`
-                  p-6 rounded-xl border transition-all duration-200
-                  ${selectedSize?.name === size.name
-                    ? 'border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20'
-                    : 'border-editor-border bg-editor-panel/50 hover:border-purple-500/50'}
-                  ${isLocked ? 'cursor-not-allowed' : 'cursor-pointer'}
-                  relative overflow-hidden
-                `}
-              >
-                {isLocked && (
-                  <div className="absolute inset-0 backdrop-blur-sm bg-editor-bg/50 flex items-center justify-center">
-                    <div className="flex items-center gap-2 text-gray-400">
-                      <Lock className="w-4 h-4" />
-                      <span>Pro Feature</span>
-                    </div>
-                  </div>
-                )}
+              <div className="p-4 cursor-pointer">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-lg font-medium text-white">{size.name}</span>
+                  {size.tier !== 'basic' && (
+                    <Diamond className={`w-4 h-4 ${
+                      size.tier === 'pro' ? 'text-gray-300' : 'text-yellow-400'
+                    }`} />
+                  )}
+                </div>
+                
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Clock className="w-4 h-4" />
+                  <span>{size.label}</span>
+                </div>
 
-                <div className="space-y-4">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg font-semibold text-purple-300">{size.name}</span>
-                      {size.tier !== 'basic' && (
-                        <Diamond className={`w-4 h-4 ${
-                          size.tier === 'pro' ? 'text-gray-300' : 'text-yellow-400'
-                        }`} />
-                      )}
-                    </div>
-                    <span className="text-sm font-medium text-gray-400">{size.label}</span>
-                  </div>
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-4 space-y-3"
+                    >
+                      <p className="text-sm text-gray-400">{size.description}</p>
+                      <div className="flex items-center gap-2 text-sm text-editor-accent">
+                        <Music className="w-4 h-4" />
+                        <span>Recommended Tracks: {size.recommendedTracks}</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <Clock className="w-4 h-4" />
-                      <span>{size.min} - {size.max} minutes</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <Music className="w-4 h-4" />
-                      <span>{size.musicTracks} music tracks</span>
-                    </div>
+              {isLocked && (
+                <div className="absolute inset-0 backdrop-blur-sm bg-editor-bg/50 flex items-center justify-center">
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <Lock className="w-4 h-4" />
+                    <span>Pro Feature</span>
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
+            </motion.div>
           );
         })}
-      </RadioGroup>
+      </div>
 
-      <div className="flex justify-between pt-6 border-t border-purple-500/20">
+      <div className="flex justify-between pt-6 border-t border-editor-border/30">
         <Button
-          onClick={handleBack}
+          onClick={() => navigate('/')}
           variant="outline"
-          className="bg-editor-bg/50 hover:bg-editor-bg border-purple-500/30"
+          className="bg-editor-panel/50 hover:bg-editor-panel"
         >
           Back
         </Button>
         <Button
           onClick={handleNext}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+          className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90"
           disabled={!selectedSize}
         >
           Next
