@@ -16,7 +16,7 @@ const TopNavigation = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <h1 className="font-['Cinzel'] text-lg font-semibold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 hover:scale-105 transition-transform duration-300 cursor-default">
-              OSÍRIS EDITION
+              OSÍRIZ EDITION
             </h1>
           </div>
           <div className="flex items-center space-x-4">
