@@ -11,7 +11,7 @@ interface TutorialVideoProps {
 const TutorialVideo = ({ onComplete, videoUrl = 'https://www.youtube.com/embed/txBOuZWJcXg' }: TutorialVideoProps) => {
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
-  const handleComplete = () => {
+  const handleVideoEnded = () => {
     if (dontShowAgain) {
       localStorage.setItem('skipTutorial', 'true');
     }
@@ -63,22 +63,13 @@ const TutorialVideo = ({ onComplete, videoUrl = 'https://www.youtube.com/embed/t
                   </label>
                 </div>
                 
-                <div className="flex gap-4">
-                  <Button
-                    onClick={handleComplete}
-                    variant="ghost"
-                    className="text-purple-200 hover:text-purple-100"
-                  >
-                    Skip Tutorial
-                  </Button>
-                  <Button
-                    onClick={handleComplete}
-                    variant="secondary"
-                    className="bg-editor-accent hover:bg-editor-accent/80 text-white"
-                  >
-                    Continue
-                  </Button>
-                </div>
+                <Button
+                  onClick={onComplete}
+                  variant="secondary"
+                  className="bg-editor-accent hover:bg-editor-accent/80 text-white"
+                >
+                  Close Video
+                </Button>
               </div>
             </div>
           </div>
