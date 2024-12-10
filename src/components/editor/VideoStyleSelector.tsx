@@ -69,7 +69,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4 bg-gradient-to-r from-editor-bg via-editor-panel to-editor-bg relative">
+      <div className="text-center py-12 px-4 bg-gradient-to-br from-editor-bg to-editor-bg/95 relative">
         <button
           onClick={() => navigate('/duration')}
           className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-editor-panel hover:bg-editor-button border border-editor-border transition-colors duration-300 hover:border-editor-glow-purple/50"
@@ -85,11 +85,16 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
         {VIDEO_STYLES.map((style) => (
           <div
             key={style.id}
-            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-editor-bg transition-colors duration-300 border-y border-editor-border"
+            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-gradient-to-br from-editor-bg to-editor-bg/95 transition-colors duration-300 border-y border-editor-border"
             onMouseEnter={() => handleMouseEnter(style.id)}
             onMouseLeave={handleMouseLeave}
             onClick={() => handleStyleSelectAndNext(style.id)}
           >
+            {/* Background grid pattern */}
+            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
+            
             <video
               key={style.id}
               src={style.previewVideo}
