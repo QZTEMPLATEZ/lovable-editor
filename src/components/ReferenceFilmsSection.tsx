@@ -59,87 +59,83 @@ const ReferenceFilmsSection = ({ onDrop, onDragOver, videoFiles, onContinue }: R
     }
   };
 
-  const handleClearVideo = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-    videoFiles.length = 0;
-    setVideoUrl(null);
-    toast({
-      title: "Video removed",
-      description: "Your video has been removed successfully."
-    });
-  };
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="space-y-6 relative"
-    >
-      {/* Background Video Effect */}
-      <AnimatePresence>
-        {videoUrl && (
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/lovable-uploads/9c94106e-534b-4312-bd91-f8d9f296cfb2.png"
+          alt="Mountain landscape"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/40" />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 pt-32 pb-20">
+        <div className="max-w-3xl">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-6xl font-cinzel text-white mb-6"
+          >
+            Reference Films
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-xl text-gray-200 mb-8"
+          >
+            Upload or drag & drop your inspiration videos to help us understand your vision
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              accept="video/*"
+              className="hidden"
+            />
+            
+            <Button
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-white text-black hover:bg-gray-100 px-8 py-6 text-lg rounded-full"
+            >
+              Start Free Now
+            </Button>
+          </motion.div>
+        </div>
+
+        {/* Drop Zone - Only show if no video is uploaded */}
+        {!videoUrl && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 -z-10 overflow-hidden"
+            transition={{ delay: 0.3 }}
+            onDrop={handleDrop}
+            onDragOver={onDragOver}
+            className="mt-12 border-2 border-dashed border-white/30 rounded-xl p-12 bg-black/20 backdrop-blur-sm"
           >
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-10" />
-            <video
-              src={videoUrl}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover scale-105"
-              onPlay={() => setIsPlaying(true)}
-            />
+            <div className="flex flex-col items-center justify-center text-center">
+              <Upload className="w-12 h-12 text-white/70 mb-4" />
+              <p className="text-white/70 text-lg mb-4">
+                Drag and drop your video here
+              </p>
+              <p className="text-white/50">
+                or click the button above to browse
+              </p>
+            </div>
           </motion.div>
         )}
-      </AnimatePresence>
-
-      <div className="flex items-center justify-between mb-8 relative z-10">
-        <div>
-          <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-            Reference Films
-          </h2>
-          <p className="text-gray-400">Upload or drag & drop your inspiration videos</p>
-        </div>
       </div>
-
-      <div
-        onDrop={handleDrop}
-        onDragOver={onDragOver}
-        className="relative min-h-[300px] rounded-xl border-2 border-dashed border-editor-border bg-editor-bg/50 p-8 transition-colors hover:border-purple-500/50"
-      >
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileSelect}
-          accept="video/*"
-          className="hidden"
-        />
-
-        <div className="flex flex-col items-center justify-center gap-4">
-          <Upload className="w-12 h-12 text-gray-400" />
-          <div className="text-center">
-            <Button
-              variant="ghost"
-              onClick={() => fileInputRef.current?.click()}
-              className="bg-editor-panel/50 hover:bg-editor-panel"
-            >
-              Choose a file
-            </Button>
-            <p className="mt-2 text-sm text-gray-400">
-              or drag and drop your video here
-            </p>
-          </div>
-        </div>
-      </div>
-    </motion.div>
+    </div>
   );
 };
 
