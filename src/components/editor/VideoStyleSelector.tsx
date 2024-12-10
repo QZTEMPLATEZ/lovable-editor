@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { VideoStyle } from '@/types/video';
 import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
@@ -51,6 +51,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     if (onNext) {
       onNext();
     }
+    navigate('/music');
   };
 
   const handleMouseEnter = (styleId: string) => {
@@ -62,9 +63,8 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
   };
 
   const handleExploreClick = (styleId: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent triggering the parent div's onClick
+    e.stopPropagation();
     handleStyleSelectAndNext(styleId);
-    navigate('/music');
   };
 
   return (
@@ -85,7 +85,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
         {VIDEO_STYLES.map((style) => (
           <div
             key={style.id}
-            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-editor-panel hover:bg-editor-panel/80 transition-colors"
+            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#333333] transition-colors duration-300"
             onMouseEnter={() => handleMouseEnter(style.id)}
             onMouseLeave={() => handleMouseLeave(style.id)}
             onClick={() => handleStyleSelectAndNext(style.id)}
@@ -93,7 +93,9 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
             <video
               key={style.id}
               src={style.previewVideo}
-              className="absolute inset-0 w-full h-full object-cover"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+                hoveredStyle === style.id ? 'opacity-100' : 'opacity-0'
+              }`}
               loop
               muted
               playsInline
