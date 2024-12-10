@@ -16,28 +16,28 @@ const VIDEO_STYLES = [
   {
     id: 'classic',
     title: 'Classic',
-    description: 'Traditional wedding style with timeless elegance',
+    description: 'made by world-class artists',
     previewVideo: '/classic-preview.mp4',
     darkMode: false
   },
   {
     id: 'cinematic',
     title: 'Cinematic',
-    description: 'Hollywood-inspired cinematic production',
+    description: 'recorded by top sound engineers',
     previewVideo: '/cinematic-preview.mp4',
     darkMode: true
   },
   {
     id: 'documentary',
     title: 'Documentary',
-    description: 'Natural and journalistic approach',
+    description: 'with exclusive voice actors',
     previewVideo: '/documentary-preview.mp4',
     darkMode: true
   },
   {
     id: 'dynamic',
     title: 'Dynamic',
-    description: 'Modern and energetic editing style',
+    description: 'shot by pro filmmakers',
     previewVideo: '/dynamic-preview.mp4',
     darkMode: true
   }
@@ -50,7 +50,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const [isMuted, setIsMuted] = useState(true);
 
   return (
-    <div className="flex flex-col w-screen max-w-[100vw] -mx-8">
+    <div className="flex flex-col w-screen max-w-[100vw] -mx-24">
       {VIDEO_STYLES.map((style) => (
         <motion.div
           key={style.id}
@@ -79,10 +79,10 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             )}
           </AnimatePresence>
 
-          <div className="relative z-10 flex items-center justify-between h-full px-48">
-            <div className="space-y-2">
+          <div className="relative z-10 flex items-center justify-between h-full px-72">
+            <div className="space-y-1">
               <motion.h2 
-                className={`text-5xl font-light ${style.darkMode ? 'text-white' : 'text-black'}`}
+                className={`text-7xl font-light tracking-tight ${style.darkMode ? 'text-white' : 'text-black'}`}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -90,7 +90,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
                 {style.title}
               </motion.h2>
               <motion.p 
-                className={`text-sm ${style.darkMode ? 'text-gray-400' : 'text-gray-600'}`}
+                className={`text-sm tracking-wider uppercase ${style.darkMode ? 'text-gray-400' : 'text-gray-600'}`}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3 }}
@@ -106,7 +106,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             >
               <Button 
                 variant="outline" 
-                className={`border ${style.darkMode ? 'border-white text-white' : 'border-black text-black'}`}
+                className={`border uppercase tracking-wider text-xs ${style.darkMode ? 'border-white text-white hover:bg-white/10' : 'border-black text-black hover:bg-black/10'}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   window.location.href = `/explore/${style.id}`;

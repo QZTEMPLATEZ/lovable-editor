@@ -21,6 +21,7 @@ export default {
       fontFamily: {
         artistic: ["Great Vibes", "cursive"],
         cinzel: ["Cinzel", "serif"],
+        italiana: ["Italiana", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
