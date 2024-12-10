@@ -6,7 +6,7 @@ const StyleHeader = () => {
   const navigate = useNavigate();
   
   return (
-    <div className="relative h-[70vh] bg-[#0A0A0A] overflow-hidden">
+    <div className="relative [aspect-ratio:21/9] bg-[#0A0A0A] overflow-hidden">
       {/* Background Video Layer */}
       <div className="absolute inset-0 w-full h-full z-[1]">
         <video
