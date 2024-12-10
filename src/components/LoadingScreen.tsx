@@ -30,14 +30,14 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-editor-bg flex items-center justify-center z-50"
         >
-          <div className="text-center space-y-6 max-w-7xl mx-auto p-8 relative">
+          <div className="text-center space-y-6 max-w-4xl mx-auto p-8 relative">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5 }}
               className="relative"
             >
-              <div className="w-full h-[80vh] relative overflow-hidden rounded-2xl">
+              <div className="w-full h-[50vh] relative overflow-hidden rounded-2xl">
                 <img
                   src="/lovable-uploads/862aebf7-0d0b-4881-add7-261b860643d5.png"
                   alt="Wedding Video Editor"
@@ -54,7 +54,6 @@ const LoadingScreen = ({ onComplete }: { onComplete: () => void }) => {
                     className="absolute inset-0 flex items-center justify-center"
                   >
                     <div className="p-8 backdrop-blur-lg bg-black/50 rounded-3xl border border-pink-500/20">
-
                       <motion.h1 
                         className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 mb-4"
                       >
