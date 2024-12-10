@@ -8,7 +8,7 @@ interface PriceDisplayProps {
   billingNote?: string;
 }
 
-const PriceDisplay = ({ price, originalPrice, period = "/mo", billingNote = "Billed annually" }: PriceDisplayProps) => {
+const PriceDisplay = ({ price, originalPrice, period = "/mo", billingNote = "Billed annually, or monthly for US$ 14.99" }: PriceDisplayProps) => {
   return (
     <div className="space-y-1">
       <div className="flex items-baseline gap-1">
