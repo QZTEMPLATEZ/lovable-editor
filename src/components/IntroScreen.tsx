@@ -22,23 +22,11 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           className="absolute inset-0"
         >
           <img
-            src="/lovable-uploads/d5e27b14-ae6c-4a12-8420-a543cf67665b.png"
-            alt="Wedding Dress"
+            src="/lovable-uploads/e847cd08-8127-4be2-a242-80846e069bb9.png"
+            alt="Wedding Scene"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
-        </motion.div>
-
-        {/* Text Overlay */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-10"
-        >
-          <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue animate-gradient">
-            Unlimited AI Wedding Editor
-          </h1>
         </motion.div>
 
         {/* Futuristic Loading Bar */}
@@ -69,20 +57,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                   ease: "linear",
                 }}
               />
-            </div>
-            
-            <div className="mt-3 text-center">
-              <motion.p 
-                className="text-sm text-editor-text/90 font-light tracking-wider"
-                animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              >
-                Initializing your wedding editor...
-              </motion.p>
             </div>
           </div>
         </div>
