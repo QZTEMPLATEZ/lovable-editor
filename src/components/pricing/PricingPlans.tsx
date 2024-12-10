@@ -75,13 +75,28 @@ const PricingPlans = ({ onComplete }: PricingPlansProps) => {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.6 }}
-      className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto px-4"
-    >
-      {/* Basic Plan */}
+    <div className="space-y-8">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="text-center space-y-4"
+      >
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink bg-clip-text text-transparent">
+          TREASURE YOUR TIME
+        </h1>
+        <p className="text-gray-400 max-w-2xl mx-auto">
+          Choose the perfect plan that fits your creative needs
+        </p>
+      </motion.div>
+
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto px-4"
+      >
+        {/* Basic Plan */}
       <div className="relative p-4 rounded-lg border border-editor-border bg-editor-panel/50 backdrop-blur-xl">
         <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 rounded-lg" />
         <div className="relative space-y-4">
@@ -146,7 +161,8 @@ const PricingPlans = ({ onComplete }: PricingPlansProps) => {
           </Button>
         </div>
       </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 
