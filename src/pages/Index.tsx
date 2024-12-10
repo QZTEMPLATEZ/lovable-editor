@@ -15,13 +15,13 @@ const Index = () => {
     if (!skipTutorial) {
       setShowTutorial(true);
     } else {
-      navigate('/duration');
+      navigate('/');
     }
   };
 
   const handleTutorialComplete = () => {
     setShowTutorial(false);
-    navigate('/duration');
+    navigate('/');
   };
 
   if (showIntro) {
