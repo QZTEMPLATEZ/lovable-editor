@@ -6,7 +6,7 @@ import Index from "./pages/Index";
 import VideoSizeSelector from "./components/VideoSizeSelector";
 import VideoStyleSelector from "./components/editor/VideoStyleSelector";
 import { useState } from "react";
-import { VideoStyle } from "./components/editor/VideoStyleSelector";
+import { VideoStyle } from "./types/video";
 import PricingPlans from "./components/pricing/PricingPlans";
 
 const queryClient = new QueryClient();
