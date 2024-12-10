@@ -75,7 +75,6 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
       title: "Duration Selected",
       description: `Selected ${size.name} (${size.label})`,
     });
-    // Navigate to the next step (style selection)
     navigate('/style');
   };
 
@@ -83,14 +82,22 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
     <div className="min-h-screen">
       {/* Hero Section */}
       <div className="relative h-[60vh] bg-gradient-to-br from-editor-bg to-editor-bg/95 overflow-hidden">
-        {/* Background Image */}
+        {/* Video Background */}
         <div className="absolute inset-0">
-          <img 
-            src="/lovable-uploads/9505d6bc-117a-4c5e-9397-354c5f572452.png" 
-            alt="Hero Background" 
-            className="w-full h-full object-cover opacity-50"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-editor-bg/80 to-editor-bg/95" />
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="w-full h-full object-cover"
+            style={{ filter: 'brightness(0.4)' }} // Darkening the video
+          >
+            <source 
+              src="https://www.dropbox.com/scl/fi/dodra593ev8sq5jsz2mxt/Insta-lili-e-Robert.mp4?rlkey=4yso253vc2lp5wcamzk6cwjnv&raw=1" 
+              type="video/mp4" 
+            />
+          </video>
+          <div className="absolute inset-0 bg-black/50" /> {/* Additional overlay for darkening */}
         </div>
         
         {/* Hero Content */}
