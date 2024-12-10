@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { VideoStyle } from '@/types/video';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/components/ui/use-toast";
@@ -60,14 +60,12 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     setHoveredStyle(styleId);
     if (videoElement) {
       try {
-        // Set video properties before playing
         videoElement.muted = true;
         videoElement.playsInline = true;
         videoElement.currentTime = 0;
         await videoElement.play();
       } catch (error) {
         console.log('Video autoplay failed:', error);
-        // Don't show error toast to user as this is not critical
       }
     }
   };
@@ -78,11 +76,6 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
       videoElement.pause();
       videoElement.currentTime = 0;
     }
-  };
-
-  const handleExploreClick = (styleId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    handleStyleSelectAndNext(styleId);
   };
 
   return (
@@ -100,55 +93,74 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
       </div>
 
       <div className="w-full max-w-none px-0 space-y-0">
-        {VIDEO_STYLES.map((style) => (
-          <div
-            key={style.id}
-            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#0A0A0A] transition-colors duration-300 border-b border-gray-800"
-            onMouseEnter={(e) => {
-              const videoElement = e.currentTarget.querySelector('video');
-              handleMouseEnter(style.id, videoElement);
-            }}
-            onMouseLeave={(e) => {
-              const videoElement = e.currentTarget.querySelector('video');
-              handleMouseLeave(videoElement);
-            }}
-            onClick={() => handleStyleSelectAndNext(style.id)}
-          >
-            {/* Background grid pattern */}
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
-            
-            {/* Video with hover overlay */}
-            <div className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-100 opacity-60">
-              <video
-                key={style.id}
-                src={style.previewVideo}
-                className="w-full h-full object-cover"
-                loop
-                muted
-                playsInline
-                preload="metadata"
-              />
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300" />
-            </div>
-
-            <div className="relative z-10 flex items-center justify-between h-full w-full px-16 md:px-32">
-              <div className="space-y-1">
-                <h2 className="text-3xl md:text-4xl font-cinzel tracking-wider text-white group-hover:text-white/90 transition-colors">
-                  {style.title}
-                </h2>
-                <p className="text-sm md:text-base tracking-[0.2em] uppercase text-gray-400 font-italiana group-hover:text-gray-300 transition-colors">
-                  {style.description}
-                </p>
+        <AnimatePresence>
+          {VIDEO_STYLES.map((style) => (
+            <motion.div
+              key={style.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#0A0A0A] transition-colors duration-300 border-b border-gray-800 overflow-hidden"
+              onMouseEnter={(e) => {
+                const videoElement = e.currentTarget.querySelector('video');
+                handleMouseEnter(style.id, videoElement);
+              }}
+              onMouseLeave={(e) => {
+                const videoElement = e.currentTarget.querySelector('video');
+                handleMouseLeave(videoElement);
+              }}
+              onClick={() => handleStyleSelectAndNext(style.id)}
+            >
+              {/* Background Video */}
+              <div className="absolute inset-0 w-full h-full">
+                <video
+                  key={style.id}
+                  src={style.previewVideo}
+                  className="w-full h-full object-cover"
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                />
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent group-hover:opacity-70 transition-opacity duration-500" />
               </div>
-              <button
-                onClick={(e) => handleExploreClick(style.id, e)}
-                className="bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10"
-              >
-                Explore
-              </button>
-            </div>
-          </div>
-        ))}
+
+              {/* Content */}
+              <div className="relative z-10 flex items-center justify-between h-full w-full px-16 md:px-32">
+                <div className="space-y-1">
+                  <motion.h2 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="text-3xl md:text-4xl font-cinzel tracking-wider text-white group-hover:text-white/90 transition-colors"
+                  >
+                    {style.title}
+                  </motion.h2>
+                  <motion.p 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                    className="text-sm md:text-base tracking-[0.2em] uppercase text-gray-400 font-italiana group-hover:text-gray-300 transition-colors"
+                  >
+                    {style.description}
+                  </motion.p>
+                </div>
+                <motion.button
+                  initial={{ x: 20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleStyleSelectAndNext(style.id);
+                  }}
+                  className="bg-gray-900/80 backdrop-blur-sm hover:bg-gray-800 border border-gray-800 text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10"
+                >
+                  Explore
+                </motion.button>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );
