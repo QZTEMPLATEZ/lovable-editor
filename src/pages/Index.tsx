@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Play, Clock } from 'lucide-react';
 import TutorialVideo from '../components/TutorialVideo';
+import IntroScreen from '../components/IntroScreen';
 
 interface Project {
   id: string;
@@ -61,6 +62,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showMainContent, setShowMainContent] = useState(false);
 
   const handleNewProject = () => {
     navigate('/duration');
@@ -68,7 +70,6 @@ const Index = () => {
 
   const handleResumeProject = (projectId: string) => {
     console.log('Resuming project:', projectId);
-    // Navigate to editor with project ID
     navigate(`/editor/${projectId}`);
   };
 
@@ -79,6 +80,10 @@ const Index = () => {
   const filteredProjects = RECENT_PROJECTS.filter(project =>
     project.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (!showMainContent) {
+    return <IntroScreen onComplete={() => setShowMainContent(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95">
