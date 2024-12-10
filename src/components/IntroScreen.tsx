@@ -22,8 +22,8 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           className="absolute inset-0"
         >
           <img
-            src="/lovable-uploads/e847cd08-8127-4be2-a242-80846e069bb9.png"
-            alt="Wedding Scene"
+            src="/lovable-uploads/0b0a1a52-7179-4dab-b802-5585b8e202fe.png"
+            alt="OSÍRIZ EDITION"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
