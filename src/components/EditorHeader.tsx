@@ -72,10 +72,14 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
   
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4 bg-editor-panel">
-        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
-          Define Your Duration
-        </h1>
+      <div className="relative [aspect-ratio:21/9] bg-editor-panel overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
+        <div className="relative z-10 flex items-center justify-center h-full">
+          <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
+            Define Your Duration
+          </h1>
+        </div>
       </div>
 
       <div className="w-full max-w-none px-0 space-y-0">
