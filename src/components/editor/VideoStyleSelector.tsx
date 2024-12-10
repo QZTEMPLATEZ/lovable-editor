@@ -12,29 +12,29 @@ interface VideoStyleSelectorProps {
 const VIDEO_STYLES = [
   {
     id: 'classic' as VideoStyle,
-    title: 'Classic',
-    description: 'Timeless and elegant',
+    title: 'CLASSIC',
+    description: 'recorded by top sound engineers',
     bannerImage: '/classic-banner.jpg',
     buttonText: 'Explore Classic'
   },
   {
     id: 'cinematic' as VideoStyle,
-    title: 'Cinematic',
-    description: 'Hollywood-style production',
+    title: 'CINEMATIC',
+    description: 'recorded by top sound engineers',
     bannerImage: '/cinematic-banner.jpg',
     buttonText: 'Explore Cinematic'
   },
   {
     id: 'documentary' as VideoStyle,
-    title: 'Documentary',
-    description: 'Real and authentic',
+    title: 'DOCUMENTARY',
+    description: 'recorded by top sound engineers',
     bannerImage: '/documentary-banner.jpg',
     buttonText: 'Explore Documentary'
   },
   {
     id: 'dynamic' as VideoStyle,
-    title: 'Dynamic',
-    description: 'Fast-paced and energetic',
+    title: 'DYNAMIC',
+    description: 'recorded by top sound engineers',
     bannerImage: '/dynamic-banner.jpg',
     buttonText: 'Explore Dynamic'
   }
@@ -74,10 +74,10 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             
             <div className="relative h-full flex items-center justify-between px-12">
               <div className="space-y-2">
-                <h2 className="text-5xl font-italiana tracking-wider text-white">
+                <h2 className="text-5xl font-bold tracking-[0.2em] text-white uppercase">
                   {style.title}
                 </h2>
-                <p className="text-sm tracking-[0.2em] uppercase text-editor-text/90">
+                <p className="text-sm tracking-[0.2em] uppercase text-editor-text/90 font-light">
                   {style.description}
                 </p>
               </div>
@@ -112,11 +112,11 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             >
               <Upload className="w-8 h-8 text-editor-text/80" />
               <div className="text-center">
-                <h2 className="text-4xl font-italiana tracking-wider text-white mb-2">
+                <h2 className="text-4xl tracking-[0.2em] text-white uppercase font-bold mb-2">
                   Custom Style
                 </h2>
-                <p className="text-sm tracking-[0.2em] uppercase text-editor-text/90">
-                  Upload your own reference video
+                <p className="text-sm tracking-[0.2em] uppercase text-editor-text/90 font-light">
+                  recorded by top sound engineers
                 </p>
               </div>
             </label>
