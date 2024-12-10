@@ -54,12 +54,21 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     navigate('/music');
   };
 
-  const handleMouseEnter = (styleId: string) => {
+  const handleMouseEnter = (styleId: string, videoElement: HTMLVideoElement | null) => {
     setHoveredStyle(styleId);
+    if (videoElement) {
+      videoElement.play().catch(error => {
+        console.log('Video autoplay failed:', error);
+      });
+    }
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (videoElement: HTMLVideoElement | null) => {
     setHoveredStyle(null);
+    if (videoElement) {
+      videoElement.pause();
+      videoElement.currentTime = 0;
+    }
   };
 
   const handleExploreClick = (styleId: string, e: React.MouseEvent) => {
@@ -86,8 +95,14 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
           <div
             key={style.id}
             className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#0A0A0A] transition-colors duration-300 border-b border-gray-800"
-            onMouseEnter={() => handleMouseEnter(style.id)}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={(e) => {
+              const videoElement = e.currentTarget.querySelector('video');
+              handleMouseEnter(style.id, videoElement);
+            }}
+            onMouseLeave={(e) => {
+              const videoElement = e.currentTarget.querySelector('video');
+              handleMouseLeave(videoElement);
+            }}
             onClick={() => handleStyleSelectAndNext(style.id)}
           >
             {/* Background grid pattern */}
@@ -102,11 +117,6 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
                 loop
                 muted
                 playsInline
-                onMouseEnter={(e) => e.currentTarget.play()}
-                onMouseLeave={(e) => {
-                  e.currentTarget.pause();
-                  e.currentTarget.currentTime = 0;
-                }}
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300" />
             </div>
