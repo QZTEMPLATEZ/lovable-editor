@@ -47,10 +47,10 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-bg min-h-screen">
       <div className="text-center py-12 px-4 bg-editor-bg border-b border-editor-border">
-        <h1 className="text-3xl font-cinzel tracking-[0.2em] text-white/90 uppercase mb-3">
+        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase mb-3">
           Select Your Visual Direction
         </h1>
-        <p className="text-sm text-white/60 tracking-wider font-light">
+        <p className="text-xs text-white/60 tracking-wider font-light">
           Choose the perfect aesthetic to bring your vision to life
         </p>
       </div>
@@ -85,10 +85,10 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
 
             <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
               <div className="space-y-1">
-                <h2 className="text-4xl md:text-6xl font-cinzel tracking-wider text-white">
+                <h2 className="text-2xl md:text-3xl font-cinzel tracking-wider text-white">
                   {style.title}
                 </h2>
-                <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-400 font-italiana">
+                <p className="text-[8px] md:text-[10px] tracking-[0.2em] uppercase text-gray-400 font-italiana">
                   {style.description}
                 </p>
               </div>
