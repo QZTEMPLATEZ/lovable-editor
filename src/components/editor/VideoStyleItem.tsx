@@ -32,7 +32,7 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative aspect-[2.26/1] group cursor-pointer w-full bg-black"
+      className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-black mb-4"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onStyleSelect}
@@ -69,7 +69,7 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
       <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
         <div className="space-y-2">
           <motion.h2 
-            className="text-4xl md:text-5xl font-cinzel tracking-wider text-white"
+            className="text-4xl md:text-6xl font-cinzel tracking-wider text-white"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -77,7 +77,7 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
             {style.title}
           </motion.h2>
           <motion.p 
-            className="text-sm md:text-base tracking-[0.2em] uppercase text-gray-400 font-italiana"
+            className="text-sm md:text-lg tracking-[0.2em] uppercase text-gray-400 font-italiana"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
