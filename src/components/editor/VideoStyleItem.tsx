@@ -32,7 +32,7 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-black mb-4"
+      className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-black"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onStyleSelect}
@@ -77,7 +77,7 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
             {style.title}
           </motion.h2>
           <motion.p 
-            className="text-sm md:text-lg tracking-[0.2em] uppercase text-gray-400 font-italiana"
+            className="text-xs md:text-sm tracking-[0.2em] uppercase text-gray-400 font-italiana"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
