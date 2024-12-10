@@ -61,13 +61,20 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4">
-        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
-          Define Your Visual Story
-        </h1>
+      {/* Header Section */}
+      <div className="relative py-16 px-4 text-center before:absolute before:inset-0 before:bg-gradient-to-b before:from-editor-bg/50 before:to-transparent">
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-cinzel mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-pink-300">
+            Define Your Visual Story
+          </h1>
+          <p className="text-lg md:text-xl text-gray-300 font-italiana max-w-2xl mx-auto">
+            Choose from our curated collection of professional video styles, each crafted to bring your vision to life
+          </p>
+        </div>
       </div>
 
-      <div className="w-full max-w-none px-0 space-y-0">
+      {/* Video Styles Grid */}
+      <div className="w-full max-w-none px-0 space-y-1">
         {VIDEO_STYLES.map((style) => (
           <VideoStyleItem
             key={style.id}
@@ -89,31 +96,35 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
       </div>
 
       {/* Reference Video Upload Banner */}
-      <div className="mt-20 bg-black/90 py-16">
+      <div className="mt-20 bg-gradient-to-br from-black/95 to-black/90 py-20">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Crown className="w-8 h-8 text-yellow-500" />
-              <h2 className="text-4xl font-italiana">Business Reference Video</h2>
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center gap-3 mb-6">
+              <Crown className="w-10 h-10 text-yellow-500" />
+              <h2 className="text-5xl font-cinzel bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-yellow-500">
+                Business Reference Video
+              </h2>
             </div>
-            <div className="max-w-2xl mx-auto">
-              <p className="text-gray-400 mb-8">
+            <div className="max-w-3xl mx-auto">
+              <p className="text-xl text-gray-300 mb-12 font-italiana">
                 Unlock the power to upload your own reference videos. Perfect for brands and agencies looking to maintain consistent style across all their content.
               </p>
-              <div className="p-8 border border-dashed border-gray-700 rounded-xl bg-black/50 hover:border-yellow-500/50 transition-colors">
-                <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-300 mb-4">Upload your reference video to guide our AI in matching your brand's unique style</p>
+              <div className="p-12 border border-dashed border-yellow-500/30 rounded-2xl bg-black/50 hover:border-yellow-500/50 transition-all duration-300 backdrop-blur-sm">
+                <Upload className="w-16 h-16 text-yellow-500/70 mx-auto mb-6" />
+                <p className="text-xl text-gray-200 mb-8 font-italiana">
+                  Upload your reference video to guide our AI in matching your brand's unique style
+                </p>
                 <Button 
                   variant="outline" 
-                  className="border-white text-white hover:bg-white hover:text-black"
+                  className="border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-all duration-300 text-lg px-8 py-6"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   Upload Reference Video
                 </Button>
+                <p className="text-sm text-gray-400 mt-6 font-italiana">
+                  Available exclusively with Business Plan subscription
+                </p>
               </div>
-              <p className="text-sm text-gray-500 mt-4">
-                Available exclusively with Business Plan subscription
-              </p>
             </div>
           </div>
         </div>
