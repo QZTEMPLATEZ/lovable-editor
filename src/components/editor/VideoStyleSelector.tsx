@@ -35,7 +35,7 @@ const VIDEO_STYLES = [
     previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?rlkey=h545e8z9706sc6bawg9cm9gzc&dl=1',
     darkMode: true
   }
-] as const;
+];
 
 interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
@@ -47,6 +47,11 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
+
+  const handleStyleSelect = (style: VideoStyle) => {
+    onStyleSelect(style);
+    navigate('/music'); // Navigate to music route after style selection
+  };
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-bg min-h-screen">
@@ -67,10 +72,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             isHovered={hoveredStyle === style.id}
             onMouseEnter={() => setHoveredStyle(style.id)}
             onMouseLeave={() => setHoveredStyle(null)}
-            onStyleSelect={() => {
-              onStyleSelect(style.id as VideoStyle);
-              navigate('/edit');
-            }}
+            onStyleSelect={handleStyleSelect}
           />
         ))}
       </div>
@@ -84,7 +86,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
           if (e.target.files?.[0]) {
             onCustomVideoUpload(e.target.files[0]);
             onStyleSelect('custom');
-            navigate('/edit');
+            navigate('/music');
           }
         }}
         accept="video/*"
