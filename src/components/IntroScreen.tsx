@@ -31,8 +31,8 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
             className="absolute inset-0"
           >
             <img
-              src="/lovable-uploads/06020979-402a-42c5-8ceb-85104eaa930c.png"
-              alt="Wedding Editor"
+              src="/lovable-uploads/d5e27b14-ae6c-4a12-8420-a543cf67665b.png"
+              alt="Wedding Dress"
               className="w-full h-full object-cover"
             />
           </motion.div>
