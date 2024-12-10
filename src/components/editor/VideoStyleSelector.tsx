@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -45,18 +45,18 @@ const VIDEO_STYLES = [
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
   const { toast } = useToast();
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full max-w-[1920px] mx-auto">
       {VIDEO_STYLES.map((style) => (
         <motion.div
           key={style.id}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className={`relative h-[50vh] group cursor-pointer ${
+          className={`relative h-[50vh] group cursor-pointer w-full ${
             style.darkMode ? 'bg-black' : 'bg-gray-100'
           }`}
           onMouseEnter={() => setHoveredStyle(style.id)}
@@ -79,7 +79,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             )}
           </AnimatePresence>
 
-          <div className="relative z-10 flex items-center justify-between h-full px-12">
+          <div className="relative z-10 flex items-center justify-between h-full px-24">
             <div className="space-y-2">
               <motion.h2 
                 className={`text-5xl font-light ${style.darkMode ? 'text-white' : 'text-black'}`}
