@@ -52,7 +52,7 @@ const AppContent = () => {
       case '/edit':
         return 4;
       default:
-        return 0;
+        return -1; // Return -1 for paths that aren't part of the steps
     }
   };
 
@@ -64,6 +64,8 @@ const AppContent = () => {
     console.log('Custom video uploaded:', file);
   };
 
+  const currentStep = getCurrentStep();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
       {/* Background grid pattern */}
@@ -74,8 +76,8 @@ const AppContent = () => {
       <div className="relative">
         <TopNavigation />
         <div className="container mx-auto px-4 py-8">
-          {location.pathname !== '/' && location.pathname !== '/plans' && (
-            <StepIndicator currentStep={getCurrentStep()} steps={EDITOR_STEPS} />
+          {currentStep >= 0 && (
+            <StepIndicator currentStep={currentStep} steps={EDITOR_STEPS} />
           )}
           <Routes>
             <Route path="/" element={<Index />} />

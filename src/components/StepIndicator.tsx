@@ -39,12 +39,13 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
 
   return (
     <div className="relative mb-8">
+      {/* Progress line with gradient and glow effect */}
       <motion.div 
-        className="absolute top-4 left-0 h-[2px] bg-gradient-to-r from-editor-glow.purple via-editor-glow.pink to-editor-glow.purple"
+        className="absolute top-4 left-0 h-[2px] bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-purple"
         style={{
           boxShadow: '0 0 20px rgba(155, 135, 245, 0.5)',
         }}
-        initial={{ width: 0 }}
+        initial={{ width: '0%' }}
         animate={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       />
@@ -53,9 +54,8 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
         {steps.map((step, index) => (
           <div 
             key={step.title} 
-            className="flex flex-col items-center"
+            className="flex flex-col items-center cursor-pointer"
             onClick={() => handleStepClick(index)}
-            style={{ cursor: index <= currentStep ? 'pointer' : 'not-allowed' }}
           >
             <motion.div 
               initial={{ scale: 0.8, opacity: 0 }}
@@ -66,7 +66,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
               <div 
                 className={`w-8 h-8 flex items-center justify-center relative transition-all duration-300
                   ${index <= currentStep 
-                    ? 'bg-gradient-to-br from-editor-glow.purple to-editor-glow.pink shadow-lg shadow-editor-glow.purple/50' 
+                    ? 'bg-gradient-to-br from-editor-glow-purple to-editor-glow-pink shadow-lg shadow-editor-glow-purple/50' 
                     : 'bg-editor-panel border border-editor-border'}
                   transform hover:scale-110`}
                 style={{
@@ -87,16 +87,21 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                   </span>
                 )}
 
+                {/* Animated pulse effect for current step */}
                 {index === currentStep && (
                   <>
-                    <div className="absolute inset-0 animate-ping opacity-20 bg-gradient-to-br from-editor-glow.purple to-editor-glow.pink"
-                         style={{
-                           clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                         }} />
-                    <div className="absolute -inset-1 animate-pulse opacity-10 bg-gradient-to-br from-editor-glow.purple to-editor-glow.pink"
-                         style={{
-                           clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                         }} />
+                    <div 
+                      className="absolute inset-0 animate-ping opacity-20 bg-gradient-to-br from-editor-glow-purple to-editor-glow-pink"
+                      style={{
+                        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+                      }}
+                    />
+                    <div 
+                      className="absolute -inset-1 animate-pulse opacity-10 bg-gradient-to-br from-editor-glow-purple to-editor-glow-pink"
+                      style={{
+                        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
+                      }}
+                    />
                   </>
                 )}
               </div>
@@ -109,8 +114,8 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
               className="mt-4 text-center group"
             >
               <h3 className={`text-sm font-medium mb-1 transition-colors duration-300
-                ${index <= currentStep ? 'text-editor-glow.purple' : 'text-gray-400'}
-                group-hover:text-editor-glow.pink`}
+                ${index <= currentStep ? 'text-editor-glow-purple' : 'text-gray-400'}
+                group-hover:text-editor-glow-pink`}
               >
                 {step.title}
               </h3>
