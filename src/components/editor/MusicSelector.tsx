@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Clock, AlertCircle, ChevronRight, Volume2 } from 'lucide-react';
+import { Music, Clock, AlertCircle, ChevronRight, Volume2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/ut
 import TrackAnalysis from './music/TrackAnalysis';
 import TrackControls from './music/TrackControls';
 import UploadSection from './music/UploadSection';
+import WaveformAnimation from './music/WaveformAnimation';
 
 interface Track {
   file: File;
@@ -153,20 +154,24 @@ const MusicSelector = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 p-6">
-      {/* Header Section */}
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+      {/* Header Section with new gradient background */}
+      <div className="relative text-center space-y-4 p-8 rounded-2xl bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 backdrop-blur-sm border border-purple-500/20">
+        <WaveformAnimation />
+        <h1 className="relative z-10 text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
           Select Your Music to Guide the Magic!
         </h1>
-        <p className="text-gray-400">
+        <p className="relative z-10 text-gray-400">
           Choose up to 3 songs to shape the rhythm and emotion of your video
         </p>
       </div>
 
-      {/* Upload Section */}
-      <UploadSection onUpload={handleFileUpload} />
+      {/* Upload Section with updated styling */}
+      <div className="relative bg-purple-500/5 rounded-2xl p-6 border border-purple-500/20">
+        <WaveformAnimation />
+        <UploadSection onUpload={handleFileUpload} />
+      </div>
 
-      {/* Tracks List */}
+      {/* Tracks List with new harmonic colors */}
       <AnimatePresence>
         {tracks.map((track, index) => (
           <motion.div
@@ -174,7 +179,7 @@ const MusicSelector = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-purple-500/10 rounded-lg p-6 border border-purple-500/20"
+            className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-2xl p-6 border border-purple-500/20 backdrop-blur-sm"
           >
             <div className="flex items-center gap-4 mb-4">
               <TrackControls 
@@ -234,19 +239,19 @@ const MusicSelector = () => {
         ))}
       </AnimatePresence>
 
-      {/* Duration Info */}
+      {/* Duration Info with updated styling */}
       {tracks.length > 0 && (
-        <div className="bg-purple-500/5 rounded-lg p-6 border border-purple-500/20">
+        <div className="bg-gradient-to-br from-purple-500/5 to-pink-500/5 rounded-2xl p-6 border border-purple-500/20 backdrop-blur-sm">
           <h3 className="font-medium text-purple-200 mb-4">Music Coverage</h3>
           <div className="space-y-4">
             <Progress 
               value={(getTotalMusicDuration() / videoDuration) * 100} 
-              className="h-2"
+              className="h-2 bg-purple-500/20"
             />
             <div className="flex justify-between text-sm text-purple-300">
               <span>{formatDuration(getTotalMusicDuration() * 60)} / {videoDuration}:00</span>
               {getRequiredSongs() > 0 && (
-                <span className="text-yellow-400">
+                <span className="text-pink-400">
                   Need {getRequiredSongs()} more song{getRequiredSongs() > 1 ? 's' : ''}
                 </span>
               )}
@@ -255,12 +260,12 @@ const MusicSelector = () => {
         </div>
       )}
 
-      {/* Navigation */}
+      {/* Navigation with gradient button */}
       <div className="flex justify-end mt-8">
         <Button
           onClick={() => navigate('/style')}
           disabled={tracks.length === 0}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 disabled:opacity-50"
         >
           <span>Continue</span>
           <ChevronRight className="ml-2 h-4 w-4" />
