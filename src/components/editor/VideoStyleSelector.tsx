@@ -1,28 +1,33 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { VideoStyle } from '@/types/video';
 import { motion } from 'framer-motion';
+import { VideoStyle } from '@/types/video';
+import { Upload } from 'lucide-react';
 
 const VIDEO_STYLES = [
   {
     id: 'classic',
     title: 'Classic',
     description: 'Timeless and elegant style for traditional content',
-    previewVideo: '/classic-preview.mp4',
+    bannerImage: '/classic-banner.jpg'
   },
   {
     id: 'cinematic',
     title: 'Cinematic',
     description: 'Professional film-like quality with dramatic effects',
-    previewVideo: 'https://www.dropbox.com/scl/fi/qw3o0cemsv3acfc8qmbkh/Trailer-Rafa-e-Joao.mp4',
-    startTime: 10,
-    endTime: 30,
+    bannerImage: '/cinematic-banner.jpg'
   },
   {
     id: 'documentary',
     title: 'Documentary',
     description: 'Authentic and journalistic approach to storytelling',
-    previewVideo: '/documentary-preview.mp4',
+    bannerImage: '/documentary-banner.jpg'
+  },
+  {
+    id: 'dynamic',
+    title: 'Dynamic',
+    description: 'Fast-paced and energetic style for modern content',
+    bannerImage: '/dynamic-banner.jpg'
   }
 ] as const;
 
@@ -35,10 +40,17 @@ interface VideoStyleSelectorProps {
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      onCustomVideoUpload(file);
+    }
+  };
+
   return (
     <div className="space-y-6 w-full max-w-[1920px] mx-auto">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-cinzel tracking-wider mb-4 gradient-text">
+        <h1 className="text-4xl font-cinzel tracking-wider mb-4 bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue animate-gradient">
           Choose Your Style
         </h1>
         <p className="text-lg text-editor-text/80">
@@ -46,7 +58,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="grid gap-6">
         {VIDEO_STYLES.map((style) => (
           <motion.div
             key={style.id}
@@ -60,6 +72,10 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             animate={{ opacity: 1, y: 0 }}
             whileHover={{ scale: 1.02 }}
           >
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${style.bannerImage})` }}
+            />
             <div className="absolute inset-0 bg-gradient-to-r from-editor-bg/95 via-editor-bg/80 to-transparent" />
             
             <div className="relative h-full flex items-center px-12">
@@ -72,45 +88,44 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
                 </p>
               </div>
             </div>
-
-            {hoveredStyle === style.id && (
-              <motion.div
-                className="absolute right-8 top-1/2 -translate-y-1/2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                <Button 
-                  variant="outline"
-                  className="border border-white/20 text-white hover:bg-white/10 uppercase tracking-wider text-xs"
-                >
-                  Select Style
-                </Button>
-              </motion.div>
-            )}
           </motion.div>
         ))}
-      </div>
 
-      <div className="mt-12 text-center">
-        <input
-          type="file"
-          accept="video/*"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) onCustomVideoUpload(file);
-          }}
-          className="hidden"
-          id="custom-video-upload"
-        />
-        <label htmlFor="custom-video-upload">
-          <Button 
-            variant="outline" 
-            className="border border-editor-border text-editor-text hover:bg-editor-button/50"
-            onClick={() => document.getElementById('custom-video-upload')?.click()}
-          >
-            Upload Custom Reference
-          </Button>
-        </label>
+        {/* Custom Upload Banner */}
+        <motion.div
+          className={`relative w-full h-32 rounded-lg overflow-hidden cursor-pointer
+            ${selectedStyle === 'custom' ? 'ring-2 ring-editor-glow-purple' : 'hover:ring-2 hover:ring-editor-glow-purple/50'}
+            transition-all duration-300 bg-editor-panel/50`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileHover={{ scale: 1.02 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-editor-glow-purple/10 to-editor-glow-pink/10" />
+          
+          <div className="relative h-full flex items-center justify-center">
+            <input
+              type="file"
+              accept="video/*"
+              onChange={handleFileChange}
+              className="hidden"
+              id="custom-style-upload"
+            />
+            <label
+              htmlFor="custom-style-upload"
+              className="flex flex-col items-center space-y-4 cursor-pointer"
+            >
+              <Upload className="w-8 h-8 text-editor-text/80" />
+              <div className="text-center">
+                <h2 className="text-2xl font-cinzel tracking-wider text-white mb-2">
+                  Custom Style
+                </h2>
+                <p className="text-sm tracking-[0.2em] uppercase text-editor-text/90 font-italiana">
+                  Upload your own reference video
+                </p>
+              </div>
+            </label>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
