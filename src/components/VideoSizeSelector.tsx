@@ -1,12 +1,10 @@
 import React from 'react';
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Clock, Music } from "lucide-react";
+import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
-import { motion } from 'framer-motion';
+import { Clock } from 'lucide-react';
 
 export interface VideoSizeRange {
   min: number;
@@ -87,107 +85,101 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
     onSizeSelect(size);
   };
 
-  const handleNext = () => {
-    if (!selectedSize) {
-      toast({
-        title: "Selection Required",
-        description: "Please select a video duration before proceeding.",
-        variant: "destructive",
-      });
-      return;
-    }
-    navigate('/style');
-  };
-
   const handleBack = () => {
     navigate('/');
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      className="space-y-6 w-full max-w-4xl mx-auto bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl"
-    >
-      <div className="flex items-center gap-3 mb-8">
-        <div className="h-3 w-3 rounded-full bg-purple-500 animate-pulse" />
-        <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-          Select Video Duration
-        </h3>
+    <div className="space-y-8">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-4">
+          Select Your Video Duration
+        </h1>
+        <p className="text-gray-400 text-lg">
+          Choose the perfect duration for your video. Each option is carefully crafted for different needs.
+        </p>
       </div>
-      
-      <RadioGroup
-        className="grid grid-cols-1 sm:grid-cols-2 gap-6"
-        value={selectedSize ? `${selectedSize.min}-${selectedSize.max}` : undefined}
-        onValueChange={(value) => {
-          const [min, max] = value.split('-').map(Number);
-          const size = VIDEO_SIZES.find(s => s.min === min && s.max === max);
-          if (size) handleSizeSelect(size);
-        }}
-      >
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {VIDEO_SIZES.map((size) => {
           // Remove isLocked for testing
           const isLocked = false;
+          const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
           
           return (
             <motion.div
               key={`${size.min}-${size.max}`}
               whileHover={{ scale: 1.02 }}
-              className="relative"
+              className={`relative rounded-xl border ${
+                isSelected 
+                  ? 'border-purple-500 bg-purple-500/10' 
+                  : 'border-gray-700 bg-gray-800/50'
+              } p-6 cursor-pointer transition-all duration-300`}
+              onClick={() => !isLocked && handleSizeSelect(size)}
             >
-              <RadioGroupItem
-                value={`${size.min}-${size.max}`}
-                id={`size-${size.min}-${size.max}`}
-                className="peer sr-only"
-                disabled={isLocked}
-              />
-              <Label
-                htmlFor={`size-${size.min}-${size.max}`}
-                className={`flex flex-col gap-4 rounded-xl border-2 border-purple-500/30 bg-editor-bg/50 p-6 
-                  ${isLocked ? 'opacity-50' : 'hover:bg-editor-bg/70 hover:border-purple-500/50'} 
-                  peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-purple-500/20 
-                  transition-all cursor-pointer h-full relative`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-lg font-semibold text-purple-300">{size.name}</span>
-                  <PlanBadge tier={size.tier} />
-                </div>
-                
-                <div className="flex items-center gap-2 text-sm text-gray-400">
-                  <Clock className="w-4 h-4" />
-                  <span>{size.label}</span>
-                </div>
-                
-                <span className="block text-sm text-gray-400 whitespace-pre-line">{size.description}</span>
-                
-                <div className="flex items-center gap-2 text-sm text-purple-300 mt-2 bg-purple-500/10 p-2 rounded-lg">
-                  <Music className="w-4 h-4" />
-                  <span>Recommended Tracks: {size.recommendedTracks}</span>
-                </div>
-              </Label>
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xl font-semibold text-white">{size.name}</h3>
+                <PlanBadge tier={size.tier} />
+              </div>
+
+              <div className="flex items-center gap-2 text-gray-300 mb-4">
+                <Clock className="w-4 h-4" />
+                <span>{size.label}</span>
+              </div>
+
+              <p className="text-gray-400 text-sm mb-4 whitespace-pre-line">
+                {size.description}
+              </p>
+
+              <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg">
+                <Clock className="w-4 h-4" />
+                <span>Recommended Tracks: {size.recommendedTracks}</span>
+              </div>
+
+              {isSelected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-2 -right-2 bg-purple-500 rounded-full p-2"
+                >
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </motion.div>
+              )}
             </motion.div>
           );
         })}
-      </RadioGroup>
+      </div>
 
-      <div className="flex justify-between pt-6 border-t border-purple-500/20">
+      <div className="flex justify-between pt-6 border-t border-gray-700">
         <Button
           onClick={handleBack}
           variant="outline"
-          className="bg-editor-bg/50 hover:bg-editor-bg border-purple-500/30"
+          className="bg-gray-800/50 hover:bg-gray-700"
         >
           Back to Home
         </Button>
+        
         <Button
-          onClick={handleNext}
+          onClick={() => navigate('/style')}
           className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
           disabled={!selectedSize}
         >
           Next: Choose Style
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
