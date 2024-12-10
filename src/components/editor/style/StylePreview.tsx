@@ -17,15 +17,22 @@ const StylePreview = ({ videoUrl, isHovered, videoRef }: StylePreviewProps) => {
         transition={{ duration: 0.3 }}
       />
       
-      <video
-        ref={videoRef}
-        src={videoUrl}
-        className="absolute inset-0 w-full h-full object-cover"
-        loop
-        muted
-        playsInline
-        preload="metadata"
-      />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.3 }}
+        className="absolute inset-0"
+      >
+        <video
+          ref={videoRef}
+          src={videoUrl}
+          className="absolute inset-0 w-full h-full object-cover"
+          loop
+          muted
+          playsInline
+          preload="metadata"
+        />
+      </motion.div>
     </>
   );
 };
