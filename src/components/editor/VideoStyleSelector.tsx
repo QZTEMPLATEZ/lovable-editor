@@ -66,21 +66,23 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         </h1>
       </div>
 
-      {VIDEO_STYLES.map((style) => (
-        <VideoStyleItem
-          key={style.id}
-          style={style}
-          isHovered={hoveredStyle === style.id}
-          isMuted={isMuted}
-          onMouseEnter={() => handleMouseEnter(style.id)}
-          onMouseLeave={() => handleMouseLeave(style.id)}
-          onStyleSelect={() => onStyleSelect(style.id as VideoStyle)}
-          onToggleMute={(e) => {
-            e.stopPropagation();
-            setIsMuted(!isMuted);
-          }}
-        />
-      ))}
+      <div className="w-full max-w-none px-0">
+        {VIDEO_STYLES.map((style) => (
+          <VideoStyleItem
+            key={style.id}
+            style={style}
+            isHovered={hoveredStyle === style.id}
+            isMuted={isMuted}
+            onMouseEnter={() => handleMouseEnter(style.id)}
+            onMouseLeave={() => handleMouseLeave(style.id)}
+            onStyleSelect={() => onStyleSelect(style.id as VideoStyle)}
+            onToggleMute={(e) => {
+              e.stopPropagation();
+              setIsMuted(!isMuted);
+            }}
+          />
+        ))}
+      </div>
 
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex gap-4">
         <Button
