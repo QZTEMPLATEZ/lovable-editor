@@ -66,8 +66,10 @@ interface PricingPlansProps {
 const PricingPlans = ({ onComplete }: PricingPlansProps) => {
   const navigate = useNavigate();
 
-  const handlePlanSelect = () => {
-    if (onComplete) {
+  const handlePlanSelect = (isFreePlan: boolean = false) => {
+    if (isFreePlan) {
+      navigate('/duration');
+    } else if (onComplete) {
       onComplete();
     } else {
       navigate('/dashboard');
@@ -97,70 +99,70 @@ const PricingPlans = ({ onComplete }: PricingPlansProps) => {
         className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto px-4"
       >
         {/* Basic Plan */}
-      <div className="relative p-4 rounded-lg border border-editor-border bg-editor-panel/50 backdrop-blur-xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 rounded-lg" />
-        <div className="relative space-y-4">
-          <h3 className="text-lg font-bold text-white">Basic</h3>
-          <PriceDisplay 
-            price={9.99} 
-            billingNote="Billed annually, or monthly for US$ 14.99"
-          />
-          <FeatureList features={basicFeatures} />
-          <Button 
-            className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
-            onClick={handlePlanSelect}
-          >
-            Try Free
-          </Button>
-        </div>
-      </div>
-
-      {/* MAX Plan */}
-      <div className="relative p-4 rounded-lg border-2 border-editor-accent bg-editor-panel/50 backdrop-blur-xl transform scale-105">
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-editor-accent text-white text-sm font-medium rounded-full">
-          POPULAR
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/10 via-transparent to-editor-glow-pink/10 rounded-lg" />
-        <div className="relative space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white">MAX</h3>
-            <Bird className="w-4 h-4 text-gray-300 fill-gray-300" />
+        <div className="relative p-4 rounded-lg border border-editor-border bg-editor-panel/50 backdrop-blur-xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 rounded-lg" />
+          <div className="relative space-y-4">
+            <h3 className="text-lg font-bold text-white">Basic</h3>
+            <PriceDisplay 
+              price={9.99} 
+              billingNote="Billed annually, or monthly for US$ 14.99"
+            />
+            <FeatureList features={basicFeatures} />
+            <Button 
+              className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
+              onClick={() => handlePlanSelect(true)}
+            >
+              Try Free
+            </Button>
           </div>
-          <PriceDisplay 
-            price={69.99} 
-            billingNote="Billed annually"
-          />
-          <FeatureList features={maxFeatures} />
-          <Button 
-            className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
-            onClick={handlePlanSelect}
-          >
-            Select
-          </Button>
         </div>
-      </div>
 
-      {/* Business Plan */}
-      <div className="relative p-4 rounded-lg border border-editor-border bg-editor-panel/50 backdrop-blur-xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 rounded-lg" />
-        <div className="relative space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white">Business</h3>
-            <Bird className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+        {/* MAX Plan */}
+        <div className="relative p-4 rounded-lg border-2 border-editor-accent bg-editor-panel/50 backdrop-blur-xl transform scale-105">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-editor-accent text-white text-sm font-medium rounded-full">
+            POPULAR
           </div>
-          <PriceDisplay 
-            price={99.99} 
-            billingNote="Billed annually"
-          />
-          <FeatureList features={businessFeatures} />
-          <Button 
-            className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
-            onClick={handlePlanSelect}
-          >
-            Select
-          </Button>
+          <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/10 via-transparent to-editor-glow-pink/10 rounded-lg" />
+          <div className="relative space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-white">MAX</h3>
+              <Bird className="w-4 h-4 text-gray-300 fill-gray-300" />
+            </div>
+            <PriceDisplay 
+              price={69.99} 
+              billingNote="Billed annually"
+            />
+            <FeatureList features={maxFeatures} />
+            <Button 
+              className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
+              onClick={() => handlePlanSelect()}
+            >
+              Select
+            </Button>
+          </div>
         </div>
-      </div>
+
+        {/* Business Plan */}
+        <div className="relative p-4 rounded-lg border border-editor-border bg-editor-panel/50 backdrop-blur-xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 rounded-lg" />
+          <div className="relative space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-white">Business</h3>
+              <Bird className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+            </div>
+            <PriceDisplay 
+              price={99.99} 
+              billingNote="Billed annually"
+            />
+            <FeatureList features={businessFeatures} />
+            <Button 
+              className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
+              onClick={() => handlePlanSelect()}
+            >
+              Select
+            </Button>
+          </div>
+        </div>
       </motion.div>
     </div>
   );
