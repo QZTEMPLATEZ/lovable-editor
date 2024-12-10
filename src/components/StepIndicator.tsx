@@ -38,7 +38,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
   };
 
   return (
-    <div className="relative mb-8 bg-editor-panel p-6 rounded-lg">
+    <div className="relative mb-8 bg-editor-bg p-6 rounded-lg border border-editor-border">
       {/* Progress line */}
       <motion.div 
         className="absolute top-[2.5rem] left-0 h-[2px] bg-editor-panel"
