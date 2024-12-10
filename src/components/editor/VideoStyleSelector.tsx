@@ -1,11 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import VideoStyleItem from './VideoStyleItem';
-import ReferenceVideoBanner from './ReferenceVideoBanner';
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-
-export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Volume2, VolumeX } from 'lucide-react';
+import { VideoStyle } from './VideoStyleSelector';
 
 interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
@@ -51,8 +47,8 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const [isMuted, setIsMuted] = useState(true);
 
   return (
-    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4 bg-editor-panel">
+    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-panel">
+      <div className="text-center py-12 px-4 bg-editor-panel border-b border-editor-border">
         <h1 className="text-3xl font-cinzel tracking-[0.2em] text-white/90 uppercase mb-3">
           Select Your Visual Direction
         </h1>
@@ -61,7 +57,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         </p>
       </div>
 
-      <div className="w-full max-w-none px-0">
+      <div className="w-full max-w-none px-0 bg-editor-panel">
         {VIDEO_STYLES.map((style) => (
           <VideoStyleItem
             key={style.id}
@@ -98,7 +94,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         className="hidden"
       />
 
-      <div className="flex justify-start p-6 mt-8 bg-editor-panel">
+      <div className="flex justify-start p-6 bg-editor-panel border-t border-editor-border">
         <Button
           variant="outline"
           className="bg-editor-panel/50 hover:bg-editor-panel border-editor-border/30"
