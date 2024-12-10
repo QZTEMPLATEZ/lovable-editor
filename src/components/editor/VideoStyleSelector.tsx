@@ -47,7 +47,6 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
-  const [isMuted, setIsMuted] = useState(true);
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-panel min-h-screen">
@@ -66,16 +65,11 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             key={style.id}
             style={style}
             isHovered={hoveredStyle === style.id}
-            isMuted={isMuted}
             onMouseEnter={() => setHoveredStyle(style.id)}
             onMouseLeave={() => setHoveredStyle(null)}
             onStyleSelect={() => {
               onStyleSelect(style.id as VideoStyle);
               navigate('/edit');
-            }}
-            onToggleMute={(e) => {
-              e.stopPropagation();
-              setIsMuted(!isMuted);
             }}
           />
         ))}

@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX } from 'lucide-react';
 import { VideoStyle } from '@/types/video';
 
 interface VideoStyleItemProps {
@@ -12,21 +11,17 @@ interface VideoStyleItemProps {
     darkMode?: boolean;
   };
   isHovered: boolean;
-  isMuted: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   onStyleSelect: (style: VideoStyle) => void;
-  onToggleMute: (e: React.MouseEvent) => void;
 }
 
 const VideoStyleItem = ({
   style,
   isHovered,
-  isMuted,
   onMouseEnter,
   onMouseLeave,
   onStyleSelect,
-  onToggleMute,
 }: VideoStyleItemProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -65,27 +60,9 @@ const VideoStyleItem = ({
         src={style.previewVideo}
         className="absolute inset-0 w-full h-full object-cover"
         loop
-        muted={isMuted}
+        muted
         playsInline
       />
-
-      <AnimatePresence>
-        {isHovered && (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute top-8 right-8 z-20 p-2 rounded-full bg-editor-panel/50 hover:bg-editor-panel/70 transition-colors"
-            onClick={onToggleMute}
-          >
-            {isMuted ? (
-              <VolumeX className="w-6 h-6 text-white" />
-            ) : (
-              <Volume2 className="w-6 h-6 text-white" />
-            )}
-          </motion.button>
-        )}
-      </AnimatePresence>
 
       <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
         <div className="space-y-1">
