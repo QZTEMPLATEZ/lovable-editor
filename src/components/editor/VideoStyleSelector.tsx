@@ -12,31 +12,31 @@ interface VideoStyleSelectorProps {
 const VIDEO_STYLES = [
   {
     id: 'classic' as VideoStyle,
-    title: 'Music',
-    description: 'made by world-class artists',
+    title: 'Classic',
+    description: 'Timeless and elegant',
     bannerImage: '/classic-banner.jpg',
-    buttonText: 'Explore Music'
+    buttonText: 'Explore Classic'
   },
   {
     id: 'cinematic' as VideoStyle,
-    title: 'SFX',
-    description: 'recorded by top sound engineers',
+    title: 'Cinematic',
+    description: 'Hollywood-style production',
     bannerImage: '/cinematic-banner.jpg',
-    buttonText: 'Explore SFX'
+    buttonText: 'Explore Cinematic'
   },
   {
     id: 'documentary' as VideoStyle,
-    title: 'AI voiceover',
-    description: 'with exclusive voice actors',
+    title: 'Documentary',
+    description: 'Real and authentic',
     bannerImage: '/documentary-banner.jpg',
-    buttonText: 'Explore Voiceover'
+    buttonText: 'Explore Documentary'
   },
   {
     id: 'dynamic' as VideoStyle,
-    title: 'Footage',
-    description: 'shot by pro filmmakers',
+    title: 'Dynamic',
+    description: 'Fast-paced and energetic',
     bannerImage: '/dynamic-banner.jpg',
-    buttonText: 'Explore Footage'
+    buttonText: 'Explore Dynamic'
   }
 ];
 

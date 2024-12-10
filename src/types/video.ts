@@ -1,1 +1,1 @@
-export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic';
+export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
