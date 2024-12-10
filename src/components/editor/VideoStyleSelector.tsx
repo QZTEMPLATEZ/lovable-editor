@@ -45,12 +45,12 @@ interface VideoStyleSelectorProps {
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const navigate = useNavigate();
-  const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+  const videoRefs = useRef<{ [key: string]: HTMLVideoElement }>({});
 
   // Preload all videos when component mounts
   useEffect(() => {
     VIDEO_STYLES.forEach(style => {
-      const video = new HTMLVideoElement();
+      const video = document.createElement('video');
       video.src = style.previewVideo;
       video.preload = 'auto';
       videoRefs.current[style.id] = video;
@@ -111,7 +111,9 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             <AnimatePresence>
               {hoveredStyle === style.id && (
                 <motion.video
-                  ref={el => videoRefs.current[style.id] = el}
+                  ref={el => {
+                    if (el) videoRefs.current[style.id] = el;
+                  }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 0.5 }}
                   exit={{ opacity: 0 }}
