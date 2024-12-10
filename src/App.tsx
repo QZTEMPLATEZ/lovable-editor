@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TopNavigation from "./components/TopNavigation";
 import Index from "./pages/Index";
 import VideoSizeSelector from "./components/VideoSizeSelector";
+import VideoStyleSelector from "./components/editor/VideoStyleSelector";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/duration" element={<VideoSizeSelector selectedSize={null} onSizeSelect={() => {}} />} />
+                <Route path="/style" element={<VideoStyleSelector />} />
               </Routes>
             </BrowserRouter>
           </div>
