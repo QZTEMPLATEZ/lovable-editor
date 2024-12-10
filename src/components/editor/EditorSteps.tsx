@@ -1,7 +1,7 @@
 import React from 'react';
 import { Film, Music, Upload, Wand2 } from 'lucide-react';
 import { VideoSizeRange } from '../VideoSizeSelector';
-import { VideoStyle } from '@/types/video';
+import { VideoStyle } from './VideoStyleSelector';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
