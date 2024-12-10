@@ -51,12 +51,12 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   };
 
   return (
-    <div className="space-y-6 w-full max-w-[1920px] mx-auto">
-      <div className="grid gap-4">
+    <div className="w-full max-w-[1920px] mx-auto">
+      <div className="flex flex-col">
         {VIDEO_STYLES.map((style) => (
           <motion.div
             key={style.id}
-            className={`relative w-full h-[200px] rounded-none overflow-hidden cursor-pointer
+            className={`relative w-full h-[200px] overflow-hidden cursor-pointer
               ${selectedStyle === style.id ? 'ring-2 ring-editor-glow-purple' : 'hover:ring-2 hover:ring-editor-glow-purple/50'}
               transition-all duration-300`}
             onClick={() => onStyleSelect(style.id)}
@@ -88,9 +88,8 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
           </motion.div>
         ))}
 
-        {/* Custom Upload Banner */}
         <motion.div
-          className={`relative w-full h-[200px] rounded-none overflow-hidden cursor-pointer
+          className={`relative w-full h-[200px] overflow-hidden cursor-pointer
             ${selectedStyle === 'custom' ? 'ring-2 ring-editor-glow-purple' : 'hover:ring-2 hover:ring-editor-glow-purple/50'}
             transition-all duration-300 bg-editor-panel/50`}
           initial={{ opacity: 0, y: 20 }}
