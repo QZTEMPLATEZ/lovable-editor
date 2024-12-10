@@ -1,75 +1,51 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import IntroText from './intro/IntroText';
-import GeometricShapes from './intro/GeometricShapes';
-import NeuralNetwork from './intro/NeuralNetwork';
 
 interface IntroScreenProps {
   onComplete: () => void;
 }
 
 const IntroScreen = ({ onComplete }: IntroScreenProps) => {
+  React.useEffect(() => {
+    const timer = setTimeout(onComplete, 4000);
+    return () => clearTimeout(timer);
+  }, [onComplete]);
+
   return (
     <div className="min-h-screen bg-editor-bg relative overflow-hidden">
-      {/* Background elements */}
-      <div className="absolute inset-0">
-        <GeometricShapes />
-        <NeuralNetwork />
-      </div>
+      {/* Image Container */}
+      <div className="relative w-full h-screen">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="absolute inset-0"
+        >
+          <img
+            src="/lovable-uploads/d5e27b14-ae6c-4a12-8420-a543cf67665b.png"
+            alt="Wedding Dress"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
+        </motion.div>
 
-      {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="absolute inset-0"
-          >
-            <img
-              src="/lovable-uploads/d5e27b14-ae6c-4a12-8420-a543cf67665b.png"
-              alt="Wedding Dress"
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-
-          {/* Text overlay with enhanced animations */}
-          <div className="relative z-20 text-center space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <motion.h1 
-                className="text-4xl md:text-6xl font-bold text-white mb-4"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-              >
-                <motion.span
-                  className="bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue animate-gradient"
-                  initial={{ y: 20 }}
-                  animate={{ y: 0 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 10,
-                    delay: 0.7
-                  }}
-                >
-                  Unlimited AI Wedding Editor
-                </motion.span>
-              </motion.h1>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.9 }}
-            >
-              <IntroText onComplete={onComplete} />
-            </motion.div>
+        {/* Futuristic Loading Bar */}
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-96 max-w-[90%]">
+          <div className="glass-panel p-4 rounded-xl">
+            <div className="h-1 bg-editor-glass-dark rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue"
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{
+                  duration: 3.5,
+                  ease: "linear"
+                }}
+              />
+            </div>
+            <div className="mt-2 text-center text-sm text-editor-text/80">
+              Loading your wedding editor...
+            </div>
           </div>
         </div>
       </div>
