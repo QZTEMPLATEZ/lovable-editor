@@ -38,7 +38,7 @@ const VIDEO_STYLES = [
     id: 'dynamic',
     title: 'Dynamic',
     description: 'shot by pro filmmakers',
-    previewVideo: 'https://dl.dropboxusercontent.com/s/qw3o0cemsv3acfc8qmbkh/Trailer-Rafa-e-Joao.mp4',
+    previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?rlkey=h545e8z9706sc6bawg9cm9gzc&dl=1',
     darkMode: true
   }
 ] as const;
