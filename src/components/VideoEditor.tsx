@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import EditorStepsLayout from './editor/EditorStepsLayout';
-import { VideoSizeRange } from './VideoSizeSelector';
+import { VideoSizeRange } from '../types';
 import { EditingMode } from './EditingModeSelector';
 import EditingProgress from './EditingProgress';
 import EditorHeader from './EditorHeader';

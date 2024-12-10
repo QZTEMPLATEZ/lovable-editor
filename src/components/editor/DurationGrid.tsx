@@ -1,6 +1,6 @@
 import React from 'react';
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { VideoSizeRange } from '../VideoSizeSelector';
+import { VideoSizeRange } from '../../types';
 import DurationCard from './DurationCard';
 import { motion } from 'framer-motion';
 

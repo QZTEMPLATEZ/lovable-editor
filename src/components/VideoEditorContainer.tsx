@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import VideoSizeSelector, { VideoSizeRange } from './VideoSizeSelector';
+import VideoSizeSelector from './VideoSizeSelector';
+import { VideoSizeRange } from '../types';
 import EditingModeSelector, { EditingMode } from './EditingModeSelector';
 import VideoEditor from './VideoEditor';
 

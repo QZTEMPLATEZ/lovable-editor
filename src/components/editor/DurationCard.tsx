@@ -2,7 +2,7 @@ import React from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Clock, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { VideoSizeRange } from '../VideoSizeSelector';
+import { VideoSizeRange } from '../../types';
 
 interface DurationCardProps {
   duration: VideoSizeRange;

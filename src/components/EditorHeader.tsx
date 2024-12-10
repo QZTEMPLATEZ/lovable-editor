@@ -1,6 +1,6 @@
 import React from 'react';
 import { EditingMode } from './EditingModeSelector';
-import { VideoSizeRange } from './VideoSizeSelector';
+import { VideoSizeRange } from '../types';
 import { Tabs } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
