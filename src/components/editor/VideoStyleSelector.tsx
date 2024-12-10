@@ -31,7 +31,7 @@ const VIDEO_STYLES = [
     id: 'documentary',
     title: 'Documentary',
     description: 'with exclusive voice actors',
-    previewVideo: '/documentary-preview.mp4',
+    previewVideo: 'https://dl.dropboxusercontent.com/s/mewmbqaeyazkv6bwk5nob/video-oficial-casamento_1.mp4',
     darkMode: true
   },
   {
