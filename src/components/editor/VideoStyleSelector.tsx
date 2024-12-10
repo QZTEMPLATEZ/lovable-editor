@@ -24,14 +24,14 @@ const VIDEO_STYLES = [
     id: 'cinematic',
     title: 'Cinematic',
     description: 'recorded by top sound engineers',
-    previewVideo: 'https://dl.dropboxusercontent.com/s/g8by45dy1nwjxfhpdko5v/cinematic.mp4',
+    previewVideo: 'https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?rlkey=ygbln4b5xuaxqeljavln93r3q&dl=1',
     darkMode: true
   },
   {
     id: 'documentary',
     title: 'Documentary',
     description: 'with exclusive voice actors',
-    previewVideo: 'https://dl.dropboxusercontent.com/s/mewmbqaeyazkv6bwk5nob/video-oficial-casamento_1.mp4',
+    previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK-OK.mp4?rlkey=pbbkz4xtf9rgl2mecemvp7la3&dl=1',
     darkMode: true
   },
   {
