@@ -30,17 +30,17 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         editor: {
-          bg: "#1A1A1A",
+          bg: "#0A0A0A",  // Darkened from 1A1A1A to match image
           accent: "#9b87f5",
-          timeline: "#2A2A2A",
-          panel: "#232323",
-          border: "#2A2A2A",
-          button: "#3A3A3A",
+          timeline: "#151515",  // Darkened from 2A2A2A
+          panel: "#121212",     // Darkened from 232323
+          border: "#151515",    // Darkened from 2A2A2A
+          button: "#202020",    // Darkened from 3A3A3A
           text: "#CCCCCC",
           glass: {
-            DEFAULT: "rgba(0, 0, 0, 0.2)",
-            dark: "rgba(0, 0, 0, 0.2)",
-            light: "rgba(255, 255, 255, 0.05)"
+            DEFAULT: "rgba(0, 0, 0, 0.3)",  // Increased opacity
+            dark: "rgba(0, 0, 0, 0.3)",     // Increased opacity
+            light: "rgba(255, 255, 255, 0.03)"  // Reduced opacity
           },
           glow: {
             purple: "#9b87f5",
