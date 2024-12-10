@@ -5,7 +5,7 @@ import { Tabs } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import DurationGrid from './editor/DurationGrid';
+import DurationCard from './editor/DurationCard';
 
 const VIDEO_DURATIONS: VideoSizeRange[] = [
   {
@@ -71,55 +71,77 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
   const navigate = useNavigate();
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue animate-gradient mb-4">
-            Select Your Video Duration
-          </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Choose the perfect duration for your video story. Each option is carefully crafted to deliver the best possible experience.
-          </p>
-        </motion.div>
+    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
+      <div className="text-center py-12 px-4">
+        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
+          Define Your Duration
+        </h1>
+      </div>
 
-        <div className="space-y-8">
-          <Tabs 
-            defaultValue={`${targetDuration.min}-${targetDuration.max}`}
-            className="w-full"
-            onValueChange={(value) => {
-              const [min, max] = value.split('-').map(Number);
-              const newDuration = VIDEO_DURATIONS.find(d => d.min === min && d.max === max);
-              if (newDuration) {
-                onDurationChange(newDuration);
-              }
+      <div className="w-full max-w-none px-0 space-y-0">
+        {VIDEO_DURATIONS.map((duration) => (
+          <motion.div
+            key={`${duration.min}-${duration.max}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-black"
+            onClick={() => {
+              onDurationChange(duration);
+              navigate('/style');
             }}
           >
-            <DurationGrid
-              durations={VIDEO_DURATIONS}
-              selectedDuration={targetDuration}
-              userTier="pro"
-              onDurationSelect={onDurationChange}
-            />
-          </Tabs>
+            <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60 z-[1]" />
+            
+            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
+            
+            <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
+              <div className="space-y-1">
+                <motion.h2 
+                  className="text-4xl md:text-6xl font-cinzel tracking-wider text-white"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {duration.name}
+                </motion.h2>
+                <motion.p 
+                  className="text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-400 font-italiana"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {duration.label}
+                </motion.p>
+                <motion.p 
+                  className="text-[10px] md:text-xs text-gray-400 max-w-xl"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  {duration.description}
+                </motion.p>
+              </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex justify-center mt-8"
-          >
-            <Button
-              onClick={() => navigate('/style')}
-              className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 px-8 py-6 text-lg rounded-xl"
-            >
-              Next Step: Choose Your Style
-            </Button>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 20,
+                  delay: 0.4
+                }}
+              >
+                <Button 
+                  variant="outline" 
+                  className="border-2 border-white text-white hover:bg-white/10 uppercase tracking-wider text-xs md:text-sm px-6 py-6"
+                >
+                  SELECT
+                </Button>
+              </motion.div>
+            </div>
           </motion.div>
-        </div>
+        ))}
       </div>
     </div>
   );
