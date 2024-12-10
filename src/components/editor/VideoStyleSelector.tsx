@@ -49,24 +49,8 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
 
-  const handleCustomUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      if (!file.type.startsWith('video/')) {
-        toast({
-          variant: "destructive",
-          title: "Invalid file type",
-          description: "Please upload a video file."
-        });
-        return;
-      }
-      onCustomVideoUpload(file);
-      onStyleSelect('custom');
-    }
-  };
-
   return (
-    <div className="space-y-24">
+    <div className="flex flex-col">
       {VIDEO_STYLES.map((style) => (
         <motion.div
           key={style.id}
@@ -150,7 +134,21 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
       <input
         type="file"
         ref={fileInputRef}
-        onChange={handleCustomUpload}
+        onChange={(e) => {
+          if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            if (!file.type.startsWith('video/')) {
+              toast({
+                variant: "destructive",
+                title: "Invalid file type",
+                description: "Please upload a video file."
+              });
+              return;
+            }
+            onCustomVideoUpload(file);
+            onStyleSelect('custom');
+          }
+        }}
         accept="video/*"
         className="hidden"
       />
