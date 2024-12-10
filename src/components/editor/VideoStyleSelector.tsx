@@ -89,7 +89,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
       </div>
 
       {/* Video Styles Grid */}
-      <div className="w-full max-w-none px-0 space-y-1">
+      <div className="w-full max-w-none px-0">
         {VIDEO_STYLES.map((style) => (
           <VideoStyleItem
             key={style.id}
