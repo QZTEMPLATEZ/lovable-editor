@@ -11,7 +11,7 @@ const StylePreview = ({ videoUrl, isHovered, videoRef }: StylePreviewProps) => {
   return (
     <>
       <motion.div 
-        className="absolute inset-0 bg-editor-panel z-[1]"
+        className="absolute inset-0 bg-editor-panel"
         initial={{ opacity: 1 }}
         animate={{ opacity: isHovered ? 0 : 1 }}
         transition={{ duration: 0.3 }}
@@ -31,9 +31,6 @@ const StylePreview = ({ videoUrl, isHovered, videoRef }: StylePreviewProps) => {
           muted
           preload="auto"
         />
-        
-        {/* Gradient overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
       </motion.div>
     </>
   );
