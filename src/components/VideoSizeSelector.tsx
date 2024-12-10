@@ -3,9 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
-import { Clock, Check, ArrowRight } from 'lucide-react';
+import { Clock, Check } from 'lucide-react';
 import { VideoSizeRange } from '../types';
-import { Button } from './ui/button';
 
 const VIDEO_SIZES: VideoSizeRange[] = [
   {
@@ -116,13 +115,6 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
               to match different content needs, from quick social media clips to full cinematic experiences.
               The duration you select will help us optimize the editing process and deliver the best results for your specific use case.
             </p>
-            <Button
-              onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-              className="bg-editor-glow-purple hover:bg-editor-glow-purple/90 text-white group"
-            >
-              Explore Options
-              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
           </div>
         </div>
       </div>
