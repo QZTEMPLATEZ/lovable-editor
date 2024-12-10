@@ -147,7 +147,22 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
             currentStep={currentStep}
             steps={EDITOR_STEPS}
           >
-            {/* Navigation buttons can go here */}
+            <div className="flex justify-between mt-8">
+              <button
+                onClick={handlePreviousStep}
+                disabled={currentStep === 0}
+                className="px-4 py-2 bg-editor-panel text-white rounded-lg disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <button
+                onClick={handleNextStep}
+                disabled={currentStep === EDITOR_STEPS.length - 1}
+                className="px-4 py-2 bg-editor-panel text-white rounded-lg disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
           </EditorStepsLayout>
         )}
       </div>
