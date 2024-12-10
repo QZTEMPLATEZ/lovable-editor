@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Clock, Music, Lock, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from 'react-router-dom';
 
 export interface VideoSizeRange {
   min: number;
@@ -77,6 +78,7 @@ interface VideoSizeSelectorProps {
 
 const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: VideoSizeSelectorProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSizeSelect = (size: VideoSizeRange) => {
     if (userTier === 'basic' && size.tier !== 'basic') {
@@ -99,6 +101,22 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
       return;
     }
     onSizeSelect(size);
+  };
+
+  const handleNext = () => {
+    if (!selectedSize) {
+      toast({
+        title: "Selection Required",
+        description: "Please select a video duration before proceeding.",
+        variant: "destructive",
+      });
+      return;
+    }
+    navigate('/style');
+  };
+
+  const handleBack = () => {
+    navigate('/');
   };
 
   return (
@@ -142,7 +160,9 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
                     <div className="flex items-center gap-2">
                       <span className="text-lg font-semibold text-purple-300">{size.name}</span>
                       {size.tier !== 'basic' && (
-                        <Crown className="w-4 h-4 text-yellow-400" />
+                        <Crown className={`w-4 h-4 ${
+                          size.tier === 'pro' ? 'text-gray-300' : 'text-yellow-400'
+                        }`} />
                       )}
                     </div>
                     <span className="text-sm font-medium text-gray-400">{size.label}</span>
@@ -163,6 +183,23 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
           );
         })}
       </RadioGroup>
+
+      <div className="flex justify-between pt-6 border-t border-purple-500/20">
+        <Button
+          onClick={handleBack}
+          variant="outline"
+          className="bg-editor-bg/50 hover:bg-editor-bg border-purple-500/30"
+        >
+          Back
+        </Button>
+        <Button
+          onClick={handleNext}
+          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+          disabled={!selectedSize}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 };
