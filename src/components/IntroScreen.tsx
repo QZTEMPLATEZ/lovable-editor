@@ -7,22 +7,22 @@ interface IntroScreenProps {
 
 const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   React.useEffect(() => {
-    const timer = setTimeout(onComplete, 6000); // Increased from 4000 to 6000ms
+    const timer = setTimeout(onComplete, 6000);
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   return (
     <div className="min-h-screen bg-editor-bg relative overflow-hidden">
       {/* Image Container */}
-      <div className="relative w-full h-screen">
+      <div className="relative w-full h-screen flex items-center justify-center">
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5 }} // Increased from 0.5 to 1.5s for slower fade in
-          className="absolute inset-0"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5 }}
+          className="w-64 h-64 relative rounded-lg overflow-hidden"
         >
           <img
-            src="/lovable-uploads/0b0a1a52-7179-4dab-b802-5585b8e202fe.png"
+            src="/lovable-uploads/4c2b915b-2b27-4e92-8620-6538a47b76cf.png"
             alt="OSÍRIZ EDITION"
             className="w-full h-full object-cover"
           />
@@ -39,7 +39,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
                   transition={{
-                    duration: 5.5, // Increased from 3.5 to 5.5s
+                    duration: 5.5,
                     ease: "easeInOut"
                   }}
                 />
