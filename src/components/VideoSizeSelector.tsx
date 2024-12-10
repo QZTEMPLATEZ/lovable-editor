@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
@@ -103,21 +102,6 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
               to match different content needs, from quick social media clips to full cinematic experiences.
               The duration you select will help us optimize the editing process and deliver the best results for your specific use case.
             </p>
-            <div className="flex gap-4">
-              <Button
-                onClick={() => navigate('/style')}
-                className="bg-editor-glow-purple hover:bg-editor-glow-purple/90 text-white px-8 py-6 text-lg rounded-lg"
-              >
-                Continue to Styles
-              </Button>
-              <Button
-                onClick={() => navigate('/plans')}
-                variant="outline"
-                className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg rounded-lg"
-              >
-                View Plans
-              </Button>
-            </div>
           </div>
         </div>
       </div>
