@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { VideoStyle } from '@/types/video';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
@@ -43,6 +45,7 @@ const VIDEO_STYLES = [
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload, onNext }: VideoStyleSelectorProps) => {
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement }>({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Preload all videos
@@ -83,7 +86,13 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4 bg-editor-panel">
+      <div className="text-center py-12 px-4 bg-editor-panel relative">
+        <button
+          onClick={() => navigate('/duration')}
+          className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-editor-bg/20 hover:bg-editor-bg/40 border border-white/20 transition-colors"
+        >
+          <ChevronLeft className="w-6 h-6 text-white" />
+        </button>
         <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
           Choose Your Style
         </h1>
