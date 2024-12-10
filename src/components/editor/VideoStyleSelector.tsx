@@ -58,7 +58,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     setHoveredStyle(styleId);
   };
 
-  const handleMouseLeave = (styleId: string) => {
+  const handleMouseLeave = () => {
     setHoveredStyle(null);
   };
 
@@ -87,7 +87,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
             key={style.id}
             className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-editor-bg transition-colors duration-300 border-y border-editor-border"
             onMouseEnter={() => handleMouseEnter(style.id)}
-            onMouseLeave={() => handleMouseLeave(style.id)}
+            onMouseLeave={handleMouseLeave}
             onClick={() => handleStyleSelectAndNext(style.id)}
           >
             <video
@@ -99,7 +99,11 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
               loop
               muted
               playsInline
-              autoPlay
+              onMouseEnter={(e) => e.currentTarget.play()}
+              onMouseLeave={(e) => {
+                e.currentTarget.pause();
+                e.currentTarget.currentTime = 0;
+              }}
             />
 
             <div className="relative z-10 flex items-center justify-between h-full w-full px-16 md:px-32">
