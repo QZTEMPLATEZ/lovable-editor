@@ -32,7 +32,7 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-black"
+      className="relative w-full [aspect-ratio:3.84/1] group cursor-pointer bg-black"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onStyleSelect}
