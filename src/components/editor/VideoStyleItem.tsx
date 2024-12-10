@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useRef, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { VideoStyle } from '@/types/video';
 
 interface VideoStyleItemProps {
@@ -25,18 +25,26 @@ const VideoStyleItem = ({
 }: VideoStyleItemProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const handleVideoPlay = useCallback(async () => {
+    if (videoRef.current) {
+      try {
+        await videoRef.current.play();
+      } catch (error) {
+        console.log('Video autoplay failed:', error);
+      }
+    }
+  }, []);
+
   useEffect(() => {
     if (videoRef.current) {
       if (isHovered) {
-        videoRef.current.play().catch(error => {
-          console.log('Video autoplay failed:', error);
-        });
+        handleVideoPlay();
       } else {
         videoRef.current.pause();
         videoRef.current.currentTime = 0;
       }
     }
-  }, [isHovered]);
+  }, [isHovered, handleVideoPlay]);
 
   return (
     <motion.div
@@ -47,7 +55,6 @@ const VideoStyleItem = ({
       onMouseLeave={onMouseLeave}
       onClick={() => onStyleSelect(style.id as VideoStyle)}
     >
-      {/* Gray overlay that fades out on hover */}
       <motion.div 
         className="absolute inset-0 bg-editor-panel z-[1]"
         initial={{ opacity: 1 }}
@@ -62,6 +69,7 @@ const VideoStyleItem = ({
         loop
         muted
         playsInline
+        preload="metadata"
       />
 
       <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">

@@ -1,24 +1,24 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Film, Music, Wand2, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import ProcessingRings from './ProcessingRings';
 
 interface ProcessingStepsProps {
   progress: number;
 }
 
 const ProcessingSteps = ({ progress }: ProcessingStepsProps) => {
-  const steps = [
+  const steps = useMemo(() => [
     { icon: Film, label: 'Analyzing Footage', description: 'Identifying stable scenes and key moments' },
     { icon: Music, label: 'Processing Audio', description: 'Detecting beats and synchronizing clips' },
     { icon: Wand2, label: 'Applying Effects', description: 'Enhancing colors and transitions' },
     { icon: Zap, label: 'Finalizing Edit', description: 'Rendering high-quality output' }
-  ];
+  ], []);
 
   const currentStep = Math.floor((progress / 100) * steps.length);
 
   return (
     <div className="relative w-full min-h-[600px] bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-3xl p-8 backdrop-blur-xl border border-editor-glow-purple/30 shadow-2xl overflow-hidden">
-      {/* Enhanced background elements */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10" />
       <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/10 via-editor-glow-pink/5 to-editor-glow-blue/10 animate-gradient" />
       <div className="absolute inset-0 backdrop-blur-3xl" />
@@ -37,31 +37,12 @@ const ProcessingSteps = ({ progress }: ProcessingStepsProps) => {
           </span>
         </motion.div>
 
-        {/* Enhanced processing window */}
         <div className="relative aspect-video w-full bg-editor-panel/40 rounded-2xl overflow-hidden mb-8 border border-editor-glow-purple/20 shadow-lg">
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="relative">
-              {/* Animated processing rings with enhanced effects */}
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 w-32 h-32 border-4 border-editor-glow-purple/30 rounded-full"
-              />
-              <motion.div 
-                animate={{ rotate: -360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-4 w-24 h-24 border-4 border-editor-glow-pink/30 rounded-full"
-              />
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-8 w-16 h-16 border-4 border-editor-glow-blue/30 rounded-full"
-              />
-            </div>
+            <ProcessingRings />
           </div>
         </div>
 
-        {/* Enhanced processing steps grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {steps.map((step, index) => {
             const isActive = index === currentStep;
@@ -97,11 +78,10 @@ const ProcessingSteps = ({ progress }: ProcessingStepsProps) => {
                     'text-editor-text'
                   }`}>{step.label}</span>
                 </div>
-                <p className="text-sm text-editor-text/70 transition-opacity duration-300 group-hover:opacity-100">
+                <p className="text-sm text-editor-text/70">
                   {step.description}
                 </p>
                 
-                {/* Progress indicator for active step */}
                 {isActive && (
                   <motion.div
                     className="absolute -bottom-[2px] left-0 h-[2px] bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue"
@@ -115,13 +95,12 @@ const ProcessingSteps = ({ progress }: ProcessingStepsProps) => {
           })}
         </div>
 
-        {/* Enhanced progress bar */}
         <div className="h-2 bg-editor-panel rounded-full overflow-hidden mt-8">
           <motion.div 
             className="h-full bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.3 }}
           />
         </div>
       </div>
