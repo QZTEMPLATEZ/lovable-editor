@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { VideoStyle } from '@/types/video';
 import { useNavigate } from 'react-router-dom';
@@ -45,6 +45,37 @@ interface VideoStyleSelectorProps {
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const navigate = useNavigate();
+  const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+
+  // Preload all videos when component mounts
+  useEffect(() => {
+    VIDEO_STYLES.forEach(style => {
+      const video = new HTMLVideoElement();
+      video.src = style.previewVideo;
+      video.preload = 'auto';
+      videoRefs.current[style.id] = video;
+    });
+  }, []);
+
+  const handleMouseEnter = (styleId: string) => {
+    setHoveredStyle(styleId);
+    const video = videoRefs.current[styleId];
+    if (video) {
+      video.currentTime = 0;
+      video.play().catch(error => {
+        console.log('Video autoplay failed:', error);
+      });
+    }
+  };
+
+  const handleMouseLeave = (styleId: string) => {
+    setHoveredStyle(null);
+    const video = videoRefs.current[styleId];
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  };
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-bg min-h-screen">
@@ -70,8 +101,8 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
           <div
             key={style.id}
             className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-editor-panel hover:bg-editor-panel/80 transition-colors"
-            onMouseEnter={() => setHoveredStyle(style.id)}
-            onMouseLeave={() => setHoveredStyle(null)}
+            onMouseEnter={() => handleMouseEnter(style.id)}
+            onMouseLeave={() => handleMouseLeave(style.id)}
             onClick={() => onStyleSelect(style.id as VideoStyle)}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-editor-panel/60 via-editor-panel/40 to-editor-panel/60 z-[1]" />
@@ -80,6 +111,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             <AnimatePresence>
               {hoveredStyle === style.id && (
                 <motion.video
+                  ref={el => videoRefs.current[style.id] = el}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 0.5 }}
                   exit={{ opacity: 0 }}
@@ -89,7 +121,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
                   loop
                   muted
                   playsInline
-                  autoPlay
+                  preload="auto"
                 />
               )}
             </AnimatePresence>
