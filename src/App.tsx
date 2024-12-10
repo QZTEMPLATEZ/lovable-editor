@@ -33,16 +33,16 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
-          {/* Background grid pattern */}
-          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
-          
-          <div className="relative">
-            <TopNavigation />
-            <div className="container mx-auto px-4 py-8">
-              <BrowserRouter>
+        <BrowserRouter>
+          <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
+            {/* Background grid pattern */}
+            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
+            
+            <div className="relative">
+              <TopNavigation />
+              <div className="container mx-auto px-4 py-8">
                 <Routes>
                   <Route 
                     path="/" 
@@ -66,10 +66,10 @@ const App = () => {
                     } 
                   />
                 </Routes>
-              </BrowserRouter>
+              </div>
             </div>
           </div>
-        </div>
+        </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );
