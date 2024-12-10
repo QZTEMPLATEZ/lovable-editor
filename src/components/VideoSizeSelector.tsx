@@ -76,7 +76,7 @@ interface VideoSizeSelectorProps {
   userTier?: 'basic' | 'pro' | 'business';
 }
 
-const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: VideoSizeSelectorProps) => {
+const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -168,12 +168,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
         
         <Button
           onClick={() => navigate('/style')}
-          className={`transition-all duration-300 ${
-            selectedSize
-              ? 'bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 shadow-lg shadow-editor-glow-purple/20'
-              : 'bg-gray-700 opacity-50 cursor-not-allowed'
-          }`}
-          disabled={!selectedSize}
+          className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 shadow-lg shadow-editor-glow-purple/20"
         >
           Next: Choose Style
         </Button>
