@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/button';
 import { Volume2, VolumeX } from 'lucide-react';
@@ -28,6 +28,21 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
   onStyleSelect,
   onToggleMute,
 }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isHovered) {
+        videoRef.current.play().catch(error => {
+          console.log('Video autoplay failed:', error);
+        });
+      } else {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+      }
+    }
+  }, [isHovered]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -40,9 +55,9 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
       <div className="absolute inset-0 bg-black/40 z-[1]" />
       
       <video
+        ref={videoRef}
         src={style.previewVideo}
         className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
         loop
         muted={isMuted}
         playsInline
