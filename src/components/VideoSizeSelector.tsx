@@ -80,46 +80,47 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section with side-by-side layout */}
-      <div className="relative h-[70vh] bg-gradient-to-br from-editor-bg to-editor-bg/95 overflow-hidden">
-        <div className="container mx-auto h-full">
-          <div className="flex flex-col md:flex-row h-full items-center justify-between gap-8 p-8">
-            {/* Content */}
-            <div className="relative z-10 space-y-6 w-full md:w-1/2">
-              <h1 className="text-3xl md:text-4xl font-semibold text-white mb-4 font-italiana tracking-wide">
-                Choose Your Film Length
-              </h1>
-              <p className="text-lg text-white/80 leading-relaxed">
-                Choose the perfect duration for your video project. Each option is carefully designed 
-                to match different content needs, from quick social media clips to full cinematic experiences.
-                The duration you select will help us optimize the editing process and deliver the best results for your specific use case.
-              </p>
-            </div>
-
-            {/* Video */}
-            <div className="relative h-full w-full md:w-1/2 overflow-hidden rounded-l-3xl">
-              <video 
-                autoPlay 
-                loop 
-                muted 
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover"
-                style={{ 
-                  filter: 'brightness(0.4)',
-                }}
+      {/* Hero Section with full-width layout */}
+      <div className="relative h-[70vh] bg-[#0A0A0A] overflow-hidden">
+        {/* Background overlay with gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50" />
+        
+        {/* Background image */}
+        <img 
+          src="/lovable-uploads/ea414f0b-5c03-4b0c-aa6d-3fbed1c6e4c7.png"
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover opacity-50"
+        />
+        
+        {/* Content container */}
+        <div className="relative container mx-auto h-full">
+          <div className="flex flex-col justify-center h-full max-w-2xl px-6 py-16">
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+              Get unlimited video editing
+            </h1>
+            <p className="text-xl text-white/80 mb-8 max-w-xl">
+              Choose the perfect duration for your video project. Each option is carefully designed 
+              to match different content needs.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <button 
+                onClick={() => navigate('/style')}
+                className="px-8 py-4 bg-[#FFD700] text-black font-semibold rounded-lg hover:bg-[#FFE44D] transition-colors"
               >
-                <source 
-                  src="https://www.dropbox.com/scl/fi/dodra593ev8sq5jsz2mxt/Insta-lili-e-Robert.mp4?rlkey=4yso253vc2lp5wcamzk6cwjnv&raw=1" 
-                  type="video/mp4" 
-                />
-              </video>
-              <div className="absolute inset-0 bg-black/30" />
+                Start Free Now
+              </button>
+              <button 
+                onClick={() => navigate('/pricing')}
+                className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
+              >
+                Pricing
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Duration Options */}
+      {/* Duration Options Grid */}
       <div className="container mx-auto px-4 py-16 space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {VIDEO_SIZES.map((size) => {
