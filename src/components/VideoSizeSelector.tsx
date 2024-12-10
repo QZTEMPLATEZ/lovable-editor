@@ -94,10 +94,10 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
         {/* Hero Content */}
         <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center">
           <div className="max-w-3xl">
-            <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 font-cinzel">
-              Select Your Duration
+            <h1 className="text-4xl md:text-5xl font-medium text-white mb-4 font-cinzel tracking-tight">
+              Choose Your Film Length
             </h1>
-            <p className="text-xl text-white/80 mb-8 leading-relaxed">
+            <p className="text-lg text-white/80 mb-8 leading-relaxed max-w-2xl">
               Choose the perfect duration for your video project. Each option is carefully designed 
               to match different content needs, from quick social media clips to full cinematic experiences.
               The duration you select will help us optimize the editing process and deliver the best results for your specific use case.
