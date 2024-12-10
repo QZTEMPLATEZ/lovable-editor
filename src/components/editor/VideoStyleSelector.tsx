@@ -15,29 +15,29 @@ interface VideoStyleSelectorProps {
 const VIDEO_STYLES = [
   {
     id: 'classic',
-    title: 'Music',
-    description: 'made by world-class artists',
+    title: 'Classic',
+    description: 'Traditional wedding style with timeless elegance',
     previewVideo: '/classic-preview.mp4',
     darkMode: false
   },
   {
     id: 'cinematic',
-    title: 'SFX',
-    description: 'recorded by top sound engineers',
+    title: 'Cinematic',
+    description: 'Hollywood-inspired cinematic production',
     previewVideo: '/cinematic-preview.mp4',
     darkMode: true
   },
   {
     id: 'documentary',
-    title: 'AI voiceover',
-    description: 'with exclusive voice actors',
+    title: 'Documentary',
+    description: 'Natural and journalistic approach',
     previewVideo: '/documentary-preview.mp4',
     darkMode: true
   },
   {
     id: 'dynamic',
-    title: 'Footage',
-    description: 'shot by pro filmmakers',
+    title: 'Dynamic',
+    description: 'Modern and energetic editing style',
     previewVideo: '/dynamic-preview.mp4',
     darkMode: true
   }
