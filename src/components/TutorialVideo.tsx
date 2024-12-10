@@ -8,7 +8,7 @@ interface TutorialVideoProps {
   videoUrl?: string;
 }
 
-const TutorialVideo = ({ onComplete, videoUrl = 'https://www.youtube.com/embed/txBOuZWJcXg' }: TutorialVideoProps) => {
+const TutorialVideo = ({ onComplete, videoUrl = 'https://www.dropbox.com/scl/fi/ypu5baiq8mp27uequd93r/Where-Intelligence-Meets-Art.mp4?rlkey=b8j1j2d62uvmbhsor5m1zb7yv&raw=1' }: TutorialVideoProps) => {
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
   const handleComplete = () => {
@@ -16,12 +16,6 @@ const TutorialVideo = ({ onComplete, videoUrl = 'https://www.youtube.com/embed/t
       localStorage.setItem('skipTutorial', 'true');
     }
     onComplete();
-  };
-
-  // Convert regular YouTube URL to embed URL
-  const getEmbedUrl = (url: string) => {
-    const videoId = url.split('v=')[1]?.split('&')[0];
-    return `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
   };
 
   return (
@@ -36,12 +30,12 @@ const TutorialVideo = ({ onComplete, videoUrl = 'https://www.youtube.com/embed/t
           <div className="flex flex-col">
             {/* Video Container */}
             <div className="aspect-video w-full bg-editor-panel">
-              <iframe
+              <video
                 className="w-full h-full"
-                src={getEmbedUrl(videoUrl)}
-                title="Tutorial Video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
+                src={videoUrl}
+                autoPlay
+                controls
+                playsInline
               />
             </div>
             
