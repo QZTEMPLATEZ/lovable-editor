@@ -71,13 +71,6 @@ const TutorialVideo = ({ onComplete, videoUrl = 'https://www.youtube.com/embed/t
                   >
                     Skip Tutorial
                   </Button>
-                  <Button
-                    onClick={handleComplete}
-                    variant="secondary"
-                    className="bg-editor-accent hover:bg-editor-accent/80 text-white"
-                  >
-                    Continue
-                  </Button>
                 </div>
               </div>
             </div>
