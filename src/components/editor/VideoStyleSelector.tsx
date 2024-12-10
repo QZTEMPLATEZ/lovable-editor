@@ -3,7 +3,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import VideoStyleItem from './VideoStyleItem';
-import { Crown, Upload } from 'lucide-react';
+import { Crown, Upload, Sparkles } from 'lucide-react';
+import { Badge } from "@/components/ui/badge";
 
 export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
 
@@ -96,34 +97,62 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
       </div>
 
       {/* Reference Video Upload Banner */}
-      <div className="mt-20 bg-gradient-to-br from-black/95 to-black/90 py-20">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center gap-3 mb-6">
-              <Crown className="w-10 h-10 text-yellow-500" />
-              <h2 className="text-5xl font-cinzel bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-yellow-500">
-                Business Reference Video
-              </h2>
-            </div>
-            <div className="max-w-3xl mx-auto">
-              <p className="text-xl text-gray-300 mb-12 font-italiana">
-                Unlock the power to upload your own reference videos. Perfect for brands and agencies looking to maintain consistent style across all their content.
-              </p>
-              <div className="p-12 border border-dashed border-yellow-500/30 rounded-2xl bg-black/50 hover:border-yellow-500/50 transition-all duration-300 backdrop-blur-sm">
-                <Upload className="w-16 h-16 text-yellow-500/70 mx-auto mb-6" />
-                <p className="text-xl text-gray-200 mb-8 font-italiana">
-                  Upload your reference video to guide our AI in matching your brand's unique style
+      <div className="relative mt-20 overflow-hidden">
+        {/* Background with gradient overlay */}
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/95 via-black/90 to-black/95" />
+        
+        {/* Content */}
+        <div className="relative py-24 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center">
+              {/* Business Plan Badge */}
+              <Badge 
+                variant="secondary" 
+                className="mb-8 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 py-2 px-4 text-sm"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                Business Plan Feature
+              </Badge>
+              
+              {/* Title with decorative elements */}
+              <div className="inline-flex items-center justify-center gap-4 mb-8">
+                <div className="w-12 h-0.5 bg-gradient-to-r from-yellow-500/0 via-yellow-500 to-yellow-500/0" />
+                <h2 className="text-5xl font-cinzel bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500">
+                  Reference Video
+                </h2>
+                <div className="w-12 h-0.5 bg-gradient-to-r from-yellow-500/0 via-yellow-500 to-yellow-500/0" />
+              </div>
+
+              <div className="max-w-3xl mx-auto">
+                <p className="text-xl text-gray-300 mb-12 font-italiana leading-relaxed">
+                  Elevate your brand consistency by uploading your own reference videos. Our AI will analyze and match your unique style across all content.
                 </p>
-                <Button 
-                  variant="outline" 
-                  className="border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-all duration-300 text-lg px-8 py-6"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  Upload Reference Video
-                </Button>
-                <p className="text-sm text-gray-400 mt-6 font-italiana">
-                  Available exclusively with Business Plan subscription
-                </p>
+
+                {/* Upload Area */}
+                <div className="group relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-300 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200" />
+                  <div className="relative p-12 bg-black/80 border border-yellow-500/20 rounded-2xl backdrop-blur-sm group-hover:border-yellow-500/40 transition-all duration-300">
+                    <div className="absolute top-0 right-0 m-4">
+                      <Sparkles className="w-6 h-6 text-yellow-500/70 animate-pulse" />
+                    </div>
+                    
+                    <Upload className="w-16 h-16 text-yellow-500/70 mx-auto mb-8 group-hover:scale-110 transition-transform duration-300" />
+                    <p className="text-xl text-gray-200 mb-8 font-italiana">
+                      Drop your reference video here or click to browse
+                    </p>
+                    <Button 
+                      variant="outline" 
+                      className="border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-all duration-300 text-lg px-8 py-6 group-hover:scale-105"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      Select Video File
+                    </Button>
+                    <p className="text-sm text-gray-400 mt-6 font-italiana">
+                      Maximum file size: 500MB • Supported formats: MP4, MOV, AVI
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
