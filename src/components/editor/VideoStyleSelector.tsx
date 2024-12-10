@@ -1,11 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { Upload, Film, Info, Crown, Sparkles } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
 import VideoStyleItem from './VideoStyleItem';
+import ReferenceVideoBanner from './ReferenceVideoBanner';
 
 export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
 
@@ -61,6 +58,22 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
     setHoveredStyle(null);
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (!file.type.startsWith('video/')) {
+        toast({
+          variant: "destructive",
+          title: "Invalid file type",
+          description: "Please upload a video file."
+        });
+        return;
+      }
+      onCustomVideoUpload(file);
+      onStyleSelect('custom');
+    }
+  };
+
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
       {/* Header Section */}
@@ -97,128 +110,13 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         ))}
       </div>
 
-      {/* New Reference Video Upload Banner */}
-      <div className="relative mt-20 overflow-hidden">
-        {/* Animated Background Grid */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5 animate-[pulse_4s_ease-in-out_infinite]" />
-          <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/20 via-editor-glow-pink/10 to-editor-glow-blue/20" />
-        </div>
-        
-        {/* Content Container */}
-        <div className="relative py-24 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center space-y-8">
-              {/* Business Plan Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <Badge 
-                  variant="secondary" 
-                  className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-300 border border-amber-500/30 py-2 px-4 text-sm backdrop-blur-sm"
-                >
-                  <Crown className="w-4 h-4 mr-2" />
-                  Business Plan Feature
-                </Badge>
-              </motion.div>
-              
-              {/* Title Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-6"
-              >
-                <div className="inline-flex items-center justify-center gap-4">
-                  <div className="h-px w-12 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
-                  <h2 className="text-4xl md:text-5xl font-cinzel bg-clip-text text-transparent bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400">
-                    Reference Video
-                  </h2>
-                  <div className="h-px w-12 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
-                </div>
-
-                <p className="text-xl text-gray-300 max-w-3xl mx-auto font-italiana leading-relaxed">
-                  Elevate your brand consistency by uploading your own reference videos. 
-                  Our AI will analyze and match your unique style across all content.
-                </p>
-              </motion.div>
-
-              {/* Upload Area */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="relative group max-w-4xl mx-auto"
-              >
-                <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200" />
-                <div 
-                  className="relative p-12 bg-black/40 border border-amber-500/20 rounded-2xl backdrop-blur-sm group-hover:border-amber-500/40 transition-all duration-300"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <div className="absolute top-0 right-0 m-4">
-                    <Sparkles className="w-6 h-6 text-amber-500/70 animate-pulse" />
-                  </div>
-                  
-                  <Upload className="w-16 h-16 text-amber-500/70 mx-auto mb-8 group-hover:scale-110 transition-transform duration-300" />
-                  <p className="text-xl text-gray-200 mb-8 font-italiana">
-                    Drop your reference video here or click to browse
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="border-2 border-amber-500/50 text-amber-400 hover:bg-amber-500/10 transition-all duration-300 text-lg px-8 py-6 group-hover:scale-105"
-                  >
-                    Select Video File
-                  </Button>
-                  <p className="text-sm text-gray-400 mt-6 font-italiana">
-                    Maximum file size: 500MB • Supported formats: MP4, MOV, AVI
-                  </p>
-
-                  {/* Features List */}
-                  <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-                    {[
-                      { title: 'Style Analysis', desc: 'AI analyzes visual style and composition' },
-                      { title: 'Smart Transitions', desc: 'Learns transition preferences and timing' },
-                      { title: 'Color Matching', desc: 'Understands your color grading and mood' }
-                    ].map((feature, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.6 + (index * 0.1) }}
-                        className="p-4 rounded-lg bg-black/20 border border-amber-500/10"
-                      >
-                        <h3 className="text-amber-400 font-semibold mb-2">{feature.title}</h3>
-                        <p className="text-gray-400 text-sm">{feature.desc}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Reference Video Banner */}
+      <ReferenceVideoBanner onFileInputClick={() => fileInputRef.current?.click()} />
 
       <input
         type="file"
         ref={fileInputRef}
-        onChange={(e) => {
-          if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            if (!file.type.startsWith('video/')) {
-              toast({
-                variant: "destructive",
-                title: "Invalid file type",
-                description: "Please upload a video file."
-              });
-              return;
-            }
-            onCustomVideoUpload(file);
-            onStyleSelect('custom');
-          }
-        }}
+        onChange={handleFileSelect}
         accept="video/*"
         className="hidden"
       />
