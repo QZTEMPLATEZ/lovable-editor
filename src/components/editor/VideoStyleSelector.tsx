@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { VideoStyle } from '@/types/video';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Camera, Film, Heart, Music, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
@@ -15,41 +21,80 @@ interface VideoStyleSelectorProps {
 const VIDEO_STYLES = [
   {
     id: 'classic',
-    title: 'Classic',
-    description: 'made by world-class artists',
+    title: 'Classic Cinematic',
+    description: 'Timeless & Emotional',
     previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?raw=1',
-    darkMode: true
+    features: [
+      'Warm, timeless color grading',
+      'Balanced framing & composition',
+      'Smooth, intentional movements',
+      'Emotional storytelling flow',
+      'Scene-specific pacing'
+    ],
+    technicalDetails: {
+      colorGrading: 'Warm tones with soft highlights',
+      transitions: 'Scene-weighted, emotional',
+      pacing: 'Moderate, story-driven',
+      movements: 'Smooth, stabilized'
+    }
   },
   {
     id: 'cinematic',
-    title: 'Cinematic',
-    description: 'recorded by top sound engineers',
+    title: 'Modern Cinema',
+    description: 'Contemporary & Bold',
     previewVideo: 'https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?raw=1',
-    darkMode: true
+    features: [
+      'Contemporary color palette',
+      'Dynamic camera movements',
+      'Creative transitions',
+      'Modern storytelling approach',
+      'Dramatic pacing'
+    ]
   },
   {
     id: 'documentary',
     title: 'Documentary',
-    description: 'with exclusive voice actors',
+    description: 'Authentic & Natural',
     previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK-OK.mp4?raw=1',
-    darkMode: true
+    features: [
+      'Natural color grading',
+      'Candid moments focus',
+      'Journalistic approach',
+      'Real emotions capture',
+      'Organic pacing'
+    ]
   },
   {
     id: 'dynamic',
     title: 'Dynamic',
-    description: 'shot by pro filmmakers',
+    description: 'Energetic & Bold',
     previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?raw=1',
-    darkMode: true
+    features: [
+      'High-energy editing',
+      'Bold color treatment',
+      'Fast-paced cuts',
+      'Music-driven timing',
+      'Creative effects'
+    ]
   }
 ];
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload, onNext }: VideoStyleSelectorProps) => {
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
+  const [selectedStyleDetails, setSelectedStyleDetails] = useState<typeof VIDEO_STYLES[0] | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const handleStyleSelectAndNext = (styleId: string) => {
+    const style = VIDEO_STYLES.find(s => s.id === styleId);
+    setSelectedStyleDetails(style || null);
     onStyleSelect(styleId as VideoStyle);
+    
+    toast({
+      title: `${style?.title} Style Selected`,
+      description: "Your wedding film will be edited with this cinematic style.",
+    });
+
     if (onNext) {
       onNext();
     }
@@ -59,7 +104,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
   const handleVideoError = (styleId: string) => {
     toast({
       variant: "destructive",
-      title: "Video Error",
+      title: "Video Preview Error",
       description: "There was an error playing the preview video. Please try again.",
     });
     console.error(`Error playing video for style: ${styleId}`);
@@ -75,8 +120,12 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
           <ChevronLeft className="w-6 h-6 text-gray-400" />
         </button>
         <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
-          Choose Your Style
+          Choose Your Cinematic Style
         </h1>
+        <p className="mt-2 text-gray-400 max-w-2xl mx-auto">
+          Each style is carefully crafted to tell your story with a unique cinematic approach,
+          from classic timeless edits to modern dynamic cuts.
+        </p>
       </div>
 
       <div className="w-full max-w-none px-0 space-y-0">
@@ -115,7 +164,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
 
               {/* Content */}
               <div className="relative z-10 flex items-center justify-between h-full w-full px-16 md:px-32">
-                <div className="space-y-1">
+                <div className="space-y-4">
                   <motion.h2 
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
@@ -131,19 +180,73 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
                   >
                     {style.description}
                   </motion.p>
+                  
+                  {/* Style Features */}
+                  {hoveredStyle === style.id && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex gap-6 mt-4"
+                    >
+                      {style.features.slice(0, 3).map((feature, index) => (
+                        <TooltipProvider key={index}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center gap-2 text-white/70">
+                                {index === 0 && <Camera className="w-4 h-4" />}
+                                {index === 1 && <Film className="w-4 h-4" />}
+                                {index === 2 && <Heart className="w-4 h-4" />}
+                                <span className="text-sm">{feature}</span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">{feature}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ))}
+                    </motion.div>
+                  )}
                 </div>
-                <motion.button
+
+                <motion.div
                   initial={{ x: 20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  whileHover={{ scale: 1.05 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleStyleSelectAndNext(style.id);
-                  }}
-                  className="bg-black/90 backdrop-blur-sm hover:bg-black/80 border border-gray-800 text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10"
+                  className="flex items-center gap-4"
                 >
-                  Explore
-                </motion.button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toast({
+                              title: "Style Details",
+                              description: style.features.join(' • '),
+                            });
+                          }}
+                          className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                        >
+                          <Info className="w-5 h-5 text-white/70" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>View style details</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleStyleSelectAndNext(style.id);
+                    }}
+                    className="bg-white/10 backdrop-blur-sm hover:bg-white/20 border border-white/20 text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10"
+                  >
+                    Select Style
+                  </motion.button>
+                </motion.div>
               </div>
             </motion.div>
           ))}
