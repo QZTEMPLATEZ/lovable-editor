@@ -1,13 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX } from 'lucide-react';
-import { VideoStyle } from './VideoStyleSelector';
-
-interface VideoStyleSelectorProps {
-  selectedStyle: VideoStyle | null;
-  onStyleSelect: (style: VideoStyle) => void;
-  onCustomVideoUpload: (file: File) => void;
-}
+import { useNavigate } from 'react-router-dom';
+import VideoStyleItem from './VideoStyleItem';
+import ReferenceVideoBanner from './ReferenceVideoBanner';
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { VideoStyle } from '@/types/video';
 
 const VIDEO_STYLES = [
   {
@@ -39,6 +36,12 @@ const VIDEO_STYLES = [
     darkMode: true
   }
 ] as const;
+
+interface VideoStyleSelectorProps {
+  selectedStyle: VideoStyle | null;
+  onStyleSelect: (style: VideoStyle) => void;
+  onCustomVideoUpload: (file: File) => void;
+}
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
   const navigate = useNavigate();

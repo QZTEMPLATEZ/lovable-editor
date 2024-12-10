@@ -1,4 +1,4 @@
-import { VideoStyle } from '@/components/editor/VideoStyleSelector';
+import { VideoStyle } from '@/types/video';
 
 export interface StyleSettings {
   transitionDuration: number;
