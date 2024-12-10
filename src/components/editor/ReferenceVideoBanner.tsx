@@ -21,16 +21,15 @@ const ReferenceVideoBanner = ({ onFileInputClick }: ReferenceVideoBannerProps) =
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-editor-panel/50 border border-editor-border">
               <Crown className="w-4 h-4 text-amber-400" />
-              <span className="text-sm text-gray-300">Business Plan Feature</span>
+              <span className="text-sm text-gray-300">Premium Feature</span>
             </div>
             
             <h2 className="text-4xl md:text-5xl font-cinzel bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-              The perfect plan to fit your needs
+              Upload Your Reference
             </h2>
             
             <p className="text-lg text-gray-400 leading-relaxed max-w-lg">
-              For brands, creative teams, agencies, and everything in between. 
-              Get unlimited assets and a license that covers your business.
+              Enhance your video editing experience by uploading your own reference video. Our AI will analyze and match your desired style perfectly.
             </p>
 
             <div className="flex gap-4">
@@ -38,7 +37,7 @@ const ReferenceVideoBanner = ({ onFileInputClick }: ReferenceVideoBannerProps) =
                 onClick={onFileInputClick}
                 className="bg-white text-black hover:bg-gray-100 px-8"
               >
-                See Plans
+                Upload Now
               </Button>
               <Button
                 variant="outline"
