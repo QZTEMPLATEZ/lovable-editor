@@ -82,7 +82,7 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
             Select Your Video Duration
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Choose the perfect duration for your wedding story. Each option is carefully crafted to deliver the best possible experience.
+            Choose the perfect duration for your video story. Each option is carefully crafted to deliver the best possible experience.
           </p>
         </motion.div>
 
@@ -101,7 +101,7 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
             <DurationGrid
               durations={VIDEO_DURATIONS}
               selectedDuration={targetDuration}
-              userTier="pro" // Force pro tier access
+              userTier="pro"
               onDurationSelect={onDurationChange}
             />
           </Tabs>

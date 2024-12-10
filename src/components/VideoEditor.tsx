@@ -29,29 +29,15 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
   const [customReferenceVideo, setCustomReferenceVideo] = useState<File | null>(null);
   const { toast } = useToast();
 
-  const isStepCompleted = (step: number): boolean => {
-    switch (step) {
-      case 0: return true;
-      case 1: return selectedStyle !== null;
-      case 2: return selectedMusic.length > 0;
-      case 3: return rawFiles.length > 0;
-      case 4: return aiScript.length > 0;
-      default: return false;
-    }
-  };
+  // Always return true since we're simulating pro user access
+  const isStepCompleted = (step: number): boolean => true;
 
   const handleNextStep = () => {
-    if (currentStep < EDITOR_STEPS.length - 1 && isStepCompleted(currentStep)) {
+    if (currentStep < EDITOR_STEPS.length - 1) {
       setCurrentStep(prev => prev + 1);
       toast({
         title: `Step ${currentStep + 2}: ${EDITOR_STEPS[currentStep + 1].title}`,
         description: EDITOR_STEPS[currentStep + 1].description,
-      });
-    } else if (!isStepCompleted(currentStep)) {
-      toast({
-        variant: "destructive",
-        title: "Cannot Proceed",
-        description: "Please complete the current step before continuing.",
       });
     }
   };
