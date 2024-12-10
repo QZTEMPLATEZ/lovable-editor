@@ -79,7 +79,7 @@ const VideoStyleItem = ({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative h-[60vh] group cursor-pointer w-full bg-black"
+      className="relative h-[70vh] group cursor-pointer w-full bg-black"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onStyleSelect}
@@ -112,10 +112,10 @@ const VideoStyleItem = ({
         )}
       </AnimatePresence>
 
-      <div className="relative z-10 flex items-center justify-between h-full w-full px-4">
-        <div className="space-y-1">
+      <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
+        <div className="space-y-2">
           <motion.h2 
-            className="text-3xl font-cinzel tracking-wider text-white"
+            className="text-4xl md:text-5xl font-cinzel tracking-wider text-white"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -123,7 +123,7 @@ const VideoStyleItem = ({
             {style.title}
           </motion.h2>
           <motion.p 
-            className="text-xs tracking-[0.2em] uppercase text-gray-400 font-italiana"
+            className="text-sm md:text-base tracking-[0.2em] uppercase text-gray-400 font-italiana"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -143,7 +143,7 @@ const VideoStyleItem = ({
         >
           <Button 
             variant="outline" 
-            className="border border-white text-white hover:bg-white/10 uppercase tracking-wider text-xs"
+            className="border-2 border-white text-white hover:bg-white/10 uppercase tracking-wider text-xs md:text-sm px-6 py-6"
           >
             EXPLORE
           </Button>

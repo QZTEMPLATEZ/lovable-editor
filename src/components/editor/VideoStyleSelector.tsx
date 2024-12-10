@@ -60,13 +60,13 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12">
+      <div className="text-center py-12 px-4">
         <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
           Define Your Visual Story
         </h1>
       </div>
 
-      <div className="w-full max-w-none px-0">
+      <div className="w-full max-w-none px-0 space-y-2">
         {VIDEO_STYLES.map((style) => (
           <VideoStyleItem
             key={style.id}
