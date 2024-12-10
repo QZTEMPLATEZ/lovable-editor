@@ -58,13 +58,20 @@ const StyleItem = ({
       onMouseLeave={onMouseLeave}
       onClick={() => onStyleSelect(style.id as VideoStyle)}
     >
-      <StylePreview
-        videoUrl={style.previewVideo}
-        isHovered={isHovered}
-        videoRef={videoRef}
-      />
+      {/* Base layer - Background */}
+      <div className="absolute inset-0 z-[1] bg-editor-panel" />
       
-      <div className="relative z-[2] flex items-center justify-between h-full w-full px-8 md:px-16">
+      {/* Middle layer - Video Preview */}
+      <div className="absolute inset-0 z-[2]">
+        <StylePreview
+          videoUrl={style.previewVideo}
+          isHovered={isHovered}
+          videoRef={videoRef}
+        />
+      </div>
+      
+      {/* Top layer - Content and Actions */}
+      <div className="absolute inset-0 z-[3] flex items-center justify-between h-full w-full px-8 md:px-16">
         <StyleContent
           title={style.title}
           description={style.description}
