@@ -56,26 +56,12 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     navigate('/music');
   };
 
-  const handleMouseEnter = async (styleId: string, videoElement: HTMLVideoElement | null) => {
+  const handleMouseEnter = (styleId: string) => {
     setHoveredStyle(styleId);
-    if (videoElement) {
-      try {
-        videoElement.muted = true;
-        videoElement.playsInline = true;
-        videoElement.currentTime = 0;
-        await videoElement.play();
-      } catch (error) {
-        console.log('Video autoplay failed:', error);
-      }
-    }
   };
 
-  const handleMouseLeave = (videoElement: HTMLVideoElement | null) => {
+  const handleMouseLeave = () => {
     setHoveredStyle(null);
-    if (videoElement) {
-      videoElement.pause();
-      videoElement.currentTime = 0;
-    }
   };
 
   return (
@@ -101,14 +87,8 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#0A0A0A] transition-colors duration-300 border-b border-gray-800 overflow-hidden"
-              onMouseEnter={(e) => {
-                const videoElement = e.currentTarget.querySelector('video');
-                handleMouseEnter(style.id, videoElement);
-              }}
-              onMouseLeave={(e) => {
-                const videoElement = e.currentTarget.querySelector('video');
-                handleMouseLeave(videoElement);
-              }}
+              onMouseEnter={() => handleMouseEnter(style.id)}
+              onMouseLeave={handleMouseLeave}
               onClick={() => handleStyleSelectAndNext(style.id)}
             >
               {/* Background Video */}
@@ -120,7 +100,8 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
                   loop
                   muted
                   playsInline
-                  preload="metadata"
+                  autoPlay={hoveredStyle === style.id}
+                  preload="auto"
                 />
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent group-hover:opacity-70 transition-opacity duration-500" />
