@@ -72,7 +72,7 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
   
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4">
+      <div className="text-center py-12 px-4 bg-editor-panel">
         <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
           Define Your Duration
         </h1>
@@ -84,13 +84,13 @@ const EditorHeader = ({ editingMode, targetDuration, onDurationChange }: EditorH
             key={`${duration.min}-${duration.max}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-black"
+            className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-editor-panel"
             onClick={() => {
               onDurationChange(duration);
               navigate('/style');
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/60 z-[1]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-editor-panel/60 via-editor-panel/40 to-editor-panel/60 z-[1]" />
             
             <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
             
