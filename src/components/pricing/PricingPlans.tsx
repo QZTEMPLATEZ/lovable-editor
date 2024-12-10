@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Bird, Check, Sparkles, Info } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from 'react-router-dom';
 import {
   Tooltip,
   TooltipContent,
@@ -59,6 +60,8 @@ const FeatureList = ({ features }: { features: PlanFeature[] }) => (
 );
 
 const PricingPlans = () => {
+  const navigate = useNavigate();
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -76,7 +79,10 @@ const PricingPlans = () => {
             billingNote="Billed annually, or monthly for US$ 14.99"
           />
           <FeatureList features={basicFeatures} />
-          <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full">
+          <Button 
+            className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
+            onClick={() => navigate('/duration')}
+          >
             Try Free
           </Button>
         </div>
@@ -98,7 +104,10 @@ const PricingPlans = () => {
             billingNote="Billed annually"
           />
           <FeatureList features={maxFeatures} />
-          <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full">
+          <Button 
+            className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
+            onClick={() => navigate('/duration')}
+          >
             Select
           </Button>
         </div>
@@ -117,7 +126,10 @@ const PricingPlans = () => {
             billingNote="Billed annually"
           />
           <FeatureList features={businessFeatures} />
-          <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full">
+          <Button 
+            className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
+            onClick={() => navigate('/duration')}
+          >
             Select
           </Button>
         </div>
