@@ -66,22 +66,10 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
 
   const handleMouseEnter = (styleId: string) => {
     setHoveredStyle(styleId);
-    const video = videoRefs.current[styleId];
-    if (video) {
-      video.currentTime = 0;
-      video.play().catch(error => {
-        console.log('Video autoplay failed:', error);
-      });
-    }
   };
 
   const handleMouseLeave = (styleId: string) => {
     setHoveredStyle(null);
-    const video = videoRefs.current[styleId];
-    if (video) {
-      video.pause();
-      video.currentTime = 0;
-    }
   };
 
   return (
@@ -107,25 +95,15 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
             onMouseLeave={() => handleMouseLeave(style.id)}
             onClick={() => handleStyleSelectAndNext(style.id)}
           >
-            <AnimatePresence mode="wait">
-              {hoveredStyle === style.id && (
-                <motion.video
-                  ref={el => {
-                    if (el) videoRefs.current[style.id] = el;
-                  }}
-                  initial={{ opacity: 1 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0 }}
-                  src={style.previewVideo}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                />
-              )}
-            </AnimatePresence>
+            <video
+              key={style.id}
+              src={style.previewVideo}
+              className="absolute inset-0 w-full h-full object-cover"
+              loop
+              muted
+              playsInline
+              autoPlay
+            />
 
             <div className="relative z-10 flex items-center justify-between h-full w-full px-16 md:px-32">
               <div className="space-y-1">
