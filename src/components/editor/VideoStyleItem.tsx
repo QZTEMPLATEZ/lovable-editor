@@ -52,7 +52,13 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
       onMouseLeave={onMouseLeave}
       onClick={onStyleSelect}
     >
-      <div className="absolute inset-0 bg-black/40 z-[1]" />
+      {/* Black overlay that fades out on hover */}
+      <motion.div 
+        className="absolute inset-0 bg-black z-[1]"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: isHovered ? 0 : 1 }}
+        transition={{ duration: 0.3 }}
+      />
       
       <video
         ref={videoRef}
