@@ -17,28 +17,28 @@ const VIDEO_STYLES = [
     id: 'classic',
     title: 'Classic',
     description: 'made by world-class artists',
-    previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?rlkey=syb52596tbxhgxc6zliv3glrw&dl=1',
+    previewVideo: 'https://dl.dropboxusercontent.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4',
     darkMode: true
   },
   {
     id: 'cinematic',
     title: 'Cinematic',
     description: 'recorded by top sound engineers',
-    previewVideo: 'https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?rlkey=ygbln4b5xuaxqeljavln93r3q&dl=1',
+    previewVideo: 'https://dl.dropboxusercontent.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4',
     darkMode: true
   },
   {
     id: 'documentary',
     title: 'Documentary',
     description: 'with exclusive voice actors',
-    previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK-OK.mp4?rlkey=pbbkz4xtf9rgl2mecemvp7la3&dl=1',
+    previewVideo: 'https://dl.dropboxusercontent.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK-OK.mp4',
     darkMode: true
   },
   {
     id: 'dynamic',
     title: 'Dynamic',
     description: 'shot by pro filmmakers',
-    previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?rlkey=h545e8z9706sc6bawg9cm9gzc&dl=1',
+    previewVideo: 'https://dl.dropboxusercontent.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4',
     darkMode: true
   }
 ];
@@ -56,12 +56,31 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     navigate('/music');
   };
 
-  const handleMouseEnter = (styleId: string) => {
+  const handleMouseEnter = async (styleId: string, videoElement: HTMLVideoElement | null) => {
     setHoveredStyle(styleId);
+    if (videoElement) {
+      try {
+        videoElement.muted = true;
+        videoElement.playsInline = true;
+        videoElement.currentTime = 0;
+        await videoElement.play();
+      } catch (error) {
+        console.error('Video autoplay failed:', error);
+        toast({
+          variant: "destructive",
+          title: "Video Playback Error",
+          description: "There was an issue playing the preview video. Please try again.",
+        });
+      }
+    }
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (videoElement: HTMLVideoElement | null) => {
     setHoveredStyle(null);
+    if (videoElement) {
+      videoElement.pause();
+      videoElement.currentTime = 0;
+    }
   };
 
   return (
@@ -87,8 +106,14 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#0A0A0A] transition-colors duration-300 border-b border-gray-800 overflow-hidden"
-              onMouseEnter={() => handleMouseEnter(style.id)}
-              onMouseLeave={handleMouseLeave}
+              onMouseEnter={(e) => {
+                const videoElement = e.currentTarget.querySelector('video');
+                handleMouseEnter(style.id, videoElement);
+              }}
+              onMouseLeave={(e) => {
+                const videoElement = e.currentTarget.querySelector('video');
+                handleMouseLeave(videoElement);
+              }}
               onClick={() => handleStyleSelectAndNext(style.id)}
             >
               {/* Background Video */}
@@ -100,7 +125,6 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
                   loop
                   muted
                   playsInline
-                  autoPlay={hoveredStyle === style.id}
                   preload="auto"
                 />
                 {/* Gradient Overlay */}
