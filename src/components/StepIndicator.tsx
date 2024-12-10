@@ -1,6 +1,7 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 interface StepIndicatorProps {
   currentStep: number;
@@ -11,6 +12,31 @@ interface StepIndicatorProps {
 }
 
 const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
+  const navigate = useNavigate();
+
+  const getStepPath = (index: number) => {
+    switch (index) {
+      case 0:
+        return '/duration';
+      case 1:
+        return '/style';
+      case 2:
+        return '/music';
+      case 3:
+        return '/upload';
+      case 4:
+        return '/edit';
+      default:
+        return '/duration';
+    }
+  };
+
+  const handleStepClick = (index: number) => {
+    if (index <= currentStep) {
+      navigate(getStepPath(index));
+    }
+  };
+
   return (
     <div className="relative mb-8">
       <motion.div 
@@ -25,7 +51,12 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
 
       <div className="relative flex justify-between">
         {steps.map((step, index) => (
-          <div key={step.title} className="flex flex-col items-center">
+          <div 
+            key={step.title} 
+            className="flex flex-col items-center"
+            onClick={() => handleStepClick(index)}
+            style={{ cursor: index <= currentStep ? 'pointer' : 'not-allowed' }}
+          >
             <motion.div 
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
