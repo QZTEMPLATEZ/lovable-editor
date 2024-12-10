@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { VideoStyle } from '@/types/video';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -72,6 +72,12 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     setHoveredStyle(null);
   };
 
+  const handleExploreClick = (styleId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the parent div's onClick
+    handleStyleSelectAndNext(styleId);
+    navigate('/music');
+  };
+
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
       <div className="text-center py-12 px-4 bg-editor-panel relative">
@@ -115,6 +121,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
                 </p>
               </div>
               <button
+                onClick={(e) => handleExploreClick(style.id, e)}
                 className="bg-editor-bg/20 hover:bg-editor-bg/40 border border-white/20 text-white px-8 py-3 rounded-md transition-colors"
               >
                 Explorar
