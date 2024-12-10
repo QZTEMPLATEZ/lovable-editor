@@ -98,16 +98,16 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
             onMouseLeave={() => handleMouseLeave(style.id)}
             onClick={() => handleStyleSelectAndNext(style.id)}
           >
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
               {hoveredStyle === style.id && (
                 <motion.video
                   ref={el => {
                     if (el) videoRefs.current[style.id] = el;
                   }}
-                  initial={{ opacity: 0 }}
+                  initial={{ opacity: 1 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0 }}
                   src={style.previewVideo}
                   className="absolute inset-0 w-full h-full object-cover"
                   loop
