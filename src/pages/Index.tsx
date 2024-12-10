@@ -12,50 +12,57 @@ interface Project {
   name: string;
   lastModified: string;
   thumbnail: string;
+  videoUrl: string;
 }
 
 const RECENT_PROJECTS: Project[] = [
   {
     id: '1',
-    name: 'Wedding Highlights',
+    name: 'OSÍRIZ EDITION - Highlights',
     lastModified: '2024-03-10',
-    thumbnail: '/placeholder.svg'
+    thumbnail: '/placeholder.svg',
+    videoUrl: 'https://www.youtube.com/watch?v=z5yG4nAb80M'
   },
   {
     id: '2',
-    name: 'Anniversary Video',
+    name: 'OSÍRIZ EDITION - Showcase',
     lastModified: '2024-03-09',
-    thumbnail: '/placeholder.svg'
+    thumbnail: '/placeholder.svg',
+    videoUrl: 'https://www.youtube.com/watch?v=kWTyUKEbKNk'
   },
   {
     id: '3',
-    name: 'Birthday Compilation',
+    name: 'OSÍRIZ EDITION - Demo',
     lastModified: '2024-03-08',
-    thumbnail: '/placeholder.svg'
+    thumbnail: '/placeholder.svg',
+    videoUrl: 'https://www.youtube.com/watch?v=QPjWfYW8LWk'
   }
 ];
 
 const TUTORIAL_VIDEOS = [
   {
     id: '1',
-    title: 'Getting Started with Video Editing',
+    title: 'Getting Started with OSÍRIZ',
     description: 'Learn the basics of our video editor',
     duration: '5:30',
-    thumbnail: '/placeholder.svg'
+    thumbnail: '/placeholder.svg',
+    videoUrl: 'https://www.youtube.com/watch?v=txBOuZWJcXg'
   },
   {
     id: '2',
-    title: 'Advanced Transitions',
-    description: 'Master smooth video transitions',
-    duration: '8:45',
-    thumbnail: '/placeholder.svg'
+    title: 'Advanced Features Tutorial',
+    description: 'Master advanced editing techniques',
+    duration: '5:30',
+    thumbnail: '/placeholder.svg',
+    videoUrl: 'https://www.youtube.com/watch?v=txBOuZWJcXg'
   },
   {
     id: '3',
-    title: 'Audio Mixing Tips',
-    description: 'Perfect your video sound',
-    duration: '6:15',
-    thumbnail: '/placeholder.svg'
+    title: 'Professional Editing Guide',
+    description: 'Professional editing workflow',
+    duration: '5:30',
+    thumbnail: '/placeholder.svg',
+    videoUrl: 'https://www.youtube.com/watch?v=txBOuZWJcXg'
   }
 ];
 
@@ -69,17 +76,18 @@ const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
   const [showTutorial, setShowTutorial] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showMainContent, setShowMainContent] = useState(!showIntro);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
   const handleNewProject = () => {
     navigate('/duration');
   };
 
-  const handleResumeProject = (projectId: string) => {
-    console.log('Resuming project:', projectId);
-    navigate(`/editor/${projectId}`);
+  const handleResumeProject = (project: Project) => {
+    window.open(project.videoUrl, '_blank');
   };
 
-  const handleTutorialClick = () => {
+  const handleTutorialClick = (videoUrl: string) => {
+    setSelectedVideo(videoUrl);
     setShowTutorial(true);
   };
 
@@ -143,22 +151,27 @@ const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
                   key={project.id}
                   className="bg-editor-glass-dark border border-editor-border rounded-xl p-4 hover:border-editor-glow-purple/50 transition-all duration-300"
                 >
-                  <img
-                    src={project.thumbnail}
-                    alt={project.name}
-                    className="w-full h-40 object-cover rounded-lg mb-4"
-                  />
+                  <div className="relative">
+                    <img
+                      src={project.thumbnail}
+                      alt={project.name}
+                      className="w-full h-40 object-cover rounded-lg mb-4"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Play className="w-12 h-12 text-white opacity-70" />
+                    </div>
+                  </div>
                   <h3 className="text-lg font-medium text-white mb-2">{project.name}</h3>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-400">
                       Last modified: {new Date(project.lastModified).toLocaleDateString()}
                     </span>
                     <Button
-                      onClick={() => handleResumeProject(project.id)}
+                      onClick={() => handleResumeProject(project)}
                       variant="secondary"
                       className="bg-editor-accent hover:bg-editor-accent/80"
                     >
-                      Resume
+                      Watch
                     </Button>
                   </div>
                 </div>
@@ -173,7 +186,7 @@ const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
               {TUTORIAL_VIDEOS.map((video) => (
                 <div
                   key={video.id}
-                  onClick={handleTutorialClick}
+                  onClick={() => handleTutorialClick(video.videoUrl)}
                   className="bg-editor-glass-dark border border-editor-border rounded-xl p-4 cursor-pointer hover:border-editor-glow-purple/50 transition-all duration-300"
                 >
                   <div className="relative mb-4">
@@ -200,8 +213,14 @@ const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
       </div>
 
       {/* Tutorial Video Modal */}
-      {showTutorial && (
-        <TutorialVideo onComplete={() => setShowTutorial(false)} />
+      {showTutorial && selectedVideo && (
+        <TutorialVideo 
+          onComplete={() => {
+            setShowTutorial(false);
+            setSelectedVideo(null);
+          }} 
+          videoUrl={selectedVideo}
+        />
       )}
     </div>
   );

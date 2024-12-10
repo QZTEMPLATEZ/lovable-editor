@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 
 interface TutorialVideoProps {
   onComplete: () => void;
+  videoUrl?: string;
 }
 
-const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
+const TutorialVideo = ({ onComplete, videoUrl = 'https://www.youtube.com/embed/txBOuZWJcXg' }: TutorialVideoProps) => {
   const [dontShowAgain, setDontShowAgain] = useState(false);
 
   const handleVideoEnded = () => {
@@ -15,6 +16,12 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
       localStorage.setItem('skipTutorial', 'true');
     }
     onComplete();
+  };
+
+  // Convert regular YouTube URL to embed URL
+  const getEmbedUrl = (url: string) => {
+    const videoId = url.split('v=')[1]?.split('&')[0];
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
   };
 
   return (
@@ -31,7 +38,7 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
             <div className="aspect-video w-full bg-editor-panel">
               <iframe
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/txBOuZWJcXg?autoplay=1&enablejsapi=1"
+                src={getEmbedUrl(videoUrl)}
                 title="Tutorial Video"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -61,7 +68,7 @@ const TutorialVideo = ({ onComplete }: TutorialVideoProps) => {
                   variant="secondary"
                   className="bg-editor-accent hover:bg-editor-accent/80 text-white"
                 >
-                  Skip Tutorial
+                  Close Video
                 </Button>
               </div>
             </div>
