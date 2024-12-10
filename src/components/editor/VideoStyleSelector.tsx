@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { VideoStyle } from '@/types/video';
 import { motion, AnimatePresence } from 'framer-motion';
+import { VideoStyle } from '@/types/video';
 
 const VIDEO_STYLES = [
   {
@@ -73,6 +71,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 0.5 }}
                   exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                   src={style.previewVideo}
                   className="absolute inset-0 w-full h-full object-cover"
                   loop
@@ -83,7 +82,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
               )}
             </AnimatePresence>
 
-            <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
+            <div className="relative z-10 flex items-center justify-between h-full w-full px-16 md:px-32">
               <div className="space-y-1">
                 <h2 className="text-2xl md:text-3xl font-cinzel tracking-wider text-white">
                   {style.title}
@@ -92,17 +91,15 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
                   {style.description}
                 </p>
               </div>
-              <Button
-                variant="outline"
-                className="bg-editor-bg/20 hover:bg-editor-bg/40 border-white/20 text-white"
+              <button
+                className="bg-editor-bg/20 hover:bg-editor-bg/40 border border-white/20 text-white px-6 py-2 rounded-md transition-colors"
                 onClick={(e) => {
                   e.stopPropagation();
                   onStyleSelect(style.id as VideoStyle);
                 }}
               >
                 Explorar
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              </button>
             </div>
           </div>
         ))}
