@@ -19,9 +19,14 @@ const TopNavigation = () => {
               <span className="font-['Cinzel'] text-2xl font-bold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 hover:scale-105 transition-transform duration-300 cursor-default">
                 OSÍRIZ
               </span>
-              <span className="ml-2 text-sm font-light tracking-wide text-gray-400">
-                EDITION PROFESSIONAL
-              </span>
+              <div className="ml-2 flex flex-col">
+                <span className="text-xs font-cinzel tracking-widest text-gray-300">
+                  EDITION PRO
+                </span>
+                <span className="text-[10px] font-light tracking-wider text-gray-400 uppercase">
+                  Powered by AI
+                </span>
+              </div>
             </h1>
           </div>
           <div className="flex items-center space-x-4">
