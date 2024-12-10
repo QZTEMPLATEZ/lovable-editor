@@ -3,6 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import VideoStyleItem from './VideoStyleItem';
+import { Crown } from 'lucide-react';
 
 export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
 
@@ -85,6 +86,41 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             }}
           />
         ))}
+      </div>
+
+      {/* New Business Reference Video Banner */}
+      <div className="mt-20 bg-black/90 py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-italiana mb-6">The perfect plan to fit your needs</h2>
+            <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+              {/* Standard Plans */}
+              <div className="space-y-4">
+                <h3 className="text-2xl font-semibold">Standard plans</h3>
+                <p className="text-gray-400">
+                  For video creators of all kinds. Get the creative assets your projects need, all covered by one simple license.
+                </p>
+                <Button variant="outline" className="bg-white text-black hover:bg-gray-100">
+                  See Plans
+                </Button>
+              </div>
+              
+              {/* Business Plans */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 justify-center">
+                  <h3 className="text-2xl font-semibold">Business plans</h3>
+                  <Crown className="w-5 h-5 text-yellow-500" />
+                </div>
+                <p className="text-gray-400">
+                  For brands, creative teams, agencies, and everything in between. Get unlimited assets and a license that covers your business.
+                </p>
+                <Button variant="outline" className="border-white text-white hover:bg-white hover:text-black">
+                  Learn More
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <input
