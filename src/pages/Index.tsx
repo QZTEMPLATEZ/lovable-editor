@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import TutorialVideo from '../components/TutorialVideo';
-import IntroScreen from '../components/IntroScreen';
 import SearchBar from '../components/dashboard/SearchBar';
 import RecentProjects, { Project } from '../components/dashboard/RecentProjects';
 import TutorialSection, { Tutorial } from '../components/dashboard/TutorialSection';
-import PricingPlans from '../components/pricing/PricingPlans';
 
 const RECENT_PROJECTS: Project[] = [
   {
@@ -59,18 +56,11 @@ const TUTORIAL_VIDEOS: Tutorial[] = [
   }
 ];
 
-interface IndexProps {
-  showIntro: boolean;
-  onDontShowAgain: (checked: boolean) => void;
-}
-
-const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
+const Index = () => {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showMainContent, setShowMainContent] = useState(!showIntro);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
-  const [showPricing, setShowPricing] = useState(false);
 
   const handleNewProject = () => {
     navigate('/duration');
@@ -85,29 +75,9 @@ const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
     setShowTutorial(true);
   };
 
-  const handleIntroComplete = () => {
-    setShowPricing(true);
-  };
-
-  const handlePricingComplete = () => {
-    setShowMainContent(true);
-  };
-
   const filteredProjects = RECENT_PROJECTS.filter(project =>
     project.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  if (!showMainContent && !showPricing) {
-    return (
-      <div className="space-y-4">
-        <IntroScreen onComplete={handleIntroComplete} />
-      </div>
-    );
-  }
-
-  if (showPricing) {
-    return <PricingPlans onComplete={handlePricingComplete} />;
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95">
@@ -135,16 +105,6 @@ const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
           />
         </div>
       </div>
-
-      {showTutorial && selectedVideo && (
-        <TutorialVideo 
-          onComplete={() => {
-            setShowTutorial(false);
-            setSelectedVideo(null);
-          }} 
-          videoUrl={selectedVideo}
-        />
-      )}
     </div>
   );
 };

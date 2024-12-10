@@ -38,10 +38,6 @@ const EDITOR_STEPS = [
 const AppContent = () => {
   const location = useLocation();
   const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
-  const [showIntro, setShowIntro] = useState(() => {
-    const stored = localStorage.getItem('showIntro');
-    return stored === null ? true : JSON.parse(stored);
-  });
 
   const getCurrentStep = () => {
     switch (location.pathname) {
@@ -68,10 +64,6 @@ const AppContent = () => {
     console.log('Custom video uploaded:', file);
   };
 
-  const handleDontShowAgain = (checked: boolean) => {
-    localStorage.setItem('showIntro', (!checked).toString());
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
       {/* Background grid pattern */}
@@ -86,15 +78,7 @@ const AppContent = () => {
             <StepIndicator currentStep={getCurrentStep()} steps={EDITOR_STEPS} />
           )}
           <Routes>
-            <Route 
-              path="/" 
-              element={
-                <Index 
-                  showIntro={showIntro} 
-                  onDontShowAgain={handleDontShowAgain} 
-                />
-              } 
-            />
+            <Route path="/" element={<Index />} />
             <Route path="/plans" element={<PricingPlans />} />
             <Route path="/duration" element={<VideoSizeSelector selectedSize={null} onSizeSelect={() => {}} />} />
             <Route 
