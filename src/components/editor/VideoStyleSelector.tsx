@@ -18,7 +18,7 @@ const VIDEO_STYLES = [
     id: 'classic',
     title: 'Classic Cinematic',
     description: 'Timeless & Emotional',
-    previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?raw=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK.mp4?raw=1',
     features: [
       'Warm, timeless color grading',
       'Balanced framing & composition',
@@ -33,18 +33,21 @@ const VIDEO_STYLES = [
     description: 'Contemporary & Bold',
     previewVideo: 'https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?raw=1',
     features: [
-      'Contemporary color palette',
+      'High contrast film-like grading',
       'Dynamic camera movements',
-      'Creative transitions',
-      'Modern storytelling approach',
-      'Dramatic pacing'
+      'Dramatic lighting emphasis',
+      'Creative depth transitions',
+      'Bold storytelling approach',
+      'Artistic scene sequencing',
+      'Enhanced emotional peaks',
+      'Scene-specific pacing'
     ]
   },
   {
     id: 'documentary',
     title: 'Documentary',
     description: 'Authentic & Natural',
-    previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK-OK.mp4?raw=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK.mp4?raw=1',
     features: [
       'Natural color grading',
       'Candid moments focus',
@@ -84,7 +87,9 @@ const VideoStyleSelector = ({
     
     toast({
       title: `${style?.title} Style Selected`,
-      description: "Your wedding film will be edited with this cinematic style.",
+      description: style?.id === 'cinematic' 
+        ? "Your wedding film will be edited with advanced cinematic techniques, emphasizing dramatic storytelling and dynamic visuals."
+        : "Your wedding film will be edited with this cinematic style.",
     });
 
     if (onNext) {
