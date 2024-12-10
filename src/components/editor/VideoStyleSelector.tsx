@@ -1,9 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import VideoStyleItem from './VideoStyleItem';
-import ReferenceVideoBanner from './ReferenceVideoBanner';
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import { VideoStyle } from '@/types/video';
 
 const VIDEO_STYLES = [
@@ -45,13 +41,6 @@ interface VideoStyleSelectorProps {
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
-
-  const handleStyleSelect = (style: VideoStyle) => {
-    onStyleSelect(style);
-    navigate('/music'); // Navigate to music route after style selection
-  };
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-bg min-h-screen">
@@ -64,44 +53,38 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         </p>
       </div>
 
-      <div className="w-full max-w-none px-0 bg-editor-bg flex-grow">
+      <div className="w-full max-w-none px-0 bg-editor-bg flex-grow space-y-4 py-4">
         {VIDEO_STYLES.map((style) => (
-          <VideoStyleItem
+          <div
             key={style.id}
-            style={style}
-            isHovered={hoveredStyle === style.id}
-            onMouseEnter={() => setHoveredStyle(style.id)}
-            onMouseLeave={() => setHoveredStyle(null)}
-            onStyleSelect={handleStyleSelect}
-          />
+            className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-editor-panel hover:bg-editor-panel/80 transition-colors"
+            onClick={() => {
+              onStyleSelect(style.id as VideoStyle);
+              navigate('/music');
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-editor-panel/60 via-editor-panel/40 to-editor-panel/60 z-[1]" />
+            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
+            <video
+              src={style.previewVideo}
+              className="absolute inset-0 w-full h-full object-cover opacity-50"
+              loop
+              muted
+              playsInline
+              autoPlay
+            />
+            <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
+              <div className="space-y-1">
+                <h2 className="text-4xl md:text-6xl font-cinzel tracking-wider text-white">
+                  {style.title}
+                </h2>
+                <p className="text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-400 font-italiana">
+                  {style.description}
+                </p>
+              </div>
+            </div>
+          </div>
         ))}
-      </div>
-
-      <ReferenceVideoBanner onFileInputClick={() => fileInputRef.current?.click()} />
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={(e) => {
-          if (e.target.files?.[0]) {
-            onCustomVideoUpload(e.target.files[0]);
-            onStyleSelect('custom');
-            navigate('/music');
-          }
-        }}
-        accept="video/*"
-        className="hidden"
-      />
-
-      <div className="flex justify-start p-6 bg-editor-bg border-t border-editor-border">
-        <Button
-          variant="outline"
-          className="bg-editor-bg hover:bg-editor-panel border-editor-border/30"
-          onClick={() => navigate('/duration')}
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back
-        </Button>
       </div>
     </div>
   );
