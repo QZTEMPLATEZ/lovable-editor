@@ -18,7 +18,7 @@ const VIDEO_STYLES = [
     id: 'classic',
     title: 'Classic',
     description: 'made by world-class artists',
-    previewVideo: '/classic-preview.mp4',
+    previewVideo: 'https://dl.dropboxusercontent.com/s/zosb18kemlx6d4qde73x3/youtube.mp4',
     darkMode: true
   },
   {
@@ -50,6 +50,26 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
+  const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+
+  const handleMouseEnter = (styleId: string) => {
+    setHoveredStyle(styleId);
+    if (videoRefs.current[styleId]) {
+      videoRefs.current[styleId]?.play().catch(error => {
+        console.log('Video playback failed:', error);
+      });
+    }
+  };
+
+  const handleMouseLeave = (styleId: string) => {
+    setHoveredStyle(null);
+    if (videoRefs.current[styleId]) {
+      videoRefs.current[styleId]?.pause();
+      if (videoRefs.current[styleId]) {
+        videoRefs.current[styleId]!.currentTime = 0;
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
@@ -65,13 +85,14 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="relative h-[60vh] group cursor-pointer w-full bg-black"
-          onMouseEnter={() => setHoveredStyle(style.id)}
-          onMouseLeave={() => setHoveredStyle(null)}
+          onMouseEnter={() => handleMouseEnter(style.id)}
+          onMouseLeave={() => handleMouseLeave(style.id)}
           onClick={() => onStyleSelect(style.id as VideoStyle)}
         >
           <AnimatePresence>
             {hoveredStyle === style.id && (
               <motion.video
+                ref={el => videoRefs.current[style.id] = el}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.7 }}
                 exit={{ opacity: 0 }}
@@ -118,7 +139,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
                   window.location.href = `/explore/${style.id}`;
                 }}
               >
-                Explore {style.title}
+                EXPLORE
               </Button>
             </motion.div>
           </div>
