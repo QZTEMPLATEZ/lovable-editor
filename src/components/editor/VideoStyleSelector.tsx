@@ -69,14 +69,14 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4 bg-[#0A0A0A] relative">
+      <div className="text-center py-12 px-4 bg-gradient-to-r from-editor-bg via-editor-panel to-editor-bg relative">
         <button
           onClick={() => navigate('/duration')}
-          className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-[#151515] hover:bg-[#202020] border border-[#252525] transition-colors"
+          className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-editor-panel hover:bg-editor-button border border-editor-border transition-colors duration-300 hover:border-editor-glow-purple/50"
         >
           <ChevronLeft className="w-6 h-6 text-white" />
         </button>
-        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
+        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-editor-glow-purple to-editor-glow-pink">
           Choose Your Style
         </h1>
       </div>
@@ -85,7 +85,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
         {VIDEO_STYLES.map((style) => (
           <div
             key={style.id}
-            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#0A0A0A] transition-colors duration-300"
+            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-editor-bg transition-colors duration-300 border-y border-editor-border"
             onMouseEnter={() => handleMouseEnter(style.id)}
             onMouseLeave={() => handleMouseLeave(style.id)}
             onClick={() => handleStyleSelectAndNext(style.id)}
@@ -113,7 +113,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
               </div>
               <button
                 onClick={(e) => handleExploreClick(style.id, e)}
-                className="bg-[#151515] hover:bg-[#202020] border border-[#252525] text-white px-8 py-3 rounded-md transition-colors"
+                className="bg-editor-panel hover:bg-editor-button border border-editor-border text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-editor-glow-purple hover:shadow-lg hover:shadow-editor-glow-purple/20"
               >
                 Explore
               </button>
