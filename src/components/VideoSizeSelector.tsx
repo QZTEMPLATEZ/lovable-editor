@@ -94,33 +94,44 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
         
         {/* Hero Content */}
         <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center">
-          <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 font-cinzel">
-            Get unlimited
-          </h1>
-          <h2 className="text-4xl md:text-5xl text-white/90 mb-8 font-cinzel">
-            stock footage
-          </h2>
-          <div className="flex gap-4">
-            <Button
-              onClick={() => navigate('/style')}
-              className="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-6 text-lg rounded-lg"
-            >
-              Start Free Now
-            </Button>
-            <Button
-              onClick={() => navigate('/plans')}
-              variant="outline"
-              className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg rounded-lg"
-            >
-              Pricing
-            </Button>
+          <div className="max-w-3xl">
+            <h1 className="text-6xl md:text-7xl font-bold text-white mb-6 font-cinzel">
+              Select Your Duration
+            </h1>
+            <p className="text-xl text-white/80 mb-8 leading-relaxed">
+              Choose the perfect duration for your video project. Each option is carefully designed 
+              to match different content needs, from quick social media clips to full cinematic experiences.
+              The duration you select will help us optimize the editing process and deliver the best results for your specific use case.
+            </p>
+            <div className="flex gap-4">
+              <Button
+                onClick={() => navigate('/style')}
+                className="bg-editor-glow-purple hover:bg-editor-glow-purple/90 text-white px-8 py-6 text-lg rounded-lg"
+              >
+                Continue to Styles
+              </Button>
+              <Button
+                onClick={() => navigate('/plans')}
+                variant="outline"
+                className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg rounded-lg"
+              >
+                View Plans
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Duration Options */}
       <div className="container mx-auto px-4 py-16 space-y-8">
-        <h3 className="text-3xl font-cinzel text-center mb-12">Select Your Duration</h3>
+        <div className="text-center mb-12">
+          <h3 className="text-3xl font-cinzel mb-4">Video Duration Options</h3>
+          <p className="text-gray-400 max-w-2xl mx-auto">
+            Each duration option is tailored for specific content types. From quick social media posts 
+            to comprehensive event coverage, select the duration that best fits your story.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {VIDEO_SIZES.map((size) => {
             const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
