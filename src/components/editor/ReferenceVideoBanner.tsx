@@ -1,5 +1,5 @@
 import React from 'react';
-import { Crown } from 'lucide-react';
+import { Crown, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
@@ -35,16 +35,18 @@ const ReferenceVideoBanner = ({ onFileInputClick }: ReferenceVideoBannerProps) =
             <div className="flex gap-4">
               <Button
                 onClick={onFileInputClick}
-                className="bg-white text-black hover:bg-gray-100 px-8"
+                className="bg-white text-black hover:bg-gray-100 px-8 flex items-center gap-2"
               >
                 Upload Now
+                <ArrowRight className="w-4 h-4" />
               </Button>
               <Button
                 variant="outline"
                 onClick={onFileInputClick}
-                className="border-white/20 hover:bg-white/10"
+                className="border-white/20 hover:bg-white/10 flex items-center gap-2"
               >
                 Learn More
+                <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
           </motion.div>
@@ -63,6 +65,17 @@ const ReferenceVideoBanner = ({ onFileInputClick }: ReferenceVideoBannerProps) =
               className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-80"
             />
             <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
+            
+            {/* Explore Button Overlay */}
+            <div className="absolute bottom-8 right-8">
+              <Button
+                onClick={onFileInputClick}
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white flex items-center gap-2 group"
+              >
+                Explore More
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </div>
           </motion.div>
         </div>
       </div>
