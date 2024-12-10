@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, Clock, AlertCircle, ChevronRight, Volume2 } from 'lucide-react';
+import { Music, Clock, AlertCircle, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import TrackAnalysis from './music/TrackAnalysis';
 import TrackControls from './music/TrackControls';
 import UploadSection from './music/UploadSection';
 import WaveformAnimation from './music/WaveformAnimation';
+import MusicHeader from './music/MusicHeader';
 
 interface Track {
   file: File;
@@ -153,123 +154,121 @@ const MusicSelector = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 p-6">
-      {/* Header Section with updated gradient background */}
-      <div className="relative text-center space-y-4 p-8 rounded-2xl bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 backdrop-blur-sm border border-editor-glow-purple/20">
-        <WaveformAnimation />
-        <h1 className="relative z-10 text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink">
-          Select Your Music to Guide the Magic!
-        </h1>
-        <p className="relative z-10 text-gray-300">
-          Choose up to 3 songs to shape the rhythm and emotion of your video
-        </p>
-      </div>
+    <div className="min-h-screen bg-editor-bg">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)] opacity-5" />
+      <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5" />
+      <div className="absolute inset-0 backdrop-blur-sm bg-[#0A0A0A]/80" />
+      
+      <div className="relative max-w-4xl mx-auto space-y-8 p-6">
+        <MusicHeader />
 
-      {/* Upload Section with updated styling */}
-      <div className="relative bg-editor-glow-purple/5 rounded-2xl p-6 border border-editor-glow-purple/20">
-        <WaveformAnimation />
-        <UploadSection onUpload={handleFileUpload} />
-      </div>
+        {/* Upload Section with updated styling */}
+        <div className="relative glass-panel rounded-2xl p-6 border border-editor-border/30">
+          <WaveformAnimation />
+          <UploadSection onUpload={handleFileUpload} />
+        </div>
 
-      {/* Tracks List with updated colors */}
-      <AnimatePresence>
-        {tracks.map((track, index) => (
-          <motion.div
-            key={track.file.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="bg-gradient-to-br from-editor-glow-purple/10 to-editor-glow-pink/10 rounded-2xl p-6 border border-editor-glow-purple/20 backdrop-blur-sm"
-          >
-            <div className="flex items-center gap-4 mb-4">
-              <TrackControls 
-                isPlaying={playingTrack === track.file.name}
-                onPlay={() => handleTrackPlay(track.file.name)}
-                onRemove={() => handleTrackRemove(index)}
-              />
+        {/* Tracks List with updated styling */}
+        <AnimatePresence>
+          {tracks.map((track, index) => (
+            <motion.div
+              key={track.file.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="glass-panel rounded-2xl p-6 border border-editor-border/30 backdrop-blur-sm"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <TrackControls 
+                  isPlaying={playingTrack === track.file.name}
+                  onPlay={() => handleTrackPlay(track.file.name)}
+                  onRemove={() => handleTrackRemove(index)}
+                />
 
-              <div className="flex-1">
-                <h3 className="font-medium text-editor-glow-purple">{track.file.name}</h3>
-                <div className="flex items-center gap-4 text-sm text-editor-glow-purple/70">
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    {track.duration}
-                  </span>
-                  <TrackAnalysis bpm={track.bpm || 0} key={track.key || ''} />
+                <div className="flex-1">
+                  <h3 className="font-medium text-editor-glow-purple">{track.file.name}</h3>
+                  <div className="flex items-center gap-4 text-sm text-editor-glow-purple/70">
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      {track.duration}
+                    </span>
+                    <TrackAnalysis bpm={track.bpm || 0} key={track.key || ''} />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm text-editor-glow-purple">
-                <span>Intensity</span>
-                <span>{Math.round(track.intensity * 100)}%</span>
-              </div>
-              <Slider
-                value={[track.intensity]}
-                onValueChange={(value) => handleIntensityChange(index, value)}
-                max={1}
-                step={0.01}
-                className="w-full"
-              />
-            </div>
-
-            {playingTrack === track.file.name && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-4"
-              >
-                <div className="h-1 bg-editor-glow-purple/20 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink"
-                    animate={{
-                      width: ["0%", "100%"],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm text-editor-glow-purple">
+                  <span>Intensity</span>
+                  <span>{Math.round(track.intensity * 100)}%</span>
                 </div>
-              </motion.div>
-            )}
-          </motion.div>
-        ))}
-      </AnimatePresence>
+                <Slider
+                  value={[track.intensity]}
+                  onValueChange={(value) => handleIntensityChange(index, value)}
+                  max={1}
+                  step={0.01}
+                  className="w-full"
+                />
+              </div>
 
-      {/* Duration Info with updated styling */}
-      {tracks.length > 0 && (
-        <div className="bg-gradient-to-br from-editor-glow-purple/5 to-editor-glow-pink/5 rounded-2xl p-6 border border-editor-glow-purple/20 backdrop-blur-sm">
-          <h3 className="font-medium text-editor-glow-purple mb-4">Music Coverage</h3>
-          <div className="space-y-4">
-            <Progress 
-              value={(getTotalMusicDuration() / videoDuration) * 100} 
-              className="h-2 bg-editor-glow-purple/20"
-            />
-            <div className="flex justify-between text-sm text-editor-glow-purple">
-              <span>{formatDuration(getTotalMusicDuration() * 60)} / {videoDuration}:00</span>
-              {getRequiredSongs() > 0 && (
-                <span className="text-editor-glow-pink">
-                  Need {getRequiredSongs()} more song{getRequiredSongs() > 1 ? 's' : ''}
-                </span>
+              {playingTrack === track.file.name && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mt-4"
+                >
+                  <div className="h-1 bg-editor-glow-purple/20 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink"
+                      animate={{
+                        width: ["0%", "100%"],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                    />
+                  </div>
+                </motion.div>
               )}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+
+        {/* Duration Info with updated styling */}
+        {tracks.length > 0 && (
+          <div className="glass-panel rounded-2xl p-6 border border-editor-border/30 backdrop-blur-sm">
+            <h3 className="font-medium text-editor-glow-purple mb-4">Music Coverage</h3>
+            <div className="space-y-4">
+              <Progress 
+                value={(getTotalMusicDuration() / videoDuration) * 100} 
+                className="h-2 bg-editor-glow-purple/20"
+              />
+              <div className="flex justify-between text-sm text-editor-glow-purple">
+                <span>{formatDuration(getTotalMusicDuration() * 60)} / {videoDuration}:00</span>
+                {getRequiredSongs() > 0 && (
+                  <span className="text-editor-glow-pink">
+                    Need {getRequiredSongs()} more song{getRequiredSongs() > 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Navigation with gradient button */}
-      <div className="flex justify-end mt-8">
-        <Button
-          onClick={() => navigate('/style')}
-          disabled={tracks.length === 0}
-          className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 disabled:opacity-50"
-        >
-          <span>Continue</span>
-          <ChevronRight className="ml-2 h-4 w-4" />
-        </Button>
+        {/* Navigation */}
+        <div className="flex justify-end mt-8">
+          <Button
+            onClick={() => navigate('/style')}
+            disabled={tracks.length === 0}
+            className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 disabled:opacity-50"
+          >
+            <span>Continue</span>
+            <ChevronRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
