@@ -47,6 +47,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement }>({});
 
   useEffect(() => {
+    // Preload all videos
     VIDEO_STYLES.forEach(style => {
       const video = document.createElement('video');
       video.src = style.previewVideo;
@@ -59,26 +60,6 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     onStyleSelect(styleId as VideoStyle);
     if (onNext) {
       onNext();
-    }
-  };
-
-  const handleMouseEnter = (styleId: string) => {
-    setHoveredStyle(styleId);
-    const video = videoRefs.current[styleId];
-    if (video) {
-      video.currentTime = 0;
-      video.play().catch(error => {
-        console.log('Video autoplay failed:', error);
-      });
-    }
-  };
-
-  const handleMouseLeave = (styleId: string) => {
-    setHoveredStyle(null);
-    const video = videoRefs.current[styleId];
-    if (video) {
-      video.pause();
-      video.currentTime = 0;
     }
   };
 
@@ -105,28 +86,18 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
           <div
             key={style.id}
             className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-editor-panel hover:bg-editor-panel/80 transition-colors"
-            onMouseEnter={() => handleMouseEnter(style.id)}
-            onMouseLeave={() => handleMouseLeave(style.id)}
+            onClick={() => handleStyleSelectAndNext(style.id)}
           >
-            <AnimatePresence>
-              {hoveredStyle === style.id && (
-                <motion.video
-                  ref={el => {
-                    if (el) videoRefs.current[style.id] = el;
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  src={style.previewVideo}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                />
-              )}
-            </AnimatePresence>
+            <video
+              key={style.id}
+              src={style.previewVideo}
+              className="absolute inset-0 w-full h-full object-cover"
+              loop
+              muted
+              autoPlay
+              playsInline
+              preload="auto"
+            />
 
             <div className="relative z-10 flex items-center justify-between h-full w-full px-16 md:px-32">
               <div className="space-y-1">
@@ -139,7 +110,6 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
               </div>
               <button
                 className="bg-editor-bg/20 hover:bg-editor-bg/40 border border-white/20 text-white px-8 py-3 rounded-md transition-colors"
-                onClick={() => handleStyleSelectAndNext(style.id)}
               >
                 Explorar
               </button>
