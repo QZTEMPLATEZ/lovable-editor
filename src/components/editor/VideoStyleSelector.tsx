@@ -40,14 +40,13 @@ interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
   onStyleSelect: (style: VideoStyle) => void;
   onCustomVideoUpload: (file: File) => void;
+  onNext?: () => void;
 }
 
-const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
+const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload, onNext }: VideoStyleSelectorProps) => {
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
-  const navigate = useNavigate();
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement }>({});
 
-  // Preload all videos when component mounts
   useEffect(() => {
     VIDEO_STYLES.forEach(style => {
       const video = document.createElement('video');
@@ -56,6 +55,13 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
       videoRefs.current[style.id] = video;
     });
   }, []);
+
+  const handleStyleSelectAndNext = (styleId: string) => {
+    onStyleSelect(styleId as VideoStyle);
+    if (onNext) {
+      onNext();
+    }
+  };
 
   const handleMouseEnter = (styleId: string) => {
     setHoveredStyle(styleId);
@@ -78,13 +84,12 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   };
 
   return (
-    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-bg min-h-screen">
+    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-black min-h-screen">
       <div className="text-center py-12 px-4 bg-editor-bg border-b border-editor-border relative">
         <Button
           variant="ghost"
           size="icon"
           className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-purple-300 transition-colors"
-          onClick={() => navigate('/duration')}
         >
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -103,7 +108,6 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-editor-panel hover:bg-editor-panel/80 transition-colors"
             onMouseEnter={() => handleMouseEnter(style.id)}
             onMouseLeave={() => handleMouseLeave(style.id)}
-            onClick={() => onStyleSelect(style.id as VideoStyle)}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-editor-panel/60 via-editor-panel/40 to-editor-panel/60 z-[1]" />
             <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
@@ -139,10 +143,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
               </div>
               <button
                 className="bg-editor-bg/20 hover:bg-editor-bg/40 border border-white/20 text-white px-6 py-2 rounded-md transition-colors"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onStyleSelect(style.id as VideoStyle);
-                }}
+                onClick={() => handleStyleSelectAndNext(style.id)}
               >
                 Explorar
               </button>
