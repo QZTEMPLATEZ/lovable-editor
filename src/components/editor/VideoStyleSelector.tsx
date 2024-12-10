@@ -24,7 +24,7 @@ const VIDEO_STYLES = [
       'Perfectly balanced framing with golden ratio composition',
       'Smooth, intentional camera movements that enhance emotion',
       'Carefully crafted emotional storytelling progression',
-      'Scene-specific pacing that matches the moment's intensity',
+      "Scene-specific pacing that matches the moment's intensity",
       'Elegant transitions that flow naturally between scenes',
       'Rich orchestral sound design with layered ambient audio',
       'Traditional 24fps cinematic look and feel',
