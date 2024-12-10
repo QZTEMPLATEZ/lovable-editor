@@ -25,7 +25,7 @@ const VIDEO_STYLES = [
     id: 'cinematic',
     title: 'Cinematic',
     description: 'recorded by top sound engineers',
-    previewVideo: '/cinematic-preview.mp4',
+    previewVideo: 'https://dl.dropboxusercontent.com/s/qw3o0cemsv3acfc8qmbkh/Trailer-Rafa-e-Joao.mp4',
     darkMode: true
   },
   {
