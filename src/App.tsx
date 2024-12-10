@@ -7,11 +7,16 @@ import VideoSizeSelector from "./components/VideoSizeSelector";
 import VideoStyleSelector from "./components/editor/VideoStyleSelector";
 import { useState } from "react";
 import { VideoStyle } from "./components/editor/VideoStyleSelector";
+import PricingPlans from "./components/pricing/PricingPlans";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
+  const [showIntro, setShowIntro] = useState(() => {
+    const stored = localStorage.getItem('showIntro');
+    return stored === null ? true : JSON.parse(stored);
+  });
 
   const handleStyleSelect = (style: VideoStyle) => {
     setSelectedStyle(style);
@@ -19,6 +24,10 @@ const App = () => {
 
   const handleCustomVideoUpload = (file: File) => {
     console.log('Custom video uploaded:', file);
+  };
+
+  const handleDontShowAgain = (checked: boolean) => {
+    localStorage.setItem('showIntro', (!checked).toString());
   };
 
   return (
@@ -35,7 +44,16 @@ const App = () => {
             <div className="container mx-auto px-4 py-8">
               <BrowserRouter>
                 <Routes>
-                  <Route path="/" element={<Index />} />
+                  <Route path="/" element={<PricingPlans />} />
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <Index 
+                        showIntro={showIntro} 
+                        onDontShowAgain={handleDontShowAgain} 
+                      />
+                    } 
+                  />
                   <Route path="/duration" element={<VideoSizeSelector selectedSize={null} onSizeSelect={() => {}} />} />
                   <Route 
                     path="/style" 

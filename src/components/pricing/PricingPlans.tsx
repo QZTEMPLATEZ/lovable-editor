@@ -62,6 +62,10 @@ const FeatureList = ({ features }: { features: PlanFeature[] }) => (
 const PricingPlans = () => {
   const navigate = useNavigate();
 
+  const handlePlanSelect = () => {
+    navigate('/dashboard');
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -81,7 +85,7 @@ const PricingPlans = () => {
           <FeatureList features={basicFeatures} />
           <Button 
             className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
-            onClick={() => navigate('/duration')}
+            onClick={handlePlanSelect}
           >
             Try Free
           </Button>
@@ -106,7 +110,7 @@ const PricingPlans = () => {
           <FeatureList features={maxFeatures} />
           <Button 
             className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
-            onClick={() => navigate('/duration')}
+            onClick={handlePlanSelect}
           >
             Select
           </Button>
@@ -128,7 +132,7 @@ const PricingPlans = () => {
           <FeatureList features={businessFeatures} />
           <Button 
             className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full"
-            onClick={() => navigate('/duration')}
+            onClick={handlePlanSelect}
           >
             Select
           </Button>

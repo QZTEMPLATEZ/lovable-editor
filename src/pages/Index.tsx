@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Play, Clock } from 'lucide-react';
+import { Checkbox } from "@/components/ui/checkbox";
 import TutorialVideo from '../components/TutorialVideo';
 import IntroScreen from '../components/IntroScreen';
 
@@ -58,11 +59,16 @@ const TUTORIAL_VIDEOS = [
   }
 ];
 
-const Index = () => {
+interface IndexProps {
+  showIntro: boolean;
+  onDontShowAgain: (checked: boolean) => void;
+}
+
+const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
   const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showMainContent, setShowMainContent] = useState(false);
+  const [showMainContent, setShowMainContent] = useState(!showIntro);
 
   const handleNewProject = () => {
     navigate('/duration');
@@ -82,7 +88,23 @@ const Index = () => {
   );
 
   if (!showMainContent) {
-    return <IntroScreen onComplete={() => setShowMainContent(true)} />;
+    return (
+      <div className="space-y-4">
+        <IntroScreen onComplete={() => setShowMainContent(true)} />
+        <div className="flex items-center space-x-2 justify-center">
+          <Checkbox 
+            id="dontShow" 
+            onCheckedChange={onDontShowAgain}
+          />
+          <label
+            htmlFor="dontShow"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-300"
+          >
+            Don't show this again
+          </label>
+        </div>
+      </div>
+    );
   }
 
   return (
