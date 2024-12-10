@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import TutorialVideo from '../components/TutorialVideo';
 import IntroScreen from '../components/IntroScreen';
 import SearchBar from '../components/dashboard/SearchBar';
@@ -102,18 +101,6 @@ const Index = ({ showIntro, onDontShowAgain }: IndexProps) => {
     return (
       <div className="space-y-4">
         <IntroScreen onComplete={handleIntroComplete} />
-        <div className="flex items-center space-x-2 justify-center">
-          <Checkbox 
-            id="dontShow" 
-            onCheckedChange={onDontShowAgain}
-          />
-          <label
-            htmlFor="dontShow"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-300"
-          >
-            Don't show this again
-          </label>
-        </div>
       </div>
     );
   }
