@@ -29,7 +29,6 @@ const StylePreview = ({ videoUrl, isHovered, videoRef }: StylePreviewProps) => {
           className="absolute inset-0 w-full h-full object-cover"
           loop
           muted
-          playsInline
           preload="auto"
         />
         
