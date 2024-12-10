@@ -55,7 +55,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         </p>
       </div>
 
-      <div className="w-full max-w-none px-0 bg-editor-bg flex-grow space-y-4 py-4">
+      <div className="w-full max-w-none px-0 bg-editor-bg flex-grow">
         {VIDEO_STYLES.map((style) => (
           <div
             key={style.id}
