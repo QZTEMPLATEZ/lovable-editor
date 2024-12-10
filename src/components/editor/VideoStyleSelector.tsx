@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from 'react-router-dom';
 
 export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
 
@@ -45,12 +46,19 @@ const VIDEO_STYLES = [
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
+      <div className="text-center py-12">
+        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
+          Define Your Visual Story
+        </h1>
+      </div>
+
       {VIDEO_STYLES.map((style) => (
         <motion.div
           key={style.id}
@@ -128,6 +136,23 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
           )}
         </motion.div>
       ))}
+
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex gap-4">
+        <Button
+          onClick={() => navigate('/duration')}
+          variant="outline"
+          className="bg-black/50 border border-white/20 text-white hover:bg-white/10 backdrop-blur-sm"
+        >
+          Back
+        </Button>
+        <Button
+          onClick={() => navigate('/edit')}
+          className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90"
+          disabled={!selectedStyle}
+        >
+          Next Step
+        </Button>
+      </div>
 
       <input
         type="file"
