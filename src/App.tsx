@@ -44,9 +44,8 @@ const App = () => {
             <div className="container mx-auto px-4 py-8">
               <BrowserRouter>
                 <Routes>
-                  <Route path="/" element={<PricingPlans />} />
                   <Route 
-                    path="/dashboard" 
+                    path="/" 
                     element={
                       <Index 
                         showIntro={showIntro} 
@@ -54,6 +53,7 @@ const App = () => {
                       />
                     } 
                   />
+                  <Route path="/plans" element={<PricingPlans />} />
                   <Route path="/duration" element={<VideoSizeSelector selectedSize={null} onSizeSelect={() => {}} />} />
                   <Route 
                     path="/style" 
