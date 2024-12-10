@@ -59,13 +59,13 @@ const StyleItem = ({
       onMouseLeave={onMouseLeave}
       onClick={() => onStyleSelect(style.id as VideoStyle)}
     >
-      {/* Layer 1 - Base Background */}
+      {/* Base Background Layer */}
       <div className="absolute inset-0 z-[1] bg-editor-panel" />
       
-      {/* Layer 2 - Grid Pattern */}
+      {/* Grid Pattern Layer */}
       <div className="absolute inset-0 z-[2] bg-[url('/grid.svg')] opacity-5" />
       
-      {/* Layer 3 - Video Preview */}
+      {/* Video Preview Layer */}
       <div className="absolute inset-0 z-[3]">
         <StylePreview
           videoUrl={style.previewVideo}
@@ -74,10 +74,10 @@ const StyleItem = ({
         />
       </div>
       
-      {/* Layer 4 - Gradient Overlay */}
+      {/* Gradient Overlay Layer */}
       <div className="absolute inset-0 z-[4] bg-gradient-to-r from-black/40 via-transparent to-black/40" />
       
-      {/* Layer 5 - Content and Actions */}
+      {/* Content and Actions Layer */}
       <div className="absolute inset-0 z-[5] flex items-center justify-between h-full w-full px-8 md:px-16">
         <StyleContent
           title={style.title}
