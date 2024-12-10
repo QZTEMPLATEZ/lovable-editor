@@ -1,21 +1,15 @@
-import { useRef, useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
 import StyleCard from './StyleCard';
+import { VideoStyle } from './VideoStyleSelector';
 
-export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
-
-interface VideoStyleSelectorProps {
-  selectedStyle: VideoStyle | null;
-  onStyleSelect: (style: VideoStyle) => void;
-  onCustomVideoUpload: (file: File) => void;
-}
+export type { VideoStyle };
 
 const VIDEO_STYLES = [
   {
     id: 'classic',
-    title: 'Classic',
+    title: 'Music',
     description: 'made by world-class artists',
     previewVideo: '/classic-preview.mp4',
     darkMode: true
@@ -31,24 +25,21 @@ const VIDEO_STYLES = [
   },
   {
     id: 'documentary',
-    title: 'Documentary',
-    description: 'with exclusive voice actors',
+    title: 'SFX',
+    description: 'recorded by top sound engineers',
     previewVideo: '/documentary-preview.mp4',
-    darkMode: true
-  },
-  {
-    id: 'dynamic',
-    title: 'Dynamic',
-    description: 'shot by pro filmmakers',
-    previewVideo: '/dynamic-preview.mp4',
     darkMode: true
   }
 ] as const;
 
+interface VideoStyleSelectorProps {
+  selectedStyle: VideoStyle | null;
+  onStyleSelect: (style: VideoStyle) => void;
+  onCustomVideoUpload: (file: File) => void;
+}
+
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
-  const { toast } = useToast();
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
 
@@ -61,15 +52,16 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
       </div>
 
       {VIDEO_STYLES.map((style) => (
-        <StyleCard
-          key={style.id}
-          style={style}
-          isHovered={hoveredStyle === style.id}
-          isMuted={isMuted}
-          onHover={setHoveredStyle}
-          onToggleMute={() => setIsMuted(!isMuted)}
-          onStyleSelect={onStyleSelect}
-        />
+        <div key={style.id} className="relative h-[60vh] group cursor-pointer">
+          <StyleCard
+            style={style}
+            isHovered={hoveredStyle === style.id}
+            isMuted={isMuted}
+            onHover={setHoveredStyle}
+            onToggleMute={() => setIsMuted(!isMuted)}
+            onStyleSelect={onStyleSelect}
+          />
+        </div>
       ))}
 
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex gap-4">
@@ -88,28 +80,6 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
           Next Step
         </Button>
       </div>
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={(e) => {
-          if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            if (!file.type.startsWith('video/')) {
-              toast({
-                variant: "destructive",
-                title: "Invalid file type",
-                description: "Please upload a video file."
-              });
-              return;
-            }
-            onCustomVideoUpload(file);
-            onStyleSelect('custom');
-          }
-        }}
-        accept="video/*"
-        className="hidden"
-      />
     </div>
   );
 };
