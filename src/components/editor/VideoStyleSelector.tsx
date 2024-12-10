@@ -17,28 +17,28 @@ const VIDEO_STYLES = [
     id: 'classic',
     title: 'Classic',
     description: 'made by world-class artists',
-    previewVideo: '/videos/classic.mp4',
+    previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?raw=1',
     darkMode: true
   },
   {
     id: 'cinematic',
     title: 'Cinematic',
     description: 'recorded by top sound engineers',
-    previewVideo: '/videos/cinematic.mp4',
+    previewVideo: 'https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?raw=1',
     darkMode: true
   },
   {
     id: 'documentary',
     title: 'Documentary',
     description: 'with exclusive voice actors',
-    previewVideo: '/videos/documentary.mp4',
+    previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK-OK.mp4?raw=1',
     darkMode: true
   },
   {
     id: 'dynamic',
     title: 'Dynamic',
     description: 'shot by pro filmmakers',
-    previewVideo: '/videos/dynamic.mp4',
+    previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?raw=1',
     darkMode: true
   }
 ];
@@ -106,7 +106,11 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
                   onError={() => handleVideoError(style.id)}
                 />
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent transition-opacity duration-500" />
+                <div 
+                  className={`absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent transition-opacity duration-500 ${
+                    hoveredStyle === style.id ? 'opacity-50' : 'opacity-80'
+                  }`} 
+                />
               </div>
 
               {/* Content */}
