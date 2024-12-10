@@ -53,7 +53,7 @@ const StyleItem = ({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative w-full [aspect-ratio:3.84/1] group cursor-pointer bg-editor-panel"
+      className="relative w-full [aspect-ratio:3.84/1] group cursor-pointer bg-editor-panel isolate"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={() => onStyleSelect(style.id as VideoStyle)}
@@ -64,7 +64,7 @@ const StyleItem = ({
         videoRef={videoRef}
       />
       
-      <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
+      <div className="relative z-[2] flex items-center justify-between h-full w-full px-8 md:px-16">
         <StyleContent
           title={style.title}
           description={style.description}
