@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import StyleVideoPlayer from './StyleVideoPlayer';
-import { VideoStyle } from './VideoStyleSelector';
+import { VideoStyle } from '@/types/video';
 
 interface StyleCardProps {
   style: {

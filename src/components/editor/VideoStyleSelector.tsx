@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import StyleCard from './StyleCard';
-import { VideoStyle } from './VideoStyleSelector';
-
-export type { VideoStyle };
+import { VideoStyle } from '@/types/video';
 
 const VIDEO_STYLES = [
   {
