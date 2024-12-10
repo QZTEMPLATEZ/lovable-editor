@@ -20,6 +20,7 @@ export default {
     extend: {
       fontFamily: {
         artistic: ["Great Vibes", "cursive"],
+        cinzel: ["Cinzel", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",

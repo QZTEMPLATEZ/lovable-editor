@@ -15,8 +15,8 @@ const TopNavigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <h1 className="font-sans text-sm font-light tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 hover:scale-105 transition-transform duration-300 cursor-default">
-              QZ TEMPLATEZ
+            <h1 className="font-['Cinzel'] text-lg font-semibold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 hover:scale-105 transition-transform duration-300 cursor-default">
+              OSÍRIS EDITION
             </h1>
           </div>
           <div className="flex items-center space-x-4">
