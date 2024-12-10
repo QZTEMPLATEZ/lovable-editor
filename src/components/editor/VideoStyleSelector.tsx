@@ -17,28 +17,28 @@ const VIDEO_STYLES = [
     id: 'classic',
     title: 'Classic',
     description: 'made by world-class artists',
-    previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?dl=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?raw=1',
     darkMode: true
   },
   {
     id: 'cinematic',
     title: 'Cinematic',
     description: 'recorded by top sound engineers',
-    previewVideo: 'https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?dl=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?raw=1',
     darkMode: true
   },
   {
     id: 'documentary',
     title: 'Documentary',
     description: 'with exclusive voice actors',
-    previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK-OK.mp4?dl=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK-OK.mp4?raw=1',
     darkMode: true
   },
   {
     id: 'dynamic',
     title: 'Dynamic',
     description: 'shot by pro filmmakers',
-    previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?dl=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?raw=1',
     darkMode: true
   }
 ];
@@ -102,7 +102,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
                   loop
                   muted
                   playsInline
-                  preload="auto"
+                  preload="metadata"
                   onError={() => handleVideoError(style.id)}
                 />
                 {/* Gradient Overlay */}
