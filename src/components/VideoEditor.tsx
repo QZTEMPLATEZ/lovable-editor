@@ -5,12 +5,13 @@ import { VideoSizeRange } from './VideoSizeSelector';
 import { EditingMode } from './EditingModeSelector';
 import EditingProgress from './EditingProgress';
 import EditorHeader from './EditorHeader';
-import VideoStyleSelector, { VideoStyle } from './editor/VideoStyleSelector';
+import VideoStyleSelector from './editor/VideoStyleSelector';
 import RawFilesSection from './RawFilesSection';
 import EditingInterface from './EditingInterface';
 import AIEditStep from './editor/AIEditStep';
 import EditorSteps, { EDITOR_STEPS } from './editor/EditorSteps';
 import { applyStyleToProject } from '@/utils/videoStyleProcessing';
+import { VideoStyle } from '@/types/video';
 
 interface VideoEditorProps {
   targetDuration: VideoSizeRange;
@@ -165,3 +166,4 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
 };
 
 export default VideoEditor;
+

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
-import { VideoStyle } from './VideoStyleSelector';
+import { VideoStyle } from '@/types/video';
 
 interface StyleVideoPlayerProps {
   style: {
