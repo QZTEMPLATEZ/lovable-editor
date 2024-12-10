@@ -146,8 +146,9 @@ const VideoStyleSelector = ({
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-[#0A0A0A]">
       <div className="relative py-12 px-4 border-b border-editor-border/20">
         {/* Background Elements */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)] opacity-5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5" />
+        <div className="absolute inset-0 backdrop-blur-sm bg-[#0A0A0A]/80" />
         
         {/* Header Content */}
         <div className="relative flex items-center gap-6 max-w-7xl mx-auto">
@@ -164,7 +165,7 @@ const VideoStyleSelector = ({
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-2">
               <div className="relative">
-                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                <div className="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center border border-editor-border">
                   <Wand2 className="w-6 h-6 text-editor-glow-purple" />
                 </div>
                 <Sparkles className="w-4 h-4 text-editor-glow-pink absolute -top-1 -right-1 animate-pulse" />
@@ -184,7 +185,7 @@ const VideoStyleSelector = ({
         </div>
       </div>
 
-      <div className="w-full max-w-none px-0 space-y-0">
+      <div className="w-full max-w-none px-0 space-y-0 bg-[#0A0A0A]/95 backdrop-blur-sm">
         <AnimatePresence>
           {VIDEO_STYLES.map((style) => (
             <StyleItem
