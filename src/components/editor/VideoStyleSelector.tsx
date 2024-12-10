@@ -12,28 +12,28 @@ interface VideoStyleSelectorProps {
 const VIDEO_STYLES = [
   {
     id: 'classic' as VideoStyle,
-    title: 'SFX',
+    title: 'CLASSIC',
     description: 'recorded by top sound engineers',
     bannerImage: '/classic-banner.jpg',
     buttonText: 'Explore Classic'
   },
   {
     id: 'cinematic' as VideoStyle,
-    title: 'SFX',
+    title: 'CINEMATIC',
     description: 'recorded by top sound engineers',
     bannerImage: '/cinematic-banner.jpg',
     buttonText: 'Explore Cinematic'
   },
   {
     id: 'documentary' as VideoStyle,
-    title: 'SFX',
+    title: 'DOCUMENTARY',
     description: 'recorded by top sound engineers',
     bannerImage: '/documentary-banner.jpg',
     buttonText: 'Explore Documentary'
   },
   {
     id: 'dynamic' as VideoStyle,
-    title: 'SFX',
+    title: 'DYNAMIC',
     description: 'recorded by top sound engineers',
     bannerImage: '/dynamic-banner.jpg',
     buttonText: 'Explore Dynamic'
@@ -110,7 +110,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
               <Upload className="w-8 h-8 text-editor-text/80" />
               <div className="text-center">
                 <h2 className="text-4xl font-bold text-white mb-2">
-                  SFX
+                  Custom Style
                 </h2>
                 <p className="text-sm text-editor-text/90 font-light">
                   recorded by top sound engineers
