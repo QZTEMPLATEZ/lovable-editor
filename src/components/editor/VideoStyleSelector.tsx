@@ -50,7 +50,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const [isMuted, setIsMuted] = useState(true);
 
   return (
-    <div className="flex flex-col w-full max-w-[1920px] mx-auto">
+    <div className="flex flex-col w-full max-w-full">
       {VIDEO_STYLES.map((style) => (
         <motion.div
           key={style.id}
@@ -79,7 +79,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             )}
           </AnimatePresence>
 
-          <div className="relative z-10 flex items-center justify-between h-full px-24">
+          <div className="relative z-10 flex items-center justify-between h-full px-36">
             <div className="space-y-2">
               <motion.h2 
                 className={`text-5xl font-light ${style.darkMode ? 'text-white' : 'text-black'}`}
