@@ -80,41 +80,41 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <div className="relative h-[80vh] bg-gradient-to-br from-editor-bg to-editor-bg/95 overflow-hidden">
-        {/* Video Background */}
-        <div className="absolute inset-0">
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline
-            className="w-full h-full object-cover object-center scale-125"
-            style={{ 
-              aspectRatio: '21/9',
-              filter: 'brightness(0.4)',
-              transform: 'scale(1.2)'
-            }}
-          >
-            <source 
-              src="https://www.dropbox.com/scl/fi/dodra593ev8sq5jsz2mxt/Insta-lili-e-Robert.mp4?rlkey=4yso253vc2lp5wcamzk6cwjnv&raw=1" 
-              type="video/mp4" 
-            />
-          </video>
-          <div className="absolute inset-0 bg-black/50" />
-        </div>
-        
-        {/* Hero Content */}
-        <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center">
-          <div className="max-w-3xl">
-            <h1 className="text-3xl md:text-4xl font-semibold text-white mb-4 font-italiana tracking-wide">
-              Choose Your Film Length
-            </h1>
-            <p className="text-lg text-white/80 mb-8 leading-relaxed max-w-2xl">
-              Choose the perfect duration for your video project. Each option is carefully designed 
-              to match different content needs, from quick social media clips to full cinematic experiences.
-              The duration you select will help us optimize the editing process and deliver the best results for your specific use case.
-            </p>
+      {/* Hero Section with side-by-side layout */}
+      <div className="relative h-[70vh] bg-gradient-to-br from-editor-bg to-editor-bg/95 overflow-hidden">
+        <div className="container mx-auto h-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 h-full gap-8 items-center">
+            {/* Left Column - Content */}
+            <div className="relative z-10 space-y-6 p-8">
+              <h1 className="text-3xl md:text-4xl font-semibold text-white mb-4 font-italiana tracking-wide">
+                Choose Your Film Length
+              </h1>
+              <p className="text-lg text-white/80 leading-relaxed">
+                Choose the perfect duration for your video project. Each option is carefully designed 
+                to match different content needs, from quick social media clips to full cinematic experiences.
+                The duration you select will help us optimize the editing process and deliver the best results for your specific use case.
+              </p>
+            </div>
+
+            {/* Right Column - Video */}
+            <div className="relative h-full w-full overflow-hidden rounded-l-3xl">
+              <video 
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ 
+                  filter: 'brightness(0.4)',
+                }}
+              >
+                <source 
+                  src="https://www.dropbox.com/scl/fi/dodra593ev8sq5jsz2mxt/Insta-lili-e-Robert.mp4?rlkey=4yso253vc2lp5wcamzk6cwjnv&raw=1" 
+                  type="video/mp4" 
+                />
+              </video>
+              <div className="absolute inset-0 bg-black/30" />
+            </div>
           </div>
         </div>
       </div>
