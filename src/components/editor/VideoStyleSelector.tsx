@@ -25,7 +25,9 @@ const VIDEO_STYLES = [
     id: 'cinematic',
     title: 'Cinematic',
     description: 'recorded by top sound engineers',
-    previewVideo: '/cinematic-preview.mp4',
+    previewVideo: 'https://www.dropbox.com/scl/fi/qw3o0cemsv3acfc8qmbkh/Trailer-Rafa-e-Joao.mp4',
+    startTime: 10,
+    endTime: 30,
     darkMode: true
   },
   {
@@ -50,6 +52,15 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
+  const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+
+  const handleTimeUpdate = (videoElement: HTMLVideoElement, style: typeof VIDEO_STYLES[number]) => {
+    if ('startTime' in style && 'endTime' in style) {
+      if (videoElement.currentTime >= style.endTime) {
+        videoElement.currentTime = style.startTime;
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
@@ -72,6 +83,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
           <AnimatePresence>
             {hoveredStyle === style.id && (
               <motion.video
+                ref={el => videoRefs.current[style.id] = el}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.7 }}
                 exit={{ opacity: 0 }}
@@ -81,6 +93,13 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
                 loop
                 muted={isMuted}
                 playsInline
+                onTimeUpdate={(e) => handleTimeUpdate(e.target as HTMLVideoElement, style)}
+                onLoadedMetadata={(e) => {
+                  const video = e.target as HTMLVideoElement;
+                  if ('startTime' in style) {
+                    video.currentTime = style.startTime;
+                  }
+                }}
               />
             )}
           </AnimatePresence>
