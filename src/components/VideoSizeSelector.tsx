@@ -75,6 +75,8 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
       title: "Duration Selected",
       description: `Selected ${size.name} (${size.label})`,
     });
+    // Navigate to the next step (style selection)
+    navigate('/style');
   };
 
   return (
