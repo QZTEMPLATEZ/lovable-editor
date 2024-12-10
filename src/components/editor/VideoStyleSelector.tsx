@@ -3,6 +3,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
 import VideoStyleItem from './VideoStyleItem';
 import ReferenceVideoBanner from './ReferenceVideoBanner';
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
 
@@ -44,51 +46,28 @@ const VIDEO_STYLES = [
 ] as const;
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
-  const { toast } = useToast();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
 
-  const handleMouseEnter = (styleId: string) => {
-    setHoveredStyle(styleId);
-  };
-
-  const handleMouseLeave = (styleId: string) => {
-    setHoveredStyle(null);
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      if (!file.type.startsWith('video/')) {
-        toast({
-          variant: "destructive",
-          title: "Invalid file type",
-          description: "Please upload a video file."
-        });
-        return;
-      }
-      onCustomVideoUpload(file);
-      onStyleSelect('custom');
-    }
-  };
-
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      {/* Header Section */}
-      <div className="relative py-16 px-4 text-center before:absolute before:inset-0 before:bg-gradient-to-b before:from-editor-bg/50 before:to-transparent">
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-cinzel mb-6 bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-pink-300">
-            Define Your Visual Story
-          </h1>
-          <p className="text-lg md:text-xl text-gray-300 font-italiana max-w-2xl mx-auto">
-            Choose from our curated collection of professional video styles, each crafted to bring your vision to life
-          </p>
-        </div>
+      <div className="text-center py-12 px-4 relative">
+        <Button
+          variant="outline"
+          className="absolute left-4 top-4 bg-editor-panel/50 hover:bg-editor-panel border-editor-border/30"
+          onClick={() => navigate('/duration')}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </Button>
+        
+        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
+          Choose Your Style
+        </h1>
       </div>
 
-      {/* Video Styles Grid */}
       <div className="w-full max-w-none px-0">
         {VIDEO_STYLES.map((style) => (
           <VideoStyleItem
@@ -96,10 +75,10 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             style={style}
             isHovered={hoveredStyle === style.id}
             isMuted={isMuted}
-            onMouseEnter={() => handleMouseEnter(style.id)}
-            onMouseLeave={() => handleMouseLeave(style.id)}
-            onStyleSelect={(selectedStyle) => {
-              onStyleSelect(selectedStyle);
+            onMouseEnter={() => setHoveredStyle(style.id)}
+            onMouseLeave={() => setHoveredStyle(null)}
+            onStyleSelect={() => {
+              onStyleSelect(style.id as VideoStyle);
               navigate('/edit');
             }}
             onToggleMute={(e) => {
@@ -110,13 +89,18 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         ))}
       </div>
 
-      {/* Reference Video Banner */}
       <ReferenceVideoBanner onFileInputClick={() => fileInputRef.current?.click()} />
 
       <input
         type="file"
         ref={fileInputRef}
-        onChange={handleFileSelect}
+        onChange={(e) => {
+          if (e.target.files?.[0]) {
+            onCustomVideoUpload(e.target.files[0]);
+            onStyleSelect('custom');
+            navigate('/edit');
+          }
+        }}
         accept="video/*"
         className="hidden"
       />
