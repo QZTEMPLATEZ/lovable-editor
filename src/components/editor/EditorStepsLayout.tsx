@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 
-interface EditorStepsLayoutProps {
+export interface EditorStepsLayoutProps {
   currentStep: number;
   children: React.ReactNode;
   steps: {

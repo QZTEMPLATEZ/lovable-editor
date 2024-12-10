@@ -1,19 +1,37 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
-import { VideoStyle } from '@/types/video';
 
-interface EditorStepsLayoutProps {
+export const EDITOR_STEPS = [
+  {
+    title: "Select Duration",
+    description: "Choose your video length",
+  },
+  {
+    title: "Choose Style",
+    description: "Pick your visual direction",
+  },
+  {
+    title: "Add Music",
+    description: "Select background music",
+  },
+  {
+    title: "Upload Footage",
+    description: "Add your raw videos",
+  },
+  {
+    title: "AI Edit",
+    description: "Let AI create your edit",
+  }
+];
+
+interface EditorStepsProps {
   currentStep: number;
+  steps: typeof EDITOR_STEPS;
   children: React.ReactNode;
-  steps: {
-    title: string;
-    description: string;
-    icon?: React.ReactNode;
-  }[];
 }
 
-const EditorStepsLayout = ({ currentStep, children, steps }: EditorStepsLayoutProps) => {
+const EditorSteps = ({ currentStep, children, steps }: EditorStepsProps) => {
   return (
     <div className="min-h-screen bg-editor-bg">
       {/* Background Elements */}
@@ -99,4 +117,4 @@ const EditorStepsLayout = ({ currentStep, children, steps }: EditorStepsLayoutPr
   );
 };
 
-export default EditorStepsLayout;
+export default EditorSteps;
