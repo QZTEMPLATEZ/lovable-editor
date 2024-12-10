@@ -52,7 +52,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4">
+      <div className="text-center py-12 px-4 bg-editor-panel">
         <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
           Choose Your Style
         </h1>
@@ -95,7 +95,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         className="hidden"
       />
 
-      <div className="flex justify-start p-6 mt-8">
+      <div className="flex justify-start p-6 mt-8 bg-editor-panel">
         <Button
           variant="outline"
           className="bg-editor-panel/50 hover:bg-editor-panel border-editor-border/30"
