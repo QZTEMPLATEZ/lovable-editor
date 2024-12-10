@@ -30,7 +30,7 @@ const StylePreview = ({ videoUrl, isHovered, videoRef }: StylePreviewProps) => {
           loop
           muted
           playsInline
-          preload="metadata"
+          preload="auto"
         />
         
         {/* Gradient overlay for better text readability */}

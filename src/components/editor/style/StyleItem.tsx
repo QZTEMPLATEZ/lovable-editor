@@ -31,6 +31,7 @@ const StyleItem = ({
   const handleVideoPlay = useCallback(async () => {
     if (videoRef.current) {
       try {
+        videoRef.current.currentTime = 0;
         await videoRef.current.play();
       } catch (error) {
         console.log('Video autoplay failed:', error);
