@@ -84,6 +84,9 @@ const PricingPlans = () => {
 
       {/* MAX Plan */}
       <div className="relative p-4 rounded-lg border-2 border-editor-accent bg-editor-panel/50 backdrop-blur-xl transform scale-105">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-editor-accent text-white text-sm font-medium rounded-full">
+          POPULAR
+        </div>
         <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/10 via-transparent to-editor-glow-pink/10 rounded-lg" />
         <div className="relative space-y-4">
           <div className="flex items-center justify-between">
