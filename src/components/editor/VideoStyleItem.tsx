@@ -30,6 +30,20 @@ const VideoStyleItem = ({
 }: VideoStyleItemProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Handle video playback on hover
+  React.useEffect(() => {
+    if (videoRef.current) {
+      if (isHovered) {
+        videoRef.current.play().catch(error => {
+          console.log('Video autoplay failed:', error);
+        });
+      } else {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+      }
+    }
+  }, [isHovered]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -48,7 +62,6 @@ const VideoStyleItem = ({
             exit={{ opacity: 0 }}
             className="absolute inset-0 w-full h-full object-cover"
             src={style.previewVideo}
-            autoPlay
             loop
             muted={isMuted}
             playsInline
