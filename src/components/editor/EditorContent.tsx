@@ -21,8 +21,8 @@ interface EditorContentProps {
   aiScript: string;
   onAIScriptChange: (script: string) => void;
   onStartEditing: () => void;
-  setRawFiles: (files: File[]) => void;
-  setSelectedMusic: (files: File[]) => void;
+  setRawFiles: React.Dispatch<React.SetStateAction<File[]>>;
+  setSelectedMusic: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
 const EditorContent = ({
@@ -72,7 +72,7 @@ const EditorContent = ({
           onDrop={(e) => {
             e.preventDefault();
             const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
-            setRawFiles(prev => [...prev, ...files]);
+            setRawFiles(prevFiles => [...prevFiles, ...files]);
           }}
           onDragOver={(e) => e.preventDefault()}
           videoFiles={rawFiles}
