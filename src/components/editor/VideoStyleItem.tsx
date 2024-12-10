@@ -47,14 +47,14 @@ const VideoStyleItem = ({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="relative w-full [aspect-ratio:3.84/1] group cursor-pointer bg-black"
+      className="relative w-full [aspect-ratio:3.84/1] group cursor-pointer bg-editor-panel"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={() => onStyleSelect(style.id as VideoStyle)}
     >
-      {/* Black overlay that fades out on hover */}
+      {/* Gray overlay that fades out on hover */}
       <motion.div 
-        className="absolute inset-0 bg-black z-[1]"
+        className="absolute inset-0 bg-editor-panel z-[1]"
         initial={{ opacity: 1 }}
         animate={{ opacity: isHovered ? 0 : 1 }}
         transition={{ duration: 0.3 }}
@@ -75,7 +75,7 @@ const VideoStyleItem = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute top-8 right-8 z-20 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+            className="absolute top-8 right-8 z-20 p-2 rounded-full bg-editor-panel/50 hover:bg-editor-panel/70 transition-colors"
             onClick={onToggleMute}
           >
             {isMuted ? (
@@ -90,7 +90,7 @@ const VideoStyleItem = ({
       <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
         <div className="space-y-1">
           <motion.h2 
-            className={`text-2xl md:text-3xl font-cinzel tracking-wider ${isHovered ? 'text-black' : 'text-white'}`}
+            className={`text-2xl md:text-3xl font-cinzel tracking-wider ${isHovered ? 'text-white' : 'text-white'}`}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -98,7 +98,7 @@ const VideoStyleItem = ({
             {style.title}
           </motion.h2>
           <motion.p 
-            className={`text-[8px] md:text-[10px] tracking-[0.2em] uppercase ${isHovered ? 'text-black' : 'text-gray-400'} font-italiana`}
+            className={`text-[8px] md:text-[10px] tracking-[0.2em] uppercase ${isHovered ? 'text-white/70' : 'text-gray-400'} font-italiana`}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
