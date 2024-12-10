@@ -1,10 +1,12 @@
 import React from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Clock, Music, Lock, Crown } from "lucide-react";
+import { Clock, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
+import PlanBadge from './PlanBadge';
+import { motion } from 'framer-motion';
 
 export interface VideoSizeRange {
   min: number;
@@ -90,7 +92,6 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
             variant="default"
             size="sm"
             onClick={() => {
-              // Add upgrade logic here
               console.log('Upgrade clicked');
             }}
           >
@@ -120,7 +121,12 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
   };
 
   return (
-    <div className="space-y-6 w-full max-w-4xl mx-auto bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="space-y-6 w-full max-w-4xl mx-auto bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl"
+    >
       <div className="flex items-center gap-3 mb-8">
         <div className="h-3 w-3 rounded-full bg-purple-500 animate-pulse" />
         <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
@@ -141,7 +147,11 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
           const isLocked = userTier === 'basic' && size.tier !== 'basic';
           
           return (
-            <div key={`${size.min}-${size.max}`} className="relative">
+            <motion.div
+              key={`${size.min}-${size.max}`}
+              whileHover={{ scale: 1.02 }}
+              className="relative"
+            >
               <RadioGroupItem
                 value={`${size.min}-${size.max}`}
                 id={`size-${size.min}-${size.max}`}
@@ -150,36 +160,29 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
               />
               <Label
                 htmlFor={`size-${size.min}-${size.max}`}
-                className={`flex items-start gap-4 rounded-xl border-2 border-purple-500/30 bg-editor-bg/50 p-6 
+                className={`flex flex-col gap-4 rounded-xl border-2 border-purple-500/30 bg-editor-bg/50 p-6 
                   ${isLocked ? 'opacity-50' : 'hover:bg-editor-bg/70 hover:border-purple-500/50'} 
                   peer-data-[state=checked]:border-purple-500 peer-data-[state=checked]:bg-purple-500/20 
                   transition-all cursor-pointer h-full relative`}
               >
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg font-semibold text-purple-300">{size.name}</span>
-                      {size.tier !== 'basic' && (
-                        <Crown className={`w-4 h-4 ${
-                          size.tier === 'pro' ? 'text-gray-300' : 'text-yellow-400'
-                        }`} />
-                      )}
-                    </div>
-                    <span className="text-sm font-medium text-gray-400">{size.label}</span>
-                  </div>
-                  <span className="block text-sm text-gray-400 whitespace-pre-line mb-4">{size.description}</span>
-                  <div className="flex items-center gap-2 text-sm text-purple-300 mt-2 bg-purple-500/10 p-2 rounded-lg">
-                    <Music className="w-4 h-4" />
-                    <span>Recommended Tracks: {size.recommendedTracks}</span>
-                  </div>
-                  {isLocked && (
-                    <div className="absolute top-2 right-2">
-                      <Lock className="w-5 h-5 text-purple-400" />
-                    </div>
-                  )}
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-semibold text-purple-300">{size.name}</span>
+                  <PlanBadge tier={size.tier} />
+                </div>
+                
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Clock className="w-4 h-4" />
+                  <span>{size.label}</span>
+                </div>
+                
+                <span className="block text-sm text-gray-400 whitespace-pre-line">{size.description}</span>
+                
+                <div className="flex items-center gap-2 text-sm text-purple-300 mt-2 bg-purple-500/10 p-2 rounded-lg">
+                  <Music className="w-4 h-4" />
+                  <span>Recommended Tracks: {size.recommendedTracks}</span>
                 </div>
               </Label>
-            </div>
+            </motion.div>
           );
         })}
       </RadioGroup>
@@ -190,17 +193,17 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
           variant="outline"
           className="bg-editor-bg/50 hover:bg-editor-bg border-purple-500/30"
         >
-          Back
+          Back to Home
         </Button>
         <Button
           onClick={handleNext}
           className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
           disabled={!selectedSize}
         >
-          Next
+          Next: Choose Style
         </Button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
