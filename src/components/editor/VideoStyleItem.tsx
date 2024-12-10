@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from "@/components/ui/button";
 import { Volume2, VolumeX } from 'lucide-react';
 import { VideoStyle } from './VideoStyleSelector';
 
@@ -107,24 +106,6 @@ const VideoStyleItem = ({
             {style.description}
           </motion.p>
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-            delay: 0.4
-          }}
-        >
-          <Button 
-            variant="outline" 
-            className={`border-2 ${isHovered ? 'border-black text-black hover:bg-black/10' : 'border-white text-white hover:bg-white/10'} uppercase tracking-wider text-xs md:text-sm px-6 py-6`}
-          >
-            EXPLORE
-          </Button>
-        </motion.div>
       </div>
     </motion.div>
   );
