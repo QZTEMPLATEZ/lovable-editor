@@ -18,7 +18,7 @@ const VIDEO_STYLES = [
     title: 'Classic',
     description: 'made by world-class artists',
     previewVideo: '/classic-preview.mp4',
-    darkMode: false
+    darkMode: true
   },
   {
     id: 'cinematic',
@@ -56,9 +56,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
           key={style.id}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className={`relative h-[60vh] group cursor-pointer w-full ${
-            style.darkMode ? 'bg-black' : 'bg-gray-100'
-          }`}
+          className="relative h-[60vh] group cursor-pointer w-full bg-black"
           onMouseEnter={() => setHoveredStyle(style.id)}
           onMouseLeave={() => setHoveredStyle(null)}
           onClick={() => onStyleSelect(style.id as VideoStyle)}
@@ -82,7 +80,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
           <div className="relative z-10 flex items-center justify-between h-full px-96 max-w-[2400px] mx-auto w-full">
             <div className="space-y-1">
               <motion.h2 
-                className={`text-8xl font-light tracking-tight ${style.darkMode ? 'text-white' : 'text-black'}`}
+                className="text-3xl font-cinzel tracking-wider text-white"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -90,7 +88,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
                 {style.title}
               </motion.h2>
               <motion.p 
-                className={`text-sm tracking-wider uppercase ${style.darkMode ? 'text-gray-400' : 'text-gray-600'}`}
+                className="text-xs tracking-[0.2em] uppercase text-gray-400 font-italiana"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3 }}
@@ -106,7 +104,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             >
               <Button 
                 variant="outline" 
-                className={`border uppercase tracking-wider text-xs ${style.darkMode ? 'border-white text-white hover:bg-white/10' : 'border-black text-black hover:bg-black/10'}`}
+                className="border border-white text-white hover:bg-white/10 uppercase tracking-wider text-xs"
                 onClick={(e) => {
                   e.stopPropagation();
                   window.location.href = `/explore/${style.id}`;
