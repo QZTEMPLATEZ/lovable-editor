@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from 'react-router-dom';
+import VideoStyleItem from './VideoStyleItem';
 
 export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
 
@@ -46,6 +48,7 @@ const VIDEO_STYLES = [
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
@@ -82,8 +85,8 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             isMuted={isMuted}
             onMouseEnter={() => handleMouseEnter(style.id)}
             onMouseLeave={() => handleMouseLeave(style.id)}
-            onStyleSelect={() => {
-              onStyleSelect(style.id as VideoStyle);
+            onStyleSelect={(selectedStyle) => {
+              onStyleSelect(selectedStyle);
               navigate('/edit');
             }}
             onToggleMute={(e) => {

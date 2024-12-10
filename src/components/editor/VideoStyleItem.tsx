@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '../ui/button';
+import { Button } from "@/components/ui/button";
 import { Volume2, VolumeX } from 'lucide-react';
+import { VideoStyle } from './VideoStyleSelector';
 
 interface VideoStyleItemProps {
   style: {
@@ -15,11 +16,11 @@ interface VideoStyleItemProps {
   isMuted: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
-  onStyleSelect: () => void;
+  onStyleSelect: (style: VideoStyle) => void;
   onToggleMute: (e: React.MouseEvent) => void;
 }
 
-const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
+const VideoStyleItem = ({
   style,
   isHovered,
   isMuted,
@@ -27,7 +28,7 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
   onMouseLeave,
   onStyleSelect,
   onToggleMute,
-}) => {
+}: VideoStyleItemProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ const VideoStyleItem: React.FC<VideoStyleItemProps> = ({
       className="relative w-full [aspect-ratio:3.84/1] group cursor-pointer bg-black"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onClick={onStyleSelect}
+      onClick={() => onStyleSelect(style.id as VideoStyle)}
     >
       {/* Black overlay that fades out on hover */}
       <motion.div 
