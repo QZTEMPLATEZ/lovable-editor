@@ -53,9 +53,12 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
       <div className="text-center py-12 px-4 bg-editor-panel">
-        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
-          Choose Your Style
+        <h1 className="text-3xl font-cinzel tracking-[0.2em] text-white/90 uppercase mb-3">
+          Select Your Visual Direction
         </h1>
+        <p className="text-sm text-white/60 tracking-wider font-light">
+          Choose the perfect aesthetic to bring your vision to life
+        </p>
       </div>
 
       <div className="w-full max-w-none px-0">
