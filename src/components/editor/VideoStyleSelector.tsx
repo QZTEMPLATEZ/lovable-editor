@@ -20,14 +20,16 @@ const VIDEO_STYLES = [
     description: 'Timeless & Emotional',
     previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK.mp4?raw=1',
     features: [
-      'Warm, timeless color grading',
-      'Balanced framing & composition',
-      'Smooth, intentional movements',
-      'Emotional storytelling flow',
-      'Scene-specific pacing',
-      'Natural transitions',
-      'Elegant sound design',
-      'Traditional editing rhythm'
+      'Warm, film-inspired color grading for timeless appeal',
+      'Perfectly balanced framing with golden ratio composition',
+      'Smooth, intentional camera movements that enhance emotion',
+      'Carefully crafted emotional storytelling progression',
+      'Scene-specific pacing that matches the moment's intensity',
+      'Elegant transitions that flow naturally between scenes',
+      'Rich orchestral sound design with layered ambient audio',
+      'Traditional 24fps cinematic look and feel',
+      'Thoughtful use of slow motion for emotional peaks',
+      'Professional color correction with film emulation'
     ]
   },
   {
@@ -36,16 +38,16 @@ const VIDEO_STYLES = [
     description: 'Contemporary & Bold',
     previewVideo: 'https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?raw=1',
     features: [
-      'High contrast film-like grading',
-      'Dynamic camera movements',
-      'Dramatic lighting emphasis',
-      'Creative depth transitions',
-      'Bold storytelling approach',
-      'Artistic scene sequencing',
-      'Enhanced emotional peaks',
-      'Scene-specific pacing',
-      'Cinematic sound design',
-      'Advanced color treatment'
+      'High-contrast film-like grading with cinematic LUTs',
+      'Dynamic camera movements with advanced stabilization',
+      'Dramatic lighting emphasis using advanced color science',
+      'Creative depth transitions with parallax effects',
+      'Bold, non-linear storytelling approach',
+      'Artistic scene sequencing with emotional build-up',
+      'Enhanced emotional peaks through advanced editing',
+      'Premium sound design with orchestral elements',
+      'Anamorphic widescreen aspect ratio',
+      'Hollywood-grade color treatment and finishing'
     ]
   },
   {
@@ -54,16 +56,16 @@ const VIDEO_STYLES = [
     description: 'Authentic & Natural',
     previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK.mp4?raw=1',
     features: [
-      'Natural color grading',
-      'Authentic storytelling',
-      'Chronological sequencing',
-      'Enhanced audio clarity',
-      'Long, uninterrupted takes',
-      'Minimal transitions',
-      'Ambient sound focus',
-      'Real-time pacing',
-      'Candid moment preservation',
-      'Natural lighting emphasis'
+      'Natural color grading preserving true-to-life colors',
+      'Authentic storytelling following real events',
+      'Chronological sequencing with minimal manipulation',
+      'Crystal-clear dialogue and speech enhancement',
+      'Long, uninterrupted takes capturing genuine moments',
+      'Minimal transitions to maintain authenticity',
+      'Rich ambient sound capture and preservation',
+      'Real-time pacing that respects natural flow',
+      'Focus on candid reactions and genuine emotions',
+      'Natural lighting with minimal enhancement'
     ]
   },
   {
@@ -72,16 +74,16 @@ const VIDEO_STYLES = [
     description: 'Energetic & Bold',
     previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?raw=1',
     features: [
-      'High-energy editing',
-      'Bold color treatment',
-      'Fast-paced cuts',
-      'Music-driven timing',
-      'Creative effects',
-      'Dynamic transitions',
-      'Rhythmic sequencing',
-      'Vibrant aesthetics',
-      'Motion-focused scenes',
-      'Contemporary style'
+      'High-energy editing synchronized with music beats',
+      'Vibrant color treatment with enhanced saturation',
+      'Fast-paced cuts timed to musical rhythm',
+      'Creative speed ramping and time manipulation',
+      'Modern transition effects (whips, zooms, morphs)',
+      'Split-screen and multi-angle compositions',
+      'Advanced motion graphics and text animations',
+      'Contemporary sound design with beat matching',
+      'Dramatic slow motion and time-lapse sequences',
+      'Cutting-edge visual effects and overlays'
     ]
   }
 ];
