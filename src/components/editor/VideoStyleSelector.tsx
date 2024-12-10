@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { VideoStyle } from '@/types/video';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
 import StyleItem from './style/StyleItem';
+import { VideoStyle } from '@/types/video';
 
 interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
@@ -50,10 +50,13 @@ const VIDEO_STYLES = [
     previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK.mp4?raw=1',
     features: [
       'Natural color grading',
-      'Candid moments focus',
-      'Journalistic approach',
-      'Real emotions capture',
-      'Organic pacing'
+      'Authentic storytelling',
+      'Chronological sequencing',
+      'Enhanced audio clarity',
+      'Long, uninterrupted takes',
+      'Minimal transitions',
+      'Ambient sound focus',
+      'Real-time pacing'
     ]
   },
   {
@@ -77,7 +80,6 @@ const VideoStyleSelector = ({
   onCustomVideoUpload, 
   onNext 
 }: VideoStyleSelectorProps) => {
-  const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -87,9 +89,11 @@ const VideoStyleSelector = ({
     
     toast({
       title: `${style?.title} Style Selected`,
-      description: style?.id === 'cinematic' 
-        ? "Your wedding film will be edited with advanced cinematic techniques, emphasizing dramatic storytelling and dynamic visuals."
-        : "Your wedding film will be edited with this cinematic style.",
+      description: style?.id === 'documentary' 
+        ? "Your wedding film will be edited with a focus on authenticity and natural storytelling, preserving real moments and ambient sounds."
+        : style?.id === 'cinematic'
+          ? "Your wedding film will be edited with advanced cinematic techniques, emphasizing dramatic storytelling and dynamic visuals."
+          : "Your wedding film will be edited with this cinematic style.",
     });
 
     if (onNext) {
@@ -122,9 +126,9 @@ const VideoStyleSelector = ({
             <StyleItem
               key={style.id}
               style={style}
-              isHovered={hoveredStyle === style.id}
-              onMouseEnter={() => setHoveredStyle(style.id)}
-              onMouseLeave={() => setHoveredStyle(null)}
+              isHovered={false}
+              onMouseEnter={() => {}}
+              onMouseLeave={() => {}}
               onStyleSelect={handleStyleSelectAndNext}
             />
           ))}
