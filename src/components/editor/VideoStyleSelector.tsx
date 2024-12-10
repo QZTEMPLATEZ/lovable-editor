@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { VideoStyle } from '@/types/video';
+import { ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const VIDEO_STYLES = [
   {
@@ -82,6 +84,18 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
                   {style.description}
                 </p>
               </div>
+              <Button
+                variant="outline"
+                className="bg-editor-bg/20 hover:bg-editor-bg/40 border-white/20 text-white"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStyleSelect(style.id as VideoStyle);
+                  navigate('/music');
+                }}
+              >
+                Explorar
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
             </div>
           </div>
         ))}
