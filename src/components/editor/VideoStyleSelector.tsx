@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { VideoStyle } from '@/types/video';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Film, Play } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface VideoStyleSelectorProps {
@@ -54,79 +54,71 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     navigate('/music');
   };
 
+  const handleMouseEnter = (styleId: string) => {
+    setHoveredStyle(styleId);
+  };
+
+  const handleMouseLeave = (styleId: string) => {
+    setHoveredStyle(null);
+  };
+
+  const handleExploreClick = (styleId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    handleStyleSelectAndNext(styleId);
+  };
+
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4 bg-editor-panel relative">
+      <div className="text-center py-12 px-4 bg-gradient-to-r from-editor-bg via-editor-panel to-editor-bg relative">
         <button
           onClick={() => navigate('/duration')}
-          className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-editor-button hover:bg-editor-glow-purple/20 border border-editor-border transition-colors duration-300"
+          className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-editor-panel hover:bg-editor-button border border-editor-border transition-colors duration-300 hover:border-editor-glow-purple/50"
         >
           <ChevronLeft className="w-6 h-6 text-white" />
         </button>
-        <h1 className="text-3xl font-cinzel tracking-[0.2em] text-white/90 uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-editor-glow-purple to-editor-glow-pink">
+        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-editor-glow-purple to-editor-glow-pink">
           Choose Your Style
         </h1>
       </div>
 
-      <div className="w-full max-w-none px-0 space-y-1">
+      <div className="w-full max-w-none px-0 space-y-0">
         {VIDEO_STYLES.map((style) => (
-          <motion.div
+          <div
             key={style.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="relative w-full h-[300px] group cursor-pointer bg-editor-bg transition-all duration-300 border-y border-editor-border hover:bg-editor-panel"
-            onMouseEnter={() => setHoveredStyle(style.id)}
-            onMouseLeave={() => setHoveredStyle(null)}
+            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-editor-bg transition-colors duration-300 border-y border-editor-border"
+            onMouseEnter={() => handleMouseEnter(style.id)}
+            onMouseLeave={() => handleMouseLeave(style.id)}
             onClick={() => handleStyleSelectAndNext(style.id)}
           >
-            {/* Background Video */}
-            <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-editor-bg via-transparent to-editor-bg opacity-50" />
-              <video
-                key={style.id}
-                src={style.previewVideo}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-                  hoveredStyle === style.id ? 'opacity-50' : 'opacity-20'
-                }`}
-                loop
-                muted
-                playsInline
-                autoPlay
-              />
-            </div>
+            <video
+              key={style.id}
+              src={style.previewVideo}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                hoveredStyle === style.id ? 'opacity-100' : 'opacity-0'
+              }`}
+              loop
+              muted
+              playsInline
+              autoPlay
+            />
 
-            {/* Content */}
             <div className="relative z-10 flex items-center justify-between h-full w-full px-16 md:px-32">
-              <div className="space-y-4">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-editor-glow-purple/20 flex items-center justify-center border border-editor-glow-purple/30">
-                    <Film className="w-6 h-6 text-editor-glow-purple" />
-                  </div>
-                  <div>
-                    <h2 className="text-3xl md:text-4xl font-cinzel tracking-wider text-white group-hover:text-editor-glow-purple transition-colors">
-                      {style.title}
-                    </h2>
-                    <p className="text-sm md:text-base tracking-[0.2em] uppercase text-editor-text font-italiana group-hover:text-white/80 transition-colors">
-                      {style.description}
-                    </p>
-                  </div>
-                </div>
+              <div className="space-y-1">
+                <h2 className="text-3xl md:text-4xl font-cinzel tracking-wider text-white">
+                  {style.title}
+                </h2>
+                <p className="text-sm md:text-base tracking-[0.2em] uppercase text-gray-400 font-italiana">
+                  {style.description}
+                </p>
               </div>
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleStyleSelectAndNext(style.id);
-                }}
-                className="bg-editor-button hover:bg-editor-glow-purple/20 border border-editor-border text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-editor-glow-purple hover:shadow-lg hover:shadow-editor-glow-purple/20 flex items-center space-x-2"
+              <button
+                onClick={(e) => handleExploreClick(style.id, e)}
+                className="bg-editor-panel hover:bg-editor-button border border-editor-border text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-editor-glow-purple hover:shadow-lg hover:shadow-editor-glow-purple/20"
               >
-                <span>Preview</span>
-                <Play className="w-4 h-4" />
-              </motion.button>
+                Explore
+              </button>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>
