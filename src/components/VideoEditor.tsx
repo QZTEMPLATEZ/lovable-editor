@@ -143,13 +143,12 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
         )}
 
         {!isProcessing && currentStep < EDITOR_STEPS.length && (
-          <EditorSteps
+          <EditorStepsLayout
             currentStep={currentStep}
-            isStepCompleted={isStepCompleted}
-            onNextStep={handleNextStep}
-            onPreviousStep={handlePreviousStep}
-            isProcessing={isProcessing}
-          />
+            steps={EDITOR_STEPS}
+          >
+            {/* Navigation buttons can go here */}
+          </EditorStepsLayout>
         )}
       </div>
     );
