@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Music, AudioWaveform, AlertCircle, X, Play, Pause } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { detectBeats } from '@/utils/audioProcessing';
+import { Music, AlertCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Progress } from "@/components/ui/progress";
+import TrackList from './music/TrackList';
+import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
+import { detectBeats } from '@/utils/audioProcessing';
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
@@ -22,57 +22,54 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
 
   const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files) {
-      const newFiles = Array.from(files).filter(file => 
-        file.type === 'audio/wav' || file.type === 'audio/mpeg'
-      );
-      
-      if (selectedMusic.length + newFiles.length > MAX_TRACKS) {
-        toast({
-          variant: "destructive",
-          title: "Too many tracks",
-          description: `Maximum ${MAX_TRACKS} tracks allowed`,
-        });
-        return;
-      }
+    if (!files) return;
 
-      if (newFiles.length === 0) {
-        toast({
-          variant: "destructive",
-          title: "Invalid file format",
-          description: "Please upload WAV or MP3 files only",
-        });
-        return;
-      }
+    const newFiles = Array.from(files).filter(validateAudioFile);
+    
+    if (selectedMusic.length + newFiles.length > MAX_TRACKS) {
+      toast({
+        variant: "destructive",
+        title: "Too many tracks",
+        description: `Maximum ${MAX_TRACKS} tracks allowed`,
+      });
+      return;
+    }
 
-      setSelectedMusic(prev => [...prev, ...newFiles]);
-      setIsAnalyzing(true);
-      
-      try {
-        for (const file of newFiles) {
-          const beats = await detectBeats(file);
-          onMusicSelect(file, beats);
-          
-          // Create audio element for the new track
-          const audio = new Audio(URL.createObjectURL(file));
-          setAudioElements(prev => ({
-            ...prev,
-            [file.name]: audio
-          }));
-        }
-        toast({
-          title: "Music Analysis Complete",
-          description: "Beat patterns detected and ready for AI processing",
-        });
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Analysis Failed",
-          description: "Unable to analyze music beats. Please try another track.",
-        });
-      } finally {
-        setIsAnalyzing(false);
+    if (newFiles.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Invalid file format",
+        description: "Please upload WAV or MP3 files only",
+      });
+      return;
+    }
+
+    setSelectedMusic(prev => [...prev, ...newFiles]);
+    setIsAnalyzing(true);
+    
+    try {
+      for (const file of newFiles) {
+        const beats = await detectBeats(file);
+        onMusicSelect(file, beats);
+        
+        const audio = createAudioElement(file);
+        setAudioElements(prev => ({
+          ...prev,
+          [file.name]: audio
+        }));
       }
+      toast({
+        title: "Music Analysis Complete",
+        description: "Beat patterns detected and ready for AI processing",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Analysis Failed",
+        description: "Unable to analyze music beats. Please try another track.",
+      });
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -84,7 +81,6 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       audio.pause();
       setPlayingTrack(null);
     } else {
-      // Stop any currently playing track
       if (playingTrack && audioElements[playingTrack]) {
         audioElements[playingTrack].pause();
       }
@@ -96,8 +92,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const removeTrack = (index: number) => {
     const removedFile = selectedMusic[index];
     if (audioElements[removedFile.name]) {
-      audioElements[removedFile.name].pause();
-      URL.revokeObjectURL(audioElements[removedFile.name].src);
+      cleanupAudioElement(audioElements[removedFile.name]);
       const newAudioElements = { ...audioElements };
       delete newAudioElements[removedFile.name];
       setAudioElements(newAudioElements);
@@ -167,83 +162,13 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
             </label>
           </div>
 
-          <AnimatePresence>
-            {selectedMusic.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="mt-6 grid grid-cols-1 gap-4"
-              >
-                {selectedMusic.map((file, index) => (
-                  <motion.div
-                    key={file.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 20 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="relative p-4 bg-purple-500/10 rounded-lg border border-purple-500/20 group hover:border-purple-500/40 transition-all duration-300"
-                  >
-                    <div className="flex items-center gap-4">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 rounded-full bg-purple-500/20 hover:bg-purple-500/30"
-                        onClick={() => togglePlayPause(file.name)}
-                      >
-                        {playingTrack === file.name ? (
-                          <Pause className="h-4 w-4 text-purple-300" />
-                        ) : (
-                          <Play className="h-4 w-4 text-purple-300" />
-                        )}
-                      </Button>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <AudioWaveform className="w-4 h-4 text-purple-400 flex-shrink-0" />
-                          <span className="text-purple-300 truncate font-medium">
-                            {file.name}
-                          </span>
-                        </div>
-                        {playingTrack === file.name && (
-                          <div className="mt-2">
-                            <div className="h-1 bg-purple-500/20 rounded-full overflow-hidden">
-                              <motion.div
-                                className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
-                                animate={{
-                                  width: ["0%", "100%"],
-                                }}
-                                transition={{
-                                  duration: 2,
-                                  repeat: Infinity,
-                                  ease: "linear",
-                                }}
-                              />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      <button
-                        onClick={() => removeTrack(index)}
-                        className="text-purple-300/70 hover:text-red-400 transition-colors p-1"
-                        aria-label="Remove track"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                    {isAnalyzing && (
-                      <div className="mt-2">
-                        <Progress value={Math.random() * 100} className="h-1" />
-                        <p className="text-xs text-purple-300/70 mt-1">Analyzing beats...</p>
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <TrackList
+            selectedMusic={selectedMusic}
+            playingTrack={playingTrack}
+            isAnalyzing={isAnalyzing}
+            onTogglePlay={togglePlayPause}
+            onRemoveTrack={removeTrack}
+          />
         </div>
       </div>
     </div>
