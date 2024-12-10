@@ -44,18 +44,7 @@ const VIDEO_STYLES = [
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload, onNext }: VideoStyleSelectorProps) => {
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
-  const videoRefs = useRef<{ [key: string]: HTMLVideoElement }>({});
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Preload all videos
-    VIDEO_STYLES.forEach(style => {
-      const video = document.createElement('video');
-      video.src = style.previewVideo;
-      video.preload = 'auto';
-      videoRefs.current[style.id] = video;
-    });
-  }, []);
 
   const handleStyleSelectAndNext = (styleId: string) => {
     onStyleSelect(styleId as VideoStyle);
