@@ -1,33 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from 'next-themes';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
+import React from 'react';
+import { motion } from 'framer-motion';
+import IntroText from './intro/IntroText';
+import GeometricShapes from './intro/GeometricShapes';
+import NeuralNetwork from './intro/NeuralNetwork';
 
 interface IntroScreenProps {
   onComplete: () => void;
 }
 
 const IntroScreen = ({ onComplete }: IntroScreenProps) => {
-  const { theme } = useTheme();
-  
-  React.useEffect(() => {
-    const timer = setTimeout(onComplete, 6000);
-    return () => clearTimeout(timer);
-  }, [onComplete]);
-
   return (
-    <motion.div 
-      className="fixed inset-0 bg-editor-bg flex items-center justify-center overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, transition: { duration: 0.5 } }}
-    >
-      <div className="relative w-full max-w-7xl mx-auto">
-        <AspectRatio ratio={16/9} className="overflow-hidden">
+    <div className="min-h-screen bg-editor-bg relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0">
+        <GeometricShapes />
+        <NeuralNetwork />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          {/* Image */}
           <motion.div
-            initial={{ scale: 1.2 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 2.5, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
             className="absolute inset-0"
           >
             <img
@@ -36,32 +33,47 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
               className="w-full h-full object-cover"
             />
           </motion.div>
-          
-          <motion.div 
-            className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5, delay: 0.5 }}
-          />
-          
-          <motion.div 
-            className="absolute bottom-8 w-full max-w-md mx-auto px-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-              <motion.div 
-                className="h-full bg-gradient-to-r from-pink-400 via-pink-300 to-pink-400"
-                initial={{ scaleX: 0, x: "-100%" }}
-                animate={{ scaleX: 1, x: "0%" }}
-                transition={{ duration: 6, ease: "linear" }}
-              />
-            </div>
-          </motion.div>
-        </AspectRatio>
+
+          {/* Text overlay with enhanced animations */}
+          <div className="relative z-20 text-center space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <motion.h1 
+                className="text-4xl md:text-6xl font-bold text-white mb-4"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+              >
+                <motion.span
+                  className="bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue animate-gradient"
+                  initial={{ y: 20 }}
+                  animate={{ y: 0 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 10,
+                    delay: 0.7
+                  }}
+                >
+                  Unlimited AI Wedding Editor
+                </motion.span>
+              </motion.h1>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9 }}
+            >
+              <IntroText onComplete={onComplete} />
+            </motion.div>
+          </div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
