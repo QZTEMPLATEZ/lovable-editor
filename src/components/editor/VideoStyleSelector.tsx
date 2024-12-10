@@ -17,7 +17,7 @@ const VIDEO_STYLES = [
     id: 'classic',
     title: 'Classic',
     description: 'made by world-class artists',
-    previewVideo: 'https://dl.dropboxusercontent.com/s/zosb18kemlx6d4qde73x3/youtube.mp4',
+    previewVideo: 'https://www.dropbox.com/scl/fi/uacy93acbckmx9ji94bwe/CLASSIC-OK.mp4?rlkey=lkyhcg23f2tr7mbgn106l0ohv&dl=1',
     darkMode: true
   },
   {
