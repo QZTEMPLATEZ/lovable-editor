@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
@@ -82,15 +82,21 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
     <div className="min-h-screen">
       {/* Hero Section with full-width layout */}
       <div className="relative h-[70vh] bg-[#0A0A0A] overflow-hidden">
-        {/* Background overlay with gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50" />
-        
-        {/* Background image */}
-        <img 
-          src="/lovable-uploads/ea414f0b-5c03-4b0c-aa6d-3fbed1c6e4c7.png"
-          alt="Background"
-          className="absolute inset-0 w-full h-full object-cover opacity-50"
-        />
+        {/* Background video */}
+        <div className="absolute inset-0 w-full h-full">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          {/* Background overlay with gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80" />
+        </div>
         
         {/* Content container */}
         <div className="relative container mx-auto h-full">
