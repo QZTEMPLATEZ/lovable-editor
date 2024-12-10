@@ -153,7 +153,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
                     e.stopPropagation();
                     handleStyleSelectAndNext(style.id);
                   }}
-                  className="bg-gray-900/80 backdrop-blur-sm hover:bg-gray-800 border border-gray-800 text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10"
+                  className="bg-black/90 backdrop-blur-sm hover:bg-black/80 border border-gray-800 text-white px-8 py-3 rounded-md transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/10"
                 >
                   Explore
                 </motion.button>
