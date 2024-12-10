@@ -12,28 +12,28 @@ interface VideoStyleSelectorProps {
 const VIDEO_STYLES = [
   {
     id: 'classic' as VideoStyle,
-    title: 'CLASSIC',
+    title: 'SFX',
     description: 'recorded by top sound engineers',
     bannerImage: '/classic-banner.jpg',
     buttonText: 'Explore Classic'
   },
   {
     id: 'cinematic' as VideoStyle,
-    title: 'CINEMATIC',
+    title: 'SFX',
     description: 'recorded by top sound engineers',
     bannerImage: '/cinematic-banner.jpg',
     buttonText: 'Explore Cinematic'
   },
   {
     id: 'documentary' as VideoStyle,
-    title: 'DOCUMENTARY',
+    title: 'SFX',
     description: 'recorded by top sound engineers',
     bannerImage: '/documentary-banner.jpg',
     buttonText: 'Explore Documentary'
   },
   {
     id: 'dynamic' as VideoStyle,
-    title: 'DYNAMIC',
+    title: 'SFX',
     description: 'recorded by top sound engineers',
     bannerImage: '/dynamic-banner.jpg',
     buttonText: 'Explore Dynamic'
@@ -72,18 +72,15 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             />
             <div className="absolute inset-0 bg-gradient-to-r from-editor-bg/95 via-editor-bg/80 to-transparent" />
             
-            <div className="relative h-full flex items-center justify-between px-12">
+            <div className="relative h-full flex items-center px-12">
               <div className="space-y-2">
-                <h2 className="text-5xl font-bold tracking-[0.2em] text-white uppercase">
+                <h2 className="text-5xl font-bold text-white">
                   {style.title}
                 </h2>
-                <p className="text-sm tracking-[0.2em] uppercase text-editor-text/90 font-light">
+                <p className="text-sm text-editor-text/90 font-light">
                   {style.description}
                 </p>
               </div>
-              <button className="px-4 py-2 border border-white/20 rounded hover:bg-white/10 transition-colors">
-                {style.buttonText}
-              </button>
             </div>
           </motion.div>
         ))}
@@ -112,10 +109,10 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             >
               <Upload className="w-8 h-8 text-editor-text/80" />
               <div className="text-center">
-                <h2 className="text-4xl tracking-[0.2em] text-white uppercase font-bold mb-2">
-                  Custom Style
+                <h2 className="text-4xl font-bold text-white mb-2">
+                  SFX
                 </h2>
-                <p className="text-sm tracking-[0.2em] uppercase text-editor-text/90 font-light">
+                <p className="text-sm text-editor-text/90 font-light">
                   recorded by top sound engineers
                 </p>
               </div>
