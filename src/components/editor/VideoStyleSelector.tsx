@@ -50,13 +50,13 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const [isMuted, setIsMuted] = useState(true);
 
   return (
-    <div className="flex flex-col w-screen max-w-[100vw] -mx-24">
+    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
       {VIDEO_STYLES.map((style) => (
         <motion.div
           key={style.id}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className={`relative h-[50vh] group cursor-pointer w-full ${
+          className={`relative h-[60vh] group cursor-pointer w-full ${
             style.darkMode ? 'bg-black' : 'bg-gray-100'
           }`}
           onMouseEnter={() => setHoveredStyle(style.id)}
@@ -79,10 +79,10 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             )}
           </AnimatePresence>
 
-          <div className="relative z-10 flex items-center justify-between h-full px-72">
+          <div className="relative z-10 flex items-center justify-between h-full px-96 max-w-[2400px] mx-auto w-full">
             <div className="space-y-1">
               <motion.h2 
-                className={`text-7xl font-light tracking-tight ${style.darkMode ? 'text-white' : 'text-black'}`}
+                className={`text-8xl font-light tracking-tight ${style.darkMode ? 'text-white' : 'text-black'}`}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
