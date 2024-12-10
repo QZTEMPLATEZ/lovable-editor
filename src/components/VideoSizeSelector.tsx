@@ -83,9 +83,9 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
       {/* Hero Section with side-by-side layout */}
       <div className="relative h-[70vh] bg-gradient-to-br from-editor-bg to-editor-bg/95 overflow-hidden">
         <div className="container mx-auto h-full">
-          <div className="grid grid-cols-1 md:grid-cols-2 h-full gap-8 items-center">
-            {/* Left Column - Content */}
-            <div className="relative z-10 space-y-6 p-8">
+          <div className="flex flex-col md:flex-row h-full items-center justify-between gap-8 p-8">
+            {/* Content */}
+            <div className="relative z-10 space-y-6 w-full md:w-1/2">
               <h1 className="text-3xl md:text-4xl font-semibold text-white mb-4 font-italiana tracking-wide">
                 Choose Your Film Length
               </h1>
@@ -96,8 +96,8 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
               </p>
             </div>
 
-            {/* Right Column - Video */}
-            <div className="relative h-full w-full overflow-hidden rounded-l-3xl">
+            {/* Video */}
+            <div className="relative h-full w-full md:w-1/2 overflow-hidden rounded-l-3xl">
               <video 
                 autoPlay 
                 loop 
