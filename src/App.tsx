@@ -9,31 +9,9 @@ import { useState } from "react";
 import { VideoStyle } from "./types/video";
 import PricingPlans from "./components/pricing/PricingPlans";
 import StepIndicator from "./components/StepIndicator";
+import { EDITOR_STEPS } from "./components/editor/EditorSteps";
 
 const queryClient = new QueryClient();
-
-const EDITOR_STEPS = [
-  {
-    title: "Duration",
-    description: "Choose video length"
-  },
-  {
-    title: "Style",
-    description: "Pick visual style"
-  },
-  {
-    title: "Music",
-    description: "Add soundtrack"
-  },
-  {
-    title: "Upload",
-    description: "Add your footage"
-  },
-  {
-    title: "Edit",
-    description: "AI creates edit"
-  }
-];
 
 const AppContent = () => {
   const location = useLocation();
