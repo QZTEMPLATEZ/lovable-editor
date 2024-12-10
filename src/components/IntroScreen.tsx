@@ -7,7 +7,7 @@ interface IntroScreenProps {
 
 const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   React.useEffect(() => {
-    const timer = setTimeout(onComplete, 4000);
+    const timer = setTimeout(onComplete, 6000); // Increased from 4000 to 6000ms
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -18,7 +18,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 1.5 }} // Increased from 0.5 to 1.5s for slower fade in
           className="absolute inset-0"
         >
           <img
@@ -39,7 +39,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
                   transition={{
-                    duration: 3.5,
+                    duration: 5.5, // Increased from 3.5 to 5.5s
                     ease: "easeInOut"
                   }}
                 />
