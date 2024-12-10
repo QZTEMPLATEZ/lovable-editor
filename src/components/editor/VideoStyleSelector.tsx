@@ -1,9 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX } from 'lucide-react';
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
+import VideoStyleItem from './VideoStyleItem';
 
 export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
 
@@ -25,7 +24,7 @@ const VIDEO_STYLES = [
     id: 'cinematic',
     title: 'Cinematic',
     description: 'recorded by top sound engineers',
-    previewVideo: '/cinematic-preview.mp4',
+    previewVideo: 'https://dl.dropboxusercontent.com/s/g8by45dy1nwjxfhpdko5v/cinematic.mp4',
     darkMode: true
   },
   {
@@ -50,25 +49,13 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
-  const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
   const handleMouseEnter = (styleId: string) => {
     setHoveredStyle(styleId);
-    if (videoRefs.current[styleId]) {
-      videoRefs.current[styleId]?.play().catch(error => {
-        console.log('Video playback failed:', error);
-      });
-    }
   };
 
   const handleMouseLeave = (styleId: string) => {
     setHoveredStyle(null);
-    if (videoRefs.current[styleId]) {
-      videoRefs.current[styleId]?.pause();
-      if (videoRefs.current[styleId]) {
-        videoRefs.current[styleId]!.currentTime = 0;
-      }
-    }
   };
 
   return (
@@ -80,82 +67,19 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
       </div>
 
       {VIDEO_STYLES.map((style) => (
-        <motion.div
+        <VideoStyleItem
           key={style.id}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="relative h-[60vh] group cursor-pointer w-full bg-black"
+          style={style}
+          isHovered={hoveredStyle === style.id}
+          isMuted={isMuted}
           onMouseEnter={() => handleMouseEnter(style.id)}
           onMouseLeave={() => handleMouseLeave(style.id)}
-          onClick={() => onStyleSelect(style.id as VideoStyle)}
-        >
-          <AnimatePresence>
-            {hoveredStyle === style.id && (
-              <motion.video
-                ref={el => videoRefs.current[style.id] = el}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.7 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 w-full h-full object-cover"
-                src={style.previewVideo}
-                autoPlay
-                loop
-                muted={isMuted}
-                playsInline
-              />
-            )}
-          </AnimatePresence>
-
-          <div className="relative z-10 flex items-center justify-between h-full px-96 max-w-[2400px] mx-auto w-full">
-            <div className="space-y-1">
-              <motion.h2 
-                className="text-3xl font-cinzel tracking-wider text-white"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                {style.title}
-              </motion.h2>
-              <motion.p 
-                className="text-xs tracking-[0.2em] uppercase text-gray-400 font-italiana"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                {style.description}
-              </motion.p>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Button 
-                variant="outline" 
-                className="border border-white text-white hover:bg-white/10 uppercase tracking-wider text-xs"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.location.href = `/explore/${style.id}`;
-                }}
-              >
-                EXPLORE
-              </Button>
-            </motion.div>
-          </div>
-
-          {hoveredStyle === style.id && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsMuted(!isMuted);
-              }}
-              className="absolute bottom-4 right-4 z-20 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
-            >
-              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-            </button>
-          )}
-        </motion.div>
+          onStyleSelect={() => onStyleSelect(style.id as VideoStyle)}
+          onToggleMute={(e) => {
+            e.stopPropagation();
+            setIsMuted(!isMuted);
+          }}
+        />
       ))}
 
       <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex gap-4">
