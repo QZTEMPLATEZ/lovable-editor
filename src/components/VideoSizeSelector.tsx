@@ -83,24 +83,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
   const navigate = useNavigate();
 
   const handleSizeSelect = (size: VideoSizeRange) => {
-    if (userTier === 'basic' && size.tier !== 'basic') {
-      toast({
-        title: "Upgrade Required",
-        description: "This duration option is only available with our Pro or Business plans. Would you like to upgrade?",
-        action: (
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => {
-              console.log('Upgrade clicked');
-            }}
-          >
-            Upgrade Now
-          </Button>
-        ),
-      });
-      return;
-    }
+    // Remove tier restriction for testing
     onSizeSelect(size);
   };
 
@@ -144,7 +127,8 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier = 'basic' }: V
         }}
       >
         {VIDEO_SIZES.map((size) => {
-          const isLocked = userTier === 'basic' && size.tier !== 'basic';
+          // Remove isLocked for testing
+          const isLocked = false;
           
           return (
             <motion.div
