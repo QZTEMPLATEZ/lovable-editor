@@ -6,40 +6,45 @@ const StyleHeader = () => {
   const navigate = useNavigate();
   
   return (
-    <div className="relative py-12 px-4 border-b border-editor-border/20">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)] opacity-5" />
-      <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5" />
-      <div className="absolute inset-0 backdrop-blur-sm bg-[#0A0A0A]/80" />
-      
-      {/* Header Content */}
-      <div className="relative flex items-center gap-6 max-w-7xl mx-auto">
-        <button
-          onClick={() => navigate('/duration')}
-          className="p-3 rounded-2xl bg-editor-panel/50 backdrop-blur-sm border border-editor-border/20 
-                   hover:bg-editor-panel/70 transition-all duration-300 group"
+    <div className="relative h-[70vh] bg-[#0A0A0A] overflow-hidden">
+      {/* Background video */}
+      <div className="absolute inset-0 w-full h-full">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
         >
-          <ChevronLeft className="w-6 h-6 text-editor-glow-purple group-hover:text-editor-glow-pink transition-colors" />
-        </button>
-
-        <div className="flex-1">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="relative">
-              <div className="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center border border-editor-border">
-                <Wand2 className="w-6 h-6 text-editor-glow-purple" />
-              </div>
-              <Sparkles className="w-4 h-4 text-editor-glow-pink absolute -top-1 -right-1 animate-pulse" />
-            </div>
-            
-            <div>
-              <h1 className="text-3xl font-cinzel tracking-wider bg-clip-text text-transparent 
-                           bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue">
-                Choose Your Cinematic Style
-              </h1>
-              <p className="text-sm font-italiana tracking-wider mt-1 text-editor-text/70">
-                Each style is carefully crafted to tell your story with a unique cinematic approach
-              </p>
-            </div>
+          <source src="https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        {/* Background overlay with gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80" />
+      </div>
+      
+      {/* Content container */}
+      <div className="relative container mx-auto h-full">
+        <div className="flex flex-col justify-center h-full max-w-2xl px-6 py-16">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+            Choose Your Style
+          </h1>
+          <p className="text-xl text-white/80 mb-8 max-w-xl">
+            Select a cinematic style that matches your vision. Each style offers a unique way to tell your story.
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <button 
+              onClick={() => navigate('/music')}
+              className="px-8 py-4 bg-[#222222] text-white font-semibold rounded-lg hover:bg-[#D946EF] transition-colors"
+            >
+              Continue
+            </button>
+            <button 
+              onClick={() => navigate('/duration')}
+              className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
+            >
+              Back
+            </button>
           </div>
         </div>
       </div>
