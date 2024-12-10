@@ -3,6 +3,7 @@ import { VideoStyle } from '@/types/video';
 import { motion } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from "@/components/ui/use-toast";
 
 interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
@@ -45,6 +46,7 @@ const VIDEO_STYLES = [
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload, onNext }: VideoStyleSelectorProps) => {
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleStyleSelectAndNext = (styleId: string) => {
     onStyleSelect(styleId as VideoStyle);
@@ -54,12 +56,19 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     navigate('/music');
   };
 
-  const handleMouseEnter = (styleId: string, videoElement: HTMLVideoElement | null) => {
+  const handleMouseEnter = async (styleId: string, videoElement: HTMLVideoElement | null) => {
     setHoveredStyle(styleId);
     if (videoElement) {
-      videoElement.play().catch(error => {
+      try {
+        // Set video properties before playing
+        videoElement.muted = true;
+        videoElement.playsInline = true;
+        videoElement.currentTime = 0;
+        await videoElement.play();
+      } catch (error) {
         console.log('Video autoplay failed:', error);
-      });
+        // Don't show error toast to user as this is not critical
+      }
     }
   };
 
@@ -117,6 +126,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
                 loop
                 muted
                 playsInline
+                preload="metadata"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300" />
             </div>
