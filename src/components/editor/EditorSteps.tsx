@@ -1,80 +1,102 @@
 import React from 'react';
-import { Film, Music, Upload, Wand2 } from 'lucide-react';
-import { VideoSizeRange } from '../../types';
-import { VideoStyle } from './VideoStyleSelector';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Check } from 'lucide-react';
+import { VideoStyle } from '@/types/video';
 
-export const EDITOR_STEPS = [
-  { 
-    title: 'Duration',
-    description: 'Choose your ideal video length',
-    icon: <Film className="w-5 h-5" />
-  },
-  { 
-    title: 'Style',
-    description: 'Select editing style',
-    icon: <Upload className="w-5 h-5" />
-  },
-  { 
-    title: 'Music',
-    description: 'Select soundtrack',
-    icon: <Music className="w-5 h-5" />
-  },
-  { 
-    title: 'Raw Files',
-    description: 'Upload footage',
-    icon: <Film className="w-5 h-5" />
-  },
-  { 
-    title: 'AI Edit',
-    description: 'Magic happens',
-    icon: <Wand2 className="w-5 h-5" />
-  }
-];
-
-interface EditorStepsProps {
+interface EditorStepsLayoutProps {
   currentStep: number;
-  isStepCompleted: (step: number) => boolean;
-  onNextStep: () => void;
-  onPreviousStep: () => void;
-  isProcessing: boolean;
+  children: React.ReactNode;
+  steps: {
+    title: string;
+    description: string;
+    icon?: React.ReactNode;
+  }[];
 }
 
-const EditorSteps: React.FC<EditorStepsProps> = ({
-  currentStep,
-  isStepCompleted,
-  onNextStep,
-  onPreviousStep,
-  isProcessing
-}) => {
+const EditorStepsLayout = ({ currentStep, children, steps }: EditorStepsLayoutProps) => {
   return (
-    <div className="flex justify-between pt-6 border-t border-editor-border/30">
-      {currentStep > 0 && (
-        <Button
-          onClick={onPreviousStep}
-          variant="outline"
-          className="bg-editor-panel/50 hover:bg-editor-panel"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back
-        </Button>
-      )}
+    <div className="min-h-screen bg-editor-bg">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
       
-      {currentStep === 0 && <div />}
-      
-      {currentStep < EDITOR_STEPS.length - 1 && (
-        <Button
-          onClick={onNextStep}
-          disabled={!isStepCompleted(currentStep)}
-          className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90"
+      <div className="relative max-w-7xl mx-auto p-6">
+        {/* Steps Progress */}
+        <div className="mb-12">
+          <div className="relative">
+            {/* Progress Line */}
+            <div className="absolute top-5 left-0 w-full h-0.5 bg-editor-border" />
+            <motion.div 
+              className="absolute top-5 left-0 h-0.5 bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink"
+              style={{
+                width: `${(currentStep / (steps.length - 1)) * 100}%`,
+              }}
+              initial={{ width: 0 }}
+              animate={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
+              transition={{ duration: 0.5 }}
+            />
+            
+            {/* Steps */}
+            <div className="relative flex justify-between">
+              {steps.map((step, index) => (
+                <div key={index} className="flex flex-col items-center">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: index * 0.1 }}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center relative
+                      ${index <= currentStep 
+                        ? 'bg-gradient-to-br from-editor-glow-purple to-editor-glow-pink shadow-lg shadow-editor-glow-purple/50' 
+                        : 'bg-editor-panel border border-editor-border'
+                      }`}
+                  >
+                    {index < currentStep ? (
+                      <Check className="w-5 h-5 text-white" />
+                    ) : (
+                      <span className={`text-sm font-medium ${
+                        index === currentStep ? 'text-white' : 'text-gray-400'
+                      }`}>
+                        {index + 1}
+                      </span>
+                    )}
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: index * 0.1 + 0.2 }}
+                    className="mt-4 text-center"
+                  >
+                    <h3 className={`text-sm font-medium mb-1
+                      ${index <= currentStep ? 'text-purple-300' : 'text-gray-400'}`}
+                    >
+                      {step.title}
+                    </h3>
+                    <p className="text-xs text-editor-text/70 max-w-[120px] mx-auto">
+                      {step.description}
+                    </p>
+                  </motion.div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Content Area */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="relative"
         >
-          Next Step
-          <ArrowRight className="w-4 h-4 ml-2" />
-        </Button>
-      )}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 rounded-3xl" />
+          <div className="relative bg-editor-panel/50 backdrop-blur-xl rounded-3xl border border-editor-border/50 p-8">
+            {children}
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };
 
-export default EditorSteps;
+export default EditorStepsLayout;

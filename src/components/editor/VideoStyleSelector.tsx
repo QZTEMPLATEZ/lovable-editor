@@ -50,7 +50,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const [isMuted, setIsMuted] = useState(true);
 
   return (
-    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-panel">
+    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-panel min-h-screen">
       <div className="text-center py-12 px-4 bg-editor-panel border-b border-editor-border">
         <h1 className="text-3xl font-cinzel tracking-[0.2em] text-white/90 uppercase mb-3">
           Select Your Visual Direction
@@ -60,7 +60,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         </p>
       </div>
 
-      <div className="w-full max-w-none px-0 bg-editor-panel">
+      <div className="w-full max-w-none px-0 bg-editor-panel flex-grow">
         {VIDEO_STYLES.map((style) => (
           <VideoStyleItem
             key={style.id}
