@@ -3,7 +3,7 @@ import { VideoStyle } from '@/types/video';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
@@ -17,28 +17,28 @@ const VIDEO_STYLES = [
     id: 'classic',
     title: 'Classic',
     description: 'made by world-class artists',
-    previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?raw=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?dl=1',
     darkMode: true
   },
   {
     id: 'cinematic',
     title: 'Cinematic',
     description: 'recorded by top sound engineers',
-    previewVideo: 'https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?raw=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?dl=1',
     darkMode: true
   },
   {
     id: 'documentary',
     title: 'Documentary',
     description: 'with exclusive voice actors',
-    previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK-OK.mp4?raw=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK-OK.mp4?dl=1',
     darkMode: true
   },
   {
     id: 'dynamic',
     title: 'Dynamic',
     description: 'shot by pro filmmakers',
-    previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?raw=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?dl=1',
     darkMode: true
   }
 ];
@@ -56,31 +56,13 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
     navigate('/music');
   };
 
-  const handleMouseEnter = async (styleId: string, videoElement: HTMLVideoElement | null) => {
-    setHoveredStyle(styleId);
-    if (videoElement) {
-      try {
-        videoElement.muted = true;
-        videoElement.playsInline = true;
-        videoElement.currentTime = 0;
-        await videoElement.play();
-      } catch (error) {
-        console.error('Video autoplay failed:', error);
-        toast({
-          variant: "destructive",
-          title: "Video Playback Error",
-          description: "There was an issue playing the preview video. Please try again.",
-        });
-      }
-    }
-  };
-
-  const handleMouseLeave = (videoElement: HTMLVideoElement | null) => {
-    setHoveredStyle(null);
-    if (videoElement) {
-      videoElement.pause();
-      videoElement.currentTime = 0;
-    }
+  const handleVideoError = (styleId: string) => {
+    toast({
+      variant: "destructive",
+      title: "Video Error",
+      description: "There was an error playing the preview video. Please try again.",
+    });
+    console.error(`Error playing video for style: ${styleId}`);
   };
 
   return (
@@ -106,14 +88,8 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#0A0A0A] transition-colors duration-300 border-b border-gray-800 overflow-hidden"
-              onMouseEnter={(e) => {
-                const videoElement = e.currentTarget.querySelector('video');
-                handleMouseEnter(style.id, videoElement);
-              }}
-              onMouseLeave={(e) => {
-                const videoElement = e.currentTarget.querySelector('video');
-                handleMouseLeave(videoElement);
-              }}
+              onMouseEnter={() => setHoveredStyle(style.id)}
+              onMouseLeave={() => setHoveredStyle(null)}
               onClick={() => handleStyleSelectAndNext(style.id)}
             >
               {/* Background Video */}
@@ -122,13 +98,15 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
                   key={style.id}
                   src={style.previewVideo}
                   className="w-full h-full object-cover"
+                  autoPlay
                   loop
                   muted
                   playsInline
                   preload="auto"
+                  onError={() => handleVideoError(style.id)}
                 />
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent group-hover:opacity-70 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent transition-opacity duration-500" />
               </div>
 
               {/* Content */}
