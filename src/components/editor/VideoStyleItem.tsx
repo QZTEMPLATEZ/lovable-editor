@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -30,17 +30,20 @@ const VideoStyleItem = ({
 }: VideoStyleItemProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Handle video playback on hover
-  React.useEffect(() => {
-    if (videoRef.current) {
-      if (isHovered) {
-        videoRef.current.play().catch(error => {
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    if (isHovered) {
+      const playPromise = videoElement.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
           console.log('Video autoplay failed:', error);
         });
-      } else {
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
       }
+    } else {
+      videoElement.pause();
+      videoElement.currentTime = 0;
     }
   }, [isHovered]);
 
@@ -63,8 +66,9 @@ const VideoStyleItem = ({
             className="absolute inset-0 w-full h-full object-cover"
             src={style.previewVideo}
             loop
-            muted={isMuted}
             playsInline
+            muted={isMuted}
+            preload="auto"
           />
         )}
       </AnimatePresence>
