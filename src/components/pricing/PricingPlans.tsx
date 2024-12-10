@@ -71,7 +71,10 @@ const PricingPlans = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/5 via-transparent to-editor-glow-pink/5 rounded-lg" />
         <div className="relative space-y-4">
           <h3 className="text-lg font-bold text-white">Basic</h3>
-          <PriceDisplay price={9.99} />
+          <PriceDisplay 
+            price={9.99} 
+            billingNote="Billed annually, or monthly for US$ 14.99"
+          />
           <FeatureList features={basicFeatures} />
           <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full">
             Try Free
@@ -87,7 +90,10 @@ const PricingPlans = () => {
             <h3 className="text-lg font-bold text-white">MAX</h3>
             <Crown className="w-4 h-4 text-editor-accent" />
           </div>
-          <PriceDisplay price={29.99} originalPrice={39.99} />
+          <PriceDisplay 
+            price={69.99} 
+            billingNote="Billed annually"
+          />
           <FeatureList features={maxFeatures} />
           <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full">
             Select
@@ -103,7 +109,10 @@ const PricingPlans = () => {
             <h3 className="text-lg font-bold text-white">Business</h3>
             <Sparkles className="w-4 h-4 text-editor-accent" />
           </div>
-          <PriceDisplay price={35.99} />
+          <PriceDisplay 
+            price={99.99} 
+            billingNote="Billed annually"
+          />
           <FeatureList features={businessFeatures} />
           <Button className="w-full bg-editor-accent hover:bg-editor-accent/80 text-sm py-1 rounded-full">
             Select
