@@ -5,17 +5,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
 import { Clock, Check } from 'lucide-react';
-
-export interface VideoSizeRange {
-  min: number;
-  max: number;
-  label: string;
-  description: string;
-  icon: React.ReactNode | null;
-  recommendedTracks: number;
-  tier: 'basic' | 'pro' | 'business';
-  name: string;
-}
+import { VideoSizeRange } from '../types';
 
 const VIDEO_SIZES: VideoSizeRange[] = [
   {
@@ -93,85 +83,103 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
   };
 
   return (
-    <div className="space-y-8">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-4">
-          Select Your Video Duration
-        </h1>
-        <p className="text-gray-400 text-lg">
-          Choose the perfect duration for your video. Each option is carefully crafted for different needs.
-        </p>
+    <div className="min-h-screen flex">
+      {/* Left side - Image */}
+      <div className="hidden lg:block w-1/2 bg-editor-bg relative">
+        <div className="absolute inset-0">
+          <img 
+            src="/lovable-uploads/2dce83de-8b50-4311-8631-d0277b63b09c.png" 
+            alt="Showcase" 
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {VIDEO_SIZES.map((size) => {
-          const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
-          
-          return (
-            <motion.div
-              key={`${size.min}-${size.max}`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className={`relative rounded-xl border transition-all duration-300 cursor-pointer
-                ${isSelected 
-                  ? 'border-editor-glow-purple shadow-lg shadow-editor-glow-purple/20 bg-editor-glow-purple/10' 
-                  : 'border-gray-700 bg-gray-800/50 hover:border-editor-glow-purple/50 hover:bg-gray-800/70'
-                }`}
-              onClick={() => handleSizeSelect(size)}
+      {/* Right side - Content */}
+      <div className="w-full lg:w-1/2 p-8 lg:p-16 bg-editor-bg overflow-y-auto">
+        <div className="max-w-2xl mx-auto space-y-12">
+          {/* Main heading */}
+          <div>
+            <h1 className="text-5xl font-bold text-white mb-4 font-cinzel">
+              Select Your Duration
+            </h1>
+            <p className="text-lg text-gray-400">
+              Choose the perfect duration for your video. Each option is carefully crafted for different needs.
+            </p>
+          </div>
+
+          {/* Duration options */}
+          <div className="space-y-6">
+            {VIDEO_SIZES.map((size) => {
+              const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
+              
+              return (
+                <motion.div
+                  key={`${size.min}-${size.max}`}
+                  whileHover={{ x: 4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`relative p-6 rounded-xl border transition-all duration-300 cursor-pointer
+                    ${isSelected 
+                      ? 'border-editor-glow-purple shadow-lg shadow-editor-glow-purple/20 bg-editor-glow-purple/10' 
+                      : 'border-gray-700 bg-gray-800/50 hover:border-editor-glow-purple/50'
+                    }`}
+                  onClick={() => handleSizeSelect(size)}
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-xl font-semibold text-white mb-1">{size.name}</h3>
+                      <div className="flex items-center gap-2 text-gray-300">
+                        <Clock className="w-4 h-4" />
+                        <span>{size.label}</span>
+                      </div>
+                    </div>
+                    <PlanBadge tier={size.tier} />
+                  </div>
+
+                  <p className="text-gray-400 text-sm mb-4 whitespace-pre-line">
+                    {size.description}
+                  </p>
+
+                  <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg">
+                    <Clock className="w-4 h-4" />
+                    <span>Recommended Tracks: {size.recommendedTracks}</span>
+                  </div>
+
+                  <AnimatePresence>
+                    {isSelected && (
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        className="absolute -top-2 -right-2 bg-editor-glow-purple rounded-full p-2 shadow-lg shadow-editor-glow-purple/50"
+                      >
+                        <Check className="w-4 h-4 text-white" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          {/* Navigation buttons */}
+          <div className="flex justify-between pt-6 border-t border-gray-700">
+            <Button
+              onClick={handleBack}
+              variant="outline"
+              className="bg-gray-800/50 hover:bg-gray-700"
             >
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-semibold text-white">{size.name}</h3>
-                  <PlanBadge tier={size.tier} />
-                </div>
-
-                <div className="flex items-center gap-2 text-gray-300 mb-4">
-                  <Clock className="w-4 h-4" />
-                  <span>{size.label}</span>
-                </div>
-
-                <p className="text-gray-400 text-sm mb-4 whitespace-pre-line">
-                  {size.description}
-                </p>
-
-                <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg">
-                  <Clock className="w-4 h-4" />
-                  <span>Recommended Tracks: {size.recommendedTracks}</span>
-                </div>
-
-                <AnimatePresence>
-                  {isSelected && (
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      className="absolute -top-2 -right-2 bg-editor-glow-purple rounded-full p-2 shadow-lg shadow-editor-glow-purple/50"
-                    >
-                      <Check className="w-4 h-4 text-white" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
-
-      <div className="flex justify-between pt-6 border-t border-gray-700">
-        <Button
-          onClick={handleBack}
-          variant="outline"
-          className="bg-gray-800/50 hover:bg-gray-700"
-        >
-          Back to Home
-        </Button>
-        
-        <Button
-          onClick={() => navigate('/style')}
-          className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 shadow-lg shadow-editor-glow-purple/20"
-        >
-          Next: Choose Style
-        </Button>
+              Back to Home
+            </Button>
+            
+            <Button
+              onClick={() => navigate('/style')}
+              className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 shadow-lg shadow-editor-glow-purple/20"
+            >
+              Next: Choose Style
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
