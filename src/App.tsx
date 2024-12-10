@@ -5,6 +5,7 @@ import TopNavigation from "./components/TopNavigation";
 import Index from "./pages/Index";
 import VideoSizeSelector from "./components/VideoSizeSelector";
 import VideoStyleSelector from "./components/editor/VideoStyleSelector";
+import MusicSelector from "./components/editor/MusicSelector";
 import { useState } from "react";
 import { VideoStyle } from "./types/video";
 import PricingPlans from "./components/pricing/PricingPlans";
@@ -69,12 +70,7 @@ const AppContent = () => {
             />
             <Route 
               path="/music" 
-              element={
-                <div className="text-center py-12">
-                  <h2 className="text-2xl font-bold mb-4">Music Selection</h2>
-                  <p>Music selection step is being rebuilt...</p>
-                </div>
-              } 
+              element={<MusicSelector />}
             />
           </Routes>
         </div>
