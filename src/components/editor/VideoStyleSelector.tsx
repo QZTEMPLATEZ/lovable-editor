@@ -69,10 +69,10 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw]">
-      <div className="text-center py-12 px-4 bg-editor-panel relative">
+      <div className="text-center py-12 px-4 bg-[#0A0A0A] relative">
         <button
           onClick={() => navigate('/duration')}
-          className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-editor-bg/20 hover:bg-editor-bg/40 border border-white/20 transition-colors"
+          className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-[#151515] hover:bg-[#202020] border border-[#252525] transition-colors"
         >
           <ChevronLeft className="w-6 h-6 text-white" />
         </button>
@@ -85,7 +85,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
         {VIDEO_STYLES.map((style) => (
           <div
             key={style.id}
-            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#333333] transition-colors duration-300"
+            className="relative w-full [aspect-ratio:3/1] group cursor-pointer bg-[#0A0A0A] transition-colors duration-300"
             onMouseEnter={() => handleMouseEnter(style.id)}
             onMouseLeave={() => handleMouseLeave(style.id)}
             onClick={() => handleStyleSelectAndNext(style.id)}
@@ -93,7 +93,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
             <video
               key={style.id}
               src={style.previewVideo}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
                 hoveredStyle === style.id ? 'opacity-100' : 'opacity-0'
               }`}
               loop
@@ -113,9 +113,9 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload,
               </div>
               <button
                 onClick={(e) => handleExploreClick(style.id, e)}
-                className="bg-editor-bg/20 hover:bg-editor-bg/40 border border-white/20 text-white px-8 py-3 rounded-md transition-colors"
+                className="bg-[#151515] hover:bg-[#202020] border border-[#252525] text-white px-8 py-3 rounded-md transition-colors"
               >
-                Explorar
+                Explore
               </button>
             </div>
           </div>
