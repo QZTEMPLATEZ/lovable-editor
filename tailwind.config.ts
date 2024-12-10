@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+import { colors } from "./src/theme/colors";
+import { animations } from "./src/theme/animations";
 
 export default {
   darkMode: ["class"],
@@ -23,106 +25,13 @@ export default {
         cinzel: ["Cinzel", "serif"],
         italiana: ["Italiana", "serif"],
       },
-      colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        editor: {
-          bg: "#0A0A0A",  // Darkened to match image
-          accent: "#9b87f5",
-          timeline: "#0A0A0A",  // Darkened to match image
-          panel: "#0A0A0A",     // Darkened to match image
-          border: "#151515",    // Slightly lighter for contrast
-          button: "#151515",    // Slightly lighter for contrast
-          text: "#CCCCCC",
-          glass: {
-            DEFAULT: "rgba(0, 0, 0, 0.5)",
-            dark: "rgba(0, 0, 0, 0.5)",
-            light: "rgba(255, 255, 255, 0.03)"
-          },
-          glow: {
-            purple: "#9b87f5",
-            pink: "#D946EF",
-            blue: "#0EA5E9"
-          }
-        },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-      },
+      colors,
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-        gradient: {
-          "0%, 100%": {
-            backgroundPosition: "0% 50%",
-          },
-          "50%": {
-            backgroundPosition: "100% 50%",
-          },
-        },
-        "glow-pulse": {
-          "0%, 100%": {
-            opacity: "1",
-          },
-          "50%": {
-            opacity: "0.5",
-          },
-        },
-        "float": {
-          "0%, 100%": {
-            transform: "translateY(0)",
-          },
-          "50%": {
-            transform: "translateY(-10px)",
-          },
-        },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "gradient": "gradient 15s ease infinite",
-        "glow-pulse": "glow-pulse 2s ease-in-out infinite",
-        "float": "float 3s ease-in-out infinite",
-      },
+      ...animations,
     },
   },
   plugins: [require("tailwindcss-animate")],
