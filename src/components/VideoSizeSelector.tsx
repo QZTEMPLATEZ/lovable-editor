@@ -111,7 +111,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
             <div className="flex flex-wrap gap-4">
               <button 
                 onClick={() => navigate('/style')}
-                className="px-8 py-4 bg-[#FFD700] text-black font-semibold rounded-lg hover:bg-[#FFE44D] transition-colors"
+                className="px-8 py-4 bg-[#222222] text-white font-semibold rounded-lg hover:bg-[#D946EF] transition-colors"
               >
                 Start Free Now
               </button>
