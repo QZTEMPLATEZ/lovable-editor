@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Sparkles, Wand2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
 import StyleItem from './style/StyleItem';
@@ -144,20 +144,44 @@ const VideoStyleSelector = ({
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-[#0A0A0A]">
-      <div className="text-center py-12 px-4 relative border-b border-gray-800">
-        <button
-          onClick={() => navigate('/duration')}
-          className="absolute left-8 top-1/2 -translate-y-1/2 p-2 rounded-full bg-gray-900 hover:bg-gray-800 border border-gray-800 transition-colors duration-300"
-        >
-          <ChevronLeft className="w-6 h-6 text-gray-400" />
-        </button>
-        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
-          Choose Your Cinematic Style
-        </h1>
-        <p className="mt-2 text-gray-400 max-w-2xl mx-auto">
-          Each style is carefully crafted to tell your story with a unique cinematic approach,
-          from classic timeless edits to modern dynamic cuts.
-        </p>
+      <div className="relative py-12 px-4 border-b border-editor-border/20">
+        {/* Background Elements */}
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
+        
+        {/* Header Content */}
+        <div className="relative flex items-center gap-6 max-w-7xl mx-auto">
+          {/* Back Button with Glow */}
+          <motion.button
+            onClick={() => navigate('/duration')}
+            className="p-3 rounded-2xl bg-editor-panel/50 backdrop-blur-sm border border-editor-border/20 
+                     hover:bg-editor-panel/70 transition-all duration-300 group"
+            whileHover={{ scale: 1.05 }}
+          >
+            <ChevronLeft className="w-6 h-6 text-editor-glow-purple group-hover:text-editor-glow-pink transition-colors" />
+          </motion.button>
+
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-2">
+              <div className="relative">
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                  <Wand2 className="w-6 h-6 text-editor-glow-purple" />
+                </div>
+                <Sparkles className="w-4 h-4 text-editor-glow-pink absolute -top-1 -right-1 animate-pulse" />
+              </div>
+              
+              <div>
+                <h1 className="text-3xl font-cinzel tracking-wider bg-clip-text text-transparent 
+                             bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue">
+                  Choose Your Cinematic Style
+                </h1>
+                <p className="text-sm text-editor-text/70 font-italiana tracking-wider mt-1">
+                  Each style is carefully crafted to tell your story with a unique cinematic approach
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="w-full max-w-none px-0 space-y-0">
