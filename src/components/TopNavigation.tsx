@@ -15,20 +15,21 @@ const TopNavigation = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <h1 className="flex items-baseline">
-              <span className="font-['Cinzel'] text-2xl font-bold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 hover:scale-105 transition-transform duration-300 cursor-default">
+            <h1 className="flex items-center gap-3">
+              <span className="font-['Cinzel'] text-3xl font-semibold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 hover:scale-105 transition-transform duration-300 cursor-default">
                 OSÍRIZ
               </span>
-              <div className="ml-2 flex flex-col">
-                <span className="text-xs font-cinzel tracking-widest text-gray-300">
+              <div className="flex flex-col">
+                <span className="text-xs font-cinzel tracking-[0.2em] text-gray-300">
                   EDITION PRO
                 </span>
-                <span className="text-[10px] font-light tracking-wider text-gray-400 uppercase">
+                <span className="text-[10px] font-light tracking-[0.15em] text-gray-400 uppercase">
                   Powered by AI
                 </span>
               </div>
             </h1>
           </div>
+          
           <div className="flex items-center space-x-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
