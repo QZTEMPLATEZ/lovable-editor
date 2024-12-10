@@ -1,8 +1,8 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { VideoStyle } from '@/types/video';
+import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { VideoStyle } from '@/types/video';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const VIDEO_STYLES = [
   {
@@ -42,7 +42,7 @@ interface VideoStyleSelectorProps {
 }
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
-  const navigate = useNavigate();
+  const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-editor-bg min-h-screen">
@@ -60,21 +60,29 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
           <div
             key={style.id}
             className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-editor-panel hover:bg-editor-panel/80 transition-colors"
-            onClick={() => {
-              onStyleSelect(style.id as VideoStyle);
-              navigate('/music');
-            }}
+            onMouseEnter={() => setHoveredStyle(style.id)}
+            onMouseLeave={() => setHoveredStyle(null)}
+            onClick={() => onStyleSelect(style.id as VideoStyle)}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-editor-panel/60 via-editor-panel/40 to-editor-panel/60 z-[1]" />
             <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
-            <video
-              src={style.previewVideo}
-              className="absolute inset-0 w-full h-full object-cover opacity-50"
-              loop
-              muted
-              playsInline
-              autoPlay
-            />
+            
+            <AnimatePresence>
+              {hoveredStyle === style.id && (
+                <motion.video
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.5 }}
+                  exit={{ opacity: 0 }}
+                  src={style.previewVideo}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loop
+                  muted
+                  playsInline
+                  autoPlay
+                />
+              )}
+            </AnimatePresence>
+
             <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
               <div className="space-y-1">
                 <h2 className="text-4xl md:text-6xl font-cinzel tracking-wider text-white">
@@ -90,7 +98,6 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
                 onClick={(e) => {
                   e.stopPropagation();
                   onStyleSelect(style.id as VideoStyle);
-                  navigate('/music');
                 }}
               >
                 Explorar
