@@ -21,7 +21,7 @@ const StylePreview = ({ videoUrl, isHovered, videoRef }: StylePreviewProps) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: isHovered ? 1 : 0 }}
         transition={{ duration: 0.3 }}
-        className="absolute inset-0"
+        className="absolute inset-0 w-full h-full"
       >
         <video
           ref={videoRef}
@@ -32,6 +32,9 @@ const StylePreview = ({ videoUrl, isHovered, videoRef }: StylePreviewProps) => {
           playsInline
           preload="metadata"
         />
+        
+        {/* Gradient overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
       </motion.div>
     </>
   );
