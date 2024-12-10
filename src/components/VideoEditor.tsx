@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import EditorStepsLayout from './editor/EditorStepsLayout';
 import { VideoSizeRange } from '../types';
 import { EditingMode } from './EditingModeSelector';
-import EditingProgress from './EditingProgress';
-import EditorHeader from './EditorHeader';
-import VideoStyleSelector from './editor/VideoStyleSelector';
+import EditorStepsLayout from './editor/EditorStepsLayout';
+import ProcessingView from './editor/ProcessingView';
+import EditorContent from './editor/EditorContent';
+import EditorNavigation from './editor/EditorNavigation';
 import { VideoStyle } from '../types/video';
-import RawFilesSection from './RawFilesSection';
-import EditingInterface from './EditingInterface';
-import AIEditStep from './editor/AIEditStep';
 import { EDITOR_STEPS } from './editor/EditorSteps';
 import { applyStyleToProject } from '@/utils/videoStyleProcessing';
 
@@ -29,9 +26,6 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
   const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
   const [customReferenceVideo, setCustomReferenceVideo] = useState<File | null>(null);
   const { toast } = useToast();
-
-  // Always return true since we're simulating pro user access
-  const isStepCompleted = (step: number): boolean => true;
 
   const handleNextStep = () => {
     if (currentStep < EDITOR_STEPS.length - 1) {
@@ -85,96 +79,44 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     setIsProcessing(false);
   };
 
-  const renderCurrentStep = () => {
-    if (isProcessing) {
-      return (
-        <EditingProgress 
-          videoFiles={rawFiles} 
-          progress={0} 
-          onStopProcessing={() => setIsProcessing(false)}
-        />
-      );
-    }
-
-    return (
-      <div className="space-y-8">
-        {currentStep === 0 && (
-          <EditorHeader 
-            editingMode={editingMode}
-            targetDuration={targetDuration}
-            onDurationChange={onDurationChange}
-          />
-        )}
-        
-        {currentStep === 1 && (
-          <VideoStyleSelector
-            selectedStyle={selectedStyle}
-            onStyleSelect={handleStyleSelect}
-            onCustomVideoUpload={handleCustomVideoUpload}
-          />
-        )}
-        
-        {currentStep === 2 && (
-          <EditingInterface onMusicSelect={(file, beats) => {
-            setSelectedMusic([file]);
-          }} />
-        )}
-        
-        {currentStep === 3 && (
-          <RawFilesSection
-            onDrop={(e) => {
-              e.preventDefault();
-              const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
-              setRawFiles(prev => [...prev, ...files]);
-            }}
-            onDragOver={(e) => e.preventDefault()}
-            videoFiles={rawFiles}
-          />
-        )}
-        
-        {currentStep === 4 && (
-          <AIEditStep 
-            aiScript={aiScript}
-            onChange={setAiScript}
-            onStartEditing={handleStartEditing}
-            rawFiles={rawFiles}
-            musicFile={selectedMusic[0]}
-          />
-        )}
-
-        {!isProcessing && currentStep < EDITOR_STEPS.length && (
-          <EditorStepsLayout
-            currentStep={currentStep}
-            steps={EDITOR_STEPS}
-          >
-            <div className="flex justify-between mt-8">
-              <button
-                onClick={handlePreviousStep}
-                disabled={currentStep === 0}
-                className="px-4 py-2 bg-editor-panel text-white rounded-lg disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <button
-                onClick={handleNextStep}
-                disabled={currentStep === EDITOR_STEPS.length - 1}
-                className="px-4 py-2 bg-editor-panel text-white rounded-lg disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          </EditorStepsLayout>
-        )}
-      </div>
-    );
-  };
-
   return (
     <EditorStepsLayout
       currentStep={currentStep}
       steps={EDITOR_STEPS}
     >
-      {renderCurrentStep()}
+      <div className="space-y-8">
+        {isProcessing ? (
+          <ProcessingView 
+            rawFiles={rawFiles}
+            onStopProcessing={() => setIsProcessing(false)}
+          />
+        ) : (
+          <>
+            <EditorContent
+              currentStep={currentStep}
+              editingMode={editingMode}
+              targetDuration={targetDuration}
+              onDurationChange={onDurationChange}
+              selectedStyle={selectedStyle}
+              onStyleSelect={handleStyleSelect}
+              onCustomVideoUpload={handleCustomVideoUpload}
+              rawFiles={rawFiles}
+              selectedMusic={selectedMusic}
+              aiScript={aiScript}
+              onAIScriptChange={setAiScript}
+              onStartEditing={handleStartEditing}
+              setRawFiles={setRawFiles}
+              setSelectedMusic={setSelectedMusic}
+            />
+            
+            <EditorNavigation
+              currentStep={currentStep}
+              onPrevious={handlePreviousStep}
+              onNext={handleNextStep}
+            />
+          </>
+        )}
+      </div>
     </EditorStepsLayout>
   );
 };
