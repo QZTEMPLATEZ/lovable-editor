@@ -1,173 +1,315 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, Upload, Check } from 'lucide-react';
+import { Music, Upload, Waveform, Clock, AlertCircle, ChevronRight, Trash2, Play, Pause, Volume2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Slider } from "@/components/ui/slider";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { detectBeats, analyzeMusicTrack } from '@/utils/audioProcessing';
+import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
 
 interface Track {
-  id: string;
-  name: string;
+  file: File;
   duration: string;
-  preview: string;
+  bpm?: number;
+  key?: string;
+  intensity: number;
+  audioElement?: HTMLAudioElement;
 }
 
-const SAMPLE_TRACKS: Track[] = [
-  {
-    id: '1',
-    name: 'Cinematic Epic',
-    duration: '3:45',
-    preview: 'https://example.com/preview1.mp3'
-  },
-  {
-    id: '2',
-    name: 'Emotional Journey',
-    duration: '4:20',
-    preview: 'https://example.com/preview2.mp3'
-  },
-  {
-    id: '3',
-    name: 'Dynamic Energy',
-    duration: '3:15',
-    preview: 'https://example.com/preview3.mp3'
-  }
-];
-
 const MusicSelector = () => {
-  const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState<string | null>(null);
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [videoDuration] = useState(5); // In minutes, should be passed from previous step
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleTrackSelect = (trackId: string) => {
-    setSelectedTrack(trackId);
-    toast({
-      title: "Track Selected",
-      description: "You can preview the track or continue to the next step.",
-    });
-  };
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
 
-  const handleTrackPlay = (trackId: string) => {
-    if (isPlaying === trackId) {
-      setIsPlaying(null);
-      // Stop playing logic here
-    } else {
-      setIsPlaying(trackId);
-      // Start playing logic here
-    }
-  };
-
-  const handleCustomUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Simulate upload progress
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 10;
-        setUploadProgress(progress);
-        if (progress >= 100) {
-          clearInterval(interval);
-          toast({
-            title: "Upload Complete",
-            description: "Your custom track has been uploaded successfully.",
-          });
-        }
-      }, 500);
-    }
-  };
-
-  const handleContinue = () => {
-    if (selectedTrack) {
-      navigate('/duration');
-      toast({
-        title: "Music Saved",
-        description: "Your music selection has been saved.",
-      });
-    } else {
+    if (tracks.length + files.length > 3) {
       toast({
         variant: "destructive",
-        title: "Selection Required",
-        description: "Please select a track before continuing.",
+        title: "Upload limit reached",
+        description: "Maximum 3 tracks allowed per project",
       });
+      return;
     }
+
+    setIsAnalyzing(true);
+    setUploadProgress(0);
+
+    for (const file of Array.from(files)) {
+      if (!validateAudioFile(file)) {
+        toast({
+          variant: "destructive",
+          title: "Invalid file format",
+          description: "Please upload MP3, WAV, or AAC files only",
+        });
+        continue;
+      }
+
+      try {
+        // Simulate upload progress
+        const interval = setInterval(() => {
+          setUploadProgress(prev => {
+            if (prev >= 100) {
+              clearInterval(interval);
+              return 100;
+            }
+            return prev + 10;
+          });
+        }, 200);
+
+        const audioElement = createAudioElement(file);
+        const beats = await detectBeats(file);
+        const analysis = await analyzeMusicTrack(file);
+
+        setTracks(prev => [...prev, {
+          file,
+          duration: formatDuration(audioElement.duration),
+          bpm: analysis.bpm,
+          key: 'C Major', // Placeholder - would come from actual analysis
+          intensity: 0.5,
+          audioElement
+        }]);
+
+        toast({
+          title: "Track uploaded successfully",
+          description: `${file.name} has been analyzed and added to your project.`,
+        });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Analysis failed",
+          description: "Unable to analyze the music track. Please try another file.",
+        });
+      }
+    }
+
+    setIsAnalyzing(false);
+    setUploadProgress(0);
+  };
+
+  const handleTrackPlay = (fileName: string) => {
+    const track = tracks.find(t => t.file.name === fileName);
+    if (!track?.audioElement) return;
+
+    if (playingTrack === fileName) {
+      track.audioElement.pause();
+      setPlayingTrack(null);
+    } else {
+      if (playingTrack) {
+        const currentTrack = tracks.find(t => t.file.name === playingTrack);
+        currentTrack?.audioElement?.pause();
+      }
+      track.audioElement.play();
+      setPlayingTrack(fileName);
+    }
+  };
+
+  const handleTrackRemove = (index: number) => {
+    const track = tracks[index];
+    if (track.audioElement) {
+      cleanupAudioElement(track.audioElement);
+    }
+    setTracks(prev => prev.filter((_, i) => i !== index));
+    if (playingTrack === track.file.name) {
+      setPlayingTrack(null);
+    }
+  };
+
+  const handleIntensityChange = (index: number, value: number[]) => {
+    setTracks(prev => prev.map((track, i) => 
+      i === index ? { ...track, intensity: value[0] } : track
+    ));
+  };
+
+  const getTotalMusicDuration = () => {
+    return tracks.reduce((total, track) => {
+      const [minutes, seconds] = track.duration.split(':').map(Number);
+      return total + minutes + seconds / 60;
+    }, 0);
+  };
+
+  const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  const getRequiredSongs = () => {
+    const totalDuration = getTotalMusicDuration();
+    return Math.max(0, Math.ceil(videoDuration - totalDuration));
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div className="grid gap-6">
-        {SAMPLE_TRACKS.map((track) => (
-          <div
-            key={track.id}
-            className={`p-6 rounded-lg border transition-all duration-300 ${
-              selectedTrack === track.id
-                ? 'border-purple-500 bg-purple-500/10'
-                : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
-            }`}
+    <div className="max-w-4xl mx-auto space-y-8 p-6">
+      {/* Header Section */}
+      <div className="text-center space-y-4">
+        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+          Select Your Music to Guide the Magic!
+        </h1>
+        <p className="text-gray-400">
+          Choose up to 3 songs to shape the rhythm and emotion of your video
+        </p>
+      </div>
+
+      {/* Upload Section */}
+      <div className="relative">
+        <input
+          type="file"
+          accept=".mp3,.wav,.aac,audio/*"
+          onChange={handleFileUpload}
+          className="hidden"
+          id="music-upload"
+          multiple
+        />
+        <label
+          htmlFor="music-upload"
+          className="block w-full"
+        >
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300 bg-purple-500/5"
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`rounded-full ${
-                    isPlaying === track.id ? 'text-purple-500' : 'text-gray-400'
-                  }`}
-                  onClick={() => handleTrackPlay(track.id)}
-                >
-                  <Music className="h-6 w-6" />
-                </Button>
-                <div>
-                  <h3 className="font-semibold text-white">{track.name}</h3>
-                  <p className="text-sm text-gray-400">{track.duration}</p>
-                </div>
-              </div>
+            <Upload className="w-12 h-12 mx-auto text-purple-400 mb-2" />
+            <p className="text-purple-200">
+              Drag and drop your music files here or click to browse
+            </p>
+            <p className="text-sm text-purple-300/70 mt-2">
+              Supported formats: MP3, WAV, AAC
+            </p>
+          </motion.div>
+        </label>
+      </div>
+
+      {/* Tracks List */}
+      <AnimatePresence>
+        {tracks.map((track, index) => (
+          <motion.div
+            key={track.file.name}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-purple-500/10 rounded-lg p-6 border border-purple-500/20"
+          >
+            <div className="flex items-center gap-4 mb-4">
               <Button
                 variant="ghost"
                 size="icon"
-                className={`rounded-full ${
-                  selectedTrack === track.id ? 'text-purple-500' : 'text-gray-400'
-                }`}
-                onClick={() => handleTrackSelect(track.id)}
+                className="h-10 w-10 rounded-full"
+                onClick={() => handleTrackPlay(track.file.name)}
               >
-                <Check className={`h-6 w-6 ${selectedTrack === track.id ? 'opacity-100' : 'opacity-0'}`} />
+                {playingTrack === track.file.name ? (
+                  <Pause className="h-5 w-5" />
+                ) : (
+                  <Play className="h-5 w-5" />
+                )}
+              </Button>
+
+              <div className="flex-1">
+                <h3 className="font-medium text-purple-200">{track.file.name}</h3>
+                <div className="flex items-center gap-4 text-sm text-purple-300/70">
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    {track.duration}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Waveform className="h-4 w-4" />
+                    {track.bpm} BPM
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Music className="h-4 w-4" />
+                    {track.key}
+                  </span>
+                </div>
+              </div>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-red-400/70 hover:text-red-400"
+                onClick={() => handleTrackRemove(index)}
+              >
+                <Trash2 className="h-5 w-5" />
               </Button>
             </div>
-          </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm text-purple-300">
+                <span>Intensity</span>
+                <span>{Math.round(track.intensity * 100)}%</span>
+              </div>
+              <Slider
+                value={[track.intensity]}
+                onValueChange={(value) => handleIntensityChange(index, value)}
+                max={1}
+                step={0.01}
+                className="w-full"
+              />
+            </div>
+
+            {playingTrack === track.file.name && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-4"
+              >
+                <div className="h-1 bg-purple-500/20 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                    animate={{
+                      width: ["0%", "100%"],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
         ))}
-      </div>
+      </AnimatePresence>
 
-      <div className="mt-8 border border-dashed border-gray-700 rounded-lg p-8">
-        <div className="text-center">
-          <Upload className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-4 text-lg font-semibold text-white">Custom Track Upload</h3>
-          <p className="mt-2 text-sm text-gray-400">
-            Upload your own music track in MP3 format
-          </p>
-          <label className="mt-4 inline-block">
-            <input
-              type="file"
-              className="hidden"
-              accept="audio/mp3"
-              onChange={handleCustomUpload}
+      {/* Duration Info */}
+      {tracks.length > 0 && (
+        <div className="bg-purple-500/5 rounded-lg p-6 border border-purple-500/20">
+          <h3 className="font-medium text-purple-200 mb-4">Music Coverage</h3>
+          <div className="space-y-4">
+            <Progress 
+              value={(getTotalMusicDuration() / videoDuration) * 100} 
+              className="h-2"
             />
-            <Button variant="outline" className="mt-4">
-              Choose File
-            </Button>
-          </label>
-          {uploadProgress > 0 && uploadProgress < 100 && (
-            <Progress value={uploadProgress} className="mt-4" />
-          )}
+            <div className="flex justify-between text-sm text-purple-300">
+              <span>{formatDuration(getTotalMusicDuration() * 60)} / {videoDuration}:00</span>
+              {getRequiredSongs() > 0 && (
+                <span className="text-yellow-400">
+                  Need {getRequiredSongs()} more song{getRequiredSongs() > 1 ? 's' : ''}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
+      {/* Navigation */}
       <div className="flex justify-end mt-8">
         <Button
-          onClick={handleContinue}
-          className="bg-purple-500 hover:bg-purple-600 text-white"
-          disabled={!selectedTrack && uploadProgress < 100}
+          onClick={() => navigate('/style')}
+          disabled={tracks.length === 0}
+          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
         >
-          Continue
+          <span>Continue</span>
+          <ChevronRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
     </div>
