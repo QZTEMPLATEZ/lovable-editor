@@ -14,21 +14,21 @@ const RECENT_PROJECTS: Project[] = [
     id: '1',
     name: 'OSÍRIZ EDITION - Highlights',
     lastModified: '2024-03-10',
-    thumbnail: '/placeholder.svg',
+    thumbnail: `https://img.youtube.com/vi/z5yG4nAb80M/maxresdefault.jpg`,
     videoUrl: 'https://www.youtube.com/watch?v=z5yG4nAb80M'
   },
   {
     id: '2',
     name: 'OSÍRIZ EDITION - Showcase',
     lastModified: '2024-03-09',
-    thumbnail: '/placeholder.svg',
+    thumbnail: `https://img.youtube.com/vi/kWTyUKEbKNk/maxresdefault.jpg`,
     videoUrl: 'https://www.youtube.com/watch?v=kWTyUKEbKNk'
   },
   {
     id: '3',
     name: 'OSÍRIZ EDITION - Demo',
     lastModified: '2024-03-08',
-    thumbnail: '/placeholder.svg',
+    thumbnail: `https://img.youtube.com/vi/QPjWfYW8LWk/maxresdefault.jpg`,
     videoUrl: 'https://www.youtube.com/watch?v=QPjWfYW8LWk'
   }
 ];
