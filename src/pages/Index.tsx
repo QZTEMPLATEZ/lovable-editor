@@ -1,121 +1,181 @@
-import { useState, useEffect } from "react";
-import VideoEditorContainer from "@/components/VideoEditorContainer";
-import IntroScreen from "@/components/IntroScreen";
-import TutorialVideo from "@/components/TutorialVideo";
-import { motion } from "framer-motion";
-import WelcomeHeader from "@/components/welcome/WelcomeHeader";
-import StepsGrid from "@/components/welcome/StepsGrid";
-import PricingPlans from "@/components/pricing/PricingPlans";
-import { useToast } from "@/components/ui/use-toast";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, Play, Clock } from 'lucide-react';
+import TutorialVideo from '../components/TutorialVideo';
+
+interface Project {
+  id: string;
+  name: string;
+  lastModified: string;
+  thumbnail: string;
+}
+
+const RECENT_PROJECTS: Project[] = [
+  {
+    id: '1',
+    name: 'Wedding Highlights',
+    lastModified: '2024-03-10',
+    thumbnail: '/placeholder.svg'
+  },
+  {
+    id: '2',
+    name: 'Anniversary Video',
+    lastModified: '2024-03-09',
+    thumbnail: '/placeholder.svg'
+  },
+  {
+    id: '3',
+    name: 'Birthday Compilation',
+    lastModified: '2024-03-08',
+    thumbnail: '/placeholder.svg'
+  }
+];
+
+const TUTORIAL_VIDEOS = [
+  {
+    id: '1',
+    title: 'Getting Started with Video Editing',
+    description: 'Learn the basics of our video editor',
+    duration: '5:30',
+    thumbnail: '/placeholder.svg'
+  },
+  {
+    id: '2',
+    title: 'Advanced Transitions',
+    description: 'Master smooth video transitions',
+    duration: '8:45',
+    thumbnail: '/placeholder.svg'
+  },
+  {
+    id: '3',
+    title: 'Audio Mixing Tips',
+    description: 'Perfect your video sound',
+    duration: '6:15',
+    thumbnail: '/placeholder.svg'
+  }
+];
 
 const Index = () => {
-  const [showIntro, setShowIntro] = useState(true);
+  const navigate = useNavigate();
   const [showTutorial, setShowTutorial] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(false);
-  const [greeting, setGreeting] = useState("Good evening");
-  const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) {
-      setGreeting("Good morning");
-    } else if (hour >= 12 && hour < 17) {
-      setGreeting("Good afternoon");
-    } else {
-      setGreeting("Good evening");
-    }
-  }, []);
-
-  const handleIntroComplete = () => {
-    setShowIntro(false);
-    setShowWelcome(true);
+  const handleNewProject = () => {
+    navigate('/duration');
   };
 
-  const handleStartTutorial = () => {
-    setShowWelcome(false);
+  const handleResumeProject = (projectId: string) => {
+    console.log('Resuming project:', projectId);
+    // Navigate to editor with project ID
+    navigate(`/editor/${projectId}`);
+  };
+
+  const handleTutorialClick = () => {
     setShowTutorial(true);
   };
 
-  const handleTutorialComplete = () => {
-    setShowTutorial(false);
-    toast({
-      title: "Welcome to the Editor",
-      description: "Let's start creating your amazing wedding video!",
-    });
-  };
-
-  const handleSkipTutorial = () => {
-    setShowWelcome(false);
-    setShowTutorial(false);
-    toast({
-      title: "Welcome to the Editor",
-      description: "Let's start creating your amazing wedding video!",
-    });
-  };
-
-  if (showIntro) {
-    return <IntroScreen onComplete={handleIntroComplete} />;
-  }
-
-  if (showWelcome) {
-    return (
-      <div className="min-h-screen bg-editor-bg flex items-center justify-center p-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-4xl w-full mx-auto text-center space-y-12"
-        >
-          <div className="space-y-6">
-            <motion.h1 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue animate-gradient"
-            >
-              TREASURE YOUR TIME
-            </motion.h1>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="space-y-4"
-            >
-              <p className="text-xl text-gray-300">
-                Create stunning wedding videos with our AI-powered editor
-              </p>
-              <p className="text-lg text-gray-400">
-                Choose your plan to get started today
-              </p>
-            </motion.div>
-          </div>
-
-          <PricingPlans />
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (showTutorial) {
-    return <TutorialVideo onComplete={handleTutorialComplete} />;
-  }
+  const filteredProjects = RECENT_PROJECTS.filter(project =>
+    project.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-editor-bg relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-editor-bg via-editor-bg/95 to-editor-bg" />
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="p-6 space-y-8">
-          <WelcomeHeader greeting={greeting} />
-          <StepsGrid />
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="bg-editor-panel/50 backdrop-blur-xl rounded-3xl border border-editor-border/50 overflow-hidden shadow-2xl"
-          >
-            <VideoEditorContainer />
-          </motion.div>
+    <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95">
+      {/* Search Section */}
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="relative mb-8">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Input
+            type="text"
+            placeholder="Search your projects..."
+            className="pl-10 bg-editor-glass-dark border-editor-border"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        {/* Main Content */}
+        <div className="space-y-12">
+          {/* New Project Button */}
+          <div className="text-center">
+            <Button
+              onClick={handleNewProject}
+              className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Start New Project
+            </Button>
+          </div>
+
+          {/* Recent Projects */}
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold text-white mb-6">Recent Projects</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProjects.map((project) => (
+                <div
+                  key={project.id}
+                  className="bg-editor-glass-dark border border-editor-border rounded-xl p-4 hover:border-editor-glow-purple/50 transition-all duration-300"
+                >
+                  <img
+                    src={project.thumbnail}
+                    alt={project.name}
+                    className="w-full h-40 object-cover rounded-lg mb-4"
+                  />
+                  <h3 className="text-lg font-medium text-white mb-2">{project.name}</h3>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-400">
+                      Last modified: {new Date(project.lastModified).toLocaleDateString()}
+                    </span>
+                    <Button
+                      onClick={() => handleResumeProject(project.id)}
+                      variant="secondary"
+                      className="bg-editor-accent hover:bg-editor-accent/80"
+                    >
+                      Resume
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tutorial Videos */}
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold text-white mb-6">Get Started with Tutorials</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {TUTORIAL_VIDEOS.map((video) => (
+                <div
+                  key={video.id}
+                  onClick={handleTutorialClick}
+                  className="bg-editor-glass-dark border border-editor-border rounded-xl p-4 cursor-pointer hover:border-editor-glow-purple/50 transition-all duration-300"
+                >
+                  <div className="relative mb-4">
+                    <img
+                      src={video.thumbnail}
+                      alt={video.title}
+                      className="w-full h-40 object-cover rounded-lg"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-lg">
+                      <Play className="w-12 h-12 text-white" />
+                    </div>
+                    <div className="absolute bottom-2 right-2 bg-black/70 px-2 py-1 rounded-md flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      <span className="text-sm">{video.duration}</span>
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-medium text-white mb-2">{video.title}</h3>
+                  <p className="text-sm text-gray-400">{video.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Tutorial Video Modal */}
+      {showTutorial && (
+        <TutorialVideo onComplete={() => setShowTutorial(false)} />
+      )}
     </div>
   );
 };
