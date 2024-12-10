@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Crown, Check, Sparkles, Info } from 'lucide-react';
+import { Bird, Check, Sparkles, Info } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -91,7 +91,7 @@ const PricingPlans = () => {
         <div className="relative space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white">MAX</h3>
-            <Crown className="w-4 h-4 text-editor-accent" />
+            <Bird className="w-4 h-4 text-yellow-400 fill-yellow-400" />
           </div>
           <PriceDisplay 
             price={69.99} 
