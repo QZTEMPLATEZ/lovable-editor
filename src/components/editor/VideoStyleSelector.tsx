@@ -1,10 +1,9 @@
 import React, { useRef, useState } from 'react';
-import { useToast } from "@/hooks/use-toast";
+import { Upload, Film, Info, Crown, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { useNavigate } from 'react-router-dom';
-import VideoStyleItem from './VideoStyleItem';
-import { Crown, Upload, Sparkles } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
 
 export type VideoStyle = 'classic' | 'cinematic' | 'documentary' | 'dynamic' | 'custom';
 
@@ -47,7 +46,6 @@ const VIDEO_STYLES = [
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(true);
@@ -96,64 +94,105 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         ))}
       </div>
 
-      {/* Reference Video Upload Banner */}
+      {/* New Reference Video Upload Banner */}
       <div className="relative mt-20 overflow-hidden">
-        {/* Background with gradient overlay */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/95 via-black/90 to-black/95" />
+        {/* Animated Background Grid */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5 animate-[pulse_4s_ease-in-out_infinite]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-editor-glow-purple/20 via-editor-glow-pink/10 to-editor-glow-blue/20" />
+        </div>
         
-        {/* Content */}
+        {/* Content Container */}
         <div className="relative py-24 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center">
+            <div className="text-center space-y-8">
               {/* Business Plan Badge */}
-              <Badge 
-                variant="secondary" 
-                className="mb-8 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 py-2 px-4 text-sm"
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
               >
-                <Crown className="w-4 h-4 mr-2" />
-                Business Plan Feature
-              </Badge>
+                <Badge 
+                  variant="secondary" 
+                  className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-300 border border-amber-500/30 py-2 px-4 text-sm backdrop-blur-sm"
+                >
+                  <Crown className="w-4 h-4 mr-2" />
+                  Business Plan Feature
+                </Badge>
+              </motion.div>
               
-              {/* Title with decorative elements */}
-              <div className="inline-flex items-center justify-center gap-4 mb-8">
-                <div className="w-12 h-0.5 bg-gradient-to-r from-yellow-500/0 via-yellow-500 to-yellow-500/0" />
-                <h2 className="text-5xl font-cinzel bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500">
-                  Reference Video
-                </h2>
-                <div className="w-12 h-0.5 bg-gradient-to-r from-yellow-500/0 via-yellow-500 to-yellow-500/0" />
-              </div>
+              {/* Title Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="space-y-6"
+              >
+                <div className="inline-flex items-center justify-center gap-4">
+                  <div className="h-px w-12 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+                  <h2 className="text-4xl md:text-5xl font-cinzel bg-clip-text text-transparent bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400">
+                    Reference Video
+                  </h2>
+                  <div className="h-px w-12 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+                </div>
 
-              <div className="max-w-3xl mx-auto">
-                <p className="text-xl text-gray-300 mb-12 font-italiana leading-relaxed">
-                  Elevate your brand consistency by uploading your own reference videos. Our AI will analyze and match your unique style across all content.
+                <p className="text-xl text-gray-300 max-w-3xl mx-auto font-italiana leading-relaxed">
+                  Elevate your brand consistency by uploading your own reference videos. 
+                  Our AI will analyze and match your unique style across all content.
                 </p>
+              </motion.div>
 
-                {/* Upload Area */}
-                <div className="group relative">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-300 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200" />
-                  <div className="relative p-12 bg-black/80 border border-yellow-500/20 rounded-2xl backdrop-blur-sm group-hover:border-yellow-500/40 transition-all duration-300">
-                    <div className="absolute top-0 right-0 m-4">
-                      <Sparkles className="w-6 h-6 text-yellow-500/70 animate-pulse" />
-                    </div>
-                    
-                    <Upload className="w-16 h-16 text-yellow-500/70 mx-auto mb-8 group-hover:scale-110 transition-transform duration-300" />
-                    <p className="text-xl text-gray-200 mb-8 font-italiana">
-                      Drop your reference video here or click to browse
-                    </p>
-                    <Button 
-                      variant="outline" 
-                      className="border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black transition-all duration-300 text-lg px-8 py-6 group-hover:scale-105"
-                      onClick={() => fileInputRef.current?.click()}
-                    >
-                      Select Video File
-                    </Button>
-                    <p className="text-sm text-gray-400 mt-6 font-italiana">
-                      Maximum file size: 500MB • Supported formats: MP4, MOV, AVI
-                    </p>
+              {/* Upload Area */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="relative group max-w-4xl mx-auto"
+              >
+                <div className="absolute -inset-1 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-1000 group-hover:duration-200" />
+                <div 
+                  className="relative p-12 bg-black/40 border border-amber-500/20 rounded-2xl backdrop-blur-sm group-hover:border-amber-500/40 transition-all duration-300"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <div className="absolute top-0 right-0 m-4">
+                    <Sparkles className="w-6 h-6 text-amber-500/70 animate-pulse" />
+                  </div>
+                  
+                  <Upload className="w-16 h-16 text-amber-500/70 mx-auto mb-8 group-hover:scale-110 transition-transform duration-300" />
+                  <p className="text-xl text-gray-200 mb-8 font-italiana">
+                    Drop your reference video here or click to browse
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    className="border-2 border-amber-500/50 text-amber-400 hover:bg-amber-500/10 transition-all duration-300 text-lg px-8 py-6 group-hover:scale-105"
+                  >
+                    Select Video File
+                  </Button>
+                  <p className="text-sm text-gray-400 mt-6 font-italiana">
+                    Maximum file size: 500MB • Supported formats: MP4, MOV, AVI
+                  </p>
+
+                  {/* Features List */}
+                  <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                    {[
+                      { title: 'Style Analysis', desc: 'AI analyzes visual style and composition' },
+                      { title: 'Smart Transitions', desc: 'Learns transition preferences and timing' },
+                      { title: 'Color Matching', desc: 'Understands your color grading and mood' }
+                    ].map((feature, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.6 + (index * 0.1) }}
+                        className="p-4 rounded-lg bg-black/20 border border-amber-500/10"
+                      >
+                        <h3 className="text-amber-400 font-semibold mb-2">{feature.title}</h3>
+                        <p className="text-gray-400 text-sm">{feature.desc}</p>
+                      </motion.div>
+                    ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
