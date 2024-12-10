@@ -89,8 +89,12 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
             loop 
             muted 
             playsInline
-            className="w-[3000px] h-[1000px] object-cover object-center"
-            style={{ filter: 'brightness(0.4)' }}
+            className="w-full h-full object-cover object-center scale-125"
+            style={{ 
+              aspectRatio: '21/9',
+              filter: 'brightness(0.4)',
+              transform: 'scale(1.2)'
+            }}
           >
             <source 
               src="https://www.dropbox.com/scl/fi/dodra593ev8sq5jsz2mxt/Insta-lili-e-Robert.mp4?rlkey=4yso253vc2lp5wcamzk6cwjnv&raw=1" 
