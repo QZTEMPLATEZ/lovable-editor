@@ -119,9 +119,11 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                         {selectedStyle.name}
                       </p>
                     )}
-                    {index === 2 && selectedMusic && selectedMusic.length > 0 && (
+                    {index === 2 && selectedMusic && (
                       <p className="text-[10px] text-purple-300 mt-1 font-medium">
-                        {selectedMusic.length} track{selectedMusic.length !== 1 ? 's' : ''}
+                        {selectedMusic.length > 0 
+                          ? `${selectedMusic.length} track${selectedMusic.length === 1 ? '' : 's'} uploaded`
+                          : 'No tracks uploaded'}
                       </p>
                     )}
                   </>
