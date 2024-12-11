@@ -14,6 +14,7 @@ import { useVideoType } from '../../contexts/VideoTypeContext';
 import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { exportProject } from '@/utils/projectExport';
 import { categorizeClip, analyzeClipSignificance } from '@/utils/videoEditingLogic';
+import ProcessStatus from './ProcessStatus';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -23,6 +24,8 @@ const FileOrganizer = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const [successCount, setSuccessCount] = useState(0);
+  const [errorCount, setErrorCount] = useState(0);
 
   const handleFilesSelected = async (newFiles: File[]) => {
     setFiles(prevFiles => [...prevFiles, ...newFiles]);
@@ -87,6 +90,8 @@ const FileOrganizer = () => {
   const processFiles = async (filesToProcess: File[]) => {
     setIsProcessing(true);
     setProgress(0);
+    setSuccessCount(0);
+    setErrorCount(0);
 
     try {
       logger.info(`Starting processing of ${filesToProcess.length} files`);
@@ -100,11 +105,14 @@ const FileOrganizer = () => {
         setAnalysisResults(prev => [...prev, result]);
 
         if (result.error) {
+          setErrorCount(prev => prev + 1);
           toast({
             variant: "destructive",
             title: "Processing Error",
             description: `Error processing ${result.file.name}: ${result.error}`
           });
+        } else {
+          setSuccessCount(prev => prev + 1);
         }
       }
 
@@ -148,11 +156,15 @@ const FileOrganizer = () => {
             isProcessing={isProcessing}
           />
 
-          <FileAnalysisStatus 
-            isProcessing={isProcessing}
-            progress={progress}
-            currentFile={currentFile}
-          />
+          {isProcessing && (
+            <ProcessStatus
+              totalFiles={files.length}
+              processedFiles={successCount + errorCount}
+              successCount={successCount}
+              errorCount={errorCount}
+              currentFile={currentFile?.name}
+            />
+          )}
 
           {analysisResults.length > 0 && (
             <>
