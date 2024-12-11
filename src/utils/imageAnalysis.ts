@@ -1,7 +1,7 @@
-import { pipeline, Pipeline } from '@huggingface/transformers';
+import { pipeline } from '@huggingface/transformers';
 import { toast } from "@/components/ui/use-toast";
 
-let classifier: Pipeline | null = null;
+let classifier: any = null;
 
 export interface ImageClassification {
   category: string;
@@ -34,8 +34,7 @@ export const initializeImageClassifier = async () => {
     if (!classifier) {
       classifier = await pipeline(
         'image-classification',
-        'microsoft/resnet-50',
-        { device: 'cpu' } // Fallback to CPU if WebGPU is not available
+        'microsoft/resnet-50'
       );
       console.log('Image classifier initialized successfully');
     }
