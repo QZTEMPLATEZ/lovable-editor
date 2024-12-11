@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { Wand2 } from 'lucide-react';
 import RecentProjects from '../components/dashboard/RecentProjects';
 import TutorialSection from '../components/dashboard/TutorialSection';
 
@@ -62,13 +63,11 @@ const Index = () => {
 
   const handleResumeProject = (project: any) => {
     console.log('Resuming project:', project);
-    // Navigate to editor with project ID
     navigate('/duration');
   };
 
   const handleTutorialClick = (videoUrl: string) => {
     console.log('Opening tutorial:', videoUrl);
-    // Implement tutorial video playback logic
   };
 
   return (
@@ -92,24 +91,27 @@ const Index = () => {
           <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
             Transform your raw footage into stunning videos with our AI-powered editor
           </p>
-          <Button
-            onClick={() => navigate('/duration')}
-            className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-            Start New Project
-          </Button>
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
+            <Button
+              onClick={() => navigate('/duration')}
+              className="relative px-8 py-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 group"
+            >
+              <Wand2 className="w-5 h-5 mr-2 animate-pulse" />
+              <span className="relative bg-clip-text">Start New Project</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl animate-pulse" />
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-16 space-y-20">
-        {/* Recent Projects Section */}
         <RecentProjects 
           projects={recentProjects}
           onResumeProject={handleResumeProject}
         />
 
-        {/* Tutorial Section */}
         <TutorialSection 
           tutorials={tutorials}
           onTutorialClick={handleTutorialClick}
