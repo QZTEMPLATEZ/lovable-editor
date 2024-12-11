@@ -7,12 +7,11 @@ export interface VideoStyle {
 }
 
 export interface MusicAnalysis {
-  key: string;  // Added this property
-  title: string;
-  artist: string;
-  duration: number;
+  key: string;
   tempo: number;
+  timeSignature: string;
+  duration: number;
+  loudness: number;
   energy: number;
   danceability: number;
-  valence: number;
 }
