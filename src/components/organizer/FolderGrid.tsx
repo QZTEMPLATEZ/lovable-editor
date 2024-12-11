@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FolderCategory } from '../../types/organizer';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Folder, FolderOpen } from 'lucide-react';
+import { cn } from "@/lib/utils";
 
 interface FolderGridProps {
   categories: FolderCategory[];
@@ -15,11 +16,15 @@ const FolderGrid: React.FC<FolderGridProps> = ({ categories }) => {
           key={category.name}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`p-4 rounded-xl bg-gradient-to-br ${category.color} border border-white/10 backdrop-blur-sm`}
+          className={cn(
+            "p-4 rounded-xl border border-white/10 backdrop-blur-sm",
+            "hover:border-white/20 transition-all duration-300",
+            category.color
+          )}
         >
           <div className="flex items-start gap-3">
             <div className="p-2 bg-white/10 rounded-lg">
-              {category.icon}
+              {category.icon || <Folder className="w-5 h-5 text-white" />}
             </div>
             <div className="flex-1">
               <h4 className="font-semibold text-white mb-1">{category.name}</h4>
@@ -30,8 +35,12 @@ const FolderGrid: React.FC<FolderGridProps> = ({ categories }) => {
                 <div className="mt-3 space-y-2">
                   <p className="text-xs font-medium text-gray-300">Subfolders:</p>
                   {category.subfolders.map((subfolder) => (
-                    <div key={subfolder.name} className="flex items-center gap-2 text-xs text-gray-400">
+                    <div 
+                      key={subfolder.name} 
+                      className="flex items-center gap-2 text-xs text-gray-400 hover:text-gray-300 transition-colors"
+                    >
                       <ChevronRight className="w-3 h-3" />
+                      <FolderOpen className="w-3 h-3" />
                       <span>{subfolder.name}</span>
                     </div>
                   ))}

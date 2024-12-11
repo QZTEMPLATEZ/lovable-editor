@@ -36,7 +36,6 @@ export const organizeFiles = (
   const categorizedFiles = new Map<string, File[]>();
   const unorganizedFiles: File[] = [];
   
-  // Initialize categories
   categories.forEach(category => {
     categorizedFiles.set(category.name, []);
   });
