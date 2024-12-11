@@ -1,5 +1,5 @@
-import { Camera, Video, Music, Image, Gift, Mic, FileVideo, Plane, Clock, Users, Film } from 'lucide-react';
-import { FolderCategory } from '../types/organizer';
+import { Camera, Video, Music, Image, Gift, Mic, FileVideo, Plane, Clock, Film } from 'lucide-react';
+import { FolderCategory } from '../types';
 
 export const FOLDER_CATEGORIES: FolderCategory[] = [
   {
@@ -25,8 +25,8 @@ export const FOLDER_CATEGORIES: FolderCategory[] = [
       },
       {
         name: 'FamilyAndFriends',
-        icon: <Users className="w-4 h-4" />,
-        description: 'Moments with family/friends',
+        icon: <Video className="w-4 h-4" />,
+        description: 'Family and friends preparation moments',
         expectedTypes: '.mp4, .mov',
         color: 'from-green-400/20 to-green-300/20'
       },
@@ -80,14 +80,14 @@ export const FOLDER_CATEGORIES: FolderCategory[] = [
         name: 'Rings',
         icon: <Gift className="w-4 h-4" />,
         description: 'Ring shots',
-        expectedTypes: '.mp4, .mov, .jpg',
+        expectedTypes: '.mp4, .mov, .jpg, .png',
         color: 'from-yellow-400/20 to-yellow-300/20'
       },
       {
         name: 'Decor',
         icon: <Image className="w-4 h-4" />,
         description: 'Decoration details',
-        expectedTypes: '.mp4, .mov, .jpg',
+        expectedTypes: '.mp4, .mov, .jpg, .png',
         color: 'from-purple-400/20 to-purple-300/20'
       }
     ]
