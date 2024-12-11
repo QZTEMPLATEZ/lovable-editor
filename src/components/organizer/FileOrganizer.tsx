@@ -8,9 +8,11 @@ import FileAnalysisStatus from './FileAnalysisStatus';
 import OrganizationResults from './OrganizationResults';
 import NavigationButtons from './NavigationButtons';
 import FolderGrid from './FolderGrid';
+import ProjectExportOptions from '../editor/ProjectExportOptions';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useVideoType } from '../../contexts/VideoTypeContext';
 import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
+import { exportProject } from '@/utils/projectExport';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -24,6 +26,45 @@ const FileOrganizer = () => {
   const handleFilesSelected = async (newFiles: File[]) => {
     setFiles(prevFiles => [...prevFiles, ...newFiles]);
     processFiles(newFiles);
+  };
+
+  const handleExport = async (format: 'premiere' | 'finalcut' | 'resolve') => {
+    try {
+      setIsProcessing(true);
+      const project = {
+        clips: analysisResults.map(result => ({
+          file: result.file,
+          category: result.category
+        })),
+        // Add any additional project data needed for export
+      };
+
+      const exportedFile = await exportProject(project, { format });
+      
+      // Create download link
+      const url = URL.createObjectURL(exportedFile);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `wedding_project.${format === 'premiere' ? 'prproj' : format === 'finalcut' ? 'fcpxml' : 'drp'}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Export Successful",
+        description: `Project file has been exported for ${format === 'premiere' ? 'Adobe Premiere Pro' : format === 'finalcut' ? 'Final Cut Pro' : 'DaVinci Resolve'}.`,
+      });
+    } catch (error) {
+      logger.error('Export error:', error);
+      toast({
+        variant: "destructive",
+        title: "Export Failed",
+        description: "There was an error exporting your project. Please try again.",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const processFiles = async (filesToProcess: File[]) => {
@@ -97,23 +138,32 @@ const FileOrganizer = () => {
           />
 
           {analysisResults.length > 0 && (
-            <OrganizationResults 
-              results={{
-                categorizedFiles: new Map(
-                  analysisResults
-                    .filter(r => !r.error)
-                    .map(r => [r.category, [r.file]])
-                ),
-                unorganizedFiles: analysisResults
-                  .filter(r => r.error)
-                  .map(r => r.file),
-                stats: {
-                  totalFiles: analysisResults.length,
-                  categorizedCount: analysisResults.filter(r => !r.error).length,
-                  uncategorizedCount: analysisResults.filter(r => r.error).length
-                }
-              }} 
-            />
+            <>
+              <OrganizationResults 
+                results={{
+                  categorizedFiles: new Map(
+                    analysisResults
+                      .filter(r => !r.error)
+                      .map(r => [r.category, [r.file]])
+                  ),
+                  unorganizedFiles: analysisResults
+                    .filter(r => r.error)
+                    .map(r => r.file),
+                  stats: {
+                    totalFiles: analysisResults.length,
+                    categorizedCount: analysisResults.filter(r => !r.error).length,
+                    uncategorizedCount: analysisResults.filter(r => r.error).length
+                  }
+                }} 
+              />
+
+              <div className="mt-8 pt-8 border-t border-purple-500/30">
+                <ProjectExportOptions
+                  onExport={handleExport}
+                  isProcessing={isProcessing}
+                />
+              </div>
+            </>
           )}
 
           <FolderGrid categories={FOLDER_CATEGORIES} />

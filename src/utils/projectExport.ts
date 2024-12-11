@@ -5,28 +5,49 @@ interface ExportOptions {
 }
 
 const generatePremiereXML = (project: EditingProject): string => {
-  // Generate Adobe Premiere Pro project XML structure
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+  return `<?xml version="1.0" encoding="UTF-8"?>
     <PremiereData Version="1">
       <Project>
         <Timeline>
           ${project.clips.map((clip, index) => `
             <ClipItem>
               <Source>${clip.file.name}</Source>
-              <Start>${clip.startTime}</Start>
-              <End>${clip.endTime}</End>
               <Type>${clip.type}</Type>
             </ClipItem>
           `).join('')}
-          <AudioTrack>
-            <Source>${project.music.file.name}</Source>
-            <Beats>${JSON.stringify(project.music.beats)}</Beats>
-          </AudioTrack>
         </Timeline>
       </Project>
     </PremiereData>`;
-  
-  return xml;
+};
+
+const generateFinalCutXML = (project: EditingProject): string => {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+    <fcpxml version="1.9">
+      <project>
+        <sequence>
+          ${project.clips.map((clip, index) => `
+            <clip>
+              <source>${clip.file.name}</source>
+              <type>${clip.type}</type>
+            </clip>
+          `).join('')}
+        </sequence>
+      </project>
+    </fcpxml>`;
+};
+
+const generateResolveXML = (project: EditingProject): string => {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+    <DaVinciResolve>
+      <Timeline>
+        ${project.clips.map((clip, index) => `
+          <Clip>
+            <Source>${clip.file.name}</Source>
+            <Type>${clip.type}</Type>
+          </Clip>
+        `).join('')}
+      </Timeline>
+    </DaVinciResolve>`;
 };
 
 export const exportProject = async (
@@ -40,12 +61,14 @@ export const exportProject = async (
       exportData = generatePremiereXML(project);
       break;
     case 'finalcut':
+      exportData = generateFinalCutXML(project);
+      break;
     case 'resolve':
-      throw new Error('Format not yet supported');
+      exportData = generateResolveXML(project);
+      break;
     default:
       throw new Error('Unsupported export format');
   }
 
-  // Create a blob with the project data
   return new Blob([exportData], { type: 'application/xml' });
 };
