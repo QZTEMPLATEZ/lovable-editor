@@ -3,6 +3,7 @@ import { OrganizationResult } from '../../types/organizer';
 import { Progress } from "@/components/ui/progress";
 import { Folder } from 'lucide-react';
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
+import { Separator } from "@/components/ui/separator";
 
 interface OrganizationResultsProps {
   results: OrganizationResult;
@@ -51,16 +52,16 @@ const OrganizationResults: React.FC<OrganizationResultsProps> = ({ results }) =>
                     <span className="text-sm text-gray-300">{files.length} files</span>
                   </div>
                   <div className="space-y-2">
-                    {files.slice(0, 3).map((file, index) => (
-                      <div key={index} className="text-xs text-gray-400 truncate">
-                        {file.name}
-                      </div>
+                    {files.map((file, index) => (
+                      <React.Fragment key={index}>
+                        <div className="text-sm text-gray-300 p-2 rounded-lg bg-black/20 hover:bg-black/30 transition-colors">
+                          {file.name}
+                        </div>
+                        {index < files.length - 1 && (
+                          <Separator className="bg-white/10" />
+                        )}
+                      </React.Fragment>
                     ))}
-                    {files.length > 3 && (
-                      <div className="text-xs text-gray-500">
-                        +{files.length - 3} more files
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
@@ -72,11 +73,16 @@ const OrganizationResults: React.FC<OrganizationResultsProps> = ({ results }) =>
       {results.unorganizedFiles.length > 0 && (
         <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/30">
           <h4 className="text-red-400 font-medium mb-2">Unorganized Files</h4>
-          <div className="space-y-1">
+          <div className="space-y-2">
             {results.unorganizedFiles.map((file, index) => (
-              <div key={index} className="text-sm text-gray-400">
-                {file.name}
-              </div>
+              <React.Fragment key={index}>
+                <div className="text-sm text-gray-300 p-2 rounded-lg bg-black/20 hover:bg-black/30 transition-colors">
+                  {file.name}
+                </div>
+                {index < results.unorganizedFiles.length - 1 && (
+                  <Separator className="bg-white/10" />
+                )}
+              </React.Fragment>
             ))}
           </div>
         </div>
