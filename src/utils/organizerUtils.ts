@@ -7,25 +7,25 @@ export const DEFAULT_CATEGORIES: OrganizationCategory[] = [
     name: 'MakingOf',
     keywords: ['making_of', 'prep', 'makeup', 'getting_ready'],
     description: 'Preparation footage including makeup, hair, and getting ready',
-    icon: () => <Camera className="w-4 h-4" />
+    icon: () => React.createElement(Camera, { className: "w-4 h-4" })
   },
   {
     name: 'Ceremony',
     keywords: ['ceremony', 'vows', 'altar', 'wedding'],
     description: 'Main ceremony footage including vows and altar moments',
-    icon: () => <Video className="w-4 h-4" />
+    icon: () => React.createElement(Video, { className: "w-4 h-4" })
   },
   {
     name: 'Audio',
     keywords: ['.wav', '.mp3', 'speech', 'music'],
     description: 'Audio files including speeches and music',
-    icon: () => <Music className="w-4 h-4" />
+    icon: () => React.createElement(Music, { className: "w-4 h-4" })
   },
   {
     name: 'Details',
     keywords: ['ring', 'invitation', 'details', 'closeup'],
     description: 'Close-up shots of details like rings and decorations',
-    icon: () => <Image className="w-4 h-4" />
+    icon: () => React.createElement(Image, { className: "w-4 h-4" })
   }
 ];
 
@@ -80,13 +80,6 @@ export const createProjectStructure = (
     binName,
     files
   }));
-
-  if (organizationResult.unorganizedFiles.length > 0) {
-    mediaBins.push({
-      binName: 'Extras',
-      files: organizationResult.unorganizedFiles
-    });
-  }
 
   return {
     projectName,

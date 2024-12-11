@@ -1,8 +1,10 @@
+import { ReactNode } from 'react';
+
 export interface OrganizationCategory {
   name: string;
   keywords: string[];
   description: string;
-  icon?: React.ReactNode;
+  icon: () => ReactNode;
 }
 
 export interface OrganizationResult {
