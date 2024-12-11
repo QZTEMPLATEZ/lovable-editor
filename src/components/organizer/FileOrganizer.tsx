@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Upload, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Upload, ArrowLeft, ArrowRight, Wand2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -9,11 +9,11 @@ import { Progress } from "@/components/ui/progress";
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import FolderGrid from './FolderGrid';
 import OrganizationResults from './OrganizationResults';
-import { OrganizationResult } from '@/types/organizer';
+import { OrganizationStats } from '@/types/organizer';
 
 const FileOrganizer = () => {
   const [files, setFiles] = useState<File[]>([]);
-  const [organizationResult, setOrganizationResult] = useState<OrganizationResult | null>(null);
+  const [organizationResult, setOrganizationResult] = useState<OrganizationStats | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ const FileOrganizer = () => {
         setProgress(prev => Math.min(prev + 10, 90));
       }, 500);
 
-      // Mock organization result for demonstration
+      // Mock organization result
       const result = {
         categorizedFiles: new Map([['MakingOf', files]]),
         unorganizedFiles: [],
@@ -64,7 +64,7 @@ const FileOrganizer = () => {
 
       clearInterval(progressInterval);
       setProgress(100);
-      setOrganizationResult(result);
+      setOrganizationResult(result.stats);
 
       toast({
         title: "Organization Complete",
@@ -98,39 +98,49 @@ const FileOrganizer = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 pointer-events-none" />
         
         <div className="relative space-y-6">
-          <Alert className="mb-6 bg-purple-500/10 border-purple-500/30">
-            <AlertDescription className="text-purple-200">
-              Upload your raw footage and let AI organize it into the following categories:
-            </AlertDescription>
-          </Alert>
+          {/* Upload Section - Moved to top */}
+          <div
+            onDrop={handleDrop}
+            onDragOver={(e) => e.preventDefault()}
+            className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300 mb-8"
+          >
+            <input
+              type="file"
+              onChange={handleFileSelect}
+              className="hidden"
+              id="file-upload"
+              multiple
+            />
+            <label htmlFor="file-upload" className="cursor-pointer">
+              <Upload className="w-12 h-12 mx-auto text-purple-400 mb-4" />
+              <p className="text-lg text-purple-200 mb-2">
+                Drag and drop your files here or click to browse
+              </p>
+              <p className="text-sm text-purple-300/70">
+                Supported formats: MP4, MOV, WAV, MP3
+              </p>
+            </label>
+          </div>
 
-          <FolderGrid categories={FOLDER_CATEGORIES} />
-
-          {!isProcessing && !organizationResult && (
-            <div
-              onDrop={handleDrop}
-              onDragOver={(e) => e.preventDefault()}
-              className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300"
-            >
-              <input
-                type="file"
-                onChange={handleFileSelect}
-                className="hidden"
-                id="file-upload"
-                multiple
-              />
-              <label htmlFor="file-upload" className="cursor-pointer">
-                <Upload className="w-12 h-12 mx-auto text-purple-400 mb-4" />
-                <p className="text-lg text-purple-200 mb-2">
-                  Drag and drop your files here or click to browse
-                </p>
-                <p className="text-sm text-purple-300/70">
-                  Supported formats: MP4, MOV, WAV, MP3
-                </p>
-              </label>
+          {/* Start Button - Added at top */}
+          {files.length > 0 && !organizationResult && (
+            <div className="flex justify-center mb-8">
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
+                <Button
+                  onClick={handleOrganize}
+                  disabled={isProcessing}
+                  className="relative px-8 py-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                >
+                  <Wand2 className="w-5 h-5 mr-2 animate-pulse" />
+                  <span className="relative">Start Organizing</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl animate-pulse" />
+                </Button>
+              </div>
             </div>
           )}
 
+          {/* Selected Files Display */}
           {files.length > 0 && !organizationResult && (
             <div className="mt-6">
               <h4 className="text-lg font-semibold mb-4">Selected Files ({files.length})</h4>
@@ -157,16 +167,16 @@ const FileOrganizer = () => {
             <OrganizationResults results={organizationResult} />
           )}
 
-          <div className="flex justify-end gap-4 mt-6">
-            {!isProcessing && !organizationResult && files.length > 0 && (
-              <Button
-                onClick={handleOrganize}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-              >
-                Start Organizing
-              </Button>
-            )}
+          {/* Folder Categories - Moved to bottom */}
+          <Alert className="mb-6 bg-purple-500/10 border-purple-500/30">
+            <AlertDescription className="text-purple-200">
+              Your files will be organized into the following categories:
+            </AlertDescription>
+          </Alert>
 
+          <FolderGrid categories={FOLDER_CATEGORIES} />
+
+          <div className="flex justify-end gap-4 mt-6">
             {organizationResult && (
               <Button
                 onClick={() => navigate('/edit')}
