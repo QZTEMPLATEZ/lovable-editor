@@ -14,7 +14,7 @@ interface StepIndicatorProps {
 
 const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
   const navigate = useNavigate();
-  const { selectedVideoType } = useVideoType();
+  const { selectedVideoType, selectedStyle } = useVideoType();
 
   const getStepPath = (index: number) => {
     switch (index) {
@@ -106,11 +106,20 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                   {step.description}
                 </p>
 
-                {/* Display selected value if available */}
-                {index <= currentStep && selectedVideoType && index === 0 && (
-                  <p className="text-[10px] text-purple-300 mt-1 font-medium">
-                    {selectedVideoType.name}
-                  </p>
+                {/* Display selected values if available */}
+                {index <= currentStep && (
+                  <>
+                    {index === 0 && selectedVideoType && (
+                      <p className="text-[10px] text-purple-300 mt-1 font-medium">
+                        {selectedVideoType.name}
+                      </p>
+                    )}
+                    {index === 1 && selectedStyle && (
+                      <p className="text-[10px] text-purple-300 mt-1 font-medium">
+                        {selectedStyle.name}
+                      </p>
+                    )}
+                  </>
                 )}
 
                 {/* Subtle hover line */}
