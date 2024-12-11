@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -6,6 +6,7 @@ import { Music, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useVideoType } from '../../contexts/VideoTypeContext';
+import { MusicAnalysis } from '@/types';
 
 const MusicSelector = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const MusicSelector = () => {
   const handleMusicSelect = (analysis: MusicAnalysis) => {
     toast({
       title: "Music Selected",
-      description: `Selected ${analysis.title}`,
+      description: `Selected track analyzed`,
     });
     navigate('/organize');
   };

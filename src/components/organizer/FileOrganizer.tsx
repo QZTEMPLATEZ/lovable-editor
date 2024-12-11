@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import { useVideoType } from '../../contexts/VideoTypeContext';
 import FolderGrid from './FolderGrid';
