@@ -105,7 +105,8 @@ const FileOrganizer = () => {
           <Alert className="mb-6 bg-purple-500/10 border-purple-500/30">
             <AlertDescription className="text-purple-200">
               Upload your raw footage and let AI organize it into meaningful categories.
-            </Alert>
+            </AlertDescription>
+          </Alert>
 
           {!isProcessing && !organizationResult && (
             <div
