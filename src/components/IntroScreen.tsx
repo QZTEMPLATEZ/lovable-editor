@@ -19,14 +19,13 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5 }}
-          className="w-64 h-64 relative rounded-lg overflow-hidden"
+          className="w-full h-full relative"
         >
           <img
-            src="/lovable-uploads/4c2b915b-2b27-4e92-8620-6538a47b76cf.png"
+            src="/lovable-uploads/70f81722-0ff6-4bd0-966a-ea1b5e93c680.png"
             alt="OSÍRIZ EDITION"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-editor-bg via-transparent to-transparent" />
         </motion.div>
 
         {/* Futuristic Loading Bar */}

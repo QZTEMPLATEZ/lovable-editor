@@ -13,13 +13,15 @@ import StepIndicator from "./components/StepIndicator";
 import { EDITOR_STEPS } from "./components/editor/EditorSteps";
 import FileOrganizer from "./components/organizer/FileOrganizer";
 import TutorialVideo from "./components/TutorialVideo";
+import IntroScreen from "./components/IntroScreen";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
   const location = useLocation();
   const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
-  const [showTutorial, setShowTutorial] = useState(true);
+  const [showIntro, setShowIntro] = useState(true);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   const getCurrentStep = () => {
     switch (location.pathname) {
@@ -34,6 +36,11 @@ const AppContent = () => {
       default:
         return -1;
     }
+  };
+
+  const handleIntroComplete = () => {
+    setShowIntro(false);
+    setShowTutorial(true);
   };
 
   const handleTutorialComplete = () => {
@@ -53,7 +60,8 @@ const AppContent = () => {
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
-        {showTutorial && <TutorialVideo onComplete={handleTutorialComplete} />}
+        {showIntro && <IntroScreen onComplete={handleIntroComplete} />}
+        {showTutorial && !showIntro && <TutorialVideo onComplete={handleTutorialComplete} />}
 
         {/* Background grid pattern */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
