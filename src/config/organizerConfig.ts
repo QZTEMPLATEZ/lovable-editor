@@ -3,7 +3,7 @@ export const ORGANIZER_CONFIG = {
     confidenceThreshold: 0.7,
     maxConcurrentProcessing: 3,
     supportedFileTypes: ['image/jpeg', 'image/png', 'video/mp4', 'video/quicktime'],
-    maxFileSize: 100 * 1024 * 1024, // 100MB
+    maxFileSize: 3 * 1024 * 1024 * 1024, // 3GB
   },
   ui: {
     gridColumns: {

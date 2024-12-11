@@ -1,7 +1,7 @@
 export const APP_CONFIG = {
   analysis: {
     confidenceThreshold: 0.3,
-    maxFileSize: 100 * 1024 * 1024, // 100MB
+    maxFileSize: 3 * 1024 * 1024 * 1024, // 3GB
     supportedFileTypes: ['image/jpeg', 'image/png', 'video/mp4', 'video/quicktime'],
   },
   music: {
@@ -20,7 +20,7 @@ export const APP_CONFIG = {
 };
 
 export const ERROR_MESSAGES = {
-  fileSize: 'File size exceeds the maximum limit',
+  fileSize: 'File size exceeds the maximum limit of 3GB',
   fileType: 'Unsupported file type',
   processing: 'Error processing file',
   upload: 'Error uploading file',
