@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import FolderGrid from './FolderGrid';
 import OrganizationResults from './OrganizationResults';
-import { OrganizationStats } from '@/types/organizer';
+import { OrganizationResult, OrganizationStats } from '@/types';
 
 const FileOrganizer = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -51,7 +51,7 @@ const FileOrganizer = () => {
         setProgress(prev => Math.min(prev + 10, 90));
       }, 500);
 
-      // Mock organization result with proper type
+      // Mock organization result
       const result: OrganizationResult = {
         categorizedFiles: new Map([['MakingOf', files]]),
         unorganizedFiles: [],
