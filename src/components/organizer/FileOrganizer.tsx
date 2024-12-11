@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/toast';
 import { logger } from '../../utils/logger';
 import { fileAnalysisService, AnalysisResult } from '../../services/FileAnalysisService';
 import { ORGANIZER_CONFIG } from '../../config/organizerConfig';
@@ -36,7 +36,15 @@ const FileOrganizer = () => {
           file: result.file,
           category: result.category
         })),
-        // Add any additional project data needed for export
+        // Add required properties for EditingProject type
+        music: {
+          file: new File([], "placeholder.mp3"), // Placeholder music file
+          beats: [] // Empty beats array as placeholder
+        },
+        duration: {
+          min: selectedVideoType?.min || 3,
+          max: selectedVideoType?.max || 6
+        }
       };
 
       const exportedFile = await exportProject(project, { format });
