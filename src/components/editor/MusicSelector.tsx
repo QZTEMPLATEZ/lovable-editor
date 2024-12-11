@@ -129,29 +129,6 @@ const MusicSelector = () => {
           Upload your music files to create a synchronized video edit. We'll analyze the beats and tempo automatically.
         </AlertDescription>
       </Alert>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-        {/* Example tracks section - kept for reference */}
-        <div
-          className="bg-editor-panel p-4 rounded-lg border border-purple-500/20"
-        >
-          <h3 className="text-lg font-semibold mb-2">Example Track</h3>
-          <p className="text-sm text-gray-400">Duration: 3:45</p>
-          <p className="text-sm text-gray-400">BPM: 128</p>
-          <Button
-            onClick={() => handleMusicSelect({
-              id: '1',
-              title: 'Example Track',
-              duration: '3:45',
-              bpm: 128
-            })}
-            className="mt-4"
-          >
-            <Music className="w-4 h-4 mr-2" />
-            Select Track
-          </Button>
-        </div>
-      </div>
     </div>
   );
 };
