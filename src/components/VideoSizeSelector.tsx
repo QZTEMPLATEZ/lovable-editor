@@ -115,60 +115,60 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
         </div>
       </div>
 
-      {/* Duration Options Grid */}
-      <div className="container mx-auto px-4 py-16 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {VIDEO_SIZES.map((size) => {
-            const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
-            
-            return (
-              <motion.div
-                key={`${size.min}-${size.max}`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={`relative p-6 rounded-xl border transition-all duration-300 cursor-pointer
-                  ${isSelected 
-                    ? 'border-editor-glow-purple shadow-lg shadow-editor-glow-purple/20 bg-editor-glow-purple/10' 
-                    : 'border-gray-700 bg-gray-800/50 hover:border-editor-glow-purple/50'
-                  }`}
-                onClick={() => handleSizeSelect(size)}
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-base font-medium text-white mb-1">{size.name}</h3>
-                    <div className="flex items-center gap-2 text-xs text-gray-300">
+      {/* Duration Options in Banner Layout */}
+      <div className="w-full">
+        {VIDEO_SIZES.map((size) => {
+          const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
+          
+          return (
+            <motion.div
+              key={`${size.min}-${size.max}`}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className={`relative w-full p-8 border-b transition-all duration-300 cursor-pointer
+                ${isSelected 
+                  ? 'border-editor-glow-purple bg-editor-glow-purple/10' 
+                  : 'border-gray-700/30 hover:bg-editor-glow-purple/5'
+                }`}
+              onClick={() => handleSizeSelect(size)}
+            >
+              <div className="container mx-auto max-w-[2560px]">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-4 mb-3">
+                      <h3 className="text-xl font-medium text-white">{size.name}</h3>
+                      <div className="flex items-center gap-2 text-sm text-gray-300">
+                        <Clock className="w-4 h-4" />
+                        <span>{size.label}</span>
+                      </div>
+                      <PlanBadge tier={size.tier} />
+                    </div>
+
+                    <p className="text-sm text-gray-400 mb-4 max-w-2xl whitespace-pre-line">
+                      {size.description}
+                    </p>
+
+                    <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg inline-block">
                       <Clock className="w-3 h-3" />
-                      <span>{size.label}</span>
+                      <span>Recommended Tracks: {size.recommendedTracks}</span>
                     </div>
                   </div>
-                  <PlanBadge tier={size.tier} />
-                </div>
 
-                <p className="text-xs text-gray-400 mb-4 whitespace-pre-line">
-                  {size.description}
-                </p>
-
-                <div className="flex items-center gap-2 text-xs text-purple-300 bg-purple-500/10 p-2 rounded-lg">
-                  <Clock className="w-3 h-3" />
-                  <span>Recommended Tracks: {size.recommendedTracks}</span>
-                </div>
-
-                <AnimatePresence>
                   {isSelected && (
                     <motion.div
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0, opacity: 0 }}
-                      className="absolute -top-2 -right-2 bg-editor-glow-purple rounded-full p-2 shadow-lg shadow-editor-glow-purple/50"
+                      className="bg-editor-glow-purple rounded-full p-3"
                     >
-                      <Check className="w-3 h-3 text-white" />
+                      <Check className="w-5 h-5 text-white" />
                     </motion.div>
                   )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
-        </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
