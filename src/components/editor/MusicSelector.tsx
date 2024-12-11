@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -59,10 +59,14 @@ const MusicSelector = () => {
 
     validFiles.forEach(file => {
       const analysis: MusicAnalysis = {
-        id: Math.random().toString(),
-        title: file.name,
-        duration: '0:00', // You would calculate this from the actual file
-        bpm: 120, // You would analyze this from the actual file
+        bpm: 120, // Default BPM value as number
+        key: 'C',
+        tempo: 120,
+        timeSignature: '4/4',
+        duration: 0, // Changed from string to number
+        loudness: -10,
+        energy: 0.8,
+        danceability: 0.7
       };
       handleMusicSelect(analysis);
     });
