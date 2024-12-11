@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
-import { Clock, Check } from 'lucide-react';
+import { Clock, Check, ChevronLeft } from 'lucide-react';
 import { VideoSizeRange } from '../types';
 import { useVideoType } from '../contexts/VideoTypeContext';
+import { Button } from './ui/button';
 
 const VIDEO_SIZES: VideoSizeRange[] = [
   {
@@ -85,6 +86,15 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
     <div className="min-h-screen">
       {/* Hero Section with full-width layout optimized for 21:9 */}
       <div className="relative h-[40vh] lg:h-[50vh] bg-[#0A0A0A] overflow-hidden">
+        {/* Back button */}
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/')}
+          className="absolute top-8 left-8 z-10 text-white hover:bg-white/10 transition-colors"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </Button>
+
         {/* Background video */}
         <div className="absolute inset-0 w-full h-full">
           <video
