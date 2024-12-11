@@ -1,30 +1,31 @@
 import { OrganizationCategory, OrganizationResult, ProjectStructure } from '../types/organizer';
-import { Camera, Video, Music, Image, FileVideo } from 'lucide-react';
+import { Camera, Video, Music, Image } from 'lucide-react';
+import React from 'react';
 
 export const DEFAULT_CATEGORIES: OrganizationCategory[] = [
   {
     name: 'MakingOf',
     keywords: ['making_of', 'prep', 'makeup', 'getting_ready'],
     description: 'Preparation footage including makeup, hair, and getting ready',
-    icon: <Camera className="w-4 h-4" />
+    icon: () => <Camera className="w-4 h-4" />
   },
   {
     name: 'Ceremony',
     keywords: ['ceremony', 'vows', 'altar', 'wedding'],
     description: 'Main ceremony footage including vows and altar moments',
-    icon: <Video className="w-4 h-4" />
+    icon: () => <Video className="w-4 h-4" />
   },
   {
     name: 'Audio',
     keywords: ['.wav', '.mp3', 'speech', 'music'],
     description: 'Audio files including speeches and music',
-    icon: <Music className="w-4 h-4" />
+    icon: () => <Music className="w-4 h-4" />
   },
   {
     name: 'Details',
     keywords: ['ring', 'invitation', 'details', 'closeup'],
     description: 'Close-up shots of details like rings and decorations',
-    icon: <Image className="w-4 h-4" />
+    icon: () => <Image className="w-4 h-4" />
   }
 ];
 
