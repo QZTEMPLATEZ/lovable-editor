@@ -1,17 +1,77 @@
 import React from 'react';
 import { VideoSizeRange } from '../types';
 import DurationGrid from './editor/DurationGrid';
-import DurationCard from './editor/DurationCard';
+import { useNavigate } from 'react-router-dom';
 
 interface VideoSizeSelectorProps {
   selectedSize: VideoSizeRange | null;
   onSizeSelect: (size: VideoSizeRange) => void;
 }
 
+const VIDEO_DURATIONS: VideoSizeRange[] = [
+  {
+    min: 3,
+    max: 5,
+    name: "Trailer",
+    label: "3-5 minutes",
+    description: "Dynamic event summary\n• Best moment highlights\n• Engaging transitions\n• Emotional storytelling\n• Professional pacing\n• Perfect for sharing",
+    icon: null,
+    recommendedTracks: 2,
+    tier: 'pro'
+  },
+  {
+    min: 0.5,
+    max: 1.5,
+    name: "Social",
+    label: "30s - 1:30min",
+    description: "Quick, high-energy edit for social media\n• Perfect for Instagram/TikTok\n• Fast-paced highlights\n• Key moments only\n• Music-driven edits\n• Vertical format ready",
+    icon: null,
+    recommendedTracks: 1,
+    tier: 'basic'
+  },
+  {
+    min: 8,
+    max: 12,
+    name: "Short Film",
+    label: "8-12 minutes",
+    description: "Detailed artistic edit",
+    icon: null,
+    recommendedTracks: 3,
+    tier: 'pro'
+  },
+  {
+    min: 15,
+    max: 20,
+    name: "Wedding Movie",
+    label: "15-20 minutes",
+    description: "Comprehensive coverage",
+    icon: null,
+    recommendedTracks: 4,
+    tier: 'business'
+  },
+  {
+    min: 30,
+    max: 40,
+    name: "Cinematic Wedding",
+    label: "30-40 minutes",
+    description: "Full cinematic experience",
+    icon: null,
+    recommendedTracks: 6,
+    tier: 'business'
+  }
+];
+
 const VideoSizeSelector: React.FC<VideoSizeSelectorProps> = ({
   selectedSize,
   onSizeSelect,
 }) => {
+  const navigate = useNavigate();
+
+  const handleDurationSelect = (duration: VideoSizeRange) => {
+    onSizeSelect(duration);
+    navigate('/style');
+  };
+
   return (
     <div className="w-full">
       {/* Banner with 21:9 aspect ratio */}
@@ -30,29 +90,12 @@ const VideoSizeSelector: React.FC<VideoSizeSelectorProps> = ({
         </div>
       </div>
 
-      <DurationGrid>
-        <DurationCard
-          title="Short Form"
-          description="Perfect for social media"
-          duration="15-60s"
-          isSelected={selectedSize === 'short'}
-          onClick={() => onSizeSelect('short')}
-        />
-        <DurationCard
-          title="Medium Form"
-          description="Ideal for detailed content"
-          duration="1-5min"
-          isSelected={selectedSize === 'medium'}
-          onClick={() => onSizeSelect('medium')}
-        />
-        <DurationCard
-          title="Long Form"
-          description="Best for in-depth videos"
-          duration="5-15min"
-          isSelected={selectedSize === 'long'}
-          onClick={() => onSizeSelect('long')}
-        />
-      </DurationGrid>
+      <DurationGrid
+        durations={VIDEO_DURATIONS}
+        selectedDuration={selectedSize}
+        userTier="pro"
+        onDurationSelect={handleDurationSelect}
+      />
     </div>
   );
 };
