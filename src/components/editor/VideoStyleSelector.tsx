@@ -40,20 +40,8 @@ const VideoStyleSelector = ({
     <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-[#0A0A0A]">
       {/* Hero Section */}
       <div className="relative h-[50vh] bg-[#0A0A0A] overflow-hidden">
-        {/* Background video */}
-        <div className="absolute inset-0 w-full h-full">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-40"
-          >
-            <source src="https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1" type="video/mp4" />
-          </video>
-          {/* Darker gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/90 to-black/95" />
-        </div>
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-black to-black/95" />
         
         {/* Content container */}
         <div className="relative container mx-auto h-full max-w-[2560px] px-4 lg:px-8">
