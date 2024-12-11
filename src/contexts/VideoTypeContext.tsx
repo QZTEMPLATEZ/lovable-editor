@@ -7,6 +7,8 @@ interface VideoTypeContextType {
   setSelectedVideoType: (type: VideoSizeRange | null) => void;
   selectedStyle: VideoStyle | null;
   setSelectedStyle: (style: VideoStyle | null) => void;
+  selectedMusic: File[];
+  setSelectedMusic: (music: File[]) => void;
 }
 
 const VideoTypeContext = createContext<VideoTypeContextType | undefined>(undefined);
@@ -14,13 +16,16 @@ const VideoTypeContext = createContext<VideoTypeContextType | undefined>(undefin
 export const VideoTypeProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedVideoType, setSelectedVideoType] = useState<VideoSizeRange | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
+  const [selectedMusic, setSelectedMusic] = useState<File[]>([]);
 
   return (
     <VideoTypeContext.Provider value={{ 
       selectedVideoType, 
       setSelectedVideoType,
       selectedStyle,
-      setSelectedStyle
+      setSelectedStyle,
+      selectedMusic,
+      setSelectedMusic
     }}>
       {children}
     </VideoTypeContext.Provider>
@@ -34,3 +39,5 @@ export const useVideoType = () => {
   }
   return context;
 };
+
+export default VideoTypeContext;
