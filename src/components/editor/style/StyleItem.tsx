@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { VideoStyle } from '../../../types/video';
 import StylePreviewVideo from './StylePreviewVideo';
@@ -13,20 +13,16 @@ interface StyleItemProps {
     previewVideo: string;
     features: string[];
   };
-  isHovered: boolean;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
   onStyleSelect: (style: VideoStyle) => void;
 }
 
 const StyleItem = ({
   style,
-  isHovered,
-  onMouseEnter,
-  onMouseLeave,
   onStyleSelect,
 }: StyleItemProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   const handleVideoPlay = useCallback(async () => {
     if (videoRef.current) {
@@ -34,20 +30,21 @@ const StyleItem = ({
         await videoRef.current.play();
       } catch (error) {
         console.log('Video autoplay failed:', error);
+        setVideoError(true);
       }
     }
   }, []);
 
   useEffect(() => {
     if (videoRef.current) {
-      if (isHovered) {
+      if (isHovered && !videoError) {
         handleVideoPlay();
       } else {
         videoRef.current.pause();
         videoRef.current.currentTime = 0;
       }
     }
-  }, [isHovered, handleVideoPlay]);
+  }, [isHovered, handleVideoPlay, videoError]);
 
   const handleSelect = () => {
     const videoStyle: VideoStyle = {
@@ -65,8 +62,8 @@ const StyleItem = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="relative w-full [aspect-ratio:3.84/1] group cursor-pointer bg-editor-panel isolate overflow-hidden"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       onClick={handleSelect}
     >
       <div className="absolute inset-0 z-[1] bg-editor-panel" />
@@ -76,6 +73,7 @@ const StyleItem = ({
         videoUrl={style.previewVideo}
         isHovered={isHovered}
         videoRef={videoRef}
+        onError={() => setVideoError(true)}
       />
       
       <div className="absolute inset-0 z-[4] bg-gradient-to-r from-black/40 via-transparent to-black/40" />
