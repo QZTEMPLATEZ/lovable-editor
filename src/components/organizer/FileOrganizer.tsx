@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useToast } from '@/components/ui/toast';
+import { useToast } from '@/hooks/use-toast';
 import { logger } from '../../utils/logger';
 import { fileAnalysisService, AnalysisResult } from '../../services/FileAnalysisService';
 import { ORGANIZER_CONFIG } from '../../config/organizerConfig';
@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useVideoType } from '../../contexts/VideoTypeContext';
 import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { exportProject } from '@/utils/projectExport';
+import { categorizeClip, analyzeClipSignificance } from '@/utils/videoEditingLogic';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -31,15 +32,23 @@ const FileOrganizer = () => {
   const handleExport = async (format: 'premiere' | 'finalcut' | 'resolve') => {
     try {
       setIsProcessing(true);
-      const project = {
-        clips: analysisResults.map(result => ({
+      
+      // Process clips with required properties for EditingProject type
+      const processedClips = await Promise.all(
+        analysisResults.map(async result => ({
           file: result.file,
-          category: result.category
-        })),
-        // Add required properties for EditingProject type
+          type: categorizeClip(result.file.name),
+          startTime: 0,
+          endTime: 30, // Default 30-second segments
+          significance: await analyzeClipSignificance(result.file)
+        }))
+      );
+
+      const project = {
+        clips: processedClips,
         music: {
-          file: new File([], "placeholder.mp3"), // Placeholder music file
-          beats: [] // Empty beats array as placeholder
+          file: new File([], "placeholder.mp3"),
+          beats: []
         },
         duration: {
           min: selectedVideoType?.min || 3,
