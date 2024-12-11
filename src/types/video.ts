@@ -1,13 +1,15 @@
-export interface VideoStyle {
-  id: string;
-  name: string;
+export type VideoStyle = 'cinematic' | 'documentary' | 'classic' | 'dynamic';
+
+export interface VideoStyleData {
+  id: VideoStyle;
+  title: string;
   description: string;
-  previewUrl?: string;
-  features?: string[];
+  previewVideo: string;
+  features: string[];
 }
 
 export interface MusicAnalysis {
-  key: string;           // Added the missing key property
+  key: string;
   bpm: number;
   duration: number;
   energy?: number;

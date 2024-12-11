@@ -5,7 +5,7 @@ import { VideoStyle } from '@/types/video';
 import { VIDEO_STYLES } from '@/constants/videoStyles';
 
 interface StyleGridProps {
-  onStyleSelect: (styleId: string) => void;
+  onStyleSelect: (style: VideoStyle) => void;
 }
 
 const StyleGrid = ({ onStyleSelect }: StyleGridProps) => {

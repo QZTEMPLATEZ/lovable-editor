@@ -1,15 +1,9 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { VideoStyle } from '@/types/video';
+import { VideoStyle, VideoStyleData } from '@/types/video';
 
 interface VideoStyleItemProps {
-  style: {
-    id: string;
-    title: string;
-    description: string;
-    previewVideo: string;
-    darkMode?: boolean;
-  };
+  style: VideoStyleData;
   isHovered: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
@@ -53,7 +47,7 @@ const VideoStyleItem = ({
       className="relative w-full [aspect-ratio:3.84/1] group cursor-pointer bg-editor-panel"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onClick={() => onStyleSelect(style.id as VideoStyle)}
+      onClick={() => onStyleSelect(style.id)}
     >
       <motion.div 
         className="absolute inset-0 bg-editor-panel z-[1]"
