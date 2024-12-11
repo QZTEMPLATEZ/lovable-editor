@@ -1,19 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Music, Clock, AlertCircle, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Slider } from "@/components/ui/slider";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ChevronRight } from 'lucide-react';
 import { detectBeats, analyzeMusicTrack } from '@/utils/audioProcessing';
 import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
-import TrackAnalysis from './music/TrackAnalysis';
-import TrackControls from './music/TrackControls';
+import TrackList from './music/TrackList';
 import UploadSection from './music/UploadSection';
-import WaveformAnimation from './music/WaveformAnimation';
 import MusicHeader from './music/MusicHeader';
+import BackButton from './navigation/BackButton';
 
 interface Track {
   file: File;
@@ -161,83 +157,25 @@ const MusicSelector = () => {
       <div className="absolute inset-0 backdrop-blur-sm bg-[#0A0A0A]/80" />
       
       <div className="relative max-w-4xl mx-auto space-y-8 p-6">
+        <BackButton />
         <MusicHeader />
 
         {/* Upload Section with updated styling */}
         <div className="relative glass-panel rounded-2xl p-6 border border-editor-border/30">
-          <WaveformAnimation />
           <UploadSection onUpload={handleFileUpload} />
         </div>
 
-        {/* Tracks List with updated styling */}
-        <AnimatePresence>
-          {tracks.map((track, index) => (
-            <motion.div
-              key={track.file.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="glass-panel rounded-2xl p-6 border border-editor-border/30 backdrop-blur-sm"
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <TrackControls 
-                  isPlaying={playingTrack === track.file.name}
-                  onPlay={() => handleTrackPlay(track.file.name)}
-                  onRemove={() => handleTrackRemove(index)}
-                />
+        {/* Tracks List */}
+        <TrackList
+          tracks={tracks}
+          playingTrack={playingTrack}
+          isAnalyzing={isAnalyzing}
+          onTogglePlay={handleTrackPlay}
+          onRemoveTrack={handleTrackRemove}
+          onIntensityChange={handleIntensityChange}
+        />
 
-                <div className="flex-1">
-                  <h3 className="font-medium text-editor-glow-purple">{track.file.name}</h3>
-                  <div className="flex items-center gap-4 text-sm text-editor-glow-purple/70">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {track.duration}
-                    </span>
-                    <TrackAnalysis bpm={track.bpm || 0} key={track.key || ''} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm text-editor-glow-purple">
-                  <span>Intensity</span>
-                  <span>{Math.round(track.intensity * 100)}%</span>
-                </div>
-                <Slider
-                  value={[track.intensity]}
-                  onValueChange={(value) => handleIntensityChange(index, value)}
-                  max={1}
-                  step={0.01}
-                  className="w-full"
-                />
-              </div>
-
-              {playingTrack === track.file.name && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-4"
-                >
-                  <div className="h-1 bg-editor-glow-purple/20 rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink"
-                      animate={{
-                        width: ["0%", "100%"],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </motion.div>
-          ))}
-        </AnimatePresence>
-
-        {/* Duration Info with updated styling */}
+        {/* Duration Info */}
         {tracks.length > 0 && (
           <div className="glass-panel rounded-2xl p-6 border border-editor-border/30 backdrop-blur-sm">
             <h3 className="font-medium text-editor-glow-purple mb-4">Music Coverage</h3>

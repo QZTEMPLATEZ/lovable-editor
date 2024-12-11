@@ -2,22 +2,33 @@ import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import TrackItem from './TrackItem';
 
+interface Track {
+  file: File;
+  duration: string;
+  bpm?: number;
+  key?: string;
+  intensity: number;
+  audioElement?: HTMLAudioElement;
+}
+
 interface TrackListProps {
-  selectedMusic: File[];
+  tracks: Track[];
   playingTrack: string | null;
   isAnalyzing: boolean;
   onTogglePlay: (fileName: string) => void;
   onRemoveTrack: (index: number) => void;
+  onIntensityChange: (index: number, value: number[]) => void;
 }
 
 const TrackList = ({
-  selectedMusic,
+  tracks,
   playingTrack,
   isAnalyzing,
   onTogglePlay,
-  onRemoveTrack
+  onRemoveTrack,
+  onIntensityChange
 }: TrackListProps) => {
-  if (selectedMusic.length === 0) return null;
+  if (tracks.length === 0) return null;
 
   return (
     <AnimatePresence>
@@ -27,14 +38,15 @@ const TrackList = ({
         exit={{ opacity: 0, y: -20 }}
         className="mt-6 grid grid-cols-1 gap-4"
       >
-        {selectedMusic.map((file, index) => (
+        {tracks.map((track, index) => (
           <TrackItem
-            key={file.name}
-            file={file}
-            isPlaying={playingTrack === file.name}
+            key={track.file.name}
+            track={track}
+            isPlaying={playingTrack === track.file.name}
             isAnalyzing={isAnalyzing}
             onTogglePlay={onTogglePlay}
-            onRemove={onRemoveTrack}
+            onRemove={() => onRemoveTrack(index)}
+            onIntensityChange={(value) => onIntensityChange(index, value)}
             index={index}
           />
         ))}
