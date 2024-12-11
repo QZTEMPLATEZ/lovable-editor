@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { useToast } from "@/components/ui/use-toast";
-import { Button } from "@/components/ui/button";
+import { useVideoType } from '../../contexts/VideoTypeContext';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
-import { useVideoType } from '../../contexts/VideoTypeContext';
+import { OrganizationResult } from '@/types';
+import { initializeImageClassifier, analyzeImage } from '@/utils/imageAnalysis';
+import { APP_CONFIG, ERROR_MESSAGES } from '@/config/appConfig';
 import FolderGrid from './FolderGrid';
 import OrganizationResults from './OrganizationResults';
 import FileUploadZone from './FileUploadZone';
-import OrganizationProgress from './OrganizationProgress';
 import NavigationButtons from './NavigationButtons';
 import FileAnalysisHandler from './analysis/FileAnalysisHandler';
-import { OrganizationResult } from '@/types';
-import { initializeImageClassifier, analyzeImage } from '@/utils/imageAnalysis';
-import { Play } from 'lucide-react';
+import FileProcessing from './FileProcessing';
+import FileAnalysisStatus from './FileAnalysisStatus';
 
 const FileOrganizer = () => {
   const { selectedVideoType } = useVideoType();
@@ -20,35 +19,19 @@ const FileOrganizer = () => {
   const [organizationResult, setOrganizationResult] = useState<OrganizationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [isClassifierReady, setIsClassifierReady] = useState(false);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [unrecognizedFiles, setUnrecognizedFiles] = useState<File[]>([]);
-  const { toast } = useToast();
 
   const handleFileSelect = (newFiles: File[]) => {
     setFiles(prevFiles => [...prevFiles, ...newFiles]);
-    toast({
-      title: "Files Selected",
-      description: `${newFiles.length} files have been added for organization.`,
-    });
   };
 
   const processFiles = async () => {
-    if (!files || files.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "No files selected",
-        description: "Please select files to analyze.",
-      });
-      return;
-    }
-
     setIsProcessing(true);
     setProgress(0);
     const categorizedFiles = new Map<string, File[]>();
     const tempUnrecognizedFiles: File[] = [];
     
-    // Initialize categories
     FOLDER_CATEGORIES.forEach(category => {
       categorizedFiles.set(category.name, []);
     });
@@ -57,28 +40,19 @@ const FileOrganizer = () => {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         setCurrentFile(file);
-        console.log(`Processing file ${i + 1}/${files.length}: ${file.name}`);
-
-        if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
-          try {
-            const analysis = await analyzeImage(file);
-            console.log(`Analysis result for ${file.name}:`, analysis);
-
-            if (analysis.category !== 'Extras' && analysis.confidence > 0.3) {
-              const categoryFiles = categorizedFiles.get(analysis.category) || [];
-              categoryFiles.push(file);
-              categorizedFiles.set(analysis.category, categoryFiles);
-              console.log(`Categorized ${file.name} as ${analysis.category} with confidence ${analysis.confidence}`);
-            } else {
-              console.log(`File ${file.name} not confidently categorized (confidence: ${analysis.confidence})`);
-              tempUnrecognizedFiles.push(file);
-            }
-          } catch (error) {
-            console.error(`Error analyzing file ${file.name}:`, error);
+        
+        if (APP_CONFIG.analysis.supportedFileTypes.includes(file.type)) {
+          const analysis = await analyzeImage(file);
+          
+          if (analysis.category !== APP_CONFIG.organization.uncategorizedLabel && 
+              analysis.confidence > APP_CONFIG.analysis.confidenceThreshold) {
+            const categoryFiles = categorizedFiles.get(analysis.category) || [];
+            categoryFiles.push(file);
+            categorizedFiles.set(analysis.category, categoryFiles);
+          } else {
             tempUnrecognizedFiles.push(file);
           }
         } else {
-          console.log(`Skipping non-image/video file: ${file.name}`);
           tempUnrecognizedFiles.push(file);
         }
 
@@ -86,8 +60,7 @@ const FileOrganizer = () => {
       }
 
       setUnrecognizedFiles(tempUnrecognizedFiles);
-
-      const result: OrganizationResult = {
+      setOrganizationResult({
         categorizedFiles,
         unorganizedFiles: tempUnrecognizedFiles,
         stats: {
@@ -95,22 +68,8 @@ const FileOrganizer = () => {
           categorizedCount: files.length - tempUnrecognizedFiles.length,
           uncategorizedCount: tempUnrecognizedFiles.length
         }
-      };
+      });
 
-      setOrganizationResult(result);
-      console.log('Organization complete:', result.stats);
-      
-      toast({
-        title: "Organization Complete",
-        description: `Successfully organized ${result.stats.categorizedCount} files.`,
-      });
-    } catch (error) {
-      console.error('Error during organization:', error);
-      toast({
-        variant: "destructive",
-        title: "Organization Failed",
-        description: "An error occurred while organizing files.",
-      });
     } finally {
       setIsProcessing(false);
       setProgress(100);
@@ -137,11 +96,6 @@ const FileOrganizer = () => {
         }
       });
     }
-
-    toast({
-      title: "File Categorized",
-      description: `${file.name} has been moved to ${category}`,
-    });
   };
 
   return (
@@ -174,21 +128,16 @@ const FileOrganizer = () => {
             }}
           />
 
-          {files.length > 0 && !isProcessing && (
-            <div className="flex justify-center">
-              <Button
-                onClick={processFiles}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-              >
-                <Play className="w-4 h-4 mr-2" />
-                Start Organization Process
-              </Button>
-            </div>
-          )}
+          <FileProcessing 
+            files={files}
+            isProcessing={isProcessing}
+            onProcessStart={processFiles}
+          />
 
-          <OrganizationProgress 
+          <FileAnalysisStatus 
             isProcessing={isProcessing}
             progress={progress}
+            currentFile={currentFile}
           />
 
           <FileAnalysisHandler 

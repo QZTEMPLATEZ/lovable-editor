@@ -7,12 +7,11 @@ import MusicUploadSection from './music/MusicUploadSection';
 import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
 import { detectBeats } from '@/utils/audioProcessing';
 import { useNavigate } from 'react-router-dom';
+import { APP_CONFIG, ERROR_MESSAGES } from '@/config/appConfig';
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
 }
-
-const MAX_TRACKS = 10;
 
 const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [selectedMusic, setSelectedMusic] = useState<File[]>([]);
@@ -28,11 +27,11 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
 
     const newFiles = Array.from(files).filter(validateAudioFile);
     
-    if (selectedMusic.length + newFiles.length > MAX_TRACKS) {
+    if (selectedMusic.length + newFiles.length > APP_CONFIG.music.maxTracks) {
       toast({
         variant: "destructive",
         title: "Too many tracks",
-        description: `Maximum ${MAX_TRACKS} tracks allowed`,
+        description: `Maximum ${APP_CONFIG.music.maxTracks} tracks allowed`,
       });
       return;
     }
@@ -135,13 +134,13 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
               </h3>
             </div>
             <span className="text-sm text-purple-300">
-              {selectedMusic.length} / {MAX_TRACKS} tracks
+              {selectedMusic.length} / {APP_CONFIG.music.maxTracks} tracks
             </span>
           </div>
 
           <MusicUploadSection 
             onMusicUpload={handleMusicUpload}
-            maxTracks={MAX_TRACKS}
+            maxTracks={APP_CONFIG.music.maxTracks}
           />
 
           <TrackList
