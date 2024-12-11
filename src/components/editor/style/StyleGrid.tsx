@@ -16,9 +16,6 @@ const StyleGrid = ({ onStyleSelect }: StyleGridProps) => {
           <StyleItem
             key={style.id}
             style={style}
-            isHovered={false}
-            onMouseEnter={() => {}}
-            onMouseLeave={() => {}}
             onStyleSelect={onStyleSelect}
           />
         ))}
