@@ -11,6 +11,7 @@ import { VideoStyle } from "./types/video";
 import PricingPlans from "./components/pricing/PricingPlans";
 import StepIndicator from "./components/StepIndicator";
 import { EDITOR_STEPS } from "./components/editor/EditorSteps";
+import FileOrganizer from "./components/organizer/FileOrganizer";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,8 @@ const AppContent = () => {
         return 1;
       case '/music':
         return 2;
+      case '/organize':
+        return 3;
       default:
         return -1;
     }
@@ -71,6 +74,10 @@ const AppContent = () => {
             <Route 
               path="/music" 
               element={<MusicSelector />}
+            />
+            <Route 
+              path="/organize" 
+              element={<FileOrganizer />}
             />
           </Routes>
         </div>
