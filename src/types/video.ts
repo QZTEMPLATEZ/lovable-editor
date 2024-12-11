@@ -1,27 +1,18 @@
-export type VideoStyle = 'cinematic' | 'documentary' | 'classic' | 'dynamic';
-
-export interface VideoStyleData {
-  id: VideoStyle;
-  title: string;
+export interface VideoStyle {
+  id: string;
+  name: string;
   description: string;
-  previewVideo: string;
-  features: string[];
+  thumbnail: string;
+  videoUrl: string;
 }
 
 export interface MusicAnalysis {
-  key: string;
-  bpm: number;
+  key: string;  // Added this property
+  title: string;
+  artist: string;
   duration: number;
-  energy?: number;
-  danceability?: number;
-  valence?: number;
-  instrumentalness?: number;
-}
-
-export interface VideoSize {
-  width: number;
-  height: number;
-  aspectRatio: string;
-  name: string;
-  description?: string;
+  tempo: number;
+  energy: number;
+  danceability: number;
+  valence: number;
 }

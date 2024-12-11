@@ -12,18 +12,14 @@ import PricingPlans from "./components/pricing/PricingPlans";
 import StepIndicator from "./components/StepIndicator";
 import { EDITOR_STEPS } from "./components/editor/EditorSteps";
 import FileOrganizer from "./components/organizer/FileOrganizer";
-import IntroScreen from "./components/IntroScreen";
 import TutorialVideo from "./components/TutorialVideo";
-import LoadingScreen from "./components/LoadingScreen";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
   const location = useLocation();
   const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
-  const [showIntro, setShowIntro] = useState(true);
-  const [showLoading, setShowLoading] = useState(false);
-  const [showTutorial, setShowTutorial] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(true);
 
   const getCurrentStep = () => {
     switch (location.pathname) {
@@ -38,16 +34,6 @@ const AppContent = () => {
       default:
         return -1;
     }
-  };
-
-  const handleIntroComplete = () => {
-    setShowIntro(false);
-    setShowLoading(true);
-  };
-
-  const handleLoadingComplete = () => {
-    setShowLoading(false);
-    setShowTutorial(true);
   };
 
   const handleTutorialComplete = () => {
@@ -66,8 +52,6 @@ const AppContent = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
-      {showIntro && <IntroScreen onComplete={handleIntroComplete} />}
-      {showLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
       {showTutorial && <TutorialVideo onComplete={handleTutorialComplete} />}
 
       {/* Background grid pattern */}
