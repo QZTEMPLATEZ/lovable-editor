@@ -85,7 +85,7 @@ const Index = () => {
         
         {/* Content */}
         <div className="relative z-10 text-center space-y-8 px-4">
-          <h1 className="text-4xl md:text-6xl font-cinzel tracking-wider text-white">
+          <h1 className="text-4xl md:text-6xl font-italiana tracking-[0.2em] uppercase text-white">
             Create Your Next Masterpiece
           </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
