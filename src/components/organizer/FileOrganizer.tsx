@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Upload, FolderOpen, ArrowLeft, ArrowRight, Film, Music, Camera, Clock } from 'lucide-react';
+import { Upload, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
-import { DEFAULT_CATEGORIES, organizeFiles, createProjectStructure } from '@/utils/organizerUtils';
+import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
+import FolderGrid from './FolderGrid';
+import OrganizationResults from './OrganizationResults';
 import { OrganizationResult } from '@/types/organizer';
-import OrganizationResults from '../organizer/OrganizationResults';
 
 const FileOrganizer = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -17,37 +18,6 @@ const FileOrganizer = () => {
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  const folderCategories = [
-    {
-      name: 'Ceremony',
-      icon: <Film className="w-5 h-5" />,
-      description: 'Main ceremony footage including vows and altar moments',
-      expectedTypes: '.mp4, .mov',
-      color: 'from-purple-500/20 to-pink-500/20'
-    },
-    {
-      name: 'Music',
-      icon: <Music className="w-5 h-5" />,
-      description: 'Background music and audio recordings',
-      expectedTypes: '.mp3, .wav',
-      color: 'from-blue-500/20 to-cyan-500/20'
-    },
-    {
-      name: 'Photos',
-      icon: <Camera className="w-5 h-5" />,
-      description: 'Still images and photographs',
-      expectedTypes: '.jpg, .png',
-      color: 'from-green-500/20 to-emerald-500/20'
-    },
-    {
-      name: 'Timelapses',
-      icon: <Clock className="w-5 h-5" />,
-      description: 'Time-lapse footage and sequences',
-      expectedTypes: '.mp4, .mov',
-      color: 'from-orange-500/20 to-amber-500/20'
-    }
-  ];
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -81,7 +51,17 @@ const FileOrganizer = () => {
         setProgress(prev => Math.min(prev + 10, 90));
       }, 500);
 
-      const result = await organizeFiles(files, DEFAULT_CATEGORIES);
+      // Mock organization result for demonstration
+      const result = {
+        categorizedFiles: new Map([['MakingOf', files]]),
+        unorganizedFiles: [],
+        stats: {
+          totalFiles: files.length,
+          categorizedCount: files.length,
+          uncategorizedCount: 0
+        }
+      };
+
       clearInterval(progressInterval);
       setProgress(100);
       setOrganizationResult(result);
@@ -101,16 +81,8 @@ const FileOrganizer = () => {
     }
   };
 
-  const handleContinue = () => {
-    if (organizationResult) {
-      const projectStructure = createProjectStructure("WeddingProject", organizationResult, DEFAULT_CATEGORIES);
-      console.log('Project structure generated:', projectStructure);
-      navigate('/edit');
-    }
-  };
-
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6 p-6">
       <div className="flex items-center justify-between mb-8">
         <Button
           variant="ghost"
@@ -126,66 +98,37 @@ const FileOrganizer = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 pointer-events-none" />
         
         <div className="relative space-y-6">
-          <div className="flex items-center gap-3 mb-6">
-            <FolderOpen className="w-5 h-5 text-purple-400" />
-            <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-              Organize Your Files
-            </h3>
-          </div>
-
           <Alert className="mb-6 bg-purple-500/10 border-purple-500/30">
             <AlertDescription className="text-purple-200">
-              Upload your raw footage and let AI organize it into meaningful categories.
+              Upload your raw footage and let AI organize it into the following categories:
             </AlertDescription>
           </Alert>
 
-          {!isProcessing && !organizationResult && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                {folderCategories.map((category) => (
-                  <motion.div
-                    key={category.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`p-4 rounded-xl bg-gradient-to-br ${category.color} border border-white/10 backdrop-blur-sm`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-white/10 rounded-lg">
-                        {category.icon}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white mb-1">{category.name}</h4>
-                        <p className="text-sm text-gray-300 mb-2">{category.description}</p>
-                        <p className="text-xs text-gray-400">Accepts: {category.expectedTypes}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+          <FolderGrid categories={FOLDER_CATEGORIES} />
 
-              <div
-                onDrop={handleDrop}
-                onDragOver={(e) => e.preventDefault()}
-                className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300"
-              >
-                <input
-                  type="file"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                  id="file-upload"
-                  multiple
-                />
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <Upload className="w-12 h-12 mx-auto text-purple-400 mb-4" />
-                  <p className="text-lg text-purple-200 mb-2">
-                    Drag and drop your files here or click to browse
-                  </p>
-                  <p className="text-sm text-purple-300/70">
-                    Supported formats: MP4, MOV, WAV, MP3
-                  </p>
-                </label>
-              </div>
-            </>
+          {!isProcessing && !organizationResult && (
+            <div
+              onDrop={handleDrop}
+              onDragOver={(e) => e.preventDefault()}
+              className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300"
+            >
+              <input
+                type="file"
+                onChange={handleFileSelect}
+                className="hidden"
+                id="file-upload"
+                multiple
+              />
+              <label htmlFor="file-upload" className="cursor-pointer">
+                <Upload className="w-12 h-12 mx-auto text-purple-400 mb-4" />
+                <p className="text-lg text-purple-200 mb-2">
+                  Drag and drop your files here or click to browse
+                </p>
+                <p className="text-sm text-purple-300/70">
+                  Supported formats: MP4, MOV, WAV, MP3
+                </p>
+              </label>
+            </div>
           )}
 
           {files.length > 0 && !organizationResult && (
@@ -194,7 +137,6 @@ const FileOrganizer = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {files.map((file, index) => (
                   <div key={index} className="bg-purple-500/10 rounded-lg p-4 flex items-center gap-3">
-                    <FolderOpen className="w-4 h-4 text-purple-400" />
                     <span className="text-sm truncate">{file.name}</span>
                   </div>
                 ))}

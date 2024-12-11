@@ -1,27 +1,25 @@
 import { ReactNode } from 'react';
 
-export interface OrganizationCategory {
+export interface FolderCategory {
   name: string;
-  keywords: string[];
+  icon: ReactNode;
   description: string;
-  icon: () => ReactNode;
+  expectedTypes: string;
+  color: string;
+  subfolders?: FolderCategory[];
 }
 
-export interface OrganizationResult {
-  categorizedFiles: Map<string, File[]>;
-  unorganizedFiles: File[];
-  stats: {
-    totalFiles: number;
-    categorizedCount: number;
-    uncategorizedCount: number;
-  };
+export interface OrganizationStats {
+  totalFiles: number;
+  categorizedCount: number;
+  uncategorizedCount: number;
 }
 
-export interface ProjectStructure {
-  projectName: string;
-  categories: OrganizationCategory[];
-  mediaBins: {
-    binName: string;
+export interface OrganizedFiles {
+  [key: string]: {
     files: File[];
-  }[];
+    subfolders?: {
+      [key: string]: File[];
+    };
+  };
 }
