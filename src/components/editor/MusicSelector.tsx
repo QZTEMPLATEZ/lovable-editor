@@ -13,6 +13,7 @@ const MusicSelector = () => {
   const { toast } = useToast();
   const [dragActive, setDragActive] = useState(false);
   const { selectedVideoType } = useVideoType();
+  const [selectedTracks, setSelectedTracks] = useState<MusicAnalysis[]>([]);
 
   const getRecommendedTracks = () => {
     if (!selectedVideoType) return 1;
@@ -20,10 +21,22 @@ const MusicSelector = () => {
   };
 
   const handleMusicSelect = (analysis: MusicAnalysis) => {
+    setSelectedTracks(prev => [...prev, analysis]);
     toast({
       title: "Music Selected",
-      description: `Selected track analyzed`,
+      description: `Track added to selection`,
     });
+  };
+
+  const handleContinue = () => {
+    if (selectedTracks.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "No Music Selected",
+        description: "Please select at least one music track before continuing.",
+      });
+      return;
+    }
     navigate('/organize');
   };
 
@@ -62,7 +75,7 @@ const MusicSelector = () => {
         bpm: 120,
         key: 'C',
         tempo: 120,
-        duration: 180, // 3 minutes in seconds
+        duration: 180,
         energy: 0.8,
         danceability: 0.7,
         valence: 0.6
@@ -81,6 +94,14 @@ const MusicSelector = () => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
+  };
+
+  const removeTrack = (index: number) => {
+    setSelectedTracks(prev => prev.filter((_, i) => i !== index));
+    toast({
+      title: "Track Removed",
+      description: "Music track has been removed from selection",
+    });
   };
 
   return (
@@ -134,6 +155,38 @@ const MusicSelector = () => {
           </motion.div>
         </label>
       </div>
+
+      {selectedTracks.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-purple-200">Selected Tracks</h3>
+          {selectedTracks.map((track, index) => (
+            <div key={index} className="flex items-center justify-between bg-purple-500/10 p-4 rounded-lg">
+              <div>
+                <p className="text-purple-200">Track {index + 1}</p>
+                <p className="text-sm text-purple-300/70">
+                  BPM: {track.bpm} | Key: {track.key} | Duration: {track.duration}s
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                onClick={() => removeTrack(index)}
+                className="text-red-400 hover:text-red-300"
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+          
+          <div className="flex justify-end mt-6">
+            <Button
+              onClick={handleContinue}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+            >
+              Continue to Organize
+            </Button>
+          </div>
+        </div>
+      )}
 
       <Alert className="bg-purple-500/10 border-purple-500/30">
         <AlertDescription className="text-purple-200">
