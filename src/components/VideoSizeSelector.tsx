@@ -104,10 +104,10 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
         {/* Content container optimized for 21:9 */}
         <div className="relative container mx-auto h-full max-w-[2560px] px-4 lg:px-8">
           <div className="flex flex-col justify-center h-full max-w-2xl lg:max-w-3xl xl:max-w-4xl">
-            <h1 className="text-3xl md:text-4xl font-['Montserrat'] font-bold tracking-wider uppercase text-white mb-4 leading-tight">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-['Inter'] font-extrabold tracking-[0.2em] uppercase text-white mb-4 leading-tight">
               GET UNLIMITED VIDEO EDITING
             </h1>
-            <p className="text-sm md:text-base text-white/80 mb-6 max-w-xl lg:max-w-2xl">
+            <p className="text-sm md:text-base lg:text-lg font-['Inter'] font-light text-white/80 mb-6 max-w-xl lg:max-w-2xl">
               Choose the perfect duration for your video project. Each option is carefully designed 
               to match different content needs.
             </p>
