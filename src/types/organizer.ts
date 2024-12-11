@@ -45,3 +45,20 @@ export interface OrganizedFiles {
     };
   };
 }
+
+export interface MusicAnalysis {
+  key: string; // Adding the missing key property
+  tempo: number;
+  energy: number;
+  danceability: number;
+  valence: number;
+  duration: number;
+  sections: {
+    start: number;
+    duration: number;
+    loudness: number;
+    tempo: number;
+    key: number;
+    mode: number;
+  }[];
+}
