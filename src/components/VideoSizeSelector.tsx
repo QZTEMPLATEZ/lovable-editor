@@ -101,10 +101,10 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
         {/* Content container optimized for 21:9 */}
         <div className="relative container mx-auto h-full max-w-[2560px] px-4 lg:px-8">
           <div className="flex flex-col justify-center h-full max-w-2xl lg:max-w-3xl xl:max-w-4xl">
-            <h1 className="text-3xl md:text-4xl font-medium text-white mb-4 leading-tight">
+            <h1 className="font-cinzel text-3xl md:text-4xl font-medium bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-4 leading-tight">
               Get unlimited video editing
             </h1>
-            <p className="text-sm md:text-base text-white/80 mb-6 max-w-xl lg:max-w-2xl">
+            <p className="font-italiana text-sm md:text-base text-white/80 mb-6 max-w-xl lg:max-w-2xl">
               Choose the perfect duration for your video project. Each option is carefully designed 
               to match different content needs.
             </p>
@@ -132,22 +132,22 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-base font-medium text-white mb-1">{size.name}</h3>
+                    <h3 className="font-cinzel text-base font-medium text-white mb-1">{size.name}</h3>
                     <div className="flex items-center gap-2 text-xs text-gray-300">
                       <Clock className="w-3 h-3" />
-                      <span>{size.label}</span>
+                      <span className="font-italiana">{size.label}</span>
                     </div>
                   </div>
                   <PlanBadge tier={size.tier} />
                 </div>
 
-                <p className="text-xs text-gray-400 mb-4 whitespace-pre-line">
+                <p className="font-italiana text-xs text-gray-400 mb-4 whitespace-pre-line">
                   {size.description}
                 </p>
 
                 <div className="flex items-center gap-2 text-xs text-purple-300 bg-purple-500/10 p-2 rounded-lg">
                   <Clock className="w-3 h-3" />
-                  <span>Recommended Tracks: {size.recommendedTracks}</span>
+                  <span className="font-italiana">Recommended Tracks: {size.recommendedTracks}</span>
                 </div>
 
                 <AnimatePresence>
