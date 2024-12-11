@@ -94,15 +94,15 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
             <source src="https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          {/* Background overlay with gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80" />
+          {/* Background overlay with darker gradient */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/90" />
         </div>
         
         {/* Content container optimized for 21:9 */}
         <div className="relative container mx-auto h-full max-w-[2560px] px-4 lg:px-8">
           <div className="flex flex-col justify-center h-full max-w-2xl lg:max-w-3xl xl:max-w-4xl">
-            <h1 className="text-3xl md:text-4xl font-medium text-white mb-4 leading-tight">
-              Get unlimited video editing
+            <h1 className="text-3xl md:text-4xl font-['Montserrat'] font-bold tracking-wider uppercase text-white mb-4 leading-tight">
+              GET UNLIMITED VIDEO EDITING
             </h1>
             <p className="text-sm md:text-base text-white/80 mb-6 max-w-xl lg:max-w-2xl">
               Choose the perfect duration for your video project. Each option is carefully designed 
