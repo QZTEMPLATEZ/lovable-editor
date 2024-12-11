@@ -9,6 +9,10 @@ interface OrganizationResultsProps {
 }
 
 const OrganizationResults: React.FC<OrganizationResultsProps> = ({ results }) => {
+  if (!results || !results.stats) {
+    return null;
+  }
+
   const categorizedPercentage = (results.stats.categorizedCount / results.stats.totalFiles) * 100;
 
   const findCategoryDetails = (categoryName: string) => {

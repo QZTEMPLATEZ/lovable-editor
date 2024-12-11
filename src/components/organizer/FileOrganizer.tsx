@@ -13,7 +13,7 @@ import { OrganizationStats } from '@/types/organizer';
 
 const FileOrganizer = () => {
   const [files, setFiles] = useState<File[]>([]);
-  const [organizationResult, setOrganizationResult] = useState<OrganizationStats | null>(null);
+  const [organizationResult, setOrganizationResult] = useState<OrganizationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
@@ -51,8 +51,8 @@ const FileOrganizer = () => {
         setProgress(prev => Math.min(prev + 10, 90));
       }, 500);
 
-      // Mock organization result
-      const result = {
+      // Mock organization result with proper type
+      const result: OrganizationResult = {
         categorizedFiles: new Map([['MakingOf', files]]),
         unorganizedFiles: [],
         stats: {
@@ -64,7 +64,7 @@ const FileOrganizer = () => {
 
       clearInterval(progressInterval);
       setProgress(100);
-      setOrganizationResult(result.stats);
+      setOrganizationResult(result);
 
       toast({
         title: "Organization Complete",
