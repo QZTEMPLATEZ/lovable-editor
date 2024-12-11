@@ -15,7 +15,7 @@ export interface MusicAnalysis {
   segments: AudioSegment[];
   duration: number;
   energyProfile: EnergyProfile;
-  key: string;  // Added this property
+  key: string;
 }
 
 export interface BeatInfo {
