@@ -21,7 +21,7 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({ onDrop, onFileSelect })
           className="hidden"
           id="file-upload"
           multiple
-          accept="image/*,audio/*,video/*"
+          accept="image/*,video/*"
         />
         <label htmlFor="file-upload" className="cursor-pointer">
           <Upload className="w-12 h-12 mx-auto text-purple-400 mb-4" />
@@ -29,14 +29,14 @@ const FileUploadZone: React.FC<FileUploadZoneProps> = ({ onDrop, onFileSelect })
             Drag and drop your files here or click to browse
           </p>
           <p className="text-sm text-purple-300/70">
-            Supported formats: Images (JPG, PNG), Audio (WAV, MP3), Video (MP4, MOV)
+            Supported formats: Images (JPG, PNG), Video (MP4, MOV)
           </p>
         </label>
       </div>
 
       <Alert className="mb-6 bg-purple-500/10 border-purple-500/30">
         <AlertDescription className="text-purple-200">
-          Your files will be organized into the following categories using AI image recognition:
+          Your files will be organized into the following categories using AI image recognition. Click the Start button when ready.
         </AlertDescription>
       </Alert>
     </>

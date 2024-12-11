@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import FolderGrid from './FolderGrid';
 import OrganizationResults from './OrganizationResults';
@@ -9,6 +10,7 @@ import NavigationButtons from './NavigationButtons';
 import FileAnalysisHandler from './analysis/FileAnalysisHandler';
 import { OrganizationResult } from '@/types';
 import { initializeImageClassifier, analyzeImage } from '@/utils/imageAnalysis';
+import { Play } from 'lucide-react';
 
 const FileOrganizer = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -20,8 +22,16 @@ const FileOrganizer = () => {
   const [unrecognizedFiles, setUnrecognizedFiles] = useState<File[]>([]);
   const { toast } = useToast();
 
-  const processFiles = async (newFiles: File[]) => {
-    if (!newFiles || newFiles.length === 0) {
+  const handleFileSelect = (newFiles: File[]) => {
+    setFiles(prevFiles => [...prevFiles, ...newFiles]);
+    toast({
+      title: "Files Selected",
+      description: `${newFiles.length} files have been added for organization.`,
+    });
+  };
+
+  const processFiles = async () => {
+    if (!files || files.length === 0) {
       toast({
         variant: "destructive",
         title: "No files selected",
@@ -30,7 +40,6 @@ const FileOrganizer = () => {
       return;
     }
 
-    setFiles(newFiles);
     setIsProcessing(true);
     setProgress(0);
     const categorizedFiles = new Map<string, File[]>();
@@ -42,10 +51,10 @@ const FileOrganizer = () => {
     });
 
     try {
-      for (let i = 0; i < newFiles.length; i++) {
-        const file = newFiles[i];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
         setCurrentFile(file);
-        console.log(`Processing file ${i + 1}/${newFiles.length}: ${file.name}`);
+        console.log(`Processing file ${i + 1}/${files.length}: ${file.name}`);
 
         if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
           try {
@@ -70,7 +79,7 @@ const FileOrganizer = () => {
           tempUnrecognizedFiles.push(file);
         }
 
-        setProgress(((i + 1) / newFiles.length) * 100);
+        setProgress(((i + 1) / files.length) * 100);
       }
 
       setUnrecognizedFiles(tempUnrecognizedFiles);
@@ -79,8 +88,8 @@ const FileOrganizer = () => {
         categorizedFiles,
         unorganizedFiles: tempUnrecognizedFiles,
         stats: {
-          totalFiles: newFiles.length,
-          categorizedCount: newFiles.length - tempUnrecognizedFiles.length,
+          totalFiles: files.length,
+          categorizedCount: files.length - tempUnrecognizedFiles.length,
           uncategorizedCount: tempUnrecognizedFiles.length
         }
       };
@@ -144,15 +153,27 @@ const FileOrganizer = () => {
             onDrop={(e) => {
               e.preventDefault();
               const droppedFiles = Array.from(e.dataTransfer.files);
-              processFiles(droppedFiles);
+              handleFileSelect(droppedFiles);
             }}
             onFileSelect={(e) => {
               if (e.target.files) {
                 const selectedFiles = Array.from(e.target.files);
-                processFiles(selectedFiles);
+                handleFileSelect(selectedFiles);
               }
             }}
           />
+
+          {files.length > 0 && !isProcessing && (
+            <div className="flex justify-center">
+              <Button
+                onClick={processFiles}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+              >
+                <Play className="w-4 h-4 mr-2" />
+                Start Organization Process
+              </Button>
+            </div>
+          )}
 
           <OrganizationProgress 
             isProcessing={isProcessing}
