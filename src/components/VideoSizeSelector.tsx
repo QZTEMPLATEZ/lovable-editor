@@ -101,27 +101,13 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
         {/* Content container */}
         <div className="relative container mx-auto h-full">
           <div className="flex flex-col justify-center h-full max-w-2xl px-6 py-16">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-3xl md:text-4xl font-medium text-white mb-4 leading-tight">
               Get unlimited video editing
             </h1>
-            <p className="text-xl text-white/80 mb-8 max-w-xl">
+            <p className="text-sm md:text-base text-white/80 mb-6 max-w-xl">
               Choose the perfect duration for your video project. Each option is carefully designed 
               to match different content needs.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <button 
-                onClick={() => navigate('/style')}
-                className="px-8 py-4 bg-[#D946EF] text-white font-semibold rounded-lg hover:bg-[#C935DE] transition-colors"
-              >
-                Start Free Now
-              </button>
-              <button 
-                onClick={() => navigate('/pricing')}
-                className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
-              >
-                Pricing
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -146,21 +132,21 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-1">{size.name}</h3>
-                    <div className="flex items-center gap-2 text-gray-300">
-                      <Clock className="w-4 h-4" />
+                    <h3 className="text-base font-medium text-white mb-1">{size.name}</h3>
+                    <div className="flex items-center gap-2 text-xs text-gray-300">
+                      <Clock className="w-3 h-3" />
                       <span>{size.label}</span>
                     </div>
                   </div>
                   <PlanBadge tier={size.tier} />
                 </div>
 
-                <p className="text-gray-400 text-sm mb-4 whitespace-pre-line">
+                <p className="text-xs text-gray-400 mb-4 whitespace-pre-line">
                   {size.description}
                 </p>
 
-                <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg">
-                  <Clock className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-xs text-purple-300 bg-purple-500/10 p-2 rounded-lg">
+                  <Clock className="w-3 h-3" />
                   <span>Recommended Tracks: {size.recommendedTracks}</span>
                 </div>
 
@@ -172,7 +158,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
                       exit={{ scale: 0, opacity: 0 }}
                       className="absolute -top-2 -right-2 bg-editor-glow-purple rounded-full p-2 shadow-lg shadow-editor-glow-purple/50"
                     >
-                      <Check className="w-4 h-4 text-white" />
+                      <Check className="w-3 h-3 text-white" />
                     </motion.div>
                   )}
                 </AnimatePresence>
