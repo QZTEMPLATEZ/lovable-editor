@@ -34,7 +34,7 @@ export const initializeImageClassifier = async () => {
     if (!classifier) {
       classifier = await pipeline(
         'image-classification',
-        'microsoft/resnet-50'
+        'Xenova/vit-base-patch16-224'  // Using a more reliable model
       );
       console.log('Image classifier initialized successfully');
     }
