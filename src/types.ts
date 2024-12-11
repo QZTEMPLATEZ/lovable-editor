@@ -1,5 +1,16 @@
 import { ReactNode } from 'react';
 
+export interface VideoSizeRange {
+  min: number;
+  max: number;
+  name: string;
+  label: string;
+  description: string;
+  icon: React.ReactNode | null;
+  recommendedTracks: number;
+  tier: 'basic' | 'pro' | 'business';
+}
+
 export interface FolderCategory {
   name: string;
   icon: ReactNode;
