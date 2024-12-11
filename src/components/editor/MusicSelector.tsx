@@ -114,6 +114,18 @@ const MusicSelector = () => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  const handleContinue = () => {
+    if (tracks.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "No tracks selected",
+        description: "Please upload at least one music track before continuing.",
+      });
+      return;
+    }
+    navigate('/organize');
+  };
+
   return (
     <div className="min-h-screen bg-editor-bg">
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
@@ -146,7 +158,7 @@ const MusicSelector = () => {
 
         <div className="flex justify-end mt-8">
           <Button
-            onClick={() => navigate('/style')}
+            onClick={handleContinue}
             disabled={tracks.length === 0}
             className="bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink hover:opacity-90 disabled:opacity-50"
           >
