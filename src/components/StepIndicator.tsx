@@ -2,6 +2,7 @@ import React from 'react';
 import { Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useVideoType } from '../contexts/VideoTypeContext';
 
 interface StepIndicatorProps {
   currentStep: number;
@@ -13,14 +14,14 @@ interface StepIndicatorProps {
 
 const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
   const navigate = useNavigate();
+  const { selectedVideoType } = useVideoType();
 
   const getStepPath = (index: number) => {
     switch (index) {
       case 0: return '/duration';
       case 1: return '/style';
       case 2: return '/music';
-      case 3: return '/upload';
-      case 4: return '/edit';
+      case 3: return '/organize';
       default: return '/duration';
     }
   };
@@ -104,6 +105,13 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                              opacity-70 transition-opacity duration-300 group-hover:opacity-100">
                   {step.description}
                 </p>
+
+                {/* Display selected value if available */}
+                {index <= currentStep && selectedVideoType && index === 0 && (
+                  <p className="text-[10px] text-purple-300 mt-1 font-medium">
+                    {selectedVideoType.name}
+                  </p>
+                )}
 
                 {/* Subtle hover line */}
                 <motion.div 
