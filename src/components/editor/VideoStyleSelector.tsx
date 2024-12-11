@@ -58,8 +58,8 @@ const VideoStyleSelector = ({
         {/* Content container */}
         <div className="relative container mx-auto h-full max-w-[2560px] px-4 lg:px-8">
           <div className="flex flex-col justify-center h-full max-w-2xl lg:max-w-3xl xl:max-w-4xl">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-['Montserrat'] font-bold tracking-[0.2em] uppercase text-white mb-4 leading-tight">
-              SELECT YOUR FILM STYLE
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-cinzel font-extrabold tracking-[0.2em] uppercase text-white mb-4 leading-tight">
+              SELECT YOUR<br />FILM STYLE
             </h1>
             <p className="text-sm md:text-base lg:text-lg text-white/80 mb-6 max-w-xl lg:max-w-2xl font-['Montserrat'] font-light leading-relaxed">
               Choose the perfect style for your video project. Each option is carefully designed 
