@@ -1,106 +1,76 @@
 import React, { useState } from 'react';
-import { useVideoType } from '../../contexts/VideoTypeContext';
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
-import { OrganizationResult } from '@/types';
-import { initializeImageClassifier, analyzeImage } from '@/utils/imageAnalysis';
-import { APP_CONFIG, ERROR_MESSAGES } from '@/config/appConfig';
-import FolderGrid from './FolderGrid';
-import OrganizationResults from './OrganizationResults';
-import FileUploadZone from './FileUploadZone';
-import NavigationButtons from './NavigationButtons';
-import FileAnalysisHandler from './analysis/FileAnalysisHandler';
-import FileProcessing from './FileProcessing';
+import { useToast } from '@/components/ui/use-toast';
+import { logger } from '../../utils/logger';
+import { fileAnalysisService, AnalysisResult } from '../../services/FileAnalysisService';
+import { ORGANIZER_CONFIG } from '../../config/organizerConfig';
+import FileUploadHandler from './upload/FileUploadHandler';
 import FileAnalysisStatus from './FileAnalysisStatus';
+import OrganizationResults from './OrganizationResults';
+import NavigationButtons from './NavigationButtons';
+import FolderGrid from './FolderGrid';
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useVideoType } from '../../contexts/VideoTypeContext';
 
 const FileOrganizer = () => {
+  const { toast } = useToast();
   const { selectedVideoType } = useVideoType();
   const [files, setFiles] = useState<File[]>([]);
-  const [organizationResult, setOrganizationResult] = useState<OrganizationResult | null>(null);
+  const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
-  const [unrecognizedFiles, setUnrecognizedFiles] = useState<File[]>([]);
 
-  const handleFileSelect = (newFiles: File[]) => {
+  const handleFilesSelected = async (newFiles: File[]) => {
     setFiles(prevFiles => [...prevFiles, ...newFiles]);
+    processFiles(newFiles);
   };
 
-  const processFiles = async () => {
+  const processFiles = async (filesToProcess: File[]) => {
     setIsProcessing(true);
     setProgress(0);
-    const categorizedFiles = new Map<string, File[]>();
-    const tempUnrecognizedFiles: File[] = [];
-    
-    FOLDER_CATEGORIES.forEach(category => {
-      categorizedFiles.set(category.name, []);
-    });
 
     try {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        setCurrentFile(file);
-        
-        if (APP_CONFIG.analysis.supportedFileTypes.includes(file.type)) {
-          const analysis = await analyzeImage(file);
-          
-          if (analysis.category !== APP_CONFIG.organization.uncategorizedLabel && 
-              analysis.confidence > APP_CONFIG.analysis.confidenceThreshold) {
-            const categoryFiles = categorizedFiles.get(analysis.category) || [];
-            categoryFiles.push(file);
-            categorizedFiles.set(analysis.category, categoryFiles);
-          } else {
-            tempUnrecognizedFiles.push(file);
-          }
-        } else {
-          tempUnrecognizedFiles.push(file);
-        }
+      logger.info(`Starting processing of ${filesToProcess.length} files`);
 
-        setProgress(((i + 1) / files.length) * 100);
+      for (let i = 0; i < filesToProcess.length; i++) {
+        setCurrentFile(filesToProcess[i]);
+        setProgress((i / filesToProcess.length) * 100);
+
+        const result = await fileAnalysisService.analyzeFile(filesToProcess[i]);
+        
+        setAnalysisResults(prev => [...prev, result]);
+
+        if (result.error) {
+          toast({
+            variant: "destructive",
+            title: "Processing Error",
+            description: `Error processing ${result.file.name}: ${result.error}`
+          });
+        }
       }
 
-      setUnrecognizedFiles(tempUnrecognizedFiles);
-      setOrganizationResult({
-        categorizedFiles,
-        unorganizedFiles: tempUnrecognizedFiles,
-        stats: {
-          totalFiles: files.length,
-          categorizedCount: files.length - tempUnrecognizedFiles.length,
-          uncategorizedCount: tempUnrecognizedFiles.length
-        }
+      setProgress(100);
+      toast({
+        title: "Processing Complete",
+        description: `Successfully processed ${filesToProcess.length} files`
       });
 
+    } catch (error) {
+      logger.error('Error processing files', error);
+      toast({
+        variant: "destructive",
+        title: "Processing Error",
+        description: "An unexpected error occurred while processing files"
+      });
     } finally {
       setIsProcessing(false);
-      setProgress(100);
-    }
-  };
-
-  const handleCategorySelect = (file: File, category: string) => {
-    setUnrecognizedFiles(prev => prev.filter(f => f !== file));
-    
-    if (organizationResult) {
-      const newCategorizedFiles = new Map(organizationResult.categorizedFiles);
-      const categoryFiles = newCategorizedFiles.get(category) || [];
-      categoryFiles.push(file);
-      newCategorizedFiles.set(category, categoryFiles);
-      
-      setOrganizationResult({
-        ...organizationResult,
-        categorizedFiles: newCategorizedFiles,
-        unorganizedFiles: organizationResult.unorganizedFiles.filter(f => f !== file),
-        stats: {
-          ...organizationResult.stats,
-          categorizedCount: organizationResult.stats.categorizedCount + 1,
-          uncategorizedCount: organizationResult.stats.uncategorizedCount - 1
-        }
-      });
+      setCurrentFile(null);
     }
   };
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 p-6">
-      <NavigationButtons showContinueButton={!!organizationResult} />
+      <NavigationButtons showContinueButton={analysisResults.length > 0} />
 
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 pointer-events-none" />
@@ -114,24 +84,9 @@ const FileOrganizer = () => {
         </Alert>
 
         <div className="relative space-y-6">
-          <FileUploadZone 
-            onDrop={(e) => {
-              e.preventDefault();
-              const droppedFiles = Array.from(e.dataTransfer.files);
-              handleFileSelect(droppedFiles);
-            }}
-            onFileSelect={(e) => {
-              if (e.target.files) {
-                const selectedFiles = Array.from(e.target.files);
-                handleFileSelect(selectedFiles);
-              }
-            }}
-          />
-
-          <FileProcessing 
-            files={files}
+          <FileUploadHandler 
+            onFilesSelected={handleFilesSelected}
             isProcessing={isProcessing}
-            onProcessStart={processFiles}
           />
 
           <FileAnalysisStatus 
@@ -140,16 +95,25 @@ const FileOrganizer = () => {
             currentFile={currentFile}
           />
 
-          <FileAnalysisHandler 
-            files={files}
-            isProcessing={isProcessing}
-            progress={progress}
-            currentFile={currentFile}
-            unrecognizedFiles={unrecognizedFiles}
-            onCategorySelect={handleCategorySelect}
-          />
-
-          {organizationResult && <OrganizationResults results={organizationResult} />}
+          {analysisResults.length > 0 && (
+            <OrganizationResults 
+              results={{
+                categorizedFiles: new Map(
+                  analysisResults
+                    .filter(r => !r.error)
+                    .map(r => [r.category, [r.file]])
+                ),
+                unorganizedFiles: analysisResults
+                  .filter(r => r.error)
+                  .map(r => r.file),
+                stats: {
+                  totalFiles: analysisResults.length,
+                  categorizedCount: analysisResults.filter(r => !r.error).length,
+                  uncategorizedCount: analysisResults.filter(r => r.error).length
+                }
+              }} 
+            />
+          )}
 
           <FolderGrid categories={FOLDER_CATEGORIES} />
         </div>
