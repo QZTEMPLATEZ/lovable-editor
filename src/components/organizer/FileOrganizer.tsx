@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
-import { DEFAULT_CATEGORIES, organizeFiles, generateProjectStructure } from '@/utils/organizerUtils';
+import { DEFAULT_CATEGORIES, organizeFiles, createProjectStructure } from '@/utils/organizerUtils';
 import { OrganizationResult } from '@/types/organizer';
 import OrganizationResults from '../organizer/OrganizationResults';
 
@@ -72,7 +72,7 @@ const FileOrganizer = () => {
 
   const handleContinue = () => {
     if (organizationResult) {
-      const projectStructure = generateProjectStructure(organizationResult, "WeddingProject", DEFAULT_CATEGORIES);
+      const projectStructure = createProjectStructure("WeddingProject", organizationResult, DEFAULT_CATEGORIES);
       console.log('Project structure generated:', projectStructure);
       navigate('/edit');
     }

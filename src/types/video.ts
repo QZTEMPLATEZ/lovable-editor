@@ -1,4 +1,4 @@
-export type VideoStyle = 'cinematic' | 'documentary' | 'vintage' | 'modern' | 'custom';
+export type VideoStyle = 'cinematic' | 'documentary' | 'vintage' | 'modern' | 'custom' | 'classic' | 'dynamic';
 
 export interface MusicAnalysis {
   bpm: number;
