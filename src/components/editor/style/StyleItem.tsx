@@ -1,23 +1,10 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { VideoStyle } from '@/types/video';
-import StylePreview from './StylePreview';
+import { StyleItemProps } from '@/types/style';
+import StylePreviewVideo from './StylePreviewVideo';
 import StyleContent from './StyleContent';
 import StyleActions from './StyleActions';
-
-interface StyleItemProps {
-  style: {
-    id: string;
-    title: string;
-    description: string;
-    previewVideo: string;
-    features: string[];
-  };
-  isHovered: boolean;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-  onStyleSelect: (style: VideoStyle) => void;
-}
+import StyleFeatures from './StyleFeatures';
 
 const StyleItem = ({
   style,
@@ -59,32 +46,29 @@ const StyleItem = ({
       onMouseLeave={onMouseLeave}
       onClick={() => onStyleSelect(style.id as VideoStyle)}
     >
-      {/* Base Background Layer */}
       <div className="absolute inset-0 z-[1] bg-editor-panel" />
-      
-      {/* Grid Pattern Layer */}
       <div className="absolute inset-0 z-[2] bg-[url('/grid.svg')] opacity-5" />
       
-      {/* Video Preview Layer */}
-      <div className="absolute inset-0 z-[3]">
-        <StylePreview
-          videoUrl={style.previewVideo}
-          isHovered={isHovered}
-          videoRef={videoRef}
-        />
-      </div>
+      <StylePreviewVideo
+        videoUrl={style.previewVideo}
+        isHovered={isHovered}
+        videoRef={videoRef}
+      />
       
-      {/* Gradient Overlay Layer */}
       <div className="absolute inset-0 z-[4] bg-gradient-to-r from-black/40 via-transparent to-black/40" />
       
-      {/* Content and Actions Layer */}
       <div className="absolute inset-0 z-[5] flex items-center justify-between h-full w-full px-8 md:px-16">
-        <StyleContent
-          title={style.title}
-          description={style.description}
-          isHovered={isHovered}
-          features={style.features}
-        />
+        <div className="space-y-1">
+          <StyleContent
+            title={style.title}
+            description={style.description}
+            isHovered={isHovered}
+          />
+          <StyleFeatures 
+            features={style.features}
+            isVisible={isHovered}
+          />
+        </div>
         
         <StyleActions
           onSelect={() => onStyleSelect(style.id as VideoStyle)}
