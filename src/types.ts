@@ -59,7 +59,7 @@ export interface OrganizedFiles {
 
 export interface MusicAnalysis {
   bpm: number;
-  key: string;
+  key?: string;
   tempo?: number;
   energy?: number;
   danceability?: number;
