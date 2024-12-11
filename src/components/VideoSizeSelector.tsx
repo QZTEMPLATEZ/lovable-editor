@@ -89,13 +89,13 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
             loop
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover object-center"
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-30"
           >
             <source src="https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           {/* Background overlay with darker gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/80" />
         </div>
         
         {/* Content container optimized for 21:9 */}
