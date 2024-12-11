@@ -20,7 +20,7 @@ const DurationOption = ({ duration, onSelect }: DurationOptionProps) => {
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
       
       <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
-        <div className="space-y-2">
+        <div className="space-y-1">
           <motion.h2 
             className="text-4xl md:text-6xl font-cinzel tracking-wider text-white"
             initial={{ y: 20, opacity: 0 }}
@@ -38,7 +38,7 @@ const DurationOption = ({ duration, onSelect }: DurationOptionProps) => {
             {duration.label}
           </motion.p>
           <motion.p 
-            className="text-[10px] md:text-xs text-gray-400 max-w-xl font-italiana whitespace-pre-line leading-relaxed"
+            className="text-[10px] md:text-xs text-gray-400 max-w-xl"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -59,7 +59,7 @@ const DurationOption = ({ duration, onSelect }: DurationOptionProps) => {
         >
           <Button 
             variant="outline" 
-            className="border-2 border-white text-white hover:bg-white/10 uppercase tracking-wider text-xs md:text-sm px-6 py-6 font-cinzel"
+            className="border-2 border-white text-white hover:bg-white/10 uppercase tracking-wider text-xs md:text-sm px-6 py-6"
           >
             SELECT
           </Button>
