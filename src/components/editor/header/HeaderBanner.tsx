@@ -15,7 +15,7 @@ const HeaderBanner = ({ title }: HeaderBannerProps) => {
       
       {/* Content */}
       <div className="relative z-10 flex items-center justify-center h-full">
-        <h1 className="text-2xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
+        <h1 className="text-4xl md:text-5xl font-cinzel tracking-[0.2em] text-white/90 uppercase">
           {title}
         </h1>
       </div>
