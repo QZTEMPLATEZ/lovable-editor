@@ -1,10 +1,24 @@
 import React, { useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { StyleItemProps } from '@/types/style';
+import { VideoStyle } from '../../../types/video';
 import StylePreviewVideo from './StylePreviewVideo';
 import StyleContent from './StyleContent';
 import StyleActions from './StyleActions';
-import StyleFeatures from './StyleFeatures';
+
+interface StyleItemProps {
+  style: {
+    id: string;
+    title: string;
+    description: string;
+    previewVideo: string;
+    features: string[];
+    darkMode?: boolean;
+  };
+  isHovered: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  onStyleSelect: (style: VideoStyle) => void;
+}
 
 const StyleItem = ({
   style,
@@ -18,7 +32,6 @@ const StyleItem = ({
   const handleVideoPlay = useCallback(async () => {
     if (videoRef.current) {
       try {
-        videoRef.current.currentTime = 0;
         await videoRef.current.play();
       } catch (error) {
         console.log('Video autoplay failed:', error);
@@ -63,10 +76,7 @@ const StyleItem = ({
             title={style.title}
             description={style.description}
             isHovered={isHovered}
-          />
-          <StyleFeatures 
             features={style.features}
-            isVisible={isHovered}
           />
         </div>
         
