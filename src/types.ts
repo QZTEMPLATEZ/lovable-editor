@@ -1,40 +1,65 @@
-export interface VideoSizeRange {
-  min: number;
-  max: number;
+import { ReactNode } from 'react';
+
+export interface FolderCategory {
   name: string;
-  label: string;
+  icon: ReactNode;
   description: string;
-  icon: React.ReactNode | null;
-  recommendedTracks: number;
-  tier: 'basic' | 'pro' | 'business';
+  expectedTypes: string;
+  color: string;
+  subfolders?: FolderCategory[];
+}
+
+export interface OrganizationStats {
+  totalFiles: number;
+  categorizedCount: number;
+  uncategorizedCount: number;
+}
+
+export interface OrganizationResult {
+  categorizedFiles: Map<string, File[]>;
+  unorganizedFiles: File[];
+  stats: OrganizationStats;
+}
+
+export interface OrganizationCategory {
+  name: string;
+  keywords: string[];
+  description: string;
+  icon: () => ReactNode;
+}
+
+export interface ProjectStructure {
+  projectName: string;
+  categories: OrganizationCategory[];
+  mediaBins: {
+    binName: string;
+    files: File[];
+  }[];
+}
+
+export interface OrganizedFiles {
+  [key: string]: {
+    files: File[];
+    subfolders?: {
+      [key: string]: File[];
+    };
+  };
 }
 
 export interface MusicAnalysis {
-  beats: BeatInfo[];
   bpm: number;
-  segments: AudioSegment[];
-  duration: number;
-  energyProfile: EnergyProfile;
-  key: string;
-}
-
-export interface BeatInfo {
-  timestamp: number;
-  intensity: number;
-  type: 'strong' | 'weak';
-  bpm?: number;
-}
-
-export interface AudioSegment {
-  start: number;
-  end: number;
-  type: 'crescendo' | 'decrescendo' | 'steady';
-  intensity: number;
-}
-
-export interface EnergyProfile {
-  average: number;
-  peak: number;
-  valleys: number[];
-  peaks: number[];
+  key?: string;  // Making key optional since it might not always be available
+  tempo?: number;
+  energy?: number;
+  danceability?: number;
+  valence?: number;
+  duration?: number;
+  sections?: {
+    start: number;
+    duration: number;
+    loudness: number;
+    tempo: number;
+    key: number;
+    mode: number;
+  }[];
 }
