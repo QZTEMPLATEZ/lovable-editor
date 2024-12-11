@@ -12,6 +12,10 @@ interface DurationGridProps {
 }
 
 const DurationGrid = ({ durations, selectedDuration, userTier, onDurationSelect }: DurationGridProps) => {
+  if (!durations || durations.length === 0) {
+    return null;
+  }
+
   return (
     <Tabs defaultValue={selectedDuration ? `${selectedDuration.min}-${selectedDuration.max}` : undefined}>
       <TabsList className="w-full bg-transparent grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -3,11 +3,6 @@ import { VideoSizeRange } from '../types';
 import DurationGrid from './editor/DurationGrid';
 import { useNavigate } from 'react-router-dom';
 
-interface VideoSizeSelectorProps {
-  selectedSize: VideoSizeRange | null;
-  onSizeSelect: (size: VideoSizeRange) => void;
-}
-
 const VIDEO_DURATIONS: VideoSizeRange[] = [
   {
     min: 3,
@@ -60,6 +55,11 @@ const VIDEO_DURATIONS: VideoSizeRange[] = [
     tier: 'business'
   }
 ];
+
+interface VideoSizeSelectorProps {
+  selectedSize: VideoSizeRange | null;
+  onSizeSelect: (size: VideoSizeRange) => void;
+}
 
 const VideoSizeSelector: React.FC<VideoSizeSelectorProps> = ({
   selectedSize,
