@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Music, AlertCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Music } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import TrackList from './music/TrackList';
+import MusicUploadSection from './music/MusicUploadSection';
 import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
 import { detectBeats } from '@/utils/audioProcessing';
+import { useNavigate } from 'react-router-dom';
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
@@ -19,6 +20,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -107,6 +109,18 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
     });
   };
 
+  const handleContinue = () => {
+    if (selectedMusic.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "No music selected",
+        description: "Please upload at least one music track before continuing.",
+      });
+      return;
+    }
+    navigate('/organize');
+  };
+
   return (
     <div className="space-y-6 w-full max-w-4xl mx-auto">
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl relative overflow-hidden">
@@ -125,42 +139,10 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
             </span>
           </div>
 
-          <Alert className="mb-4 bg-purple-500/10 border-purple-500/30">
-            <AlertCircle className="h-4 w-4 text-purple-400" />
-            <AlertDescription className="text-purple-200">
-              Choose the perfect soundtrack for your video. Upload up to {MAX_TRACKS} music tracks (WAV or MP3).
-            </AlertDescription>
-          </Alert>
-
-          <div className="relative">
-            <input
-              type="file"
-              accept=".wav,.mp3,audio/wav,audio/mpeg"
-              onChange={handleMusicUpload}
-              className="hidden"
-              id="music-upload"
-              multiple
-            />
-            <label
-              htmlFor="music-upload"
-              className="block w-full"
-            >
-              <motion.div
-                whileHover={{ scale: 1.01 }}
-                className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300 bg-purple-500/5"
-              >
-                <div className="space-y-2">
-                  <Music className="w-12 h-12 mx-auto text-purple-400 mb-2" />
-                  <p className="text-base text-purple-200">
-                    Drag and drop your music files here or click to browse
-                  </p>
-                  <p className="text-sm text-purple-300/70">
-                    Supported formats: WAV, MP3
-                  </p>
-                </div>
-              </motion.div>
-            </label>
-          </div>
+          <MusicUploadSection 
+            onMusicUpload={handleMusicUpload}
+            maxTracks={MAX_TRACKS}
+          />
 
           <TrackList
             selectedMusic={selectedMusic}
@@ -169,6 +151,17 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
             onTogglePlay={togglePlayPause}
             onRemoveTrack={removeTrack}
           />
+
+          {selectedMusic.length > 0 && (
+            <div className="flex justify-end mt-6">
+              <Button
+                onClick={handleContinue}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+              >
+                Continue to Organize
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
