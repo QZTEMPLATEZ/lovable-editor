@@ -12,7 +12,7 @@ export interface StyleSettings {
 }
 
 export const getStyleSettings = (style: VideoStyle): StyleSettings => {
-  switch (style) {
+  switch (style.id) {
     case 'classic':
       return {
         transitionDuration: 1.0,
@@ -77,10 +77,8 @@ export const applyStyleToProject = async (
   customReference?: File
 ) => {
   const settings = getStyleSettings(style);
-  console.log(`Applying ${style} style with settings:`, settings);
+  console.log(`Applying ${style.name} style with settings:`, settings);
   
-  // This would process the video in a real implementation
-  // For now, we just return the settings
   return {
     settings,
     processedClips: clips,

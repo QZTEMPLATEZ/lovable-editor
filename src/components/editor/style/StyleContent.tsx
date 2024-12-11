@@ -12,7 +12,7 @@ const StyleContent = ({ title, description, isHovered, features }: StyleContentP
   return (
     <div className="space-y-1">
       <motion.h2 
-        className={`text-2xl md:text-3xl font-cinzel tracking-wider ${isHovered ? 'text-white' : 'text-white'}`}
+        className={`text-2xl md:text-3xl font-montserrat font-bold tracking-tight ${isHovered ? 'text-white' : 'text-white'}`}
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
@@ -20,7 +20,7 @@ const StyleContent = ({ title, description, isHovered, features }: StyleContentP
         {title}
       </motion.h2>
       <motion.p 
-        className={`text-[8px] md:text-[10px] tracking-[0.2em] uppercase ${isHovered ? 'text-white/70' : 'text-gray-400'} font-italiana`}
+        className={`text-sm md:text-base tracking-wide ${isHovered ? 'text-white/70' : 'text-gray-400'} font-montserrat font-light`}
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
@@ -35,7 +35,7 @@ const StyleContent = ({ title, description, isHovered, features }: StyleContentP
           className="flex gap-6 mt-4"
         >
           {features.slice(0, 3).map((feature, index) => (
-            <div key={index} className="text-white/70 text-sm">
+            <div key={index} className="text-white/70 text-sm font-montserrat font-light">
               {feature}
             </div>
           ))}

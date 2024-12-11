@@ -12,7 +12,6 @@ interface StyleItemProps {
     description: string;
     previewVideo: string;
     features: string[];
-    darkMode?: boolean;
   };
   isHovered: boolean;
   onMouseEnter: () => void;
@@ -50,6 +49,17 @@ const StyleItem = ({
     }
   }, [isHovered, handleVideoPlay]);
 
+  const handleSelect = () => {
+    const videoStyle: VideoStyle = {
+      id: style.id,
+      name: style.title,
+      description: style.description,
+      thumbnail: style.previewVideo,
+      videoUrl: style.previewVideo
+    };
+    onStyleSelect(videoStyle);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -57,7 +67,7 @@ const StyleItem = ({
       className="relative w-full [aspect-ratio:3.84/1] group cursor-pointer bg-editor-panel isolate overflow-hidden"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onClick={() => onStyleSelect(style.id as VideoStyle)}
+      onClick={handleSelect}
     >
       <div className="absolute inset-0 z-[1] bg-editor-panel" />
       <div className="absolute inset-0 z-[2] bg-[url('/grid.svg')] opacity-5" />
@@ -81,7 +91,7 @@ const StyleItem = ({
         </div>
         
         <StyleActions
-          onSelect={() => onStyleSelect(style.id as VideoStyle)}
+          onSelect={handleSelect}
           features={style.features}
         />
       </div>

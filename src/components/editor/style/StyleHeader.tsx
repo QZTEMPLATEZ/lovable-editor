@@ -30,22 +30,22 @@ const StyleHeader = () => {
       {/* Content Layer */}
       <div className="relative z-[3] container mx-auto h-full">
         <div className="flex flex-col justify-center h-full max-w-2xl px-6 py-16">
-          <h1 className="text-5xl md:text-7xl font-cinzel font-bold text-white mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-montserrat font-bold text-white mb-6 leading-tight tracking-tight">
             Choose Your Style
           </h1>
-          <p className="text-xl text-white/80 mb-8 max-w-xl font-italiana">
+          <p className="text-lg md:text-xl text-white/80 mb-8 max-w-xl font-montserrat font-light leading-relaxed">
             Select a cinematic style that matches your vision. Each style offers a unique way to tell your story.
           </p>
           <div className="flex flex-wrap gap-4">
             <button 
               onClick={() => navigate('/music')}
-              className="px-8 py-4 bg-[#D946EF] text-white font-semibold rounded-lg hover:bg-[#C935DE] transition-colors"
+              className="px-8 py-4 bg-[#D946EF] text-white font-montserrat font-medium rounded-lg hover:bg-[#C935DE] transition-colors"
             >
               Continue
             </button>
             <button 
               onClick={() => navigate('/duration')}
-              className="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
+              className="px-8 py-4 bg-transparent border-2 border-white text-white font-montserrat font-medium rounded-lg hover:bg-white/10 transition-colors"
             >
               Back
             </button>
