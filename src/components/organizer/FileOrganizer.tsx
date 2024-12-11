@@ -9,6 +9,8 @@ import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { useFileProcessing } from '../../hooks/useFileProcessing';
 import FileProcessingSection from './processing/FileProcessingSection';
 import AnalysisResultsView from './analysis/AnalysisResultsView';
+import { Button } from '../ui/button';
+import { Save } from 'lucide-react';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -23,7 +25,7 @@ const FileOrganizer = () => {
     handleFilesSelected
   } = useFileProcessing();
 
-  const handleExport = async (format: 'premiere' | 'finalcut' | 'resolve') => {
+  const handleExportPremiereSequence = async () => {
     try {
       const processedClips = await Promise.all(
         analysisResults.map(async result => ({
@@ -47,26 +49,26 @@ const FileOrganizer = () => {
         }
       };
 
-      const exportedFile = await exportProject(project, { format });
+      const exportedFile = await exportProject(project, { format: 'premiere' });
       
       const url = URL.createObjectURL(exportedFile);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `wedding_project.${format === 'premiere' ? 'prproj' : format === 'finalcut' ? 'fcpxml' : 'drp'}`;
+      a.download = 'organized_wedding_sequence.prproj';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
       toast({
-        title: "Export Successful",
-        description: `Project file has been exported for ${format === 'premiere' ? 'Adobe Premiere Pro' : format === 'finalcut' ? 'Final Cut Pro' : 'DaVinci Resolve'}.`,
+        title: "Sequence Exported Successfully",
+        description: "Your organized sequence has been exported for Adobe Premiere Pro. You can now proceed to the editing step.",
       });
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Export Failed",
-        description: "There was an error exporting your project. Please try again.",
+        description: "There was an error exporting your sequence. Please try again.",
       });
     }
   };
@@ -92,8 +94,20 @@ const FileOrganizer = () => {
           <AnalysisResultsView
             analysisResults={analysisResults}
             isProcessing={isProcessing}
-            onExport={handleExport}
+            onExport={handleExportPremiereSequence}
           />
+
+          {analysisResults.length > 0 && !isProcessing && (
+            <div className="flex justify-center mt-8 pt-8 border-t border-purple-500/20">
+              <Button
+                onClick={handleExportPremiereSequence}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Save Organized Premiere Sequence
+              </Button>
+            </div>
+          )}
 
           <FolderGrid categories={FOLDER_CATEGORIES} />
         </div>
