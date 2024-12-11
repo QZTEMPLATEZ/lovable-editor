@@ -10,6 +10,7 @@ import NavigationButtons from './NavigationButtons';
 import FolderGrid from './FolderGrid';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useVideoType } from '../../contexts/VideoTypeContext';
+import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
