@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Upload, ArrowLeft, ArrowRight, Wand2 } from 'lucide-react';
@@ -10,6 +10,7 @@ import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import FolderGrid from './FolderGrid';
 import OrganizationResults from './OrganizationResults';
 import { OrganizationResult, OrganizationStats } from '@/types';
+import { initializeImageClassifier, analyzeImage } from '@/utils/imageAnalysis';
 
 const FileOrganizer = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -18,6 +19,14 @@ const FileOrganizer = () => {
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    initializeImageClassifier().then(success => {
+      if (success) {
+        console.log('Image recognition system initialized');
+      }
+    });
+  }, []);
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -45,32 +54,52 @@ const FileOrganizer = () => {
     setIsProcessing(true);
     setProgress(0);
 
-    try {
-      // Simulate progress updates
-      const progressInterval = setInterval(() => {
-        setProgress(prev => Math.min(prev + 10, 90));
-      }, 500);
+    const categorizedFiles = new Map<string, File[]>();
+    const unorganizedFiles: File[] = [];
+    let processedCount = 0;
 
-      // Mock organization result
+    // Initialize categories
+    FOLDER_CATEGORIES.forEach(category => {
+      categorizedFiles.set(category.name, []);
+    });
+
+    try {
+      for (const file of files) {
+        if (file.type.startsWith('image/')) {
+          const analysis = await analyzeImage(file);
+          const categoryFiles = categorizedFiles.get(analysis.category) || [];
+          categoryFiles.push(file);
+          categorizedFiles.set(analysis.category, categoryFiles);
+          
+          if (analysis.confidence < 0.6) {
+            console.log(`Low confidence (${analysis.confidence}) for file: ${file.name}`);
+          }
+        } else {
+          // Handle non-image files using existing logic
+          unorganizedFiles.push(file);
+        }
+
+        processedCount++;
+        setProgress((processedCount / files.length) * 100);
+      }
+
       const result: OrganizationResult = {
-        categorizedFiles: new Map([['MakingOf', files]]),
-        unorganizedFiles: [],
+        categorizedFiles,
+        unorganizedFiles,
         stats: {
           totalFiles: files.length,
-          categorizedCount: files.length,
-          uncategorizedCount: 0
+          categorizedCount: files.length - unorganizedFiles.length,
+          uncategorizedCount: unorganizedFiles.length
         }
       };
 
-      clearInterval(progressInterval);
-      setProgress(100);
       setOrganizationResult(result);
-
       toast({
         title: "Organization Complete",
         description: `Successfully organized ${result.stats.categorizedCount} files.`,
       });
     } catch (error) {
+      console.error('Error during organization:', error);
       toast({
         variant: "destructive",
         title: "Organization Failed",
@@ -78,6 +107,7 @@ const FileOrganizer = () => {
       });
     } finally {
       setIsProcessing(false);
+      setProgress(100);
     }
   };
 
@@ -98,7 +128,6 @@ const FileOrganizer = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 pointer-events-none" />
         
         <div className="relative space-y-6">
-          {/* Upload Section - Moved to top */}
           <div
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
@@ -110,6 +139,7 @@ const FileOrganizer = () => {
               className="hidden"
               id="file-upload"
               multiple
+              accept="image/*,audio/*,video/*"
             />
             <label htmlFor="file-upload" className="cursor-pointer">
               <Upload className="w-12 h-12 mx-auto text-purple-400 mb-4" />
@@ -117,40 +147,21 @@ const FileOrganizer = () => {
                 Drag and drop your files here or click to browse
               </p>
               <p className="text-sm text-purple-300/70">
-                Supported formats: MP4, MOV, WAV, MP3
+                Supported formats: Images (JPG, PNG), Audio (WAV, MP3), Video (MP4, MOV)
               </p>
             </label>
           </div>
 
-          {/* Start Button - Added at top */}
           {files.length > 0 && !organizationResult && (
             <div className="flex justify-center mb-8">
-              <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-                <Button
-                  onClick={handleOrganize}
-                  disabled={isProcessing}
-                  className="relative px-8 py-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
-                >
-                  <Wand2 className="w-5 h-5 mr-2 animate-pulse" />
-                  <span className="relative">Start Organizing</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl animate-pulse" />
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Selected Files Display */}
-          {files.length > 0 && !organizationResult && (
-            <div className="mt-6">
-              <h4 className="text-lg font-semibold mb-4">Selected Files ({files.length})</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {files.map((file, index) => (
-                  <div key={index} className="bg-purple-500/10 rounded-lg p-4 flex items-center gap-3">
-                    <span className="text-sm truncate">{file.name}</span>
-                  </div>
-                ))}
-              </div>
+              <Button
+                onClick={handleOrganize}
+                disabled={isProcessing}
+                className="relative px-8 py-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg rounded-xl"
+              >
+                <Wand2 className="w-5 h-5 mr-2" />
+                Start Organizing
+              </Button>
             </div>
           )}
 
@@ -158,26 +169,23 @@ const FileOrganizer = () => {
             <div className="space-y-4">
               <Progress value={progress} className="h-2" />
               <p className="text-sm text-center text-purple-300">
-                Organizing files... {progress}%
+                Organizing files... {Math.round(progress)}%
               </p>
             </div>
           )}
 
-          {organizationResult && (
-            <OrganizationResults results={organizationResult} />
-          )}
+          {organizationResult && <OrganizationResults results={organizationResult} />}
 
-          {/* Folder Categories - Moved to bottom */}
           <Alert className="mb-6 bg-purple-500/10 border-purple-500/30">
             <AlertDescription className="text-purple-200">
-              Your files will be organized into the following categories:
+              Your files will be organized into the following categories using AI image recognition:
             </AlertDescription>
           </Alert>
 
           <FolderGrid categories={FOLDER_CATEGORIES} />
 
-          <div className="flex justify-end gap-4 mt-6">
-            {organizationResult && (
+          {organizationResult && (
+            <div className="flex justify-end gap-4 mt-6">
               <Button
                 onClick={() => navigate('/edit')}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
@@ -185,8 +193,8 @@ const FileOrganizer = () => {
                 Continue to Edit
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
