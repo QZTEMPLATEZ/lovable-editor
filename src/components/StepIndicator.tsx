@@ -106,25 +106,27 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                   {step.description}
                 </p>
 
-                {/* Display selected values if available */}
+                {/* Display selected values with enhanced visibility */}
                 {index <= currentStep && (
                   <>
                     {index === 0 && selectedVideoType && (
-                      <p className="text-[10px] text-purple-300 mt-1 font-medium">
+                      <p className="text-sm text-purple-300 mt-1 font-medium">
                         {selectedVideoType.name}
                       </p>
                     )}
                     {index === 1 && selectedStyle && (
-                      <p className="text-[10px] text-purple-300 mt-1 font-medium">
+                      <p className="text-sm text-purple-300 mt-1 font-medium">
                         {selectedStyle.name}
                       </p>
                     )}
-                    {index === 2 && selectedMusic && (
-                      <p className="text-[10px] text-purple-300 mt-1 font-medium">
-                        {selectedMusic.length > 0 
-                          ? `${selectedMusic.length} track${selectedMusic.length === 1 ? '' : 's'} uploaded`
-                          : 'No tracks uploaded'}
-                      </p>
+                    {index === 2 && (
+                      <div className="mt-1">
+                        <p className="text-sm text-purple-300 font-medium">
+                          {selectedMusic && selectedMusic.length > 0 
+                            ? `${selectedMusic.length} track${selectedMusic.length === 1 ? '' : 's'}`
+                            : 'No tracks'}
+                        </p>
+                      </div>
                     )}
                   </>
                 )}
