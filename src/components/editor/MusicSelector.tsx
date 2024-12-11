@@ -5,18 +5,18 @@ import { useToast } from "@/components/ui/use-toast";
 import { Music, Upload } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
-interface MusicAnalysis {
-  id: string;
-  title: string;
-  duration: string;
-  bpm: number;
-}
+import { useVideoType } from '../../contexts/VideoTypeContext';
 
 const MusicSelector = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [dragActive, setDragActive] = useState(false);
+  const { selectedVideoType } = useVideoType();
+
+  const getRecommendedTracks = () => {
+    if (!selectedVideoType) return 1;
+    return selectedVideoType.recommendedTracks;
+  };
 
   const handleMusicSelect = (analysis: MusicAnalysis) => {
     toast({
@@ -83,6 +83,13 @@ const MusicSelector = () => {
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-white mb-4">Select Music</h2>
       
+      <Alert className="bg-purple-500/10 border-purple-500/30 mb-4">
+        <AlertDescription className="text-purple-200">
+          For your {selectedVideoType?.name || 'video'}, we recommend {getRecommendedTracks()} music track{getRecommendedTracks() > 1 ? 's' : ''}.
+          Total duration should be around {selectedVideoType?.label || 'the selected duration'}.
+        </AlertDescription>
+      </Alert>
+
       <div
         className={`relative border-2 border-dashed rounded-lg p-8 transition-all duration-200 ${
           dragActive 

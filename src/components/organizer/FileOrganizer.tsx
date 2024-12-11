@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
+import { useVideoType } from '../../contexts/VideoTypeContext';
 import FolderGrid from './FolderGrid';
 import OrganizationResults from './OrganizationResults';
 import FileUploadZone from './FileUploadZone';
@@ -13,6 +14,7 @@ import { initializeImageClassifier, analyzeImage } from '@/utils/imageAnalysis';
 import { Play } from 'lucide-react';
 
 const FileOrganizer = () => {
+  const { selectedVideoType } = useVideoType();
   const [files, setFiles] = useState<File[]>([]);
   const [organizationResult, setOrganizationResult] = useState<OrganizationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -148,6 +150,14 @@ const FileOrganizer = () => {
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 pointer-events-none" />
         
+        <Alert className="mb-6 bg-purple-500/10 border-purple-500/30">
+          <AlertDescription className="text-purple-200">
+            For your {selectedVideoType?.name || 'video'} ({selectedVideoType?.label || 'selected duration'}), 
+            we recommend selecting {Math.ceil((selectedVideoType?.max || 1) * 10)} to {Math.ceil((selectedVideoType?.max || 1) * 15)} clips 
+            to ensure comprehensive coverage.
+          </AlertDescription>
+        </Alert>
+
         <div className="relative space-y-6">
           <FileUploadZone 
             onDrop={(e) => {

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
 import { Clock, Check } from 'lucide-react';
 import { VideoSizeRange } from '../types';
+import { useVideoType } from '../contexts/VideoTypeContext';
 
 const VIDEO_SIZES: VideoSizeRange[] = [
   {
@@ -65,12 +66,14 @@ interface VideoSizeSelectorProps {
   userTier?: 'basic' | 'pro' | 'business';
 }
 
-const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProps) => {
+const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSelectorProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { setSelectedVideoType } = useVideoType();
 
   const handleSizeSelect = (size: VideoSizeRange) => {
     onSizeSelect(size);
+    setSelectedVideoType(size);
     toast({
       title: "Duration Selected",
       description: `Selected ${size.name} (${size.label})`,

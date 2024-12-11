@@ -14,6 +14,8 @@ import { EDITOR_STEPS } from "./components/editor/EditorSteps";
 import FileOrganizer from "./components/organizer/FileOrganizer";
 import TutorialVideo from "./components/TutorialVideo";
 import IntroScreen from "./components/IntroScreen";
+import { VideoTypeProvider } from "./contexts/VideoTypeContext";
+import VideoTypeIndicator from "./components/VideoTypeIndicator";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +24,7 @@ const AppContent = () => {
   const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
   const [showIntro, setShowIntro] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [selectedSize, setSelectedSize] = useState(null);
 
   const getCurrentStep = () => {
     switch (location.pathname) {
@@ -63,13 +66,12 @@ const AppContent = () => {
         {showIntro && <IntroScreen onComplete={handleIntroComplete} />}
         {showTutorial && !showIntro && <TutorialVideo onComplete={handleTutorialComplete} />}
 
-        {/* Background grid pattern */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
-        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
         
         <div className="relative">
           <TopNavigation />
+          <VideoTypeIndicator />
           <div className="container mx-auto px-4 py-8">
             {currentStep >= 0 && (
               <StepIndicator currentStep={currentStep} steps={EDITOR_STEPS} />
@@ -77,7 +79,10 @@ const AppContent = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/plans" element={<PricingPlans />} />
-              <Route path="/duration" element={<VideoSizeSelector selectedSize={null} onSizeSelect={() => {}} />} />
+              <Route 
+                path="/duration" 
+                element={<VideoSizeSelector selectedSize={selectedSize} onSizeSelect={setSelectedSize} />} 
+              />
               <Route 
                 path="/style" 
                 element={
@@ -108,7 +113,9 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AppContent />
+        <VideoTypeProvider>
+          <AppContent />
+        </VideoTypeProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );
