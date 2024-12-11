@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Upload, FolderOpen, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Upload, FolderOpen, ArrowLeft, ArrowRight, Film, Music, Camera, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -17,6 +17,37 @@ const FileOrganizer = () => {
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const folderCategories = [
+    {
+      name: 'Ceremony',
+      icon: <Film className="w-5 h-5" />,
+      description: 'Main ceremony footage including vows and altar moments',
+      expectedTypes: '.mp4, .mov',
+      color: 'from-purple-500/20 to-pink-500/20'
+    },
+    {
+      name: 'Music',
+      icon: <Music className="w-5 h-5" />,
+      description: 'Background music and audio recordings',
+      expectedTypes: '.mp3, .wav',
+      color: 'from-blue-500/20 to-cyan-500/20'
+    },
+    {
+      name: 'Photos',
+      icon: <Camera className="w-5 h-5" />,
+      description: 'Still images and photographs',
+      expectedTypes: '.jpg, .png',
+      color: 'from-green-500/20 to-emerald-500/20'
+    },
+    {
+      name: 'Timelapses',
+      icon: <Clock className="w-5 h-5" />,
+      description: 'Time-lapse footage and sequences',
+      expectedTypes: '.mp4, .mov',
+      color: 'from-orange-500/20 to-amber-500/20'
+    }
+  ];
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -109,28 +140,52 @@ const FileOrganizer = () => {
           </Alert>
 
           {!isProcessing && !organizationResult && (
-            <div
-              onDrop={handleDrop}
-              onDragOver={(e) => e.preventDefault()}
-              className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300"
-            >
-              <input
-                type="file"
-                onChange={handleFileSelect}
-                className="hidden"
-                id="file-upload"
-                multiple
-              />
-              <label htmlFor="file-upload" className="cursor-pointer">
-                <Upload className="w-12 h-12 mx-auto text-purple-400 mb-4" />
-                <p className="text-lg text-purple-200 mb-2">
-                  Drag and drop your files here or click to browse
-                </p>
-                <p className="text-sm text-purple-300/70">
-                  Supported formats: MP4, MOV, WAV, MP3
-                </p>
-              </label>
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {folderCategories.map((category) => (
+                  <motion.div
+                    key={category.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`p-4 rounded-xl bg-gradient-to-br ${category.color} border border-white/10 backdrop-blur-sm`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-white/10 rounded-lg">
+                        {category.icon}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-white mb-1">{category.name}</h4>
+                        <p className="text-sm text-gray-300 mb-2">{category.description}</p>
+                        <p className="text-xs text-gray-400">Accepts: {category.expectedTypes}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div
+                onDrop={handleDrop}
+                onDragOver={(e) => e.preventDefault()}
+                className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300"
+              >
+                <input
+                  type="file"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                  id="file-upload"
+                  multiple
+                />
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <Upload className="w-12 h-12 mx-auto text-purple-400 mb-4" />
+                  <p className="text-lg text-purple-200 mb-2">
+                    Drag and drop your files here or click to browse
+                  </p>
+                  <p className="text-sm text-purple-300/70">
+                    Supported formats: MP4, MOV, WAV, MP3
+                  </p>
+                </label>
+              </div>
+            </>
           )}
 
           {files.length > 0 && !organizationResult && (
@@ -172,7 +227,7 @@ const FileOrganizer = () => {
 
             {organizationResult && (
               <Button
-                onClick={handleContinue}
+                onClick={() => navigate('/edit')}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
               >
                 Continue to Edit
