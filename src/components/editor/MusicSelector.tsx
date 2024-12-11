@@ -9,6 +9,7 @@ import TrackList from './music/TrackList';
 import UploadSection from './music/UploadSection';
 import MusicHeader from './music/MusicHeader';
 import { Track } from './music/TrackList';
+import { MusicAnalysis } from '@/types';  // Import from the correct types file
 
 const MAX_TRACKS = 3;
 
