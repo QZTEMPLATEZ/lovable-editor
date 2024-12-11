@@ -47,7 +47,7 @@ const VideoEditor = ({ targetDuration, editingMode, onDurationChange }: VideoEdi
     setSelectedStyle(style);
     toast({
       title: "Style Selected",
-      description: `${style.charAt(0).toUpperCase() + style.slice(1)} style has been selected.`,
+      description: `${style.name} style has been selected.`,
     });
   };
 

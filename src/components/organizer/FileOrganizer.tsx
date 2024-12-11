@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import FolderGrid from './FolderGrid';
@@ -8,55 +8,18 @@ import OrganizationProgress from './OrganizationProgress';
 import NavigationButtons from './NavigationButtons';
 import { OrganizationResult } from '@/types';
 import { initializeImageClassifier, analyzeImage } from '@/utils/imageAnalysis';
+import VideoAnalysisModal from './VideoAnalysisModal';
 
 const FileOrganizer = () => {
-  const [files, setFiles] = useState<File[]>();
+  const [files, setFiles] = useState<File[]>([]);
   const [organizationResult, setOrganizationResult] = useState<OrganizationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isClassifierReady, setIsClassifierReady] = useState(false);
+  const [showAnalysisModal, setShowAnalysisModal] = useState(false);
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const [unrecognizedFiles, setUnrecognizedFiles] = useState<File[]>([]);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const initClassifier = async () => {
-      try {
-        const success = await initializeImageClassifier();
-        setIsClassifierReady(success);
-        console.log('Classifier initialization:', success ? 'successful' : 'failed');
-        
-        if (!success) {
-          toast({
-            variant: "destructive",
-            title: "Initialization Error",
-            description: "Failed to initialize the image classifier. Please try again.",
-          });
-        }
-      } catch (error) {
-        console.error('Classifier initialization error:', error);
-        setIsClassifierReady(false);
-        toast({
-          variant: "destructive",
-          title: "Initialization Error",
-          description: "Failed to initialize the image classifier. Please try again.",
-        });
-      }
-    };
-
-    initClassifier();
-  }, [toast]);
-
-  const handleDrop = async (e: React.DragEvent) => {
-    e.preventDefault();
-    const droppedFiles = Array.from(e.dataTransfer.files);
-    await processFiles(droppedFiles);
-  };
-
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const selectedFiles = Array.from(e.target.files);
-      await processFiles(selectedFiles);
-    }
-  };
 
   const processFiles = async (newFiles: File[]) => {
     if (!isClassifierReady) {
@@ -71,9 +34,10 @@ const FileOrganizer = () => {
     setFiles(newFiles);
     setIsProcessing(true);
     setProgress(0);
+    setShowAnalysisModal(true);
 
     const categorizedFiles = new Map<string, File[]>();
-    const unorganizedFiles: File[] = [];
+    const tempUnrecognizedFiles: File[] = [];
     
     // Initialize categories
     FOLDER_CATEGORIES.forEach(category => {
@@ -83,6 +47,7 @@ const FileOrganizer = () => {
     try {
       for (let i = 0; i < newFiles.length; i++) {
         const file = newFiles[i];
+        setCurrentFile(file);
         console.log(`Processing file ${i + 1}/${newFiles.length}: ${file.name}`);
 
         if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
@@ -97,27 +62,29 @@ const FileOrganizer = () => {
               console.log(`Categorized ${file.name} as ${analysis.category} with confidence ${analysis.confidence}`);
             } else {
               console.log(`File ${file.name} not confidently categorized (confidence: ${analysis.confidence})`);
-              unorganizedFiles.push(file);
+              tempUnrecognizedFiles.push(file);
             }
           } catch (error) {
             console.error(`Error analyzing file ${file.name}:`, error);
-            unorganizedFiles.push(file);
+            tempUnrecognizedFiles.push(file);
           }
         } else {
           console.log(`Skipping non-image/video file: ${file.name}`);
-          unorganizedFiles.push(file);
+          tempUnrecognizedFiles.push(file);
         }
 
         setProgress(((i + 1) / newFiles.length) * 100);
       }
 
+      setUnrecognizedFiles(tempUnrecognizedFiles);
+
       const result: OrganizationResult = {
         categorizedFiles,
-        unorganizedFiles,
+        unorganizedFiles: tempUnrecognizedFiles,
         stats: {
           totalFiles: newFiles.length,
-          categorizedCount: newFiles.length - unorganizedFiles.length,
-          uncategorizedCount: unorganizedFiles.length
+          categorizedCount: newFiles.length - tempUnrecognizedFiles.length,
+          uncategorizedCount: tempUnrecognizedFiles.length
         }
       };
 
@@ -141,6 +108,33 @@ const FileOrganizer = () => {
     }
   };
 
+  const handleCategorySelect = (file: File, category: string) => {
+    setUnrecognizedFiles(prev => prev.filter(f => f !== file));
+    
+    if (organizationResult) {
+      const newCategorizedFiles = new Map(organizationResult.categorizedFiles);
+      const categoryFiles = newCategorizedFiles.get(category) || [];
+      categoryFiles.push(file);
+      newCategorizedFiles.set(category, categoryFiles);
+      
+      setOrganizationResult({
+        ...organizationResult,
+        categorizedFiles: newCategorizedFiles,
+        unorganizedFiles: organizationResult.unorganizedFiles.filter(f => f !== file),
+        stats: {
+          ...organizationResult.stats,
+          categorizedCount: organizationResult.stats.categorizedCount + 1,
+          uncategorizedCount: organizationResult.stats.uncategorizedCount - 1
+        }
+      });
+    }
+
+    toast({
+      title: "File Categorized",
+      description: `${file.name} has been moved to ${category}`,
+    });
+  };
+
   return (
     <div className="max-w-7xl mx-auto space-y-6 p-6">
       <NavigationButtons showContinueButton={!!organizationResult} />
@@ -150,8 +144,17 @@ const FileOrganizer = () => {
         
         <div className="relative space-y-6">
           <FileUploadZone 
-            onDrop={handleDrop}
-            onFileSelect={handleFileSelect}
+            onDrop={(e) => {
+              e.preventDefault();
+              const droppedFiles = Array.from(e.dataTransfer.files);
+              processFiles(droppedFiles);
+            }}
+            onFileSelect={(e) => {
+              if (e.target.files) {
+                const selectedFiles = Array.from(e.target.files);
+                processFiles(selectedFiles);
+              }
+            }}
           />
 
           <OrganizationProgress 
@@ -162,6 +165,15 @@ const FileOrganizer = () => {
           {organizationResult && <OrganizationResults results={organizationResult} />}
 
           <FolderGrid categories={FOLDER_CATEGORIES} />
+
+          <VideoAnalysisModal 
+            isOpen={showAnalysisModal}
+            onClose={() => setShowAnalysisModal(false)}
+            currentFile={currentFile}
+            progress={progress}
+            unrecognizedFiles={unrecognizedFiles}
+            onCategorySelect={handleCategorySelect}
+          />
         </div>
       </div>
     </div>
