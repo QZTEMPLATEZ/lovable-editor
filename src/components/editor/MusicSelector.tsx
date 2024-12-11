@@ -59,14 +59,13 @@ const MusicSelector = () => {
 
     validFiles.forEach(file => {
       const analysis: MusicAnalysis = {
-        bpm: 120, // Default BPM value as number
+        bpm: 120,
         key: 'C',
         tempo: 120,
-        timeSignature: '4/4',
-        duration: 0, // Changed from string to number
-        loudness: -10,
+        duration: 180, // 3 minutes in seconds
         energy: 0.8,
-        danceability: 0.7
+        danceability: 0.7,
+        valence: 0.6
       };
       handleMusicSelect(analysis);
     });

@@ -64,7 +64,7 @@ export interface MusicAnalysis {
   energy?: number;
   danceability?: number;
   valence?: number;
-  duration?: number;
+  duration: number;
   sections?: {
     start: number;
     duration: number;
