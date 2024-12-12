@@ -137,11 +137,18 @@ export class VideoAnalysisService {
         const confidence = predictionConfidence.get(category) || 0;
         const finalScore = score * confidence;
         
-        if (finalScore > bestScore && confidence >= ORGANIZER_CONFIG.processing.confidenceThreshold) {
+        if (finalScore > bestScore) {
+          // Remove confidence threshold check to ensure all videos are categorized
           bestScore = finalScore;
           bestCategory = category;
         }
       });
+
+      // If no category was found or confidence is very low, mark for review
+      if (bestScore < 0.2) {
+        logger.info(`Video ${file.name} marked for review due to low confidence (${bestScore})`);
+        return 'Untagged';
+      }
       
       logger.info(`Video ${file.name} classified as ${bestCategory} with score ${bestScore}`);
       return bestCategory;

@@ -117,8 +117,8 @@ export const ORGANIZER_CONFIG = {
     maxConcurrent: 3,
     chunkSize: 10 * 1024 * 1024,
     timeout: 300000,
-    frameExtractionCount: 15, // Increased for better analysis
-    frameQuality: 0.90, // Increased for better quality
-    confidenceThreshold: 0.60
+    frameExtractionCount: 15,
+    frameQuality: 0.90,
+    confidenceThreshold: 0.20 // Lowered threshold to catch more videos
   }
 };
