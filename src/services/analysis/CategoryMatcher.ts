@@ -12,10 +12,12 @@ const CATEGORIES: CategoryCriteria[] = [
     name: 'BridePrep',
     visualCues: [
       'woman', 'bride', 'dress', 'makeup', 'hair', 'mirror', 'getting ready',
-      'wedding dress', 'bridal', 'preparation', 'beauty'
+      'wedding dress', 'bridal', 'preparation', 'beauty', 'making of',
+      'makeup artist', 'hairstylist', 'bride room', 'getting dressed',
+      'wedding gown', 'bridal suite', 'bride preparation'
     ],
     requiredCues: ['woman', 'indoor'],
-    confidence: 0.4
+    confidence: 0.35 // Lowered threshold for better detection
   },
   {
     name: 'GroomPrep',
@@ -123,7 +125,7 @@ export class CategoryMatcher {
     
     // Enhanced filename patterns
     const patterns = {
-      BridePrep: ['bride', 'noiva', 'makeup', 'maquiagem', 'getting_ready'],
+      BridePrep: ['bride', 'noiva', 'makeup', 'maquiagem', 'getting_ready', 'making_of', 'making'],
       GroomPrep: ['groom', 'noivo', 'suit', 'terno', 'prep'],
       Decoration: ['decor', 'flores', 'flowers', 'venue', 'local'],
       DroneFootage: ['drone', 'aerial', 'dji', 'mavic', 'air'],
