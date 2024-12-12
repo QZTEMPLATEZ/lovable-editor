@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { motion } from 'framer-motion';
-import { Search, Filter, Clock, Check } from 'lucide-react';
+import { Search, Filter, Clock, Check, FileVideo } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -99,12 +99,12 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                   <div className="flex items-center gap-2 mb-4">
                     {category.icon}
                     <h3 className="font-semibold text-white">{category.name}</h3>
-                    <span className="ml-auto bg-white/10 px-2 py-1 rounded-full text-sm">
+                    <span className="ml-auto bg-white/10 px-2 py-1 rounded-full text-xs">
                       {clipsByCategory[category.name]?.length || 0}
                     </span>
                   </div>
 
-                  <ScrollArea className="h-[400px]">
+                  <ScrollArea className="h-[300px]">
                     <div className="grid grid-cols-2 gap-2">
                       {clipsByCategory[category.name]?.map((clip, index) => (
                         <Draggable key={clip.id} draggableId={clip.id} index={index}>
@@ -127,11 +127,9 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                                       }}
                                       className="aspect-video bg-black relative"
                                     >
-                                      <img
-                                        src={clip.thumbnail}
-                                        alt={clip.name}
-                                        className="w-full h-full object-cover"
-                                      />
+                                      <div className="absolute inset-0 flex items-center justify-center bg-editor-panel/50">
+                                        <FileVideo className="w-8 h-8 text-purple-400" />
+                                      </div>
                                       <div className="absolute bottom-1 right-1 bg-black/80 px-1.5 py-0.5 rounded text-[10px] flex items-center gap-1">
                                         <Clock className="w-3 h-3" />
                                         {clip.duration}
