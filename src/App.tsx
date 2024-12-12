@@ -17,6 +17,7 @@ import IntroScreen from "./components/IntroScreen";
 import { VideoTypeProvider } from "./contexts/VideoTypeContext";
 import VideoTypeIndicator from "./components/VideoTypeIndicator";
 import ReviewStep from "./components/editor/ReviewStep";
+import LoginModal from "./components/auth/LoginModal";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const AppContent = () => {
   const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
   const [showIntro, setShowIntro] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
 
   const getCurrentStep = () => {
@@ -51,6 +53,11 @@ const AppContent = () => {
 
   const handleTutorialComplete = () => {
     setShowTutorial(false);
+    setShowLoginModal(true);
+  };
+
+  const handlePlanSelect = () => {
+    setShowLoginModal(false);
   };
 
   const handleStyleSelect = (style: VideoStyle) => {
@@ -72,6 +79,11 @@ const AppContent = () => {
       <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
         {showIntro && <IntroScreen onComplete={handleIntroComplete} />}
         {showTutorial && !showIntro && <TutorialVideo onComplete={handleTutorialComplete} />}
+        <LoginModal 
+          isOpen={showLoginModal} 
+          onClose={() => setShowLoginModal(false)}
+          onPlanSelect={handlePlanSelect}
+        />
 
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />

@@ -2,12 +2,11 @@ import React from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Mail } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import PricingPlans from "../pricing/PricingPlans";
 
 interface LoginModalProps {
@@ -19,25 +18,33 @@ interface LoginModalProps {
 const LoginModal = ({ isOpen, onClose, onPlanSelect }: LoginModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-editor-panel border-editor-border">
+      <DialogContent className="sm:max-w-[800px] bg-editor-panel border-editor-border">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-light text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
+          <DialogTitle className="text-3xl font-light text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-2">
             Welcome to OSÍRIZ
           </DialogTitle>
-          <DialogDescription className="text-center text-gray-400">
-            Choose how you'd like to continue
-          </DialogDescription>
+          <p className="text-center text-gray-400 text-lg">
+            Choose your plan to start creating amazing videos
+          </p>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
-          <div className="space-y-3">
+        <div className="space-y-8 py-6">
+          <div className="flex flex-col gap-4 items-center">
             <Button 
               variant="outline" 
-              className="w-full border-editor-border hover:bg-editor-accent/10"
-              onClick={() => console.log('Email login')}
+              size="lg"
+              className="w-full max-w-md border-editor-border hover:bg-editor-accent/10 gap-2"
             >
-              <Mail className="mr-2 h-4 w-4" />
+              <Mail className="w-5 h-5" />
               Continue with Email
+            </Button>
+            <Button 
+              variant="outline"
+              size="lg" 
+              className="w-full max-w-md border-editor-border hover:bg-editor-accent/10 gap-2"
+            >
+              <Lock className="w-5 h-5" />
+              Sign in Securely
             </Button>
           </div>
 
@@ -46,7 +53,7 @@ const LoginModal = ({ isOpen, onClose, onPlanSelect }: LoginModalProps) => {
               <span className="w-full border-t border-editor-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-editor-panel px-2 text-gray-400">Available Plans</span>
+              <span className="bg-editor-panel px-4 text-gray-400 text-sm">Available Plans</span>
             </div>
           </div>
 
