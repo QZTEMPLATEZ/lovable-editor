@@ -16,6 +16,7 @@ import IntroScreen from "./components/IntroScreen";
 import { VideoTypeProvider } from "./contexts/VideoTypeContext";
 import VideoTypeIndicator from "./components/VideoTypeIndicator";
 import LoginModal from "./components/auth/LoginModal";
+import VideoOrganizer from "./components/organizer/VideoOrganizer";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,8 @@ const AppContent = () => {
         return 1;
       case '/music':
         return 2;
+      case '/organize':
+        return 3;
       default:
         return -1;
     }
@@ -109,6 +112,10 @@ const AppContent = () => {
               <Route 
                 path="/music" 
                 element={<MusicSelector onMusicSelect={handleMusicSelect} />}
+              />
+              <Route 
+                path="/organize" 
+                element={<VideoOrganizer />}
               />
             </Routes>
           </div>

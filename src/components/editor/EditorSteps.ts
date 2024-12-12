@@ -10,5 +10,9 @@ export const EDITOR_STEPS = [
   {
     title: "Music",
     description: "Add soundtrack",
+  },
+  {
+    title: "Organize",
+    description: "Sort footage",
   }
 ];
