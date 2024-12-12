@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { VideoStyle } from '../../types/video';
 import { VIDEO_STYLES } from '@/constants/videoStyles';
-import VideoStyleItem from './VideoStyleItem';
+import StyleGrid from './style/StyleGrid';
 import ReferenceVideoBanner from './ReferenceVideoBanner';
 import { useToast } from '../ui/use-toast';
 
@@ -12,22 +12,13 @@ interface VideoStyleSelectorProps {
 }
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
-  const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleStyleSelect = (style: any) => {
-    const videoStyle: VideoStyle = {
-      id: style.id,
-      name: style.title,
-      description: style.description,
-      thumbnail: style.previewVideo,
-      videoUrl: style.previewVideo
-    };
-    
-    onStyleSelect(videoStyle);
+  const handleStyleSelect = (style: VideoStyle) => {
+    onStyleSelect(style);
     toast({
       title: "Style Selected",
-      description: `${style.title} style has been selected for your video.`,
+      description: `${style.name} style has been selected for your video.`,
     });
   };
 
@@ -52,24 +43,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
 
   return (
     <div className="space-y-8">
-      <div className="w-full max-w-none px-0 space-y-0 bg-[#0A0A0A]/95 backdrop-blur-sm">
-        {VIDEO_STYLES.map((style) => (
-          <VideoStyleItem
-            key={style.id}
-            style={{
-              id: style.id,
-              name: style.title,
-              description: style.description,
-              thumbnail: style.previewVideo,
-              videoUrl: style.previewVideo
-            }}
-            isHovered={hoveredStyle === style.id}
-            onMouseEnter={() => setHoveredStyle(style.id)}
-            onMouseLeave={() => setHoveredStyle(null)}
-            onStyleSelect={() => handleStyleSelect(style)}
-          />
-        ))}
-      </div>
+      <StyleGrid onStyleSelect={handleStyleSelect} />
 
       <ReferenceVideoBanner onFileInputClick={() => {
         const input = document.createElement('input');
@@ -77,22 +51,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         input.accept = 'video/*';
         input.onchange = (e) => {
           if (e.target instanceof HTMLInputElement) {
-            handleFileUpload({
-              target: e.target,
-              currentTarget: e.target,
-              type: 'change',
-              nativeEvent: e,
-              isDefaultPrevented: () => false,
-              isPropagationStopped: () => false,
-              persist: () => {},
-              preventDefault: () => {},
-              stopPropagation: () => {},
-              bubbles: true,
-              cancelable: true,
-              defaultPrevented: false,
-              isTrusted: true,
-              timeStamp: Date.now()
-            } as React.ChangeEvent<HTMLInputElement>);
+            handleFileUpload(e as React.ChangeEvent<HTMLInputElement>);
           }
         };
         input.click();
