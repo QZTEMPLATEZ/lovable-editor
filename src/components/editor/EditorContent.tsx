@@ -4,6 +4,7 @@ import VideoStyleSelector from './VideoStyleSelector';
 import EditingInterface from '../EditingInterface';
 import RawFilesSection from '../RawFilesSection';
 import AIEditStep from './AIEditStep';
+import ReviewStep from './ReviewStep';
 import { EditingMode } from '../EditingModeSelector';
 import { VideoSizeRange } from '../../types';
 import { VideoStyle } from '../../types/video';
@@ -87,6 +88,10 @@ const EditorContent = ({
           rawFiles={rawFiles}
           musicFile={selectedMusic[0]}
         />
+      )}
+
+      {currentStep === 5 && (
+        <ReviewStep />
       )}
     </>
   );

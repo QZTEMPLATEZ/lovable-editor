@@ -16,6 +16,7 @@ import TutorialVideo from "./components/TutorialVideo";
 import IntroScreen from "./components/IntroScreen";
 import { VideoTypeProvider } from "./contexts/VideoTypeContext";
 import VideoTypeIndicator from "./components/VideoTypeIndicator";
+import ReviewStep from "./components/editor/ReviewStep";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,8 @@ const AppContent = () => {
         return 2;
       case '/organize':
         return 3;
+      case '/review':
+        return 4;
       default:
         return -1;
     }
@@ -100,6 +103,10 @@ const AppContent = () => {
               <Route 
                 path="/organize" 
                 element={<FileOrganizer />}
+              />
+              <Route 
+                path="/review" 
+                element={<ReviewStep />}
               />
             </Routes>
           </div>
