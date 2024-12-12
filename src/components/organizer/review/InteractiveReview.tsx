@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { motion, HTMLMotionProps, PanInfo } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Search, Filter, Clock, Check } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
