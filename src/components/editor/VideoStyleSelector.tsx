@@ -1,77 +1,79 @@
-import { TooltipProvider } from "@/components/ui/tooltip";
+import React, { useState, useEffect } from 'react';
+import { VideoStyle } from '../../types/video';
+import { createImageUrlFromBase64, cleanupImageUrl } from '../../utils/imageUtils';
+import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from "@/hooks/use-toast";
-import { VideoStyle } from '@/types/video';
-import StyleGrid from './style/StyleGrid';
-import { useVideoType } from '@/contexts/VideoTypeContext';
+import { useToast } from '../ui/use-toast';
 
 interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
   onStyleSelect: (style: VideoStyle) => void;
   onCustomVideoUpload: (file: File) => void;
-  onNext?: () => void;
 }
 
-const VideoStyleSelector = ({ 
-  selectedStyle, 
-  onStyleSelect, 
-  onCustomVideoUpload, 
-  onNext 
-}: VideoStyleSelectorProps) => {
+const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
+  const [imageUrls, setImageUrls] = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { setSelectedStyle } = useVideoType();
+
+  useEffect(() => {
+    // Create object URLs for all base64 images
+    const urls: { [key: string]: string } = {};
+    
+    // Process your images here
+    // Example:
+    // urls.image1 = createImageUrlFromBase64(base64String1);
+    // urls.image2 = createImageUrlFromBase64(base64String2);
+    
+    setImageUrls(urls);
+
+    // Cleanup function
+    return () => {
+      Object.values(urls).forEach(url => cleanupImageUrl(url));
+    };
+  }, []);
 
   const handleStyleSelect = (style: VideoStyle) => {
     onStyleSelect(style);
-    setSelectedStyle(style);
-    
     toast({
-      title: `${style.name} Style Selected`,
-      description: style.description,
+      title: "Style Selected",
+      description: `Selected ${style.name} style`,
     });
-
-    if (onNext) {
-      onNext();
-    }
     navigate('/music');
   };
 
-  return (
-    <div className="flex flex-col w-screen max-w-[100vw] -mx-[100vw] relative left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-[#0A0A0A]">
-      {/* Hero Section */}
-      <div className="relative h-[50vh] bg-[#0A0A0A] overflow-hidden">
-        {/* Background video */}
-        <div className="absolute inset-0 w-full h-full">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-40"
-          >
-            <source src="https://www.dropbox.com/scl/fi/rxab2rc98t7ox9hxcrb4b/251219_Urban-Couple-Photoshoot-Photography_By_Azulroto_Artlist_4K.mp4?raw=1" type="video/mp4" />
-          </video>
-          {/* Darker gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/90 to-black/95" />
-        </div>
-        
-        {/* Content container */}
-        <div className="relative container mx-auto h-full max-w-[2560px] px-4 lg:px-8">
-          <div className="flex flex-col justify-center h-full max-w-2xl lg:max-w-3xl xl:max-w-4xl">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-cinzel font-extrabold tracking-[0.2em] uppercase text-white mb-4 leading-tight">
-              SELECT YOUR<br />FILM STYLE
-            </h1>
-            <p className="text-sm md:text-base lg:text-lg text-white/80 mb-6 max-w-xl lg:max-w-2xl font-['Montserrat'] font-light leading-relaxed">
-              Choose the perfect style for your video project. Each option is carefully designed 
-              to match different content needs.
-            </p>
-          </div>
-        </div>
-      </div>
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      onCustomVideoUpload(file);
+    }
+  };
 
-      {/* Style Grid Section */}
-      <StyleGrid onStyleSelect={handleStyleSelect} />
+  return (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-white">Choose Your Style</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Your style options rendering here */}
+      </div>
+      
+      <div className="mt-8">
+        <input
+          type="file"
+          accept="video/*"
+          onChange={handleFileUpload}
+          className="hidden"
+          id="video-upload"
+        />
+        <label htmlFor="video-upload">
+          <Button
+            variant="outline"
+            className="w-full text-white border-purple-500 hover:bg-purple-500/20"
+            asChild
+          >
+            <span>Upload Custom Video</span>
+          </Button>
+        </label>
+      </div>
     </div>
   );
 };
