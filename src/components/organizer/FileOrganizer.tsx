@@ -7,22 +7,18 @@ import NavigationButtons from './NavigationButtons';
 import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { useFileProcessing } from '../../hooks/useFileProcessing';
 import FileUploadHandler from './upload/FileUploadHandler';
-import { FileVideo, AlertCircle, StopCircle } from 'lucide-react';
-import { ScrollArea } from '../ui/scroll-area';
-import { Progress } from '../ui/progress';
 import { motion } from 'framer-motion';
-import { Alert, AlertDescription } from '../ui/alert';
-import { Button } from '../ui/button';
+import ProcessingStatus from './processing/ProcessingStatus';
+import CategoryGrid from './categories/CategoryGrid';
 
 const mapCategoryToClipType = (category: string): "preparation" | "ceremony" | "celebration" => {
-  // Map categories to clip types
   if (category.toLowerCase().includes('prep') || category.toLowerCase().includes('detail')) {
     return 'preparation';
   }
   if (category.toLowerCase().includes('ceremony') || category.toLowerCase().includes('vow')) {
     return 'ceremony';
   }
-  return 'celebration'; // Default to celebration for other categories
+  return 'celebration';
 };
 
 const FileOrganizer = () => {
@@ -115,67 +111,20 @@ const FileOrganizer = () => {
           />
         </div>
 
-        {/* Processing Status with Stop Button and Remaining Time */}
-        {isProcessing && (
-          <div className="space-y-4 mb-8">
-            <Alert className="bg-purple-500/10 border-purple-500/30">
-              <AlertDescription className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <FileVideo className="animate-pulse" />
-                  <span>Processing: {currentFile?.name}</span>
-                </div>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={stopProcessing}
-                  className="bg-red-500/10 hover:bg-red-500/20 text-red-400"
-                >
-                  <StopCircle className="w-4 h-4 mr-2" />
-                  Stop Processing
-                </Button>
-              </AlertDescription>
-            </Alert>
-            
-            <div className="space-y-2">
-              <Progress value={totalProgress} className="h-2" />
-              <div className="flex justify-between text-sm text-gray-400">
-                <span>{Math.round(totalProgress)}% Complete</span>
-                <span>~{remainingTimeMinutes} minutes remaining</span>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Processing Status */}
+        <ProcessingStatus
+          isProcessing={isProcessing}
+          currentFile={currentFile}
+          totalProgress={totalProgress}
+          remainingTimeMinutes={remainingTimeMinutes}
+          onStopProcessing={stopProcessing}
+        />
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          {FOLDER_CATEGORIES.map((category) => (
-            <motion.div
-              key={category.name}
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className={`p-4 rounded-xl border ${category.color} backdrop-blur-sm`}
-            >
-              <div className="flex items-center gap-3 mb-2">
-                {category.icon}
-                <h3 className="font-semibold text-white">{category.name}</h3>
-                <span className="ml-auto bg-white/10 px-2 py-1 rounded-full text-sm">
-                  {analysisResults.filter(r => r.category === category.name).length}
-                </span>
-              </div>
-              {analysisResults.filter(r => r.category === category.name).length > 0 && (
-                <ScrollArea className="h-32 mt-2">
-                  {analysisResults
-                    .filter(r => r.category === category.name)
-                    .map((result, index) => (
-                      <div key={index} className="text-sm text-gray-300 py-1 px-2">
-                        {result.file.name}
-                      </div>
-                    ))}
-                </ScrollArea>
-              )}
-            </motion.div>
-          ))}
-        </div>
+        <CategoryGrid 
+          categories={FOLDER_CATEGORIES}
+          analysisResults={analysisResults}
+        />
 
         {/* Processing Summary */}
         {(successCount > 0 || errorCount > 0) && (
