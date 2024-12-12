@@ -29,9 +29,9 @@ const EditorNavigation = ({ currentStep, onPrevious, onNext }: EditorNavigationP
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={onNext}
-        disabled={currentStep === 4}
+        disabled={currentStep === 5}
         className={`flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200
-          ${currentStep === 4
+          ${currentStep === 5
             ? 'opacity-50 cursor-not-allowed bg-editor-panel/50'
             : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90'}`}
       >

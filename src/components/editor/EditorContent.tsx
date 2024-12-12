@@ -8,6 +8,7 @@ import ReviewStep from './review/ReviewStep';
 import { EditingMode } from '../EditingModeSelector';
 import { VideoSizeRange } from '../../types';
 import { VideoStyle } from '../../types/video';
+import ReviewClassificationStep from './review/ReviewClassificationStep';
 
 interface EditorContentProps {
   currentStep: number;
@@ -91,6 +92,16 @@ const EditorContent = ({
       )}
 
       {currentStep === 5 && (
+        <ReviewClassificationStep 
+          rawFiles={rawFiles}
+          onClassificationUpdate={(fileId: string, newCategory: string) => {
+            // Here we would update the classification in the backend
+            console.log(`File ${fileId} moved to category ${newCategory}`);
+          }}
+        />
+      )}
+
+      {currentStep === 6 && (
         <ReviewStep 
           rawFiles={rawFiles}
           selectedMusic={selectedMusic}

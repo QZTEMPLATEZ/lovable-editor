@@ -5,12 +5,12 @@ export class VideoAnalysisService {
   private static readonly CONFIDENCE_THRESHOLD = 0.3;
   
   private static readonly CATEGORY_PATTERNS = {
-    brideprep: [/bride.*prep/i, /noiva.*prep/i, /makeup/i, /maquiagem/i, /getting.*ready/i],
-    groomprep: [/groom.*prep/i, /noivo.*prep/i, /suit/i, /terno/i],
-    decoration: [/decor/i, /flores/i, /flowers/i, /venue/i, /local/i, /details/i],
-    drone: [/drone/i, /aerial/i, /dji/i, /mavic/i, /air2s/i],
-    ceremony: [/cerim[oôó]nia/i, /ceremony/i, /altar/i, /church/i, /igreja/i, /wedding/i],
-    reception: [/recep[cç][aã]o/i, /reception/i, /party/i, /festa/i, /dance/i, /first.*dance/i]
+    brideprep: [/bride.*prep/i, /noiva.*prep/i, /makeup/i, /maquiagem/i, /getting.*ready/i, /bride/i, /noiva/i],
+    groomprep: [/groom.*prep/i, /noivo.*prep/i, /suit/i, /terno/i, /groom/i, /noivo/i],
+    decoration: [/decor/i, /flores/i, /flowers/i, /venue/i, /local/i, /details/i, /detalhes/i],
+    drone: [/drone/i, /aerial/i, /dji/i, /mavic/i, /air2s/i, /phantom/i],
+    ceremony: [/cerim[oôó]nia/i, /ceremony/i, /altar/i, /church/i, /igreja/i, /wedding/i, /casamento/i],
+    reception: [/recep[cç][aã]o/i, /reception/i, /party/i, /festa/i, /dance/i, /first.*dance/i, /primeira.*danca/i]
   };
 
   static async analyzeVideo(file: File): Promise<{ category: VideoCategory; confidence: number }> {
@@ -37,7 +37,7 @@ export class VideoAnalysisService {
       return { category: bestGuessCategory, confidence: 0.4 };
     } catch (error) {
       logger.error(`Error analyzing file ${file.name}:`, error);
-      return { category: 'reception', confidence: 0.3 }; // Default to reception if all else fails
+      return { category: 'untagged', confidence: 0.3 }; // Default to untagged if all else fails
     }
   }
 
@@ -93,7 +93,7 @@ export class VideoAnalysisService {
     const timeBasedCategories: VideoCategory[] = ['brideprep', 'groomprep', 'decoration', 'ceremony', 'reception'];
     const fileNumber = parseInt(file.name.replace(/\D/g, '')) || 0;
     const index = Math.floor((fileNumber % 100) / 20);
-    return timeBasedCategories[index] || 'reception';
+    return timeBasedCategories[index] || 'untagged';
   }
 }
 
