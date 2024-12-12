@@ -20,7 +20,8 @@ const FileOrganizer = () => {
     currentFile,
     successCount,
     errorCount,
-    handleFilesSelected
+    handleFilesSelected,
+    stopProcessing
   } = useFileProcessing();
 
   const handleExport = async (format: 'premiere' | 'finalcut' | 'resolve') => {
@@ -94,6 +95,7 @@ const FileOrganizer = () => {
           successCount={successCount}
           errorCount={errorCount}
           totalFiles={files.length}
+          onStopProcessing={stopProcessing}
         />
 
         <CategoryGrid analysisResults={analysisResults} />
