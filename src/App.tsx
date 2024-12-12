@@ -8,7 +8,7 @@ import VideoStyleSelector from "./components/editor/VideoStyleSelector";
 import MusicSelector from "./components/editor/MusicSelector";
 import { useState } from "react";
 import { VideoStyle } from "./types/video";
-import PricingPlans from "./components/pricing/PricingPlans";
+import PricingPlans from "@/components/pricing/PricingPlans";
 import StepIndicator from "./components/StepIndicator";
 import { EDITOR_STEPS } from "./components/editor/EditorSteps";
 import TutorialVideo from "./components/TutorialVideo";
