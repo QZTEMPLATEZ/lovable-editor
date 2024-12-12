@@ -1,7 +1,7 @@
 import { logger } from '../utils/logger';
 import { ORGANIZER_CONFIG } from '../config/organizerConfig';
-import { analyzeImage } from '../utils/imageAnalysis';
 import { getVideoMetadata } from '../utils/videoProcessing';
+import { videoAnalysisService } from './VideoAnalysisService';
 
 export interface AnalysisResult {
   file: File;
@@ -42,26 +42,26 @@ export class FileAnalysisService {
         throw new Error('File size exceeds maximum limit');
       }
 
-      // Get video metadata if it's a video file
+      // Get video metadata
       let metadata = {};
       if (file.type.startsWith('video/')) {
         metadata = await getVideoMetadata(file);
       }
 
-      // Perform image analysis
-      const analysis = await analyzeImage(file);
+      // Perform visual analysis
+      const category = await videoAnalysisService.analyzeVideo(file);
       
       return {
         file,
-        category: analysis.category,
-        confidence: analysis.confidence,
+        category,
+        confidence: 1.0, // We'll trust the video analysis service's internal confidence scoring
         metadata
       };
     } catch (error) {
       logger.error(`Analysis failed for file: ${file.name}`, error);
       return {
         file,
-        category: ORGANIZER_CONFIG.categories.defaultCategory,
+        category: 'Extras',
         confidence: 0,
         error: error instanceof Error ? error.message : 'Unknown error occurred'
       };
