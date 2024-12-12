@@ -1,24 +1,21 @@
 import React from 'react';
 import FolderCard from './FolderCard';
-import { LucideIcon } from 'lucide-react';
+import { FolderCategory } from '@/types';
 
 interface FolderGridProps {
-  folders: {
-    name: string;
-    icon: React.ReactElement<LucideIcon>;
-  }[];
-  categorizedFiles: Record<string, number>;
+  categories: FolderCategory[];
+  categorizedFiles?: Record<string, number>;
 }
 
-const FolderGrid = ({ folders, categorizedFiles }: FolderGridProps) => {
+const FolderGrid = ({ categories, categorizedFiles = {} }: FolderGridProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-      {folders.map((folder) => (
+      {categories.map((folder) => (
         <FolderCard
           key={folder.name}
           name={folder.name}
           icon={folder.icon}
-          count={categorizedFiles[folder.name]}
+          count={categorizedFiles[folder.name] || 0}
         />
       ))}
     </div>
