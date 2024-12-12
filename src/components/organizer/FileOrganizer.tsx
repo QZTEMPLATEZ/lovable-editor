@@ -5,7 +5,6 @@ import FileUploadHandler from './upload/FileUploadHandler';
 import ProcessingStatus from './processing/ProcessingStatus';
 import CategoryGrid from './categories/CategoryGrid';
 import ProcessingStatusDisplay from './status/ProcessingStatusDisplay';
-import ExportOptions from './export/ExportOptions';
 import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 
 const FileOrganizer = () => {
@@ -55,12 +54,6 @@ const FileOrganizer = () => {
         <CategoryGrid 
           categories={FOLDER_CATEGORIES}
           analysisResults={analysisResults}
-        />
-
-        {/* Export Options */}
-        <ExportOptions 
-          analysisResults={analysisResults}
-          isProcessing={isProcessing}
         />
 
         {/* Processing Summary */}
