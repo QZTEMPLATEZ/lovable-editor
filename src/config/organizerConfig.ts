@@ -84,9 +84,23 @@ export const ORGANIZER_CONFIG = {
           'church ceremony',
           'outdoor ceremony',
           'wedding rings',
-          'bride entrance'
+          'bride entrance',
+          'rows of chairs',
+          'wedding arch',
+          'celebrant',
+          'wedding program',
+          'formal attire',
+          'aisle runner',
+          'unity candle',
+          'wedding ritual'
         ],
-        confidence: 0.70
+        confidence: 0.70,
+        requiredCues: ['ceremony', 'wedding', 'altar', 'aisle'],
+        environmentalCues: ['chairs', 'benches', 'church', 'outdoor'],
+        motionThresholds: {
+          maxMotion: 0.7, // Allow for walking down aisle
+          minStability: 0.3 // Lower threshold for ceremony movement
+        }
       },
       Decoration: {
         visualCues: [

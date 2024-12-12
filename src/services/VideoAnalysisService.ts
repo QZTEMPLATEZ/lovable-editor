@@ -3,6 +3,7 @@ import { BaseAnalysisService } from './analysis/BaseAnalysisService';
 import { PrepAnalyzer } from './analysis/PrepAnalyzer';
 import { DecorationAnalyzer } from './analysis/DecorationAnalyzer';
 import { DroneAnalyzer } from './analysis/DroneAnalyzer';
+import { CeremonyAnalyzer } from './analysis/CeremonyAnalyzer';
 
 export class VideoAnalysisService extends BaseAnalysisService {
   private static instance: VideoAnalysisService;
@@ -33,10 +34,12 @@ export class VideoAnalysisService extends BaseAnalysisService {
       let groomPrepFrames = 0;
       let decorationFrames = 0;
       let droneFrames = 0;
+      let ceremonyFrames = 0;
       let totalBridePrepConfidence = 0;
       let totalGroomPrepConfidence = 0;
       let totalDecorationConfidence = 0;
       let totalDroneConfidence = 0;
+      let totalCeremonyConfidence = 0;
       
       for (const frame of frames) {
         const imageData = frame.toDataURL('image/jpeg', 0.8);
@@ -46,6 +49,7 @@ export class VideoAnalysisService extends BaseAnalysisService {
         const groomPrep = PrepAnalyzer.isGroomPrepScene(predictions);
         const decoration = DecorationAnalyzer.isDecorationScene(predictions);
         const drone = DroneAnalyzer.isDroneShot(predictions);
+        const ceremony = CeremonyAnalyzer.isCeremonyScene(predictions);
 
         if (bridePrep.isPrep) {
           bridePrepFrames++;
@@ -66,31 +70,42 @@ export class VideoAnalysisService extends BaseAnalysisService {
           droneFrames++;
           totalDroneConfidence += drone.confidence;
         }
+
+        if (ceremony.isCeremony) {
+          ceremonyFrames++;
+          totalCeremonyConfidence += ceremony.confidence;
+        }
       }
       
       const bridePrepRatio = bridePrepFrames / frames.length;
       const groomPrepRatio = groomPrepFrames / frames.length;
       const decorationRatio = decorationFrames / frames.length;
       const droneRatio = droneFrames / frames.length;
+      const ceremonyRatio = ceremonyFrames / frames.length;
       
       const avgBridePrepConfidence = bridePrepFrames > 0 ? totalBridePrepConfidence / bridePrepFrames : 0;
       const avgGroomPrepConfidence = groomPrepFrames > 0 ? totalGroomPrepConfidence / groomPrepFrames : 0;
       const avgDecorationConfidence = decorationFrames > 0 ? totalDecorationConfidence / decorationFrames : 0;
       const avgDroneConfidence = droneFrames > 0 ? totalDroneConfidence / droneFrames : 0;
+      const avgCeremonyConfidence = ceremonyFrames > 0 ? totalCeremonyConfidence / ceremonyFrames : 0;
       
       logger.info(`Video ${file.name} analysis results:`, {
         bridePrepRatio,
         groomPrepRatio,
         decorationRatio,
         droneRatio,
+        ceremonyRatio,
         avgBridePrepConfidence,
         avgGroomPrepConfidence,
         avgDecorationConfidence,
-        avgDroneConfidence
+        avgDroneConfidence,
+        avgCeremonyConfidence
       });
 
       // Determine the most likely category based on ratio and confidence
-      if (droneRatio > 0.4 && avgDroneConfidence > 0.5) {
+      if (ceremonyRatio > 0.4 && avgCeremonyConfidence > 0.7) {
+        return 'Ceremony';
+      } else if (droneRatio > 0.4 && avgDroneConfidence > 0.5) {
         return 'DroneFootage';
       } else if (decorationRatio > 0.4 && avgDecorationConfidence > 0.5) {
         return 'Decoration';
