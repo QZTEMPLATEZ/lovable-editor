@@ -18,10 +18,10 @@ export class VideoAnalysisService {
   async initialize() {
     try {
       if (!this.classifier) {
-        // Using a more reliable model that's available in ONNX format
         this.classifier = await pipeline(
           'image-classification',
-          'Xenova/vit-base-patch16-224'
+          'Xenova/vit-base-patch16-224',
+          { revision: 'main' }
         );
         logger.info('Video analysis classifier initialized successfully');
       }
@@ -35,15 +35,19 @@ export class VideoAnalysisService {
   private async extractFrames(file: File): Promise<HTMLCanvasElement[]> {
     const video = document.createElement('video');
     video.src = URL.createObjectURL(file);
-    await new Promise((resolve) => (video.onloadedmetadata = resolve));
+    
+    await new Promise((resolve, reject) => {
+      video.onloadedmetadata = resolve;
+      video.onerror = reject;
+    });
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d')!;
     const frames: HTMLCanvasElement[] = [];
     
-    // Extract frames at strategic points throughout the video
+    // Extract more frames for better analysis
+    const framePoints = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
     const duration = video.duration;
-    const framePoints = [0.1, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 0.95];
     
     for (const point of framePoints) {
       video.currentTime = duration * point;
@@ -54,7 +58,7 @@ export class VideoAnalysisService {
       ctx.drawImage(video, 0, 0);
       
       const frameCanvas = document.createElement('canvas');
-      frameCanvas.width = 224; // Standard input size for ResNet
+      frameCanvas.width = 224;
       frameCanvas.height = 224;
       const frameCtx = frameCanvas.getContext('2d')!;
       frameCtx.drawImage(
@@ -79,13 +83,15 @@ export class VideoAnalysisService {
       }
 
       const frames = await this.extractFrames(file);
+      console.log(`Analyzing ${frames.length} frames for video: ${file.name}`);
       
       let categoryScores = new Map<string, number>();
       let predictionConfidence = new Map<string, number>();
       
       for (const frame of frames) {
-        const imageData = frame.toDataURL('image/jpeg', ORGANIZER_CONFIG.processing.frameQuality);
+        const imageData = frame.toDataURL('image/jpeg', 0.8);
         const predictions = await this.classifier(imageData);
+        console.log('Frame predictions:', predictions);
         
         // Analyze predictions against each category's visual cues
         for (const [category, config] of Object.entries(ORGANIZER_CONFIG.analysis.categories)) {
@@ -108,19 +114,21 @@ export class VideoAnalysisService {
             const avgScore = totalScore / matchCount;
             const weightedScore = (maxScore * 0.7 + avgScore * 0.3);
             
-            if (weightedScore >= config.confidence) {
-              categoryScores.set(
-                category,
-                (categoryScores.get(category) || 0) + weightedScore
-              );
-              predictionConfidence.set(
-                category,
-                Math.max(predictionConfidence.get(category) || 0, weightedScore)
-              );
-            }
+            categoryScores.set(
+              category,
+              (categoryScores.get(category) || 0) + weightedScore
+            );
+            predictionConfidence.set(
+              category,
+              Math.max(predictionConfidence.get(category) || 0, weightedScore)
+            );
           }
         }
       }
+      
+      // Log category scores for debugging
+      console.log('Category scores:', Object.fromEntries(categoryScores));
+      console.log('Prediction confidence:', Object.fromEntries(predictionConfidence));
       
       let bestCategory = 'Extras';
       let bestScore = 0;
