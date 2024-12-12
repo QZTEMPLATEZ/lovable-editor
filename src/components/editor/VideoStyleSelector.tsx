@@ -2,9 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
 import { VideoStyle } from '@/types/video';
-import StyleHeader from './style/StyleHeader';
 import StyleGrid from './style/StyleGrid';
-import { VIDEO_STYLES } from '@/constants/videoStyles';
+import { useVideoType } from '@/contexts/VideoTypeContext';
 
 interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
@@ -21,9 +20,11 @@ const VideoStyleSelector = ({
 }: VideoStyleSelectorProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { setSelectedStyle } = useVideoType();
 
   const handleStyleSelect = (style: VideoStyle) => {
     onStyleSelect(style);
+    setSelectedStyle(style);
     
     toast({
       title: `${style.name} Style Selected`,

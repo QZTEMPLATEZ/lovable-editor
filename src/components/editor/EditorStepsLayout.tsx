@@ -1,43 +1,46 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import StepIndicator from '../StepIndicator';
+import { useVideoType } from '@/contexts/VideoTypeContext';
+import { Clock, Palette } from 'lucide-react';
 
-export interface EditorStepsLayoutProps {
+interface EditorStepsLayoutProps {
   currentStep: number;
-  children: React.ReactNode;
-  steps: {
+  steps: Array<{
     title: string;
     description: string;
-    icon?: React.ReactNode;
-  }[];
+  }>;
+  children: React.ReactNode;
 }
 
-const EditorStepsLayout = ({ currentStep, children, steps }: EditorStepsLayoutProps) => {
-  return (
-    <div className="min-h-screen bg-editor-bg">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
-      
-      <div className="relative max-w-7xl mx-auto p-6">
-        {/* Steps Progress using consolidated StepIndicator */}
-        <div className="mb-12">
-          <StepIndicator currentStep={currentStep} steps={steps} />
-        </div>
+const EditorStepsLayout = ({ currentStep, steps, children }: EditorStepsLayoutProps) => {
+  const { selectedVideoType, selectedStyle } = useVideoType();
 
-        {/* Content Area with optimized animations */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-          className="relative"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5 rounded-3xl" />
-          <div className="relative bg-editor-panel/50 backdrop-blur-xl rounded-3xl border border-editor-border/50 p-8">
-            {children}
+  return (
+    <div className="min-h-screen bg-editor-background">
+      {/* Timeline */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-editor-panel border-b border-editor-border">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-4 py-2">
+            {selectedVideoType && (
+              <div className="flex items-center gap-2 text-sm text-white/70">
+                <Clock className="w-4 h-4" />
+                <span>{selectedVideoType.name} ({selectedVideoType.label})</span>
+              </div>
+            )}
+            {selectedStyle && (
+              <div className="flex items-center gap-2 text-sm text-white/70">
+                <Palette className="w-4 h-4" />
+                <span>{selectedStyle.name}</span>
+              </div>
+            )}
           </div>
-        </motion.div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="container mx-auto px-4 pt-16">
+        <div className="max-w-4xl mx-auto">
+          {children}
+        </div>
       </div>
     </div>
   );
