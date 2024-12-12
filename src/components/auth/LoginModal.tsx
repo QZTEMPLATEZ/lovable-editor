@@ -17,33 +17,33 @@ interface LoginModalProps {
 const LoginModal = ({ isOpen, onClose, onPlanSelect }: LoginModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[520px] md:max-w-[580px] bg-editor-panel/95 border-editor-border p-6 h-[600px]">
-        <div className="flex flex-col h-full gap-8">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-light text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
+      <DialogContent className="sm:max-w-[640px] md:max-w-[720px] bg-editor-panel/95 border-editor-border p-4 aspect-video">
+        <div className="flex flex-col h-full gap-4">
+          <DialogHeader className="space-y-2">
+            <DialogTitle className="text-xl font-light text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
               Welcome to OSÍRIZ
             </DialogTitle>
-            <p className="text-center text-gray-400 text-sm mt-2">
+            <p className="text-center text-gray-400 text-xs">
               Choose your plan to start creating amazing videos
             </p>
           </DialogHeader>
 
-          <div className="flex flex-col gap-8 flex-grow">
-            <div className="space-y-3 max-w-[280px] mx-auto w-full">
+          <div className="flex flex-col gap-4 flex-grow">
+            <div className="space-y-2 max-w-[240px] mx-auto w-full">
               <Button 
                 variant="outline" 
-                size="default"
-                className="w-full border-editor-border hover:bg-editor-accent/10 gap-2 h-11"
+                size="sm"
+                className="w-full border-editor-border hover:bg-editor-accent/10 gap-2 h-8 text-sm"
               >
-                <Mail className="w-4 h-4" />
+                <Mail className="w-3 h-3" />
                 Continue with Email
               </Button>
               <Button 
                 variant="outline"
-                size="default"
-                className="w-full border-editor-border hover:bg-editor-accent/10 gap-2 h-11"
+                size="sm"
+                className="w-full border-editor-border hover:bg-editor-accent/10 gap-2 h-8 text-sm"
               >
-                <Lock className="w-4 h-4" />
+                <Lock className="w-3 h-3" />
                 Sign in Securely
               </Button>
 
@@ -51,13 +51,13 @@ const LoginModal = ({ isOpen, onClose, onPlanSelect }: LoginModalProps) => {
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t border-editor-border/30" />
                 </div>
-                <span className="relative px-3 text-xs text-gray-500 bg-editor-panel">
+                <span className="relative px-2 text-[10px] text-gray-500 bg-editor-panel">
                   Or choose a plan
                 </span>
               </div>
             </div>
 
-            <div className="flex-grow min-h-0 -mx-2">
+            <div className="flex-grow min-h-0 -mx-2 overflow-auto">
               <PricingPlans onComplete={onPlanSelect} />
             </div>
           </div>
