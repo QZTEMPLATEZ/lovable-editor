@@ -55,9 +55,21 @@ export const ORGANIZER_CONFIG = {
           'groom preparation',
           'groom details',
           'bow tie',
-          'tuxedo'
+          'tuxedo',
+          'men formal wear',
+          'cufflinks',
+          'men suit',
+          'men getting ready',
+          'formal male attire',
+          'men dressing room'
         ],
-        confidence: 0.65
+        confidence: 0.4, // Lower threshold for better detection
+        requiredCues: ['male', 'formal', 'suit'], // At least one of these must be present
+        environmentalCues: ['room', 'mirror', 'indoor'], // Supporting environmental context
+        motionThresholds: {
+          maxMotion: 0.6, // Limit for detecting stable, intimate scenes
+          minStability: 0.4 // Minimum stability requirement
+        }
       },
       Ceremony: {
         visualCues: [

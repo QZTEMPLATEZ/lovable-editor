@@ -45,7 +45,6 @@ export class VideoAnalysisService {
     const ctx = canvas.getContext('2d')!;
     const frames: HTMLCanvasElement[] = [];
     
-    // Extract more frames for better analysis
     const framePoints = Array.from({ length: 20 }, 
       (_, i) => i / 19);
     
@@ -76,6 +75,45 @@ export class VideoAnalysisService {
     return frames;
   }
 
+  private isGroomPrepScene(predictions: any[]): { isPrep: boolean; confidence: number } {
+    const groomPrepCues = ORGANIZER_CONFIG.analysis.categories.GroomPrep.visualCues;
+    const requiredCues = ORGANIZER_CONFIG.analysis.categories.GroomPrep.requiredCues;
+
+    let maxScore = 0;
+    let totalScore = 0;
+    let matchCount = 0;
+    let hasRequiredCue = false;
+
+    for (const prediction of predictions) {
+      const label = prediction.label.toLowerCase();
+      
+      for (const requiredCue of requiredCues) {
+        if (label.includes(requiredCue.toLowerCase())) {
+          hasRequiredCue = true;
+          break;
+        }
+      }
+
+      for (const cue of groomPrepCues) {
+        if (label.includes(cue.toLowerCase())) {
+          maxScore = Math.max(maxScore, prediction.score);
+          totalScore += prediction.score;
+          matchCount++;
+        }
+      }
+    }
+
+    if (matchCount === 0 || !hasRequiredCue) return { isPrep: false, confidence: 0 };
+
+    const avgScore = totalScore / matchCount;
+    const confidence = (maxScore * 0.7 + avgScore * 0.3);
+
+    return {
+      isPrep: confidence > ORGANIZER_CONFIG.analysis.categories.GroomPrep.confidence,
+      confidence
+    };
+  }
+
   private isBridePrepScene(predictions: any[]): { isPrep: boolean; confidence: number } {
     const bridePrepCues = [
       'bride', 'wedding dress', 'makeup', 'mirror', 'getting ready',
@@ -104,7 +142,7 @@ export class VideoAnalysisService {
     const confidence = (maxScore * 0.7 + avgScore * 0.3);
 
     return {
-      isPrep: confidence > 0.4, // Lower threshold for better detection
+      isPrep: confidence > 0.4,
       confidence
     };
   }
@@ -121,31 +159,45 @@ export class VideoAnalysisService {
       logger.info(`Analyzing ${frames.length} frames for video: ${file.name}`);
       
       let bridePrepFrames = 0;
-      let totalConfidence = 0;
+      let groomPrepFrames = 0;
+      let totalBridePrepConfidence = 0;
+      let totalGroomPrepConfidence = 0;
       
       for (const frame of frames) {
         const imageData = frame.toDataURL('image/jpeg', 0.8);
         const predictions = await this.classifier(imageData);
         
-        const { isPrep, confidence } = this.isBridePrepScene(predictions);
-        if (isPrep) {
+        const bridePrep = this.isBridePrepScene(predictions);
+        const groomPrep = this.isGroomPrepScene(predictions);
+
+        if (bridePrep.isPrep) {
           bridePrepFrames++;
-          totalConfidence += confidence;
+          totalBridePrepConfidence += bridePrep.confidence;
+        }
+
+        if (groomPrep.isPrep) {
+          groomPrepFrames++;
+          totalGroomPrepConfidence += groomPrep.confidence;
         }
       }
       
       const bridePrepRatio = bridePrepFrames / frames.length;
-      const avgConfidence = bridePrepFrames > 0 ? totalConfidence / bridePrepFrames : 0;
+      const groomPrepRatio = groomPrepFrames / frames.length;
+      
+      const avgBridePrepConfidence = bridePrepFrames > 0 ? totalBridePrepConfidence / bridePrepFrames : 0;
+      const avgGroomPrepConfidence = groomPrepFrames > 0 ? totalGroomPrepConfidence / groomPrepFrames : 0;
       
       logger.info(`Video ${file.name} analysis results:`, {
         bridePrepRatio,
-        avgConfidence,
-        bridePrepFrames
+        groomPrepRatio,
+        avgBridePrepConfidence,
+        avgGroomPrepConfidence
       });
 
-      // If more than 30% of frames are identified as bride prep with good confidence
-      if (bridePrepRatio > 0.3 && avgConfidence > 0.4) {
+      if (bridePrepRatio > 0.3 && avgBridePrepConfidence > 0.4) {
         return 'BridePrep';
+      } else if (groomPrepRatio > 0.3 && avgGroomPrepConfidence > 0.4) {
+        return 'GroomPrep';
       }
       
       return 'Untagged';
