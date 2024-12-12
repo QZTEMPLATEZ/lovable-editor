@@ -45,8 +45,10 @@ export class VideoAnalysisService {
     const ctx = canvas.getContext('2d')!;
     const frames: HTMLCanvasElement[] = [];
     
-    // Extract frames at key moments
-    const framePoints = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
+    // Extract frames at key moments with more samples
+    const framePoints = Array.from({ length: ORGANIZER_CONFIG.processing.frameExtractionCount }, 
+      (_, i) => i / (ORGANIZER_CONFIG.processing.frameExtractionCount - 1));
+    
     const duration = video.duration;
     
     for (const point of framePoints) {
@@ -57,7 +59,6 @@ export class VideoAnalysisService {
       canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0);
       
-      // Create a resized canvas for analysis
       const frameCanvas = document.createElement('canvas');
       frameCanvas.width = 224;
       frameCanvas.height = 224;
@@ -80,11 +81,11 @@ export class VideoAnalysisService {
       const initialized = await this.initialize();
       if (!initialized || !this.classifier) {
         logger.error('Classifier not initialized properly');
-        return 'Extras';
+        return 'Untagged';
       }
 
       const frames = await this.extractFrames(file);
-      console.log(`Analyzing ${frames.length} frames for video: ${file.name}`);
+      logger.info(`Analyzing ${frames.length} frames for video: ${file.name}`);
       
       let categoryScores = new Map<string, number>();
       let predictionConfidence = new Map<string, number>();
@@ -92,9 +93,8 @@ export class VideoAnalysisService {
       for (const frame of frames) {
         const imageData = frame.toDataURL('image/jpeg', ORGANIZER_CONFIG.processing.frameQuality);
         const predictions = await this.classifier(imageData);
-        console.log('Frame predictions:', predictions);
+        logger.info('Frame predictions:', predictions);
         
-        // Analyze predictions against each category's visual cues
         for (const [category, config] of Object.entries(ORGANIZER_CONFIG.analysis.categories)) {
           let maxScore = 0;
           let totalScore = 0;
@@ -113,7 +113,6 @@ export class VideoAnalysisService {
           
           if (matchCount > 0) {
             const avgScore = totalScore / matchCount;
-            // Weighted scoring system
             const weightedScore = (maxScore * 0.7 + avgScore * 0.3) * config.confidence;
             
             categoryScores.set(
@@ -128,11 +127,10 @@ export class VideoAnalysisService {
         }
       }
       
-      // Enhanced logging for debugging
-      console.log('Category scores:', Object.fromEntries(categoryScores));
-      console.log('Prediction confidence:', Object.fromEntries(predictionConfidence));
+      logger.info('Category scores:', Object.fromEntries(categoryScores));
+      logger.info('Prediction confidence:', Object.fromEntries(predictionConfidence));
       
-      let bestCategory = 'Extras';
+      let bestCategory = 'Untagged';
       let bestScore = 0;
       
       categoryScores.forEach((score, category) => {
@@ -150,7 +148,7 @@ export class VideoAnalysisService {
       
     } catch (error) {
       logger.error(`Error analyzing video ${file.name}:`, error);
-      return 'Extras';
+      return 'Untagged';
     }
   }
 }

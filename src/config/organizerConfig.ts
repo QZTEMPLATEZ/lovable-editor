@@ -22,9 +22,11 @@ export const ORGANIZER_CONFIG = {
           'bride mirror',
           'bride room',
           'bride preparation',
-          'bride makeup artist'
+          'bride makeup artist',
+          'wedding gown',
+          'bridal accessories'
         ],
-        confidence: 0.60
+        confidence: 0.65
       },
       GroomPrep: {
         visualCues: [
@@ -37,9 +39,11 @@ export const ORGANIZER_CONFIG = {
           'groom room',
           'groomsmen',
           'groom preparation',
-          'groom details'
+          'groom details',
+          'bow tie',
+          'tuxedo'
         ],
-        confidence: 0.60
+        confidence: 0.65
       },
       Ceremony: {
         visualCues: [
@@ -52,11 +56,13 @@ export const ORGANIZER_CONFIG = {
           'wedding guests seated',
           'wedding aisle',
           'church ceremony',
-          'outdoor ceremony'
+          'outdoor ceremony',
+          'wedding rings',
+          'bride entrance'
         ],
         confidence: 0.70
       },
-      Decor: {
+      Decoration: {
         visualCues: [
           'wedding decoration',
           'floral arrangement',
@@ -67,7 +73,9 @@ export const ORGANIZER_CONFIG = {
           'wedding flowers',
           'reception decor',
           'wedding lighting',
-          'wedding ambiance'
+          'wedding ambiance',
+          'venue setup',
+          'wedding venue'
         ],
         confidence: 0.65
       },
@@ -82,9 +90,26 @@ export const ORGANIZER_CONFIG = {
           'wedding dinner',
           'dance floor',
           'wedding entertainment',
-          'wedding celebration'
+          'wedding celebration',
+          'party lights',
+          'wedding guests dancing'
         ],
         confidence: 0.65
+      },
+      DroneFootage: {
+        visualCues: [
+          'aerial view',
+          'drone shot',
+          'bird eye view',
+          'aerial photography',
+          'landscape view',
+          'aerial footage',
+          'venue aerial',
+          'drone footage',
+          'aerial ceremony',
+          'aerial reception'
+        ],
+        confidence: 0.70
       }
     }
   },
@@ -92,8 +117,8 @@ export const ORGANIZER_CONFIG = {
     maxConcurrent: 3,
     chunkSize: 10 * 1024 * 1024,
     timeout: 300000,
-    frameExtractionCount: 12, // Increased from 8 to 12 for better analysis
-    frameQuality: 0.85, // Increased from 0.8 to 0.85 for better quality
-    confidenceThreshold: 0.55 // Lowered from 0.6 to 0.55 for better categorization
+    frameExtractionCount: 15, // Increased for better analysis
+    frameQuality: 0.90, // Increased for better quality
+    confidenceThreshold: 0.60
   }
 };

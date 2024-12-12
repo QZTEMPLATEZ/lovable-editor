@@ -1,138 +1,147 @@
-import { Camera, Video, Music, Image, Gift, Mic, FileVideo, Plane, Clock, Film } from 'lucide-react';
+import { Camera, Video, Music, Image, Gift, Mic, FileVideo, Plane, Clock, Film, Heart, Ring, Party, HelpCircle } from 'lucide-react';
 import { FolderCategory } from '../types';
 
 export const FOLDER_CATEGORIES: FolderCategory[] = [
   {
-    name: 'MakingOf',
-    icon: <Camera className="w-5 h-5" />,
-    description: 'Preparation process footage',
+    name: 'BridePrep',
+    icon: <Heart className="w-5 h-5" />,
+    description: 'Bride preparation and getting ready',
     expectedTypes: '.mp4, .mov',
-    color: 'from-purple-500/20 to-pink-500/20',
+    color: 'from-pink-500/20 to-rose-500/20',
     subfolders: [
       {
-        name: 'BridePrep',
+        name: 'Makeup',
         icon: <Camera className="w-4 h-4" />,
-        description: 'Bride getting ready footage',
+        description: 'Bride makeup process',
         expectedTypes: '.mp4, .mov',
         color: 'from-pink-400/20 to-pink-300/20'
       },
       {
-        name: 'GroomPrep',
+        name: 'Dress',
         icon: <Camera className="w-4 h-4" />,
-        description: 'Groom preparation footage',
+        description: 'Wedding dress moments',
+        expectedTypes: '.mp4, .mov',
+        color: 'from-pink-400/20 to-pink-300/20'
+      },
+      {
+        name: 'BridalDetails',
+        icon: <Ring className="w-4 h-4" />,
+        description: 'Bride accessories and details',
+        expectedTypes: '.mp4, .mov',
+        color: 'from-pink-400/20 to-pink-300/20'
+      }
+    ]
+  },
+  {
+    name: 'GroomPrep',
+    icon: <Video className="w-5 h-5" />,
+    description: 'Groom preparation footage',
+    expectedTypes: '.mp4, .mov',
+    color: 'from-blue-500/20 to-indigo-500/20',
+    subfolders: [
+      {
+        name: 'Suit',
+        icon: <Camera className="w-4 h-4" />,
+        description: 'Groom getting dressed',
         expectedTypes: '.mp4, .mov',
         color: 'from-blue-400/20 to-blue-300/20'
       },
       {
-        name: 'FamilyAndFriends',
-        icon: <Video className="w-4 h-4" />,
-        description: 'Family and friends preparation moments',
+        name: 'GroomDetails',
+        icon: <Ring className="w-4 h-4" />,
+        description: 'Groom accessories and details',
         expectedTypes: '.mp4, .mov',
-        color: 'from-green-400/20 to-green-300/20'
-      },
-      {
-        name: 'VenuePrep',
-        icon: <Video className="w-4 h-4" />,
-        description: 'Venue setup footage',
-        expectedTypes: '.mp4, .mov',
-        color: 'from-yellow-400/20 to-yellow-300/20'
+        color: 'from-blue-400/20 to-blue-300/20'
       }
     ]
   },
   {
     name: 'Ceremony',
-    icon: <Video className="w-5 h-5" />,
-    description: 'Main ceremony footage',
+    icon: <Heart className="w-5 h-5" />,
+    description: 'Wedding ceremony moments',
     expectedTypes: '.mp4, .mov',
-    color: 'from-blue-500/20 to-cyan-500/20',
+    color: 'from-purple-500/20 to-violet-500/20',
     subfolders: [
       {
-        name: 'Processional',
+        name: 'Entrance',
         icon: <Video className="w-4 h-4" />,
-        description: 'Wedding party entrance',
+        description: 'Ceremony entrance footage',
         expectedTypes: '.mp4, .mov',
-        color: 'from-blue-400/20 to-blue-300/20'
+        color: 'from-purple-400/20 to-purple-300/20'
       },
       {
         name: 'Vows',
         icon: <Video className="w-4 h-4" />,
-        description: 'Exchange of vows',
+        description: 'Wedding vows exchange',
         expectedTypes: '.mp4, .mov',
         color: 'from-purple-400/20 to-purple-300/20'
       },
       {
-        name: 'KeyMoments',
-        icon: <Video className="w-4 h-4" />,
-        description: 'Special ceremonial moments',
+        name: 'RingExchange',
+        icon: <Ring className="w-4 h-4" />,
+        description: 'Ring exchange moment',
         expectedTypes: '.mp4, .mov',
-        color: 'from-pink-400/20 to-pink-300/20'
+        color: 'from-purple-400/20 to-purple-300/20'
       }
     ]
   },
   {
-    name: 'Details',
+    name: 'Decoration',
     icon: <Image className="w-5 h-5" />,
-    description: 'Close-up shots and details',
+    description: 'Venue and decoration details',
     expectedTypes: '.mp4, .mov, .jpg, .png',
-    color: 'from-green-500/20 to-emerald-500/20',
+    color: 'from-amber-500/20 to-yellow-500/20',
     subfolders: [
       {
-        name: 'Rings',
-        icon: <Gift className="w-4 h-4" />,
-        description: 'Ring shots',
-        expectedTypes: '.mp4, .mov, .jpg, .png',
-        color: 'from-yellow-400/20 to-yellow-300/20'
-      },
-      {
-        name: 'Decor',
+        name: 'Venue',
         icon: <Image className="w-4 h-4" />,
-        description: 'Decoration details',
+        description: 'Venue setup and details',
         expectedTypes: '.mp4, .mov, .jpg, .png',
-        color: 'from-purple-400/20 to-purple-300/20'
-      }
-    ]
-  },
-  {
-    name: 'Audio',
-    icon: <Mic className="w-5 h-5" />,
-    description: 'Audio recordings',
-    expectedTypes: '.mp3, .wav',
-    color: 'from-orange-500/20 to-amber-500/20',
-    subfolders: [
-      {
-        name: 'VowsAudio',
-        icon: <Mic className="w-4 h-4" />,
-        description: 'Vows recordings',
-        expectedTypes: '.mp3, .wav',
-        color: 'from-red-400/20 to-red-300/20'
+        color: 'from-amber-400/20 to-amber-300/20'
       },
       {
-        name: 'Speeches',
-        icon: <Mic className="w-4 h-4" />,
-        description: 'Speech recordings',
-        expectedTypes: '.mp3, .wav',
-        color: 'from-orange-400/20 to-orange-300/20'
+        name: 'Flowers',
+        icon: <Image className="w-4 h-4" />,
+        description: 'Floral arrangements',
+        expectedTypes: '.mp4, .mov, .jpg, .png',
+        color: 'from-amber-400/20 to-amber-300/20'
       }
     ]
   },
   {
     name: 'DroneFootage',
     icon: <Plane className="w-5 h-5" />,
-    description: 'Aerial shots',
+    description: 'Aerial shots of venue and ceremony',
     expectedTypes: '.mp4, .mov',
     color: 'from-sky-500/20 to-blue-500/20'
   },
   {
-    name: 'SlowMotion',
-    icon: <Clock className="w-5 h-5" />,
-    description: 'Slow motion clips',
+    name: 'Reception',
+    icon: <Party className="w-5 h-5" />,
+    description: 'Wedding party and celebration',
     expectedTypes: '.mp4, .mov',
-    color: 'from-indigo-500/20 to-purple-500/20'
+    color: 'from-green-500/20 to-emerald-500/20',
+    subfolders: [
+      {
+        name: 'FirstDance',
+        icon: <Video className="w-4 h-4" />,
+        description: 'First dance moments',
+        expectedTypes: '.mp4, .mov',
+        color: 'from-green-400/20 to-green-300/20'
+      },
+      {
+        name: 'Party',
+        icon: <Party className="w-4 h-4" />,
+        description: 'Party celebration footage',
+        expectedTypes: '.mp4, .mov',
+        color: 'from-green-400/20 to-green-300/20'
+      }
+    ]
   },
   {
-    name: 'B-Roll',
-    icon: <Film className="w-5 h-5" />,
-    description: 'Additional footage',
+    name: 'Untagged',
+    icon: <HelpCircle className="w-5 h-5" />,
+    description: 'Videos pending classification',
     expectedTypes: '.mp4, .mov',
     color: 'from-gray-500/20 to-slate-500/20'
   }
