@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { motion, PanInfo } from 'framer-motion';
 import { FileVideo, Check, Undo } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ReviewClassificationStepProps {
   rawFiles?: File[];
@@ -124,46 +124,53 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
 
                   <ScrollArea className="h-[300px]">
                     <div className="grid grid-cols-2 gap-2">
-                      {files
-                        .filter(file => file.category === category.name)
-                        .map((file, index) => (
-                          <Draggable
-                            key={file.id}
-                            draggableId={file.id}
-                            index={index}
-                          >
-                            {(provided, snapshot) => (
-                              <motion.div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                initial={false}
-                                animate={{
-                                  scale: snapshot.isDragging ? 1.05 : 1,
-                                }}
-                                className={`relative rounded-lg overflow-hidden border ${
-                                  snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
-                                } ${lastMove?.fileId === file.id ? 'border-green-500' : ''}`}
-                              >
-                                <div className="aspect-video bg-black relative">
-                                  <div className="absolute inset-0 flex items-center justify-center bg-editor-panel/50">
-                                    <FileVideo className="w-8 h-8 text-purple-400" />
-                                  </div>
-                                  {lastMove?.fileId === file.id && (
-                                    <div className="absolute top-1 right-1 bg-green-500 rounded-full p-0.5">
-                                      <Check className="w-3 h-3 text-white" />
+                      <AnimatePresence>
+                        {files
+                          .filter(file => file.category === category.name)
+                          .map((file, index) => (
+                            <Draggable
+                              key={file.id}
+                              draggableId={file.id}
+                              index={index}
+                            >
+                              {(provided, snapshot) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className={`relative rounded-lg overflow-hidden border ${
+                                    snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
+                                  } ${lastMove?.fileId === file.id ? 'border-green-500' : ''}`}
+                                >
+                                  <motion.div
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ 
+                                      opacity: 1, 
+                                      scale: snapshot.isDragging ? 1.05 : 1
+                                    }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    className="aspect-video bg-black relative"
+                                  >
+                                    <div className="absolute inset-0 flex items-center justify-center bg-editor-panel/50">
+                                      <FileVideo className="w-8 h-8 text-purple-400" />
                                     </div>
-                                  )}
+                                    {lastMove?.fileId === file.id && (
+                                      <div className="absolute top-1 right-1 bg-green-500 rounded-full p-0.5">
+                                        <Check className="w-3 h-3 text-white" />
+                                      </div>
+                                    )}
+                                  </motion.div>
+                                  <div className="p-2">
+                                    <p className="text-xs text-gray-300 truncate">
+                                      {file.file.name}
+                                    </p>
+                                  </div>
                                 </div>
-                                <div className="p-2">
-                                  <p className="text-xs text-gray-300 truncate">
-                                    {file.file.name}
-                                  </p>
-                                </div>
-                              </motion.div>
-                            )}
-                          </Draggable>
-                        ))}
+                              )}
+                            </Draggable>
+                          ))}
+                      </AnimatePresence>
                     </div>
                     {provided.placeholder}
                   </ScrollArea>
