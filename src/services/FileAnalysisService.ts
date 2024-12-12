@@ -1,11 +1,20 @@
 import { logger } from '../utils/logger';
 import { ORGANIZER_CONFIG } from '../config/organizerConfig';
 import { analyzeImage } from '../utils/imageAnalysis';
+import { getVideoMetadata } from '../utils/videoProcessing';
 
 export interface AnalysisResult {
   file: File;
   category: string;
   confidence: number;
+  metadata?: {
+    duration?: number;
+    fps?: number;
+    resolution?: {
+      width: number;
+      height: number;
+    };
+  };
   error?: string;
 }
 
@@ -33,12 +42,20 @@ export class FileAnalysisService {
         throw new Error('File size exceeds maximum limit');
       }
 
+      // Get video metadata if it's a video file
+      let metadata = {};
+      if (file.type.startsWith('video/')) {
+        metadata = await getVideoMetadata(file);
+      }
+
+      // Perform image analysis
       const analysis = await analyzeImage(file);
       
       return {
         file,
         category: analysis.category,
-        confidence: analysis.confidence
+        confidence: analysis.confidence,
+        metadata
       };
     } catch (error) {
       logger.error(`Analysis failed for file: ${file.name}`, error);

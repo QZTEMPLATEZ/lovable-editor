@@ -1,38 +1,23 @@
 export const ORGANIZER_CONFIG = {
   analysis: {
-    confidenceThreshold: 0.7,
-    maxConcurrentProcessing: 3,
-    supportedFileTypes: ['image/jpeg', 'image/png', 'video/mp4', 'video/quicktime'],
-    maxFileSize: 3 * 1024 * 1024 * 1024, // 3GB
-  },
-  ui: {
-    gridColumns: {
-      sm: 1,
-      md: 2,
-      lg: 3,
-    },
-    previewSize: {
-      width: 320,
-      height: 180,
-    },
+    supportedFileTypes: [
+      'video/mp4',
+      'video/quicktime',
+      'video/x-matroska',
+      'image/jpeg',
+      'image/png'
+    ],
+    maxFileSize: 2 * 1024 * 1024 * 1024, // 2GB
+    minDuration: 1, // 1 second
+    maxDuration: 3600, // 1 hour
   },
   categories: {
-    minConfidence: 0.5,
-    defaultCategory: 'Uncategorized',
-    maxItemsPerCategory: 100,
+    defaultCategory: 'Extras',
+    minConfidence: 0.3
   },
-  logging: {
-    enabled: true,
-    levels: ['error', 'warn', 'info', 'debug'],
-    maxLogSize: 1000,
+  processing: {
+    maxConcurrent: 3,
+    chunkSize: 10 * 1024 * 1024, // 10MB chunks for large files
+    timeout: 300000 // 5 minutes
   }
 };
-
-export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
-
-export interface LogEntry {
-  timestamp: Date;
-  level: LogLevel;
-  message: string;
-  details?: unknown;
-}
