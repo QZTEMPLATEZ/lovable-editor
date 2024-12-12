@@ -61,10 +61,10 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
         }));
 
         setSelectedTracks(prev => [...prev, { file, beats }]);
+        
+        // Update context immediately after each successful analysis
+        setSelectedMusic(prev => [...(prev || []), file]);
       }
-
-      // Update the context with just the files
-      setSelectedMusic(newFiles);
 
       toast({
         title: "Music Analysis Complete",
@@ -131,7 +131,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       return;
     }
     
-    // Update selected music in context before navigating
+    // Ensure context is updated with all selected tracks before navigating
     setSelectedMusic(selectedTracks.map(track => track.file));
     navigate('/organize');
   };

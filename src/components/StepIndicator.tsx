@@ -32,8 +32,8 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
     }
   };
 
-  const getTrackCountText = (count: number) => {
-    if (count === 0) return "No tracks selected";
+  const getTrackCountText = (count: number | undefined) => {
+    if (!count || count === 0) return "No tracks selected";
     return `${count} track${count === 1 ? '' : 's'} selected`;
   };
 
@@ -123,7 +123,7 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                     {index === 2 && (
                       <div className="mt-1">
                         <p className="text-sm text-purple-300 font-medium">
-                          {selectedMusic ? getTrackCountText(selectedMusic.length) : "No tracks"}
+                          {getTrackCountText(selectedMusic?.length)}
                         </p>
                       </div>
                     )}
