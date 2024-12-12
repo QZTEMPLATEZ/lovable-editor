@@ -1,12 +1,24 @@
 import { EditingProject } from '../videoEditingLogic';
 import { logger } from '../logger';
+import { validateXMLStructure, validatePaths, validateEncoding } from './xmlValidation';
+
+const generateBaseXML = (project: EditingProject, format: string) => {
+  logger.info(`Generating ${format} XML for project`, {
+    clipCount: project.clips.length,
+    duration: project.duration,
+    hasMusic: !!project.music
+  });
+
+  return {
+    timebase: 30,
+    mediaStart: 0
+  };
+};
 
 export const generatePremiereXMLLegacy = (project: EditingProject): string => {
-  logger.info('Generating legacy Premiere XML format');
-  const timebase = 30; // NTSC timebase
-  const mediaStart = 0;
+  const { timebase, mediaStart } = generateBaseXML(project, 'legacy');
   
-  return `<?xml version="1.0" encoding="UTF-8"?>
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xmeml>
 <xmeml version="4">
   <sequence>
@@ -18,7 +30,13 @@ export const generatePremiereXMLLegacy = (project: EditingProject): string => {
     </rate>
     <media>
       <video>
-        ${project.clips.map((clip, index) => `
+        ${project.clips.map((clip, index) => {
+          logger.debug(`Processing clip ${index + 1}`, { 
+            name: clip.file.name,
+            duration: clip.endTime - clip.startTime 
+          });
+          
+          return `
           <track>
             <clipitem id="clipitem-${index + 1}">
               <name>${clip.file.name}</name>
@@ -45,7 +63,7 @@ export const generatePremiereXMLLegacy = (project: EditingProject): string => {
               </file>
             </clipitem>
           </track>
-        `).join('')}
+        `}).join('')}
       </video>
       <audio>
         ${project.music ? `
@@ -64,18 +82,27 @@ export const generatePremiereXMLLegacy = (project: EditingProject): string => {
     </media>
   </sequence>
 </xmeml>`;
+
+  return xml;
 };
 
 export const generatePremiereXMLCurrent = (project: EditingProject): string => {
-  logger.info('Generating current Premiere XML format');
-  return `<?xml version="1.0" encoding="UTF-8"?>
+  const { timebase, mediaStart } = generateBaseXML(project, 'current');
+  
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <premiere-project version="7">
   <project>
     <sequences>
       <sequence id="sequence-1">
         <duration>${project.duration.max * 60}</duration>
         <videoTracks>
-          ${project.clips.map((clip, index) => `
+          ${project.clips.map((clip, index) => {
+            logger.debug(`Processing clip ${index + 1}`, {
+              name: clip.file.name,
+              duration: clip.endTime - clip.startTime
+            });
+            
+            return `
             <track id="${index + 1}">
               <clip>
                 <name>${clip.file.name}</name>
@@ -85,7 +112,7 @@ export const generatePremiereXMLCurrent = (project: EditingProject): string => {
                 <end>${clip.endTime - clip.startTime}</end>
               </clip>
             </track>
-          `).join('')}
+          `}).join('')}
         </videoTracks>
         <audioTracks>
           ${project.music ? `
@@ -102,19 +129,28 @@ export const generatePremiereXMLCurrent = (project: EditingProject): string => {
     </sequences>
   </project>
 </premiere-project>`;
+
+  return xml;
 };
 
 export const generatePremiereXMLCompatible = (project: EditingProject): string => {
-  logger.info('Generating compatible Premiere XML format');
-  return `<?xml version="1.0" encoding="UTF-8"?>
+  const { timebase, mediaStart } = generateBaseXML(project, 'compatible');
+  
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <premieredata version="1">
   <sequence>
     <name>Wedding Highlights</name>
     <duration>${project.duration.max * 60}</duration>
-    <timebase>30</timebase>
+    <timebase>${timebase}</timebase>
     <media>
       <video>
-        ${project.clips.map((clip, index) => `
+        ${project.clips.map((clip, index) => {
+          logger.debug(`Processing clip ${index + 1}`, {
+            name: clip.file.name,
+            duration: clip.endTime - clip.startTime
+          });
+          
+          return `
           <track>
             <clipitem>
               <masterclip>${clip.file.name}</masterclip>
@@ -131,7 +167,7 @@ export const generatePremiereXMLCompatible = (project: EditingProject): string =
               </file>
             </clipitem>
           </track>
-        `).join('')}
+        `}).join('')}
       </video>
       <audio>
         ${project.music ? `
@@ -151,4 +187,6 @@ export const generatePremiereXMLCompatible = (project: EditingProject): string =
     </media>
   </sequence>
 </premieredata>`;
+
+  return xml;
 };
