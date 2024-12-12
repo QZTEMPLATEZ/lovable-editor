@@ -45,7 +45,7 @@ export class VideoAnalysisService {
     const ctx = canvas.getContext('2d')!;
     const frames: HTMLCanvasElement[] = [];
     
-    // Extract more frames for better analysis
+    // Extract frames at key moments
     const framePoints = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
     const duration = video.duration;
     
@@ -57,6 +57,7 @@ export class VideoAnalysisService {
       canvas.height = video.videoHeight;
       ctx.drawImage(video, 0, 0);
       
+      // Create a resized canvas for analysis
       const frameCanvas = document.createElement('canvas');
       frameCanvas.width = 224;
       frameCanvas.height = 224;
@@ -89,7 +90,7 @@ export class VideoAnalysisService {
       let predictionConfidence = new Map<string, number>();
       
       for (const frame of frames) {
-        const imageData = frame.toDataURL('image/jpeg', 0.8);
+        const imageData = frame.toDataURL('image/jpeg', ORGANIZER_CONFIG.processing.frameQuality);
         const predictions = await this.classifier(imageData);
         console.log('Frame predictions:', predictions);
         
@@ -112,7 +113,8 @@ export class VideoAnalysisService {
           
           if (matchCount > 0) {
             const avgScore = totalScore / matchCount;
-            const weightedScore = (maxScore * 0.7 + avgScore * 0.3);
+            // Weighted scoring system
+            const weightedScore = (maxScore * 0.7 + avgScore * 0.3) * config.confidence;
             
             categoryScores.set(
               category,
@@ -126,7 +128,7 @@ export class VideoAnalysisService {
         }
       }
       
-      // Log category scores for debugging
+      // Enhanced logging for debugging
       console.log('Category scores:', Object.fromEntries(categoryScores));
       console.log('Prediction confidence:', Object.fromEntries(predictionConfidence));
       

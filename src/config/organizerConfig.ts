@@ -11,65 +11,80 @@ export const ORGANIZER_CONFIG = {
     minDuration: 1,
     maxDuration: 3600,
     categories: {
-      MakingOf: {
+      BridePrep: {
         visualCues: [
-          'makeup application',
-          'hair styling',
-          'dressing room',
-          'getting ready',
+          'bride makeup',
+          'bridal preparation',
+          'wedding dress',
+          'bride getting ready',
+          'bridal makeup',
+          'bridal hair',
+          'bride mirror',
+          'bride room',
           'bride preparation',
-          'groom preparation',
-          'mirror reflection',
-          'cosmetics',
-          'wedding dress hanging',
-          'suit preparation'
+          'bride makeup artist'
         ],
-        confidence: 0.65
+        confidence: 0.60
+      },
+      GroomPrep: {
+        visualCues: [
+          'groom preparation',
+          'groom suit',
+          'groom getting ready',
+          'groom tie',
+          'groom shoes',
+          'groom mirror',
+          'groom room',
+          'groomsmen',
+          'groom preparation',
+          'groom details'
+        ],
+        confidence: 0.60
       },
       Ceremony: {
         visualCues: [
-          'wedding altar',
-          'church interior',
           'wedding ceremony',
-          'bride and groom standing',
-          'exchange rings',
+          'altar',
           'wedding vows',
-          'priest',
-          'wedding arch',
-          'aisle walking',
-          'wedding guests seated'
+          'ring exchange',
+          'bride and groom altar',
+          'wedding officiant',
+          'wedding guests seated',
+          'wedding aisle',
+          'church ceremony',
+          'outdoor ceremony'
         ],
         confidence: 0.70
       },
-      Reception: {
+      Decor: {
         visualCues: [
-          'dance floor',
-          'wedding party',
-          'dinner tables',
-          'wedding cake',
-          'toast glasses',
-          'party celebration',
-          'dancing couples',
-          'wedding reception',
-          'table decorations',
-          'wedding entertainment'
+          'wedding decoration',
+          'floral arrangement',
+          'wedding centerpiece',
+          'table setting',
+          'wedding arch',
+          'venue decoration',
+          'wedding flowers',
+          'reception decor',
+          'wedding lighting',
+          'wedding ambiance'
         ],
         confidence: 0.65
       },
-      Details: {
+      Reception: {
         visualCues: [
-          'wedding rings',
-          'flower bouquet',
-          'wedding dress',
-          'wedding shoes',
-          'decorations',
-          'close up objects',
-          'wedding invitations',
-          'wedding bands',
-          'table settings',
-          'wedding accessories'
+          'wedding reception',
+          'first dance',
+          'wedding party',
+          'wedding cake',
+          'reception venue',
+          'wedding toast',
+          'wedding dinner',
+          'dance floor',
+          'wedding entertainment',
+          'wedding celebration'
         ],
-        confidence: 0.75
+        confidence: 0.65
       }
     }
   },
@@ -77,8 +92,8 @@ export const ORGANIZER_CONFIG = {
     maxConcurrent: 3,
     chunkSize: 10 * 1024 * 1024,
     timeout: 300000,
-    frameExtractionCount: 8, // Number of frames to extract per video
-    frameQuality: 0.8, // JPEG quality for extracted frames
-    confidenceThreshold: 0.6 // Minimum confidence score for classification
+    frameExtractionCount: 12, // Increased from 8 to 12 for better analysis
+    frameQuality: 0.85, // Increased from 0.8 to 0.85 for better quality
+    confidenceThreshold: 0.55 // Lowered from 0.6 to 0.55 for better categorization
   }
 };
