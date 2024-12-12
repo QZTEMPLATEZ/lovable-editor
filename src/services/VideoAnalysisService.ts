@@ -21,8 +21,7 @@ export class VideoAnalysisService {
         // Using a more reliable model that's available in ONNX format
         this.classifier = await pipeline(
           'image-classification',
-          'Xenova/vit-base-patch16-224',
-          { quantized: true }
+          'Xenova/vit-base-patch16-224'
         );
         logger.info('Video analysis classifier initialized successfully');
       }
