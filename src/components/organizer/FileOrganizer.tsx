@@ -11,8 +11,7 @@ import { FileVideo, AlertCircle, Download } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { motion } from 'framer-motion';
 import { ClipType } from '@/types/video';
-import { Button } from '../ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import ExportBanner from './export/ExportBanner';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -149,29 +148,9 @@ const FileOrganizer = () => {
           ))}
         </div>
 
-        {/* Export Options */}
+        {/* Export Banner */}
         {successCount > 0 && (
-          <div className="flex justify-center mb-8">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className="bg-purple-500 hover:bg-purple-600">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export Sequence
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => handleExport('premiere')}>
-                  Adobe Premiere Pro
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleExport('finalcut')}>
-                  Final Cut Pro
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleExport('resolve')}>
-                  DaVinci Resolve
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <ExportBanner onExport={handleExport} />
         )}
 
         {/* Processing Summary */}
