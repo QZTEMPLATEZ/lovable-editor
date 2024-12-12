@@ -55,6 +55,8 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
     setIsAnalyzing(true);
     
     try {
+      const analyzedTracks: SelectedTrack[] = [];
+      
       for (const file of newFiles) {
         const beats = await detectBeats(file);
         onMusicSelect(file, beats);
@@ -65,16 +67,20 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
           [file.name]: audio
         }));
 
-        setSelectedTracks(prev => [...prev, { file, beats }]);
-        
-        // Update context with the new file array directly
-        const updatedFiles = selectedTracks.map(track => track.file).concat(file);
-        setSelectedMusic(updatedFiles);
+        analyzedTracks.push({ file, beats });
       }
+
+      // Update selected tracks and context
+      const updatedTracks = [...selectedTracks, ...analyzedTracks];
+      setSelectedTracks(updatedTracks);
+      
+      // Update context with all files
+      const allFiles = updatedTracks.map(track => track.file);
+      setSelectedMusic(allFiles);
 
       toast({
         title: "Music Analysis Complete",
-        description: `${newFiles.length} track${newFiles.length === 1 ? '' : 's'} analyzed and ready for processing`,
+        description: `${newFiles.length} track${newFiles.length === 1 ? '' : 's'} analyzed. Total tracks: ${updatedTracks.length}`,
       });
     } catch (error) {
       toast({
