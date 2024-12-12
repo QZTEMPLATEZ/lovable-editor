@@ -18,10 +18,11 @@ export class VideoAnalysisService {
   async initialize() {
     try {
       if (!this.classifier) {
-        // Using a more sophisticated model for better wedding scene recognition
+        // Using a more reliable model that's available in ONNX format
         this.classifier = await pipeline(
           'image-classification',
-          'microsoft/resnet-50'
+          'Xenova/vit-base-patch16-224',
+          { quantized: true }
         );
         logger.info('Video analysis classifier initialized successfully');
       }
@@ -72,7 +73,12 @@ export class VideoAnalysisService {
 
   async analyzeVideo(file: File): Promise<string> {
     try {
-      await this.initialize();
+      const initialized = await this.initialize();
+      if (!initialized || !this.classifier) {
+        logger.error('Classifier not initialized properly');
+        return 'Extras';
+      }
+
       const frames = await this.extractFrames(file);
       
       let categoryScores = new Map<string, number>();
@@ -99,7 +105,6 @@ export class VideoAnalysisService {
             }
           }
           
-          // Calculate weighted score based on matches and confidence
           if (matchCount > 0) {
             const avgScore = totalScore / matchCount;
             const weightedScore = (maxScore * 0.7 + avgScore * 0.3);
@@ -118,7 +123,6 @@ export class VideoAnalysisService {
         }
       }
       
-      // Determine the best category based on accumulated scores and confidence
       let bestCategory = 'Extras';
       let bestScore = 0;
       
