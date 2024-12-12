@@ -51,6 +51,8 @@ export class FileAnalysisService {
       // Perform visual analysis
       const { category, confidence } = await videoAnalysisService.analyzeVideo(file);
       
+      logger.info(`Analysis complete for ${file.name}: ${category} (${confidence})`);
+      
       return {
         file,
         category,
@@ -61,7 +63,7 @@ export class FileAnalysisService {
       logger.error(`Analysis failed for file: ${file.name}`, error);
       return {
         file,
-        category: 'Extras',
+        category: 'untagged',
         confidence: 0,
         error: error instanceof Error ? error.message : 'Unknown error occurred'
       };
