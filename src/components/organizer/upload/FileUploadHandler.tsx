@@ -66,21 +66,14 @@ const FileUploadHandler: React.FC<FileUploadHandlerProps> = ({
     }
   };
 
-  const handleClick = () => {
-    if (!isProcessing && fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   return (
     <div
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
-      onClick={handleClick}
-      className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer
+      className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300
         ${isProcessing 
           ? 'border-gray-500/30 bg-gray-500/5 cursor-not-allowed' 
-          : 'border-purple-500/30 hover:border-purple-500/50'}`}
+          : 'border-purple-500/30 hover:border-purple-500/50 cursor-pointer'}`}
     >
       <input
         type="file"
@@ -91,7 +84,7 @@ const FileUploadHandler: React.FC<FileUploadHandlerProps> = ({
         accept={ORGANIZER_CONFIG.analysis.supportedFileTypes.join(',')}
         disabled={isProcessing}
       />
-      <div className={`cursor-pointer ${isProcessing ? 'cursor-not-allowed' : ''}`}>
+      <div className={isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}>
         <Upload className="w-12 h-12 mx-auto text-purple-400 mb-4" />
         <p className="text-lg text-purple-200 mb-2">
           {isProcessing 

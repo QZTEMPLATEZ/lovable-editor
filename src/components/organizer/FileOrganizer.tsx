@@ -94,8 +94,8 @@ const FileOrganizer = () => {
   }, {} as Record<string, typeof analysisResults>);
 
   const onFilesSelected = (selectedFiles: File[]) => {
-    console.log('Files selected:', selectedFiles);
     if (selectedFiles.length > 0) {
+      console.log('Starting file processing:', selectedFiles);
       handleFilesSelected(selectedFiles);
       toast({
         title: "Processing Started",
@@ -111,7 +111,6 @@ const FileOrganizer = () => {
       className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 p-6"
     >
       <div className="max-w-5xl mx-auto">
-        {/* Upload Section */}
         <div className="mb-8">
           <FileUploadHandler 
             onFilesSelected={onFilesSelected}
@@ -119,7 +118,6 @@ const FileOrganizer = () => {
           />
         </div>
 
-        {/* Processing Status */}
         {isProcessing && (
           <ProcessingStatusBar
             currentFile={currentFile}
@@ -129,7 +127,6 @@ const FileOrganizer = () => {
           />
         )}
 
-        {/* Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {FOLDER_CATEGORIES.map((category) => (
             <motion.div
@@ -158,12 +155,10 @@ const FileOrganizer = () => {
           ))}
         </div>
 
-        {/* Export Banner */}
         {successCount > 0 && (
           <ExportBanner onExport={handleExport} />
         )}
 
-        {/* Processing Summary */}
         {(successCount > 0 || errorCount > 0) && (
           <div className="fixed bottom-0 left-0 right-0 bg-editor-bg/95 border-t border-purple-500/20 p-4">
             <div className="max-w-5xl mx-auto flex items-center justify-between">
