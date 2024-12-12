@@ -1,6 +1,8 @@
 import { logger } from '../../utils/logger';
 
 export class FrameExtractor {
+  private static readonly FRAME_POSITIONS = [0.1, 0.3, 0.5, 0.7, 0.9];
+
   static async extractFrameFromVideo(file: File, position: number = 0.5): Promise<string> {
     return new Promise((resolve, reject) => {
       const video = document.createElement('video');
@@ -14,25 +16,51 @@ export class FrameExtractor {
       video.onloadeddata = () => {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        // Use the provided position (0-1) to extract frame
         video.currentTime = video.duration * position;
       };
       
       video.onseeked = () => {
         if (ctx) {
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          const imageData = canvas.toDataURL('image/jpeg', 0.8);
-          URL.revokeObjectURL(video.src);
-          resolve(imageData);
+          try {
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg', 0.8);
+            URL.revokeObjectURL(video.src);
+            resolve(imageData);
+          } catch (error) {
+            logger.warn(`Frame extraction failed for position ${position}:`, error);
+            reject(error);
+          }
         } else {
           reject(new Error('Could not get canvas context'));
         }
       };
       
-      video.onerror = () => {
+      video.onerror = (error) => {
         URL.revokeObjectURL(video.src);
-        reject(new Error('Failed to load video'));
+        logger.warn(`Video loading failed for position ${position}:`, error);
+        reject(error);
       };
     });
+  }
+
+  static async extractMultipleFrames(file: File): Promise<string[]> {
+    logger.info(`Starting multiple frame extraction for ${file.name}`);
+    
+    const framePromises = this.FRAME_POSITIONS.map(position => 
+      this.extractFrameFromVideo(file, position)
+    );
+
+    const frames = await Promise.allSettled(framePromises);
+    const validFrames = frames
+      .filter((result): result is PromiseFulfilledResult<string> => result.status === 'fulfilled')
+      .map(result => result.value);
+
+    logger.info(`Successfully extracted ${validFrames.length} frames from ${file.name}`);
+    
+    if (validFrames.length === 0) {
+      logger.warn(`No valid frames extracted from ${file.name}`);
+    }
+
+    return validFrames;
   }
 }
