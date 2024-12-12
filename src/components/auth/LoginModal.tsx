@@ -16,7 +16,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <PricingPlans onPlanSelect={onPlanSelect} />
+        <PricingPlans onComplete={onPlanSelect} />
       </DialogContent>
     </Dialog>
   );
