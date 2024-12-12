@@ -1,11 +1,10 @@
 import { pipeline } from '@huggingface/transformers';
 import { toast } from "@/components/ui/use-toast";
 
-let classifier: any = null;
-
 export interface ImageClassification {
   category: string;
   confidence: number;
+  labels: string[];  // Added this property
 }
 
 // Lowered threshold for better categorization
@@ -87,27 +86,26 @@ export const analyzeImage = async (file: File): Promise<ImageClassification> => 
       throw new Error('Classifier not initialized');
     }
 
-    // Create object URL for the file
     const objectUrl = URL.createObjectURL(file);
-
-    // Get predictions from the model
     const results = await classifier(objectUrl);
+    URL.revokeObjectURL(objectUrl);
+
     console.log('Classification results for', file.name, ':', results);
 
-    // Clean up object URL
-    URL.revokeObjectURL(objectUrl);
+    // Extract labels from results
+    const labels = results.map((result: any) => result.label.toLowerCase());
 
     // Find the best matching category
     for (const prediction of results) {
       const label = prediction.label.toLowerCase();
       
-      // Check each mapping
       for (const [keyword, category] of Object.entries(CATEGORY_MAPPINGS)) {
         if (label.includes(keyword) || file.name.toLowerCase().includes(keyword)) {
           console.log(`Match found for ${file.name}: ${category} (confidence: ${prediction.score})`);
           return {
             category,
-            confidence: prediction.score
+            confidence: prediction.score,
+            labels
           };
         }
       }
@@ -120,7 +118,8 @@ export const analyzeImage = async (file: File): Promise<ImageClassification> => 
         console.log(`Filename match found for ${file.name}: ${category}`);
         return {
           category,
-          confidence: 0.5 // Medium confidence for filename matches
+          confidence: 0.5,
+          labels
         };
       }
     }
@@ -128,13 +127,15 @@ export const analyzeImage = async (file: File): Promise<ImageClassification> => 
     console.log(`No category match found for ${file.name}, marking as Extras`);
     return {
       category: 'Extras',
-      confidence: 0
+      confidence: 0,
+      labels
     };
   } catch (error) {
     console.error('Error analyzing image:', error, 'for file:', file.name);
     return {
       category: 'Extras',
-      confidence: 0
+      confidence: 0,
+      labels: []
     };
   }
 };
