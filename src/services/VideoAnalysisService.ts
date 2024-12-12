@@ -4,7 +4,6 @@ import { ORGANIZER_CONFIG } from '../config/organizerConfig';
 
 export class VideoAnalysisService {
   private static classifier: any = null;
-  private static readonly CONFIDENCE_THRESHOLD = 0.3;
   
   private static async initializeClassifier() {
     if (!this.classifier) {
@@ -33,23 +32,15 @@ export class VideoAnalysisService {
       video.src = URL.createObjectURL(file);
       
       video.onloadeddata = () => {
-        // Set canvas dimensions to match video
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        
-        // Seek to middle of video for representative frame
         video.currentTime = video.duration / 2;
       };
       
       video.onseeked = () => {
         if (ctx) {
-          // Draw the video frame on the canvas
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          
-          // Convert canvas to base64 image
           const imageData = canvas.toDataURL('image/jpeg', 0.8);
-          
-          // Cleanup
           URL.revokeObjectURL(video.src);
           resolve(imageData);
         } else {
@@ -66,24 +57,73 @@ export class VideoAnalysisService {
 
   private static matchCategoryFromPredictions(predictions: any[]): { category: string; confidence: number } {
     const categoryMatches = new Map<string, number>();
-
-    // Log predictions for debugging
+    
     logger.info('Raw predictions:', predictions);
 
-    for (const prediction of predictions) {
-      const label = prediction.label.toLowerCase();
-      const score = prediction.score;
-
-      // Check each category's visual cues
-      for (const [category, config] of Object.entries(ORGANIZER_CONFIG.analysis.categories)) {
-        for (const cue of config.visualCues) {
-          if (label.includes(cue.toLowerCase())) {
-            const currentScore = categoryMatches.get(category) || 0;
-            categoryMatches.set(category, Math.max(currentScore, score));
-            logger.info(`Match found for category ${category} with cue ${cue} (score: ${score})`);
-          }
+    // Helper function to check for specific visual cues
+    const checkVisualCues = (labels: string[], cues: string[]): number => {
+      let maxScore = 0;
+      for (const prediction of predictions) {
+        const label = prediction.label.toLowerCase();
+        if (cues.some(cue => label.includes(cue.toLowerCase()))) {
+          maxScore = Math.max(maxScore, prediction.score);
         }
       }
+      return maxScore;
+    };
+
+    // BridePrep detection
+    const bridePrepScore = checkVisualCues(
+      predictions.map(p => p.label),
+      ['woman', 'dress', 'makeup', 'mirror', 'bride', 'wedding dress']
+    );
+    if (bridePrepScore > 0.3) {
+      categoryMatches.set('brideprep', bridePrepScore);
+    }
+
+    // GroomPrep detection
+    const groomPrepScore = checkVisualCues(
+      predictions.map(p => p.label),
+      ['man', 'suit', 'tie', 'groom', 'formal wear']
+    );
+    if (groomPrepScore > 0.3) {
+      categoryMatches.set('groomprep', groomPrepScore);
+    }
+
+    // Decoration detection
+    const decorationScore = checkVisualCues(
+      predictions.map(p => p.label),
+      ['flower', 'chair', 'table', 'decoration', 'arch', 'venue']
+    );
+    if (decorationScore > 0.3) {
+      categoryMatches.set('decoration', decorationScore);
+    }
+
+    // Drone detection
+    const droneScore = checkVisualCues(
+      predictions.map(p => p.label),
+      ['aerial', 'landscape', 'sky', 'building', 'outdoor']
+    );
+    if (droneScore > 0.3) {
+      categoryMatches.set('drone', droneScore);
+    }
+
+    // Ceremony detection
+    const ceremonyScore = checkVisualCues(
+      predictions.map(p => p.label),
+      ['ceremony', 'altar', 'church', 'wedding', 'audience']
+    );
+    if (ceremonyScore > 0.3) {
+      categoryMatches.set('ceremony', ceremonyScore);
+    }
+
+    // Reception detection
+    const receptionScore = checkVisualCues(
+      predictions.map(p => p.label),
+      ['party', 'dance', 'celebration', 'crowd', 'night']
+    );
+    if (receptionScore > 0.3) {
+      categoryMatches.set('reception', receptionScore);
     }
 
     // Find best matching category
@@ -123,7 +163,7 @@ export class VideoAnalysisService {
       const result = this.matchCategoryFromPredictions(predictions);
       
       // If confidence is too low, try filename-based classification
-      if (result.confidence < this.CONFIDENCE_THRESHOLD) {
+      if (result.confidence < 0.3) {
         logger.info(`Low confidence classification for ${file.name}, checking filename`);
         const filenameResult = this.classifyByFilename(file.name);
         if (filenameResult.confidence > result.confidence) {

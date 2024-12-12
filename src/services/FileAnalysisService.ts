@@ -46,6 +46,7 @@ export class FileAnalysisService {
       let metadata = {};
       if (file.type.startsWith('video/')) {
         metadata = await getVideoMetadata(file);
+        logger.info(`Metadata extracted for ${file.name}:`, metadata);
       }
 
       // Perform visual analysis
