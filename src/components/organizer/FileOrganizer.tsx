@@ -9,10 +9,8 @@ import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { useFileProcessing } from '../../hooks/useFileProcessing';
 import FileProcessingSection from './processing/FileProcessingSection';
 import AnalysisResultsView from './analysis/AnalysisResultsView';
-import { Button } from '../ui/button';
-import { Save, FolderOpen, FileVideo } from 'lucide-react';
+import { FileVideo, FolderOpen } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
-import { Separator } from '../ui/separator';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -124,32 +122,6 @@ const FileOrganizer = () => {
               isProcessing={isProcessing}
               onExport={handleExport}
             />
-
-            {analysisResults.length > 0 && !isProcessing && (
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pt-8 border-t border-purple-500/20">
-                <Button
-                  onClick={() => handleExport('premiere')}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Export to Premiere Pro
-                </Button>
-                <Button
-                  onClick={() => handleExport('finalcut')}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Export to Final Cut Pro
-                </Button>
-                <Button
-                  onClick={() => handleExport('resolve')}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  Export to DaVinci Resolve
-                </Button>
-              </div>
-            )}
           </div>
         </div>
       </div>
