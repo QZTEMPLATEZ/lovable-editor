@@ -117,13 +117,14 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                     initial={false}
-                                    animate={{ 
+                                    animate={{
                                       scale: snapshot.isDragging ? 1.05 : 1,
                                       borderColor: recentlyMoved.includes(clip.id) ? '#22c55e' : undefined
                                     }}
                                     className={`relative rounded-lg overflow-hidden border ${
                                       snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
                                     } ${recentlyMoved.includes(clip.id) ? 'border-green-500' : ''}`}
+                                    // Remove drag event handlers from motion.div
                                   >
                                     <div className="aspect-video bg-black relative">
                                       <img
