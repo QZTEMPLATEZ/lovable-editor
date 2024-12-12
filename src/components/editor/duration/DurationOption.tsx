@@ -6,13 +6,10 @@ import { VideoSizeRange } from '../../../types';
 
 interface DurationOptionProps {
   duration: VideoSizeRange;
-  isSelected?: boolean;
   onSelect: (duration: VideoSizeRange) => void;
 }
 
-const DurationOption = ({ duration, isSelected, onSelect }: DurationOptionProps) => {
-  if (!duration) return null; // Early return if duration is undefined
-
+const DurationOption = ({ duration, onSelect }: DurationOptionProps) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
