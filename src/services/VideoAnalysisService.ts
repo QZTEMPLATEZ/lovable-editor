@@ -45,9 +45,9 @@ export class VideoAnalysisService {
     const ctx = canvas.getContext('2d')!;
     const frames: HTMLCanvasElement[] = [];
     
-    // Extract frames at key moments with more samples
-    const framePoints = Array.from({ length: ORGANIZER_CONFIG.processing.frameExtractionCount }, 
-      (_, i) => i / (ORGANIZER_CONFIG.processing.frameExtractionCount - 1));
+    // Extract more frames for better analysis
+    const framePoints = Array.from({ length: 20 }, 
+      (_, i) => i / 19);
     
     const duration = video.duration;
     
@@ -76,75 +76,83 @@ export class VideoAnalysisService {
     return frames;
   }
 
+  private isBridePrepScene(predictions: any[]): { isPrep: boolean; confidence: number } {
+    const bridePrepCues = [
+      'bride', 'wedding dress', 'makeup', 'mirror', 'getting ready',
+      'hair styling', 'beauty salon', 'dressing room', 'jewelry', 'veil',
+      'woman face', 'female portrait', 'bridal preparation'
+    ];
+
+    let maxScore = 0;
+    let totalScore = 0;
+    let matchCount = 0;
+
+    for (const prediction of predictions) {
+      const label = prediction.label.toLowerCase();
+      for (const cue of bridePrepCues) {
+        if (label.includes(cue.toLowerCase())) {
+          maxScore = Math.max(maxScore, prediction.score);
+          totalScore += prediction.score;
+          matchCount++;
+        }
+      }
+    }
+
+    if (matchCount === 0) return { isPrep: false, confidence: 0 };
+
+    const avgScore = totalScore / matchCount;
+    const confidence = (maxScore * 0.7 + avgScore * 0.3);
+
+    return {
+      isPrep: confidence > 0.4, // Lower threshold for better detection
+      confidence
+    };
+  }
+
   async analyzeVideo(file: File): Promise<string> {
     try {
       const initialized = await this.initialize();
       if (!initialized || !this.classifier) {
         logger.error('Classifier not initialized properly');
-        return 'BridePrep'; // Default to BridePrep instead of Untagged
+        return 'Untagged';
       }
 
       const frames = await this.extractFrames(file);
       logger.info(`Analyzing ${frames.length} frames for video: ${file.name}`);
       
-      let categoryScores = new Map<string, number>();
-      let predictionConfidence = new Map<string, number>();
+      let bridePrepFrames = 0;
+      let totalConfidence = 0;
       
       for (const frame of frames) {
-        const imageData = frame.toDataURL('image/jpeg', ORGANIZER_CONFIG.processing.frameQuality);
+        const imageData = frame.toDataURL('image/jpeg', 0.8);
         const predictions = await this.classifier(imageData);
         
-        for (const [category, config] of Object.entries(ORGANIZER_CONFIG.analysis.categories)) {
-          let maxScore = 0;
-          let totalScore = 0;
-          let matchCount = 0;
-          
-          for (const prediction of predictions) {
-            const label = prediction.label.toLowerCase();
-            for (const cue of config.visualCues) {
-              if (label.includes(cue.toLowerCase())) {
-                maxScore = Math.max(maxScore, prediction.score);
-                totalScore += prediction.score;
-                matchCount++;
-              }
-            }
-          }
-          
-          if (matchCount > 0) {
-            const avgScore = totalScore / matchCount;
-            const weightedScore = (maxScore * 0.7 + avgScore * 0.3) * config.confidence;
-            
-            categoryScores.set(
-              category,
-              (categoryScores.get(category) || 0) + weightedScore
-            );
-            predictionConfidence.set(
-              category,
-              Math.max(predictionConfidence.get(category) || 0, weightedScore)
-            );
-          }
+        const { isPrep, confidence } = this.isBridePrepScene(predictions);
+        if (isPrep) {
+          bridePrepFrames++;
+          totalConfidence += confidence;
         }
       }
       
-      let bestCategory = 'BridePrep'; // Default category
-      let bestScore = 0;
+      const bridePrepRatio = bridePrepFrames / frames.length;
+      const avgConfidence = bridePrepFrames > 0 ? totalConfidence / bridePrepFrames : 0;
       
-      categoryScores.forEach((score, category) => {
-        const confidence = predictionConfidence.get(category) || 0;
-        const finalScore = score * confidence;
-        
-        if (finalScore > bestScore) {
-          bestScore = finalScore;
-          bestCategory = category;
-        }
+      logger.info(`Video ${file.name} analysis results:`, {
+        bridePrepRatio,
+        avgConfidence,
+        bridePrepFrames
       });
+
+      // If more than 30% of frames are identified as bride prep with good confidence
+      if (bridePrepRatio > 0.3 && avgConfidence > 0.4) {
+        return 'BridePrep';
+      }
       
-      logger.info(`Video ${file.name} classified as ${bestCategory} with score ${bestScore}`);
-      return bestCategory;
+      return 'Untagged';
       
     } catch (error) {
       logger.error(`Error analyzing video ${file.name}:`, error);
-      return 'BridePrep'; // Default to BridePrep on error
+      return 'Untagged';
     }
   }
 }

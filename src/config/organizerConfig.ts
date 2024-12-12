@@ -24,9 +24,23 @@ export const ORGANIZER_CONFIG = {
           'bride preparation',
           'bride makeup artist',
           'wedding gown',
-          'bridal accessories'
+          'bridal accessories',
+          'makeup application',
+          'hair styling',
+          'beauty salon',
+          'dressing room',
+          'bridal suite',
+          'wedding preparation',
+          'bride portrait',
+          'wedding jewelry'
         ],
-        confidence: 0.65
+        confidence: 0.4, // Lower threshold for better detection
+        requiredCues: ['bride', 'female', 'face'], // At least one of these must be present
+        environmentalCues: ['room', 'mirror', 'indoor', 'window'], // Supporting environmental context
+        motionThresholds: {
+          maxMotion: 0.6, // Limit for detecting stable, intimate scenes
+          minStability: 0.4 // Minimum stability requirement
+        }
       },
       GroomPrep: {
         visualCues: [
@@ -117,8 +131,8 @@ export const ORGANIZER_CONFIG = {
     maxConcurrent: 3,
     chunkSize: 10 * 1024 * 1024,
     timeout: 300000,
-    frameExtractionCount: 15,
-    frameQuality: 0.90,
-    confidenceThreshold: 0.20 // Lowered threshold to catch more videos
+    frameExtractionCount: 20, // Increased for better analysis
+    frameQuality: 0.8,
+    confidenceThreshold: 0.4 // Adjusted threshold
   }
 };
