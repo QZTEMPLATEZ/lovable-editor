@@ -21,7 +21,7 @@ const TopNavigation = () => {
           onClick={() => navigate('/duration')}
           className="font-['Cinzel'] text-xl font-semibold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 hover:scale-105 transition-transform duration-300 cursor-pointer"
         >
-          OSÍRIZ
+          QZ WEDDING PRO
         </span>
 
         <div className="flex items-center gap-4">
