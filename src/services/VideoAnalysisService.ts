@@ -6,38 +6,46 @@ import { CategoryMatcher } from './analysis/CategoryMatcher';
 export class VideoAnalysisService {
   static async analyzeVideo(file: File): Promise<{ category: string; confidence: number }> {
     try {
-      logger.info(`Starting analysis for file: ${file.name}`);
+      logger.info(`Starting comprehensive analysis for file: ${file.name}`);
       
       // Initialize classifier
       const classifier = await ModelService.initializeClassifier();
       
-      // Extract frame from video
-      const frameImage = await FrameExtractor.extractFrameFromVideo(file);
-      logger.info(`Frame extracted successfully for ${file.name}`);
+      // Extract multiple frames for better analysis
+      const framePromises = [0.25, 0.5, 0.75].map(position => 
+        FrameExtractor.extractFrameFromVideo(file, position)
+      );
       
-      // Get predictions from classifier
-      const predictions = await classifier(frameImage);
-      logger.info(`Predictions received for ${file.name}:`, predictions);
+      const frames = await Promise.all(framePromises);
+      logger.info(`Extracted ${frames.length} frames for analysis from ${file.name}`);
       
-      // Match predictions to categories
-      const result = CategoryMatcher.matchCategoryFromPredictions(predictions);
+      // Analyze each frame
+      const predictionPromises = frames.map(async frame => {
+        const predictions = await classifier(frame);
+        return predictions.map((p: any) => ({ ...p, filename: file.name }));
+      });
       
-      // If confidence is too low, try filename-based classification
-      if (result.confidence < 0.3) {
-        logger.info(`Low confidence classification for ${file.name}, checking filename`);
-        const filenameResult = CategoryMatcher.classifyByFilename(file.name);
-        if (filenameResult.confidence > result.confidence) {
-          logger.info(`Using filename-based classification for ${file.name}: ${filenameResult.category}`);
-          return filenameResult;
-        }
+      const allPredictions = await Promise.all(predictionPromises);
+      const combinedPredictions = allPredictions.flat();
+      
+      logger.info(`Combined predictions for ${file.name}:`, combinedPredictions);
+      
+      // Get category match using all predictions
+      const result = CategoryMatcher.matchCategoryFromPredictions(combinedPredictions);
+      
+      // Ensure we always return a category
+      if (!result.category || result.confidence < 0.2) {
+        logger.info(`Low confidence for ${file.name}, marking as untagged`);
+        return { category: 'untagged', confidence: 0.1 };
       }
       
       logger.info(`Final classification for ${file.name}: ${result.category} (confidence: ${result.confidence})`);
       return result;
+      
     } catch (error) {
       logger.error(`Error analyzing file ${file.name}:`, error);
-      // Fallback to filename-based classification on error
-      return CategoryMatcher.classifyByFilename(file.name);
+      // Always return untagged instead of throwing error
+      return { category: 'untagged', confidence: 0.1 };
     }
   }
 }

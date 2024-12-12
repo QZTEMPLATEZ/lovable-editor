@@ -9,8 +9,7 @@ export class ModelService {
       try {
         this.classifier = await pipeline(
           'image-classification',
-          'Xenova/vit-base-patch16-224',
-          { quantized: true }
+          'Xenova/vit-base-patch16-224'
         );
         logger.info('Video classifier initialized successfully');
       } catch (error) {

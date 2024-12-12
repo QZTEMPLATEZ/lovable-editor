@@ -1,7 +1,7 @@
 import { logger } from '../../utils/logger';
 
 export class FrameExtractor {
-  static async extractFrameFromVideo(file: File): Promise<string> {
+  static async extractFrameFromVideo(file: File, position: number = 0.5): Promise<string> {
     return new Promise((resolve, reject) => {
       const video = document.createElement('video');
       const canvas = document.createElement('canvas');
@@ -14,7 +14,8 @@ export class FrameExtractor {
       video.onloadeddata = () => {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        video.currentTime = video.duration / 2;
+        // Use the provided position (0-1) to extract frame
+        video.currentTime = video.duration * position;
       };
       
       video.onseeked = () => {

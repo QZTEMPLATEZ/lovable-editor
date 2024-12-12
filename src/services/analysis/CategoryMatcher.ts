@@ -3,86 +3,79 @@ import { ORGANIZER_CONFIG } from '../../config/organizerConfig';
 
 export class CategoryMatcher {
   static matchCategoryFromPredictions(predictions: any[]): { category: string; confidence: number } {
-    const categoryMatches = new Map<string, number>();
+    const categoryScores = new Map<string, { score: number; matches: number }>();
     
-    logger.info('Raw predictions:', predictions);
+    logger.info('Analyzing predictions:', predictions);
 
-    // Helper function to check for specific visual cues
-    const checkVisualCues = (labels: string[], cues: string[]): number => {
-      let maxScore = 0;
-      for (const prediction of predictions) {
-        const label = prediction.label.toLowerCase();
-        if (cues.some(cue => label.includes(cue.toLowerCase()))) {
-          maxScore = Math.max(maxScore, prediction.score);
-        }
-      }
-      return maxScore;
+    // Initialize scores for all categories
+    ['brideprep', 'groomprep', 'decoration', 'drone', 'ceremony', 'reception', 'untagged'].forEach(category => {
+      categoryScores.set(category, { score: 0, matches: 0 });
+    });
+
+    // Context-aware scoring function
+    const updateCategoryScore = (category: string, score: number, weight: number = 1) => {
+      const current = categoryScores.get(category) || { score: 0, matches: 0 };
+      categoryScores.set(category, {
+        score: current.score + (score * weight),
+        matches: current.matches + 1
+      });
     };
 
-    // BridePrep detection
-    const bridePrepScore = checkVisualCues(
-      predictions.map(p => p.label),
-      ['woman', 'dress', 'makeup', 'mirror', 'bride', 'wedding dress']
-    );
-    if (bridePrepScore > 0.3) {
-      categoryMatches.set('brideprep', bridePrepScore);
-    }
+    // Analyze each prediction in context
+    predictions.forEach(prediction => {
+      const label = prediction.label.toLowerCase();
+      const score = prediction.score;
 
-    // GroomPrep detection
-    const groomPrepScore = checkVisualCues(
-      predictions.map(p => p.label),
-      ['man', 'suit', 'tie', 'groom', 'formal wear']
-    );
-    if (groomPrepScore > 0.3) {
-      categoryMatches.set('groomprep', groomPrepScore);
-    }
+      // BridePrep indicators
+      if (['woman', 'dress', 'makeup', 'mirror', 'bride'].some(term => label.includes(term))) {
+        updateCategoryScore('brideprep', score, 1.2);
+      }
 
-    // Decoration detection
-    const decorationScore = checkVisualCues(
-      predictions.map(p => p.label),
-      ['flower', 'chair', 'table', 'decoration', 'arch', 'venue']
-    );
-    if (decorationScore > 0.3) {
-      categoryMatches.set('decoration', decorationScore);
-    }
+      // GroomPrep indicators
+      if (['man', 'suit', 'tie', 'groom', 'formal'].some(term => label.includes(term))) {
+        updateCategoryScore('groomprep', score, 1.2);
+      }
 
-    // Drone detection
-    const droneScore = checkVisualCues(
-      predictions.map(p => p.label),
-      ['aerial', 'landscape', 'sky', 'building', 'outdoor']
-    );
-    if (droneScore > 0.3) {
-      categoryMatches.set('drone', droneScore);
-    }
+      // Decoration indicators
+      if (['flower', 'chair', 'table', 'decoration', 'arch'].some(term => label.includes(term))) {
+        updateCategoryScore('decoration', score, 1.1);
+      }
 
-    // Ceremony detection
-    const ceremonyScore = checkVisualCues(
-      predictions.map(p => p.label),
-      ['ceremony', 'altar', 'church', 'wedding', 'audience']
-    );
-    if (ceremonyScore > 0.3) {
-      categoryMatches.set('ceremony', ceremonyScore);
-    }
+      // Drone indicators
+      if (['aerial', 'sky', 'landscape', 'building', 'outdoor'].some(term => label.includes(term))) {
+        updateCategoryScore('drone', score, 1.3);
+      }
 
-    // Reception detection
-    const receptionScore = checkVisualCues(
-      predictions.map(p => p.label),
-      ['party', 'dance', 'celebration', 'crowd', 'night']
-    );
-    if (receptionScore > 0.3) {
-      categoryMatches.set('reception', receptionScore);
-    }
+      // Ceremony indicators
+      if (['ceremony', 'altar', 'church', 'wedding', 'audience'].some(term => label.includes(term))) {
+        updateCategoryScore('ceremony', score, 1.2);
+      }
 
-    // Find best matching category
+      // Reception indicators
+      if (['party', 'dance', 'celebration', 'crowd', 'night'].some(term => label.includes(term))) {
+        updateCategoryScore('reception', score, 1.1);
+      }
+    });
+
+    // Calculate final scores considering context
     let bestCategory = 'untagged';
     let bestConfidence = 0;
 
-    categoryMatches.forEach((confidence, category) => {
-      if (confidence > bestConfidence) {
-        bestCategory = category;
-        bestConfidence = confidence;
+    categoryScores.forEach((data, category) => {
+      if (data.matches > 0) {
+        const averageScore = data.score / data.matches;
+        if (averageScore > bestConfidence) {
+          bestCategory = category;
+          bestConfidence = averageScore;
+        }
       }
     });
+
+    // If no strong match is found, try filename analysis
+    if (bestConfidence < 0.3) {
+      logger.info('Low confidence in visual analysis, checking filename patterns');
+      return this.classifyByFilename(predictions[0]?.filename || '');
+    }
 
     logger.info(`Best category match: ${bestCategory} with confidence ${bestConfidence}`);
     return {
@@ -94,30 +87,29 @@ export class CategoryMatcher {
   static classifyByFilename(filename: string): { category: string; confidence: number } {
     const lowerFilename = filename.toLowerCase();
     
-    // Define patterns for each category
+    // Enhanced filename patterns
     const patterns = {
-      brideprep: ['bride', 'noiva', 'makeup', 'maquiagem', 'getting_ready'],
-      groomprep: ['groom', 'noivo', 'suit', 'terno'],
-      decoration: ['decor', 'flores', 'flowers', 'venue'],
-      drone: ['drone', 'aerial', 'dji', 'mavic'],
-      ceremony: ['ceremony', 'cerimonia', 'altar', 'church'],
-      reception: ['reception', 'party', 'festa', 'dance']
+      brideprep: ['bride', 'noiva', 'makeup', 'maquiagem', 'getting_ready', 'making'],
+      groomprep: ['groom', 'noivo', 'suit', 'terno', 'prep'],
+      decoration: ['decor', 'flores', 'flowers', 'venue', 'local'],
+      drone: ['drone', 'aerial', 'dji', 'mavic', 'air'],
+      ceremony: ['ceremony', 'cerimonia', 'altar', 'church', 'igreja'],
+      reception: ['reception', 'party', 'festa', 'dance', 'danca']
     };
 
+    let bestMatch = { category: 'untagged', confidence: 0.1 };
+
     for (const [category, keywords] of Object.entries(patterns)) {
-      if (keywords.some(keyword => lowerFilename.includes(keyword))) {
-        logger.info(`Filename match found for ${filename}: ${category}`);
-        return {
-          category,
-          confidence: 0.6 // Moderate confidence for filename-based classification
-        };
+      const matches = keywords.filter(keyword => lowerFilename.includes(keyword));
+      if (matches.length > 0) {
+        const confidence = 0.4 + (matches.length * 0.1); // Increase confidence with more keyword matches
+        if (confidence > bestMatch.confidence) {
+          bestMatch = { category, confidence };
+        }
       }
     }
 
-    logger.info(`No filename match found for ${filename}, marking as untagged`);
-    return {
-      category: 'untagged',
-      confidence: 0.1
-    };
+    logger.info(`Filename analysis result for ${filename}: ${bestMatch.category} (${bestMatch.confidence})`);
+    return bestMatch;
   }
 }
