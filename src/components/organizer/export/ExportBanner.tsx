@@ -20,7 +20,7 @@ const ExportBanner = ({ successCount, onExport }: ExportBannerProps) => {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col items-center justify-center gap-12">
           <div className="space-y-4 text-center">
-            <h3 className="text-4xl font-light tracking-wide text-white/90">
+            <h3 className="text-4xl font-light tracking-wide bg-gradient-to-r from-pink-500 to-pink-300 bg-clip-text text-transparent">
               Export Your Sequence
             </h3>
             <p className="text-lg text-white/60 font-light tracking-wider">
