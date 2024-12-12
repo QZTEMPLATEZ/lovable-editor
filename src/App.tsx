@@ -11,12 +11,10 @@ import { VideoStyle } from "./types/video";
 import PricingPlans from "./components/pricing/PricingPlans";
 import StepIndicator from "./components/StepIndicator";
 import { EDITOR_STEPS } from "./components/editor/EditorSteps";
-import FileOrganizer from "./components/organizer/FileOrganizer";
 import TutorialVideo from "./components/TutorialVideo";
 import IntroScreen from "./components/IntroScreen";
 import { VideoTypeProvider } from "./contexts/VideoTypeContext";
 import VideoTypeIndicator from "./components/VideoTypeIndicator";
-import ReviewStep from "./components/editor/ReviewStep";
 import LoginModal from "./components/auth/LoginModal";
 
 const queryClient = new QueryClient();
@@ -37,12 +35,6 @@ const AppContent = () => {
         return 1;
       case '/music':
         return 2;
-      case '/organize':
-        return 3;
-      case '/review':
-        return 4;
-      case '/edit':
-        return 5;
       default:
         return -1;
     }
@@ -117,18 +109,6 @@ const AppContent = () => {
               <Route 
                 path="/music" 
                 element={<MusicSelector onMusicSelect={handleMusicSelect} />}
-              />
-              <Route 
-                path="/organize" 
-                element={<FileOrganizer />}
-              />
-              <Route 
-                path="/review" 
-                element={<ReviewStep />}
-              />
-              <Route 
-                path="/edit" 
-                element={<ReviewStep isEditMode />}
               />
             </Routes>
           </div>
