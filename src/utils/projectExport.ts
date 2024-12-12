@@ -2,22 +2,72 @@ import { EditingProject } from './videoEditingLogic';
 
 interface ExportOptions {
   format: 'premiere' | 'finalcut' | 'resolve';
+  version?: 'legacy' | 'current' | 'compatible';
 }
 
-const generatePremiereXML = (project: EditingProject): string => {
+const generatePremiereXMLLegacy = (project: EditingProject): string => {
   return `<?xml version="1.0" encoding="UTF-8"?>
-    <PremiereData Version="1">
+    <Project ObjectRef="1">
+      <Group>1</Group>
+      <Children ObjectRef="2"/>
+      <BinTreeGroup>
+        <Items>
+          ${project.clips.map((clip, index) => `
+            <Item ObjectID="${index + 3}">
+              <Name>${clip.file.name}</Name>
+              <Type>Clip</Type>
+              <Media>
+                <Video>
+                  <FilePathURL>${clip.file.name}</FilePathURL>
+                </Video>
+              </Media>
+            </Item>
+          `).join('')}
+        </Items>
+      </BinTreeGroup>
+    </Project>`;
+};
+
+const generatePremiereXMLCurrent = (project: EditingProject): string => {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+    <PremiereData Version="7">
       <Project>
         <Timeline>
           ${project.clips.map((clip, index) => `
             <ClipItem>
               <Source>${clip.file.name}</Source>
               <Type>${clip.type}</Type>
+              <Start>0</Start>
+              <End>300</End>
             </ClipItem>
           `).join('')}
         </Timeline>
       </Project>
     </PremiereData>`;
+};
+
+const generatePremiereXMLCompatible = (project: EditingProject): string => {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+    <xmeml version="5">
+      <sequence>
+        <name>Organized Sequence</name>
+        <media>
+          ${project.clips.map((clip, index) => `
+            <video>
+              <track>
+                <clipitem>
+                  <name>${clip.file.name}</name>
+                  <file>
+                    <name>${clip.file.name}</name>
+                    <pathurl>${clip.file.name}</pathurl>
+                  </file>
+                </clipitem>
+              </track>
+            </video>
+          `).join('')}
+        </media>
+      </sequence>
+    </xmeml>`;
 };
 
 const generateFinalCutXML = (project: EditingProject): string => {
@@ -56,18 +106,21 @@ export const exportProject = async (
 ): Promise<Blob> => {
   let exportData: string;
 
-  switch (options.format) {
-    case 'premiere':
-      exportData = generatePremiereXML(project);
-      break;
-    case 'finalcut':
-      exportData = generateFinalCutXML(project);
-      break;
-    case 'resolve':
-      exportData = generateResolveXML(project);
-      break;
-    default:
-      throw new Error('Unsupported export format');
+  if (options.format === 'premiere') {
+    switch (options.version) {
+      case 'legacy':
+        exportData = generatePremiereXMLLegacy(project);
+        break;
+      case 'compatible':
+        exportData = generatePremiereXMLCompatible(project);
+        break;
+      default:
+        exportData = generatePremiereXMLCurrent(project);
+    }
+  } else if (options.format === 'finalcut') {
+    exportData = generateFinalCutXML(project);
+  } else {
+    exportData = generateResolveXML(project);
   }
 
   return new Blob([exportData], { type: 'application/xml' });

@@ -59,27 +59,49 @@ const FileOrganizer = () => {
         }
       };
 
-      const exportedFile = await exportProject(project, { format });
-      const fileExtension = format === 'premiere' ? 'prproj' : format === 'finalcut' ? 'fcpxml' : 'drp';
-      const fileName = `organized_sequence.${fileExtension}`;
-      
-      const url = URL.createObjectURL(exportedFile);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      // Export all versions for Premiere Pro
+      if (format === 'premiere') {
+        const versions = ['legacy', 'current', 'compatible'] as const;
+        for (const version of versions) {
+          const exportedFile = await exportProject(project, { format, version });
+          const fileName = `organized_sequence_${version}.prproj`;
+          
+          const url = URL.createObjectURL(exportedFile);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
 
-      toast({
-        title: "Sequence Exported Successfully",
-        description: `Your organized sequence has been exported for ${
-          format === 'premiere' ? 'Adobe Premiere Pro' : 
-          format === 'finalcut' ? 'Final Cut Pro' : 
-          'DaVinci Resolve'
-        }.`,
-      });
+        toast({
+          title: "Multiple Versions Exported",
+          description: "Three different versions have been exported. Please try each version to find the most compatible one with your Premiere Pro version.",
+        });
+      } else {
+        // Handle other formats as before
+        const fileExtension = format === 'finalcut' ? 'fcpxml' : 'drp';
+        const exportedFile = await exportProject(project, { format });
+        const fileName = `organized_sequence.${fileExtension}`;
+        
+        const url = URL.createObjectURL(exportedFile);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        toast({
+          title: "Sequence Exported Successfully",
+          description: `Your organized sequence has been exported for ${
+            format === 'finalcut' ? 'Final Cut Pro' : 'DaVinci Resolve'
+          }.`,
+        });
+      }
     } catch (error) {
       toast({
         variant: "destructive",
