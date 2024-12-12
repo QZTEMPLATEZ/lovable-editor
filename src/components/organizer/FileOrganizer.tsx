@@ -9,8 +9,9 @@ import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { useFileProcessing } from '../../hooks/useFileProcessing';
 import FileProcessingSection from './processing/FileProcessingSection';
 import AnalysisResultsView from './analysis/AnalysisResultsView';
-import { FileVideo, FolderOpen } from 'lucide-react';
+import { FileVideo, FolderOpen, Loader2 } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
+import { Alert, AlertDescription } from '../ui/alert';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -82,7 +83,16 @@ const FileOrganizer = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 p-6">
-      <NavigationButtons showContinueButton={analysisResults.length > 0} />
+      {isProcessing ? (
+        <Alert className="bg-purple-500/10 border-purple-500/30">
+          <AlertDescription className="flex items-center gap-2 text-purple-200">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Processing your videos... Please wait while we analyze and organize your content
+          </AlertDescription>
+        </Alert>
+      ) : (
+        <NavigationButtons showContinueButton={analysisResults.length > 0} />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Panel - Upload and Processing */}
