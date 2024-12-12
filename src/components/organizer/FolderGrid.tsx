@@ -10,12 +10,12 @@ interface FolderGridProps {
 const FolderGrid = ({ categories, categorizedFiles = {} }: FolderGridProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-      {categories.map((folder) => (
+      {categories.map((category) => (
         <FolderCard
-          key={folder.name}
-          name={folder.name}
-          icon={folder.icon}
-          count={categorizedFiles[folder.name] || 0}
+          key={category.name}
+          name={category.name}
+          icon={category.icon}
+          count={categorizedFiles[category.name] || 0}
         />
       ))}
     </div>

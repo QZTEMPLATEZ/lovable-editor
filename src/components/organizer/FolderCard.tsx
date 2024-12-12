@@ -1,10 +1,10 @@
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
+import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
 interface FolderCardProps {
   name: string;
-  icon: React.ReactElement<LucideIcon>;
+  icon: ReactNode;
   count: number;
 }
 

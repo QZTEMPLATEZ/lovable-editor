@@ -4,6 +4,7 @@ import ProcessingStatus from './ProcessingStatus';
 import { useToast } from "@/hooks/use-toast";
 import DropZone from './organizer/DropZone';
 import FolderGrid from './organizer/FolderGrid';
+import { FolderCategory } from '@/types';
 
 interface RawFilesSectionProps {
   onDrop: (e: React.DragEvent) => void;
@@ -12,14 +13,14 @@ interface RawFilesSectionProps {
   onContinue?: () => void;
 }
 
-const FOLDERS = [
-  { name: 'BridePrep', icon: <Heart className="w-5 h-5" /> },
-  { name: 'GroomPrep', icon: <Video className="w-5 h-5" /> },
-  { name: 'Ceremony', icon: <Heart className="w-5 h-5" /> },
-  { name: 'Decoration', icon: <Image className="w-5 h-5" /> },
-  { name: 'DroneFootage', icon: <Plane className="w-5 h-5" /> },
-  { name: 'Reception', icon: <PartyPopper className="w-5 h-5" /> },
-  { name: 'Untagged', icon: <HelpCircle className="w-5 h-5" /> },
+const FOLDERS: FolderCategory[] = [
+  { name: 'BridePrep', icon: <Heart className="w-5 h-5" />, description: 'Bride preparation footage', expectedTypes: '.mp4,.mov', color: 'from-pink-500/20 to-rose-500/20' },
+  { name: 'GroomPrep', icon: <Video className="w-5 h-5" />, description: 'Groom preparation footage', expectedTypes: '.mp4,.mov', color: 'from-blue-500/20 to-indigo-500/20' },
+  { name: 'Ceremony', icon: <Heart className="w-5 h-5" />, description: 'Wedding ceremony footage', expectedTypes: '.mp4,.mov', color: 'from-purple-500/20 to-violet-500/20' },
+  { name: 'Decoration', icon: <Image className="w-5 h-5" />, description: 'Venue and decoration details', expectedTypes: '.mp4,.mov', color: 'from-amber-500/20 to-yellow-500/20' },
+  { name: 'DroneFootage', icon: <Plane className="w-5 h-5" />, description: 'Aerial footage', expectedTypes: '.mp4,.mov', color: 'from-sky-500/20 to-blue-500/20' },
+  { name: 'Reception', icon: <PartyPopper className="w-5 h-5" />, description: 'Reception and party footage', expectedTypes: '.mp4,.mov', color: 'from-green-500/20 to-emerald-500/20' },
+  { name: 'Untagged', icon: <HelpCircle className="w-5 h-5" />, description: 'Uncategorized footage', expectedTypes: '.mp4,.mov', color: 'from-gray-500/20 to-slate-500/20' },
 ];
 
 const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProps) => {
@@ -93,7 +94,7 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
   return (
     <div className="space-y-6">
       <FolderGrid 
-        folders={FOLDERS}
+        categories={FOLDERS}
         categorizedFiles={categorizedFiles}
       />
 
@@ -110,9 +111,19 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
           <DropZone
             onDrop={onDrop}
             onDragOver={onDragOver}
-            onClick={handleClick}
+            onClick={() => fileInputRef.current?.click()}
             fileInputRef={fileInputRef}
-            handleFileSelect={handleFileSelect}
+            handleFileSelect={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                const dragEvent = new DragEvent('drop');
+                Object.defineProperty(dragEvent, 'dataTransfer', {
+                  value: {
+                    files: e.target.files
+                  }
+                });
+                onDrop(dragEvent as unknown as React.DragEvent);
+              }
+            }}
           />
         )}
       </div>
