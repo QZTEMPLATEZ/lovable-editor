@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { motion } from 'framer-motion';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import { motion, PanInfo } from 'framer-motion';
 import { Search, Filter, CheckCircle2 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
   const [filteredCategory, setFilteredCategory] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
     const sourceCategory = result.source.droppableId;
@@ -105,10 +105,11 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             initial={false}
-                            animate={snapshot.isDragging ? { scale: 1.05 } : { scale: 1 }}
+                            animate={{ scale: snapshot.isDragging ? 1.05 : 1 }}
                             className={`mb-3 rounded-lg overflow-hidden border ${
                               snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
                             }`}
+                            style={provided.draggableProps.style}
                           >
                             <div className="aspect-video bg-black relative">
                               <img
