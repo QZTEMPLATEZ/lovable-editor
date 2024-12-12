@@ -33,44 +33,67 @@ const ReviewStep = () => {
   const generatePremiereSequence = async (version: string) => {
     // Different sequence formats based on version
     const sequences = {
-      'cs4': `<?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE xmeml>
-        <xmeml version="4">
-          <sequence>
-            <name>Wedding Highlights CS4</name>
-            // ... CS4 specific XML structure
-          </sequence>
-        </xmeml>`,
-      'cs6': `<?xml version="1.0" encoding="UTF-8"?>
-        <PremiereData Version="6">
+      'cc2025': `<?xml version="1.0" encoding="UTF-8"?>
+        <PremiereProject Version="25">
           <Project>
-            <Name>Wedding Highlights CS6</Name>
-            // ... CS6 specific XML structure
-          </Project>
-        </PremiereData>`,
-      'cc2020': `<?xml version="1.0" encoding="UTF-8"?>
-        <PremiereProject Version="14">
-          <Project>
-            <Name>Wedding Highlights CC2020</Name>
-            // ... CC2020 specific XML structure
-          </Project>
-        </PremiereProject>`,
-      'cc2023': `<?xml version="1.0" encoding="UTF-8"?>
-        <PremiereProject Version="23">
-          <Project>
-            <Name>Wedding Highlights CC2023</Name>
-            // ... CC2023 specific XML structure
+            <Name>Wedding Highlights CC2025</Name>
+            <ProjectSettings>
+              <ClipSettings>
+                <DefaultSequenceSettings>
+                  <VideoSettings>
+                    <TimeDisplay>24</TimeDisplay>
+                    <VideoFrameRate>24</VideoFrameRate>
+                    <VideoFieldType>0</VideoFieldType>
+                  </VideoSettings>
+                  <AudioSettings>
+                    <AudioSampleRate>48000</AudioSampleRate>
+                    <AudioChannelType>1</AudioChannelType>
+                  </AudioSettings>
+                </DefaultSequenceSettings>
+              </ClipSettings>
+            </ProjectSettings>
           </Project>
         </PremiereProject>`,
-      'xml2023': `<?xml version="1.0" encoding="UTF-8"?>
-        <fcpxml version="1.9">
-          <project name="Wedding Highlights XML2023">
-            // ... FCP XML structure
+      'cc2024': `<?xml version="1.0" encoding="UTF-8"?>
+        <PremiereProject Version="24">
+          <Project>
+            <Name>Wedding Highlights CC2024</Name>
+            <ProjectSettings>
+              <ClipSettings>
+                <DefaultSequenceSettings>
+                  <VideoSettings>
+                    <TimeDisplay>24</TimeDisplay>
+                    <VideoFrameRate>24</VideoFrameRate>
+                    <VideoFieldType>0</VideoFieldType>
+                  </VideoSettings>
+                  <AudioSettings>
+                    <AudioSampleRate>48000</AudioSampleRate>
+                    <AudioChannelType>1</AudioChannelType>
+                  </AudioSettings>
+                </DefaultSequenceSettings>
+              </ClipSettings>
+            </ProjectSettings>
+          </Project>
+        </PremiereProject>`,
+      'xml2024': `<?xml version="1.0" encoding="UTF-8"?>
+        <fcpxml version="1.10">
+          <project name="Wedding Highlights XML2024">
+            <sequence>
+              <spine>
+                <video>
+                  <format>
+                    <samplerate>48000</samplerate>
+                    <channels>2</channels>
+                    <frameDuration>1/24</frameDuration>
+                  </format>
+                </video>
+              </spine>
+            </sequence>
           </project>
         </fcpxml>`
     };
 
-    return sequences[version] || sequences['cc2023'];
+    return sequences[version] || sequences['cc2025'];
   };
 
   const downloadSequence = (xml: string, filename: string) => {
@@ -94,61 +117,40 @@ const ReviewStep = () => {
       >
         <h2 className="text-2xl font-bold text-white mb-6">Export Sequence</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Button
-            onClick={() => generateSequence('cs4')}
+            onClick={() => generateSequence('cc2025')}
             disabled={isExporting}
             variant="outline"
             className="w-full"
           >
             {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-            Premiere CS4
+            Premiere CC 2025
           </Button>
 
           <Button
-            onClick={() => generateSequence('cs6')}
+            onClick={() => generateSequence('cc2024')}
             disabled={isExporting}
             variant="outline"
             className="w-full"
           >
             {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-            Premiere CS6
+            Premiere CC 2024
           </Button>
 
           <Button
-            onClick={() => generateSequence('cc2020')}
+            onClick={() => generateSequence('xml2024')}
             disabled={isExporting}
             variant="outline"
             className="w-full"
           >
             {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-            Premiere CC 2020
-          </Button>
-
-          <Button
-            onClick={() => generateSequence('cc2023')}
-            disabled={isExporting}
-            variant="outline"
-            className="w-full"
-          >
-            {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-            Premiere CC 2023
-          </Button>
-
-          <Button
-            onClick={() => generateSequence('xml2023')}
-            disabled={isExporting}
-            variant="outline"
-            className="w-full"
-          >
-            {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
-            FCP XML (2023)
+            FCP XML (2024)
           </Button>
         </div>
 
         <p className="text-gray-400 mt-6 text-sm">
-          Select the version that matches your Premiere Pro installation. If one version doesn't work, try another one.
-          The FCP XML option provides broader compatibility with different editing software.
+          Select your preferred export format. The FCP XML option provides broader compatibility with different editing software.
         </p>
       </motion.div>
     </div>
