@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { logger } from '../../../utils/logger';
 import { ORGANIZER_CONFIG } from '../../../config/organizerConfig';
@@ -15,7 +15,7 @@ const FileUploadHandler: React.FC<FileUploadHandlerProps> = ({
   isProcessing
 }) => {
   const { toast } = useToast();
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const validateFiles = (files: File[]): File[] => {
     return files.filter(file => {
@@ -66,10 +66,17 @@ const FileUploadHandler: React.FC<FileUploadHandlerProps> = ({
     }
   };
 
+  const handleClick = () => {
+    if (!isProcessing && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <div
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
+      onClick={handleClick}
       className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300
         ${isProcessing 
           ? 'border-gray-500/30 bg-gray-500/5 cursor-not-allowed' 
