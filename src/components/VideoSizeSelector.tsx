@@ -84,9 +84,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section with full-width layout optimized for 21:9 */}
       <div className="relative h-[40vh] lg:h-[50vh] bg-[#0A0A0A] overflow-hidden">
-        {/* Back button */}
         <Button
           variant="ghost"
           onClick={() => navigate('/')}
@@ -95,23 +93,21 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
           <ChevronLeft className="w-5 h-5" />
         </Button>
 
-        {/* Background video */}
         <div className="absolute inset-0 w-full h-full">
           <video
             autoPlay
             loop
             muted
             playsInline
+            preload="auto"
             className="absolute inset-0 w-full h-full object-cover object-center opacity-100"
           >
             <source src="https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          {/* Background overlay with darker gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/80" />
         </div>
         
-        {/* Content container optimized for 21:9 */}
         <div className="relative container mx-auto h-full max-w-[2560px] px-4 lg:px-8">
           <div className="flex flex-col justify-center h-full max-w-2xl lg:max-w-3xl xl:max-w-4xl">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-cinzel font-extrabold tracking-[0.2em] uppercase text-white mb-4 leading-tight">
@@ -125,7 +121,6 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
         </div>
       </div>
 
-      {/* Duration Options in Banner Layout */}
       <div className="w-full">
         {VIDEO_SIZES.map((size) => {
           const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
