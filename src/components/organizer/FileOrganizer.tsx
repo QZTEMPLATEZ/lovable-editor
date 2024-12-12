@@ -116,13 +116,11 @@ const FileOrganizer = () => {
 
         {/* Right Panel - Results and Export */}
         <div className="lg:col-span-8">
-          <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-6 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl">
-            <AnalysisResultsView
-              analysisResults={analysisResults}
-              isProcessing={isProcessing}
-              onExport={handleExport}
-            />
-          </div>
+          <AnalysisResultsView
+            analysisResults={analysisResults}
+            isProcessing={isProcessing}
+            onExport={handleExport}
+          />
         </div>
       </div>
     </div>
