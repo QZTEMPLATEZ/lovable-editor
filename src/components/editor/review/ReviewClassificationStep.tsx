@@ -142,25 +142,24 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
                                     snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
                                   } ${lastMove?.fileId === file.id ? 'border-green-500' : ''}`}
                                 >
-                                  <motion.div
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ 
-                                      opacity: 1, 
-                                      scale: snapshot.isDragging ? 1.05 : 1
-                                    }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    className="aspect-video bg-black relative"
-                                  >
-                                    <div className="absolute inset-0 flex items-center justify-center bg-editor-panel/50">
+                                  <div className="aspect-video bg-black relative">
+                                    <motion.div
+                                      initial={{ opacity: 0, scale: 0.8 }}
+                                      animate={{ 
+                                        opacity: 1, 
+                                        scale: snapshot.isDragging ? 1.05 : 1
+                                      }}
+                                      exit={{ opacity: 0, scale: 0.8 }}
+                                      className="absolute inset-0 flex items-center justify-center bg-editor-panel/50"
+                                    >
                                       <FileVideo className="w-8 h-8 text-purple-400" />
-                                    </div>
+                                    </motion.div>
                                     {lastMove?.fileId === file.id && (
                                       <div className="absolute top-1 right-1 bg-green-500 rounded-full p-0.5">
                                         <Check className="w-3 h-3 text-white" />
                                       </div>
                                     )}
-                                  </motion.div>
+                                  </div>
                                   <div className="p-2">
                                     <p className="text-xs text-gray-300 truncate">
                                       {file.file.name}
