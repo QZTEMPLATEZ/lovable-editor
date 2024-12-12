@@ -8,22 +8,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 
 interface ReviewClassificationStepProps {
-  rawFiles: File[];
-  onClassificationUpdate: (fileId: string, newCategory: string) => void;
-}
-
-interface FileWithCategory {
-  id: string;
-  file: File;
-  category: string;
+  rawFiles?: File[];
+  onClassificationUpdate?: (fileId: string, newCategory: string) => void;
 }
 
 const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
-  rawFiles,
+  rawFiles = [],
   onClassificationUpdate
 }) => {
   const { toast } = useToast();
-  const [files, setFiles] = useState<FileWithCategory[]>(
+  const [files, setFiles] = useState<{ id: string; file: File; category: string }[]>(
     rawFiles.map((file, index) => ({
       id: `file-${index}`,
       file,
@@ -58,7 +52,9 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
         toCategory: destinationCategory
       });
 
-      onClassificationUpdate(fileId, destinationCategory);
+      if (onClassificationUpdate) {
+        onClassificationUpdate(fileId, destinationCategory);
+      }
 
       toast({
         title: "Category Updated",
@@ -77,7 +73,9 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
         )
       );
       
-      onClassificationUpdate(lastMove.fileId, lastMove.fromCategory);
+      if (onClassificationUpdate) {
+        onClassificationUpdate(lastMove.fileId, lastMove.fromCategory);
+      }
       setLastMove(null);
 
       toast({
@@ -134,45 +132,36 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
                             draggableId={file.id}
                             index={index}
                           >
-                            {(provided, snapshot) => {
-                              const dragHandleProps = {
-                                ...provided.dragHandleProps,
-                                onDragStart: undefined,
-                                onDrag: undefined,
-                                onDragEnd: undefined
-                              };
-
-                              return (
-                                <motion.div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...dragHandleProps}
-                                  initial={false}
-                                  animate={{
-                                    scale: snapshot.isDragging ? 1.05 : 1,
-                                  }}
-                                  className={`relative rounded-lg overflow-hidden border ${
-                                    snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
-                                  }`}
-                                >
-                                  <div className="aspect-video bg-black relative">
-                                    <div className="absolute inset-0 flex items-center justify-center bg-editor-panel/50">
-                                      <FileVideo className="w-8 h-8 text-purple-400" />
+                            {(provided, snapshot) => (
+                              <motion.div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                initial={false}
+                                animate={{
+                                  scale: snapshot.isDragging ? 1.05 : 1,
+                                }}
+                                className={`relative rounded-lg overflow-hidden border ${
+                                  snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
+                                } ${lastMove?.fileId === file.id ? 'border-green-500' : ''}`}
+                              >
+                                <div className="aspect-video bg-black relative">
+                                  <div className="absolute inset-0 flex items-center justify-center bg-editor-panel/50">
+                                    <FileVideo className="w-8 h-8 text-purple-400" />
+                                  </div>
+                                  {lastMove?.fileId === file.id && (
+                                    <div className="absolute top-1 right-1 bg-green-500 rounded-full p-0.5">
+                                      <Check className="w-3 h-3 text-white" />
                                     </div>
-                                    {lastMove?.fileId === file.id && (
-                                      <div className="absolute top-1 right-1 bg-green-500 rounded-full p-0.5">
-                                        <Check className="w-3 h-3 text-white" />
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div className="p-2">
-                                    <p className="text-xs text-gray-300 truncate">
-                                      {file.file.name}
-                                    </p>
-                                  </div>
-                                </motion.div>
-                              );
-                            }}
+                                  )}
+                                </div>
+                                <div className="p-2">
+                                  <p className="text-xs text-gray-300 truncate">
+                                    {file.file.name}
+                                  </p>
+                                </div>
+                              </motion.div>
+                            )}
                           </Draggable>
                         ))}
                     </div>

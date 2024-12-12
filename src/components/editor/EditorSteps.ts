@@ -17,6 +17,10 @@ export const EDITOR_STEPS = [
   },
   {
     title: "Review",
-    description: "Final check",
+    description: "Check classification",
+  },
+  {
+    title: "Edit",
+    description: "Final edit",
   }
 ];

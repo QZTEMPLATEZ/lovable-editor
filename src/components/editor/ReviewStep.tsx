@@ -7,8 +7,13 @@ import ProcessingSteps from '../processing/ProcessingSteps';
 import ProcessingHeader from '../processing/ProcessingHeader';
 import ProcessingProgressBar from '../processing/ProcessingProgressBar';
 import { Download } from 'lucide-react';
+import ReviewClassificationStep from './review/ReviewClassificationStep';
 
-const ReviewStep = () => {
+interface ReviewStepProps {
+  isEditMode?: boolean;
+}
+
+const ReviewStep = ({ isEditMode = false }: ReviewStepProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [remainingTime, setRemainingTime] = useState(300); // 5 minutes in seconds
@@ -44,6 +49,10 @@ const ReviewStep = () => {
       });
     }, 2000);
   };
+
+  if (!isEditMode) {
+    return <ReviewClassificationStep />;
+  }
 
   if (isProcessing) {
     return (

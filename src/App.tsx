@@ -41,6 +41,8 @@ const AppContent = () => {
         return 3;
       case '/review':
         return 4;
+      case '/edit':
+        return 5;
       default:
         return -1;
     }
@@ -123,6 +125,10 @@ const AppContent = () => {
               <Route 
                 path="/review" 
                 element={<ReviewStep />}
+              />
+              <Route 
+                path="/edit" 
+                element={<ReviewStep isEditMode />}
               />
             </Routes>
           </div>
