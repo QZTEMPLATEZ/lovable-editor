@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Upload, Film, Info } from 'lucide-react';
+import { Upload, Heart, Video, Image, Plane, PartyPopper, HelpCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 import ProcessingStatus from './ProcessingStatus';
 import { useToast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface RawFilesSectionProps {
   onDrop: (e: React.DragEvent) => void;
@@ -17,6 +18,16 @@ interface RawFilesSectionProps {
   onContinue?: () => void;
 }
 
+const FOLDERS = [
+  { name: 'BridePrep', icon: <Heart className="w-5 h-5" /> },
+  { name: 'GroomPrep', icon: <Video className="w-5 h-5" /> },
+  { name: 'Ceremony', icon: <Heart className="w-5 h-5" /> },
+  { name: 'Decoration', icon: <Image className="w-5 h-5" /> },
+  { name: 'DroneFootage', icon: <Plane className="w-5 h-5" /> },
+  { name: 'Reception', icon: <PartyPopper className="w-5 h-5" /> },
+  { name: 'Untagged', icon: <HelpCircle className="w-5 h-5" /> },
+];
+
 const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentFile, setCurrentFile] = useState<string>();
@@ -24,6 +35,9 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
   const [progress, setProgress] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [categorizedFiles, setCategorizedFiles] = useState<Record<string, number>>(
+    FOLDERS.reduce((acc, folder) => ({ ...acc, [folder.name]: 0 }), {})
+  );
   const { toast } = useToast();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,46 +62,64 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
       setIsProcessing(true);
       setProgress(0);
       setIsComplete(false);
+      setCategorizedFiles(FOLDERS.reduce((acc, folder) => ({ ...acc, [folder.name]: 0 }), {}));
 
       // Simulate processing each file
       videoFiles.forEach((file, index) => {
         setTimeout(() => {
           setCurrentFile(file.name);
           // Simulate category detection
-          const categories = ['Ceremony', 'Reception', 'Preparation', 'Drone'];
+          const categories = FOLDERS.map(f => f.name).filter(f => f !== 'Untagged');
           const randomCategory = categories[Math.floor(Math.random() * categories.length)];
           setCurrentCategory(randomCategory);
+          
+          // Update categorized files count
+          setCategorizedFiles(prev => ({
+            ...prev,
+            [randomCategory]: prev[randomCategory] + 1
+          }));
+          
           setProgress(((index + 1) / videoFiles.length) * 100);
 
           if (index === videoFiles.length - 1) {
             setTimeout(() => {
               setIsComplete(true);
               setIsProcessing(false);
+              toast({
+                title: "Organization Complete",
+                description: "All files have been successfully categorized.",
+              });
             }, 1000);
           }
         }, index * 2000); // Process each file with a delay
       });
     }
-  }, [videoFiles]);
+  }, [videoFiles, toast]);
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-8 border border-purple-500/30">
-        <div className="flex items-center gap-4 mb-6">
-          <Film className="w-6 h-6 text-purple-400" />
-          <h2 className="text-2xl font-semibold text-purple-300">Raw Wedding Footage</h2>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="w-5 h-5 text-gray-400 cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-md">
-                <p>Upload your raw wedding footage. Files will be automatically organized into appropriate categories.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        {FOLDERS.map((folder) => (
+          <motion.div
+            key={folder.name}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative flex items-center justify-between p-4 rounded-xl border border-purple-500/20 bg-black/40 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3">
+              <div className="text-purple-400">
+                {folder.icon}
+              </div>
+              <span className="text-white font-medium">{folder.name}</span>
+            </div>
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-black/60 text-white">
+              {categorizedFiles[folder.name]}
+            </div>
+          </motion.div>
+        ))}
+      </div>
 
+      <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-8 border border-purple-500/30">
         {isProcessing || isComplete ? (
           <ProcessingStatus
             currentStep="organizing"
@@ -117,23 +149,6 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
               Drag and drop your raw wedding footage here
             </p>
             <p className="text-sm text-gray-400 relative z-10">or click to browse</p>
-          </div>
-        )}
-
-        {videoFiles.length > 0 && (
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {videoFiles.map((file, index) => (
-              <div key={index} className="relative rounded-lg overflow-hidden border border-purple-500/30">
-                <video 
-                  src={URL.createObjectURL(file)} 
-                  className="w-full h-48 object-cover"
-                  controls
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/70">
-                  <p className="text-sm text-white truncate">{file.name}</p>
-                </div>
-              </div>
-            ))}
           </div>
         )}
       </div>
