@@ -23,10 +23,10 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({ showContinueButto
       
       {showContinueButton && (
         <Button
-          onClick={() => navigate('/edit')}
+          onClick={() => navigate('/review')}
           className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
         >
-          Continue to Edit
+          Continue to Review
           <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       )}
