@@ -59,7 +59,14 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'video/*';
-        input.onchange = (e) => handleFileUpload(e as React.ChangeEvent<HTMLInputElement>);
+        input.onchange = (e) => {
+          if (e.target instanceof HTMLInputElement) {
+            handleFileUpload({
+              ...e,
+              target: e.target
+            } as React.ChangeEvent<HTMLInputElement>);
+          }
+        };
         input.click();
       }} />
     </div>
