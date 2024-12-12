@@ -1,8 +1,8 @@
-import { LogLevel, LogEntry } from '../types/logger';
+type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
 class Logger {
   private static instance: Logger;
-  private logs: LogEntry[] = [];
+  private debugMode: boolean = false;
 
   private constructor() {}
 
@@ -13,41 +13,46 @@ class Logger {
     return Logger.instance;
   }
 
-  log(level: LogLevel, message: string, details?: unknown) {
-    const entry: LogEntry = {
-      timestamp: new Date(),
-      level,
-      message,
-      details,
-    };
+  setDebugMode(enabled: boolean): void {
+    this.debugMode = enabled;
+  }
 
-    this.logs.push(entry);
-    console[level](message, details);
+  private log(level: LogLevel, message: string, ...args: any[]): void {
+    const timestamp = new Date().toISOString();
+    const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
 
-    // Keep logs under max size
-    if (this.logs.length > 1000) {
-      this.logs = this.logs.slice(-1000);
+    switch (level) {
+      case 'info':
+        console.info(prefix, message, ...args);
+        break;
+      case 'warn':
+        console.warn(prefix, message, ...args);
+        break;
+      case 'error':
+        console.error(prefix, message, ...args);
+        break;
+      case 'debug':
+        if (this.debugMode) {
+          console.debug(prefix, message, ...args);
+        }
+        break;
     }
   }
 
-  error(message: string, details?: unknown) {
-    this.log('error', message, details);
+  info(message: string, ...args: any[]): void {
+    this.log('info', message, ...args);
   }
 
-  warn(message: string, details?: unknown) {
-    this.log('warn', message, details);
+  warn(message: string, ...args: any[]): void {
+    this.log('warn', message, ...args);
   }
 
-  info(message: string, details?: unknown) {
-    this.log('info', message, details);
+  error(message: string, ...args: any[]): void {
+    this.log('error', message, ...args);
   }
 
-  debug(message: string, details?: unknown) {
-    this.log('debug', message, details);
-  }
-
-  getLogs(): LogEntry[] {
-    return [...this.logs];
+  debug(message: string, ...args: any[]): void {
+    this.log('debug', message, ...args);
   }
 }
 

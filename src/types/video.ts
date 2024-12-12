@@ -1,17 +1,22 @@
-export interface VideoStyle {
+export type VideoStyle = {
   id: string;
   name: string;
   description: string;
   thumbnail: string;
   videoUrl: string;
-}
+};
 
-export interface MusicAnalysis {
-  key: string;
-  tempo: number;
-  timeSignature: string;
-  duration: number;
-  loudness: number;
-  energy: number;
-  danceability: number;
+export type VideoCategory = 
+  | 'brideprep'
+  | 'groomprep'
+  | 'decoration'
+  | 'drone'
+  | 'ceremony'
+  | 'reception'
+  | 'untagged';
+
+export interface VideoAnalysisResult {
+  file: File;
+  category: VideoCategory;
+  confidence: number;
 }

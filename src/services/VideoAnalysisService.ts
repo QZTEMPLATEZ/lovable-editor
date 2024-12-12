@@ -1,125 +1,105 @@
+import { VideoCategory } from '../types';
 import { logger } from '../utils/logger';
-import { BaseAnalysisService } from './analysis/BaseAnalysisService';
-import { PrepAnalyzer } from './analysis/PrepAnalyzer';
-import { DecorationAnalyzer } from './analysis/DecorationAnalyzer';
-import { DroneAnalyzer } from './analysis/DroneAnalyzer';
 
-export class VideoAnalysisService extends BaseAnalysisService {
-  private static instance: VideoAnalysisService;
+export class VideoAnalysisService {
+  private static readonly CONFIDENCE_THRESHOLD = 0.3;
+  
+  private static readonly CATEGORY_PATTERNS = {
+    brideprep: [/bride.*prep/i, /noiva.*prep/i, /makeup/i, /maquiagem/i],
+    groomprep: [/groom.*prep/i, /noivo.*prep/i],
+    decoration: [/decor/i, /flores/i, /flowers/i, /venue/i, /local/i],
+    drone: [/drone/i, /aerial/i, /dji/i, /mavic/i, /air2s/i],
+    ceremony: [/cerim[oôó]nia/i, /ceremony/i, /altar/i, /church/i, /igreja/i],
+    reception: [/recep[cç][aã]o/i, /reception/i, /party/i, /festa/i, /dance/i]
+  };
 
-  private constructor() {
-    super();
-  }
+  private static readonly VISUAL_INDICATORS = {
+    brideprep: ['makeup', 'dress', 'bride', 'mirror', 'hair'],
+    groomprep: ['suit', 'tie', 'groom', 'getting ready'],
+    decoration: ['flowers', 'chairs', 'tables', 'arch', 'lights'],
+    drone: ['aerial', 'bird view', 'landscape', 'building'],
+    ceremony: ['altar', 'church', 'aisle', 'chairs', 'guests'],
+    reception: ['dance floor', 'party', 'cake', 'dinner', 'toast']
+  };
 
-  static getInstance(): VideoAnalysisService {
-    if (!VideoAnalysisService.instance) {
-      VideoAnalysisService.instance = new VideoAnalysisService();
-    }
-    return VideoAnalysisService.instance;
-  }
-
-  async analyzeVideo(file: File): Promise<string> {
+  static async analyzeVideo(file: File): Promise<{ category: VideoCategory; confidence: number }> {
     try {
-      const initialized = await this.initialize();
-      if (!initialized || !this.classifier) {
-        logger.error('Classifier not initialized properly');
-        return 'Untagged';
+      logger.info(`Starting analysis for file: ${file.name}`);
+      
+      // First try filename-based classification
+      const filenameCategory = this.classifyByFilename(file.name);
+      if (filenameCategory) {
+        logger.info(`File ${file.name} classified as ${filenameCategory} based on filename`);
+        return { category: filenameCategory, confidence: 0.8 };
       }
 
-      const frames = await this.extractFrames(file);
-      logger.info(`Analyzing ${frames.length} frames for video: ${file.name}`);
-      
-      // Initialize counters for each category
-      const categoryScores = {
-        BridePrep: { frames: 0, confidence: 0 },
-        GroomPrep: { frames: 0, confidence: 0 },
-        Decoration: { frames: 0, confidence: 0 },
-        Drone: { frames: 0, confidence: 0 },
-        Ceremony: { frames: 0, confidence: 0 },
-        Reception: { frames: 0, confidence: 0 }
-      };
-      
-      // Analyze each frame
-      for (const frame of frames) {
-        const imageData = frame.toDataURL('image/jpeg', 0.8);
-        const predictions = await this.classifier(imageData);
-        
-        // Check each category with lower confidence thresholds
-        const bridePrep = PrepAnalyzer.isBridePrepScene(predictions);
-        const groomPrep = PrepAnalyzer.isGroomPrepScene(predictions);
-        const decoration = DecorationAnalyzer.isDecorationScene(predictions);
-        const drone = DroneAnalyzer.isDroneShot(predictions);
-
-        // Update scores with lower thresholds
-        if (bridePrep.isPrep || bridePrep.confidence > 0.3) {
-          categoryScores.BridePrep.frames++;
-          categoryScores.BridePrep.confidence += bridePrep.confidence;
-        }
-
-        if (groomPrep.isPrep || groomPrep.confidence > 0.3) {
-          categoryScores.GroomPrep.frames++;
-          categoryScores.GroomPrep.confidence += groomPrep.confidence;
-        }
-
-        if (decoration.isDecoration || decoration.confidence > 0.3) {
-          categoryScores.Decoration.frames++;
-          categoryScores.Decoration.confidence += decoration.confidence;
-        }
-
-        if (drone.isDrone || drone.confidence > 0.3) {
-          categoryScores.Drone.frames++;
-          categoryScores.Drone.confidence += drone.confidence;
-        }
-
-        // Basic ceremony detection (can be improved with a dedicated analyzer)
-        if (predictions.some(p => 
-          p.label.toLowerCase().includes('ceremony') || 
-          p.label.toLowerCase().includes('wedding') ||
-          p.label.toLowerCase().includes('altar')
-        )) {
-          categoryScores.Ceremony.frames++;
-          categoryScores.Ceremony.confidence += 0.7; // Default confidence for ceremony scenes
-        }
-
-        // Basic reception detection
-        if (predictions.some(p => 
-          p.label.toLowerCase().includes('party') || 
-          p.label.toLowerCase().includes('reception') ||
-          p.label.toLowerCase().includes('dance')
-        )) {
-          categoryScores.Reception.frames++;
-          categoryScores.Reception.confidence += 0.7; // Default confidence for reception scenes
-        }
+      // Then try metadata-based classification
+      const metadataCategory = await this.classifyByMetadata(file);
+      if (metadataCategory) {
+        logger.info(`File ${file.name} classified as ${metadataCategory} based on metadata`);
+        return { category: metadataCategory, confidence: 0.7 };
       }
-      
-      // Calculate average confidence and frame ratios for each category
-      const totalFrames = frames.length;
-      const categoryRatios = Object.entries(categoryScores).map(([category, scores]) => ({
-        category,
-        ratio: scores.frames / totalFrames,
-        avgConfidence: scores.frames > 0 ? scores.confidence / scores.frames : 0
-      }));
 
-      // Sort by ratio and confidence to find the best match
-      categoryRatios.sort((a, b) => 
-        (b.ratio * b.avgConfidence) - (a.ratio * a.avgConfidence)
-      );
-
-      // Lower the threshold for classification
-      const bestMatch = categoryRatios[0];
-      if (bestMatch.ratio > 0.15 && bestMatch.avgConfidence > 0.3) {
-        logger.info(`Classified ${file.name} as ${bestMatch.category} with confidence ${bestMatch.avgConfidence}`);
-        return bestMatch.category;
-      }
-      
-      logger.info(`Could not confidently classify ${file.name}, marking as Untagged`);
-      return 'Untagged';
-      
+      // If no clear classification, mark as untagged
+      logger.warn(`File ${file.name} could not be classified confidently`);
+      return { category: 'untagged', confidence: 0 };
     } catch (error) {
-      logger.error(`Error analyzing video ${file.name}:`, error);
-      return 'Untagged';
+      logger.error(`Error analyzing file ${file.name}:`, error);
+      return { category: 'untagged', confidence: 0 };
+    }
+  }
+
+  private static classifyByFilename(filename: string): VideoCategory | null {
+    const lowercaseFilename = filename.toLowerCase();
+    
+    for (const [category, patterns] of Object.entries(this.CATEGORY_PATTERNS)) {
+      if (patterns.some(pattern => pattern.test(lowercaseFilename))) {
+        return category as VideoCategory;
+      }
+    }
+    
+    return null;
+  }
+
+  private static async classifyByMetadata(file: File): Promise<VideoCategory | null> {
+    try {
+      // Here we would integrate with actual video analysis AI
+      // For now, using a simplified scoring system
+      const scores = new Map<VideoCategory, number>();
+      
+      // Initialize scores
+      Object.keys(this.VISUAL_INDICATORS).forEach(category => {
+        scores.set(category as VideoCategory, 0);
+      });
+
+      // Simple scoring based on file properties
+      if (file.type.includes('video')) {
+        // Add basic scoring logic
+        if (file.size > 100 * 1024 * 1024) { // Files larger than 100MB
+          scores.set('ceremony', (scores.get('ceremony') || 0) + 0.2);
+          scores.set('reception', (scores.get('reception') || 0) + 0.2);
+        }
+        
+        if (file.name.includes('DJI') || file.name.includes('MAVIC')) {
+          scores.set('drone', (scores.get('drone') || 0) + 0.5);
+        }
+      }
+
+      // Find highest scoring category
+      let maxScore = 0;
+      let bestCategory: VideoCategory | null = null;
+
+      scores.forEach((score, category) => {
+        if (score > maxScore && score >= this.CONFIDENCE_THRESHOLD) {
+          maxScore = score;
+          bestCategory = category;
+        }
+      });
+
+      return bestCategory;
+    } catch (error) {
+      logger.error('Error in metadata classification:', error);
+      return null;
     }
   }
 }
-
-export const videoAnalysisService = VideoAnalysisService.getInstance();
