@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Github, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import PricingPlans from "../pricing/PricingPlans";
 
 interface LoginModalProps {
@@ -31,14 +31,6 @@ const LoginModal = ({ isOpen, onClose, onPlanSelect }: LoginModalProps) => {
 
         <div className="space-y-6 py-4">
           <div className="space-y-3">
-            <Button 
-              variant="outline" 
-              className="w-full border-editor-border hover:bg-editor-accent/10"
-              onClick={() => console.log('GitHub login')}
-            >
-              <Github className="mr-2 h-4 w-4" />
-              Continue with GitHub
-            </Button>
             <Button 
               variant="outline" 
               className="w-full border-editor-border hover:bg-editor-accent/10"
