@@ -12,24 +12,25 @@ export const useFileProcessing = () => {
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [successCount, setSuccessCount] = useState(0);
   const [errorCount, setErrorCount] = useState(0);
-  const [shouldStop, setShouldStop] = useState(false);
+
+  const stopProcessing = () => {
+    setIsProcessing(false);
+    setCurrentFile(null);
+    setProgress(0);
+  };
 
   const processFiles = async (filesToProcess: File[]) => {
     setIsProcessing(true);
     setProgress(0);
     setSuccessCount(0);
     setErrorCount(0);
-    setShouldStop(false);
 
     try {
       logger.info(`Starting processing of ${filesToProcess.length} files`);
 
       for (let i = 0; i < filesToProcess.length; i++) {
-        if (shouldStop) {
-          logger.info('Processing stopped by user');
-          break;
-        }
-
+        if (!isProcessing) break; // Check if processing was stopped
+        
         setCurrentFile(filesToProcess[i]);
         setProgress((i / filesToProcess.length) * 100);
 
@@ -49,13 +50,11 @@ export const useFileProcessing = () => {
         }
       }
 
-      if (!shouldStop) {
-        setProgress(100);
-        toast({
-          title: "Processing Complete",
-          description: `Successfully processed ${successCount} files`
-        });
-      }
+      setProgress(100);
+      toast({
+        title: "Processing Complete",
+        description: `Successfully processed ${filesToProcess.length} files`
+      });
 
     } catch (error) {
       logger.error('Error processing files', error);
@@ -67,17 +66,12 @@ export const useFileProcessing = () => {
     } finally {
       setIsProcessing(false);
       setCurrentFile(null);
-      setShouldStop(false);
     }
   };
 
   const handleFilesSelected = (newFiles: File[]) => {
     setFiles(prevFiles => [...prevFiles, ...newFiles]);
     processFiles(newFiles);
-  };
-
-  const stopProcessing = () => {
-    setShouldStop(true);
   };
 
   return {
