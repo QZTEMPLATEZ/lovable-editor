@@ -1,16 +1,18 @@
 import { logger } from '../../utils/logger';
-import { FrameExtractor } from './core/FrameExtractor';
+import { FrameExtractor } from '../analysis/FrameExtractor';
 import { PrepAnalyzer } from './analyzers/PrepAnalyzer';
 import { DecorationAnalyzer } from './analyzers/DecorationAnalyzer';
 import { DroneAnalyzer } from './analyzers/DroneAnalyzer';
 import { CategoryMatcher } from './core/CategoryMatcher';
+import { BaseVideoAnalyzer } from './core/BaseVideoAnalyzer';
 
-export class VideoAnalysisService {
+export class VideoAnalysisService extends BaseVideoAnalyzer {
   private prepAnalyzer: PrepAnalyzer;
   private decorationAnalyzer: DecorationAnalyzer;
   private droneAnalyzer: DroneAnalyzer;
 
   constructor() {
+    super();
     this.prepAnalyzer = new PrepAnalyzer();
     this.decorationAnalyzer = new DecorationAnalyzer();
     this.droneAnalyzer = new DroneAnalyzer();
@@ -27,6 +29,9 @@ export class VideoAnalysisService {
       
       const frames = await Promise.all(framePromises);
       logger.info(`Extracted ${frames.length} frames for analysis from ${file.name}`);
+      
+      // Initialize classifier if needed
+      await this.initializeClassifier();
       
       // Analyze each frame
       const predictions = await this.analyzePredictions(frames);
@@ -58,10 +63,13 @@ export class VideoAnalysisService {
     }
   }
 
-  private async analyzePredictions(frames: string[]): Promise<any[]> {
+  protected async analyzePredictions(frames: string[]): Promise<any[]> {
+    if (!this.classifier) {
+      await this.initializeClassifier();
+    }
+    
     const predictionPromises = frames.map(async frame => {
-      const predictions = await this.prepAnalyzer.classifier(frame);
-      return predictions;
+      return await this.classifier(frame);
     });
     
     const allPredictions = await Promise.all(predictionPromises);
