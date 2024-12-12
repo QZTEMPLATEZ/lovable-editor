@@ -1,5 +1,6 @@
 import React from 'react';
 import PricingPlans from '../pricing/PricingPlans';
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -14,7 +15,13 @@ const LoginModal: React.FC<LoginModalProps> = ({
 }) => {
   if (!isOpen) return null;
   
-  return <PricingPlans onComplete={onPlanSelect} />;
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[900px] bg-editor-panel border-editor-border">
+        <PricingPlans onComplete={onPlanSelect} />
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 export default LoginModal;
