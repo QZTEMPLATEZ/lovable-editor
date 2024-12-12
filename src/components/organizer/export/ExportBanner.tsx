@@ -15,41 +15,41 @@ const ExportBanner = ({ successCount, onExport }: ExportBannerProps) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed bottom-0 left-0 right-0 bg-editor-bg/95 backdrop-blur-sm border-t border-purple-500/20"
+      className="w-full bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-8 border border-purple-500/30 mt-12 mb-24"
     >
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-2">
-            <h3 className="text-2xl font-cinzel bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col items-center justify-center gap-8">
+          <div className="space-y-4 text-center">
+            <h3 className="text-4xl font-cinzel bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
               Export Your Sequence
             </h3>
-            <p className="text-gray-400">
+            <p className="text-xl text-gray-400">
               Download your organized sequence for professional editing software
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
             <Button
               onClick={() => onExport('premiere')}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition-opacity"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition-all duration-300 transform hover:scale-105 py-6 text-lg"
             >
-              <Download className="w-4 h-4 mr-2" />
+              <Download className="w-6 h-6 mr-3" />
               Adobe Premiere Pro
             </Button>
 
             <Button
               onClick={() => onExport('finalcut')}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition-opacity"
+              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition-all duration-300 transform hover:scale-105 py-6 text-lg"
             >
-              <Download className="w-4 h-4 mr-2" />
+              <Download className="w-6 h-6 mr-3" />
               Final Cut Pro
             </Button>
 
             <Button
               onClick={() => onExport('resolve')}
-              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 transition-opacity"
+              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 transition-all duration-300 transform hover:scale-105 py-6 text-lg"
             >
-              <Download className="w-4 h-4 mr-2" />
+              <Download className="w-6 h-6 mr-3" />
               DaVinci Resolve
             </Button>
           </div>
