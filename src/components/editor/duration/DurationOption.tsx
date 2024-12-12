@@ -1,73 +1,60 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Button } from "@/components/ui/button";
-import { VideoIcon } from 'lucide-react';
+import { Clock, Check } from 'lucide-react';
+import PlanBadge from '../../PlanBadge';
 import { VideoSizeRange } from '../../../types';
 
 interface DurationOptionProps {
-  duration: VideoSizeRange;
-  onSelect: (duration: VideoSizeRange) => void;
+  size: VideoSizeRange;
+  isSelected: boolean;
+  onSelect: (size: VideoSizeRange) => void;
 }
 
-const DurationOption = ({ duration, onSelect }: DurationOptionProps) => {
+const DurationOption = ({ size, isSelected, onSelect }: DurationOptionProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="relative w-full [aspect-ratio:2.74/1] group cursor-pointer bg-editor-panel"
-      onClick={() => onSelect(duration)}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
+      className={`relative w-full p-8 border-b transition-all duration-300 cursor-pointer
+        ${isSelected 
+          ? 'border-editor-glow-purple bg-editor-glow-purple/10' 
+          : 'border-gray-700/30 hover:bg-editor-glow-purple/5'
+        }`}
+      onClick={() => onSelect(size)}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-editor-panel/60 via-editor-panel/40 to-editor-panel/60 z-[1]" />
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
-      
-      <div className="relative z-10 flex items-center justify-between h-full w-full px-6 md:px-12">
-        <div className="space-y-0.5">
-          <motion.div 
-            className="flex items-center gap-3"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            <VideoIcon className="w-6 h-6 text-purple-400" />
-            <h2 className="text-2xl md:text-4xl font-cinzel tracking-wider text-white">
-              {duration.name}
-            </h2>
-          </motion.div>
-          <motion.p 
-            className="text-[6px] md:text-[8px] tracking-[0.2em] uppercase text-gray-400 font-italiana"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            {duration.label}
-          </motion.p>
-          <motion.p 
-            className="text-[6px] md:text-[8px] text-gray-400 max-w-sm line-clamp-2"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            {duration.description}
-          </motion.p>
-        </div>
+      <div className="container mx-auto max-w-[2560px]">
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-3">
+              <h3 className="text-xl font-medium text-white">{size.name}</h3>
+              <div className="flex items-center gap-2 text-sm text-gray-300">
+                <Clock className="w-4 h-4" />
+                <span>{size.label}</span>
+              </div>
+              <PlanBadge tier={size.tier} />
+            </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-            delay: 0.4
-          }}
-        >
-          <Button 
-            variant="outline" 
-            className="border-2 border-white text-white hover:bg-white/10 uppercase tracking-wider text-[8px] md:text-[10px] px-3 py-2"
-          >
-            SELECT
-          </Button>
-        </motion.div>
+            <p className="text-sm text-gray-400 mb-4 max-w-2xl whitespace-pre-line">
+              {size.description}
+            </p>
+
+            <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg inline-block">
+              <Clock className="w-3 h-3" />
+              <span>Recommended Tracks: {size.recommendedTracks}</span>
+            </div>
+          </div>
+
+          {isSelected && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              className="bg-editor-glow-purple rounded-full p-3"
+            >
+              <Check className="w-5 h-5 text-white" />
+            </motion.div>
+          )}
+        </div>
       </div>
     </motion.div>
   );
