@@ -44,7 +44,7 @@ const VideoStyleItem = ({
   const getVideoUrl = (styleId: string) => {
     switch (styleId) {
       case 'classic':
-        return "https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1";
+        return "https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?raw=1";
       case 'modern':
         return "https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1";
       case 'documentary':
