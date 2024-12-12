@@ -1,19 +1,17 @@
 import React from 'react';
 import { useVideoType } from '../../contexts/VideoTypeContext';
 import { exportProject } from '@/utils/projectExport';
-import { categorizeClip, analyzeClipSignificance } from '@/utils/videoEditingLogic';
+import { categorizeClip } from '@/utils/videoEditingLogic';
 import { useToast } from '@/hooks/use-toast';
 import NavigationButtons from './NavigationButtons';
-import FolderGrid from './FolderGrid';
 import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { useFileProcessing } from '../../hooks/useFileProcessing';
-import FileProcessingSection from './processing/FileProcessingSection';
-import AnalysisResultsView from './analysis/AnalysisResultsView';
-import { FileVideo, FolderOpen, Loader2, ArrowRight, CheckCircle2 } from 'lucide-react';
+import FileUploadHandler from './upload/FileUploadHandler';
+import { FileVideo, AlertCircle } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
-import { Alert, AlertDescription } from '../ui/alert';
 import { Progress } from '../ui/progress';
 import { motion } from 'framer-motion';
+import { Alert, AlertDescription } from '../ui/alert';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -33,10 +31,10 @@ const FileOrganizer = () => {
       const processedClips = await Promise.all(
         analysisResults.map(async result => ({
           file: result.file,
-          type: categorizeClip(result.file.name),
+          type: result.category || 'Untagged', // Ensure every video has a category
           startTime: 0,
           endTime: 30,
-          significance: await analyzeClipSignificance(result.file)
+          significance: 1
         }))
       );
 
@@ -53,7 +51,6 @@ const FileOrganizer = () => {
       };
 
       const exportedFile = await exportProject(project, { format });
-      
       const fileExtension = format === 'premiere' ? 'prproj' : format === 'finalcut' ? 'fcpxml' : 'drp';
       const fileName = `organized_sequence.${fileExtension}`;
       
@@ -83,100 +80,91 @@ const FileOrganizer = () => {
     }
   };
 
-  const totalProgress = files.length > 0 ? ((successCount + errorCount) / files.length) * 100 : 0;
+  // Group results by category
+  const categorizedResults = analysisResults.reduce((acc, result) => {
+    const category = result.category || 'Untagged';
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(result);
+    return acc;
+  }, {} as Record<string, typeof analysisResults>);
 
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95"
+      className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 p-6"
     >
-      <div className="max-w-7xl mx-auto p-8">
-        {/* Header Section */}
+      <div className="max-w-5xl mx-auto">
+        {/* Upload Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Video Organization</h1>
-          <p className="text-gray-400">Organize and categorize your wedding footage automatically</p>
+          <FileUploadHandler 
+            onFilesSelected={handleFilesSelected}
+            isProcessing={isProcessing}
+          />
         </div>
 
-        {/* Status Bar */}
-        {isProcessing ? (
-          <Alert className="bg-purple-500/10 border-purple-500/30 mb-8">
-            <AlertDescription className="flex items-center gap-2 text-purple-200">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Processing your videos... Please wait while we analyze and organize your content
+        {/* Processing Status */}
+        {isProcessing && (
+          <Alert className="mb-6 bg-purple-500/10 border-purple-500/30">
+            <AlertDescription className="flex items-center gap-2">
+              <FileVideo className="animate-pulse" />
+              <span>Processing: {currentFile?.name}</span>
+              <Progress value={(successCount + errorCount) / files.length * 100} className="ml-4" />
             </AlertDescription>
           </Alert>
-        ) : (
-          analysisResults.length > 0 && (
-            <div className="flex items-center gap-4 mb-8 bg-green-500/10 p-4 rounded-lg border border-green-500/30">
-              <CheckCircle2 className="w-6 h-6 text-green-400" />
-              <span className="text-green-300">Analysis Complete! You can now proceed to edit your video.</span>
-              <NavigationButtons showContinueButton={true} />
-            </div>
-          )
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Panel - Upload and Categories */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Upload Section */}
+        {/* Categories Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          {FOLDER_CATEGORIES.map((category) => (
             <motion.div
-              initial={{ x: -20 }}
-              animate={{ x: 0 }}
-              className="bg-editor-bg/80 backdrop-blur-xl rounded-xl border border-purple-500/20 p-6 shadow-xl"
+              key={category.name}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className={`p-4 rounded-xl border ${category.color} backdrop-blur-sm`}
             >
-              <div className="flex items-center gap-3 mb-6">
-                <FileVideo className="w-6 h-6 text-purple-400" />
-                <h2 className="text-xl font-semibold text-white">Upload Videos</h2>
+              <div className="flex items-center gap-3 mb-2">
+                {category.icon}
+                <h3 className="font-semibold text-white">{category.name}</h3>
+                <span className="ml-auto bg-white/10 px-2 py-1 rounded-full text-sm">
+                  {categorizedResults[category.name]?.length || 0}
+                </span>
               </div>
-              <FileProcessingSection
-                isProcessing={isProcessing}
-                onFilesSelected={handleFilesSelected}
-                totalFiles={files.length}
-                processedFiles={successCount + errorCount}
-                successCount={successCount}
-                errorCount={errorCount}
-                currentFile={currentFile?.name}
-              />
-              {isProcessing && (
-                <div className="mt-4 space-y-2">
-                  <Progress value={totalProgress} className="h-2" />
-                  <p className="text-sm text-purple-300 text-center">
-                    {Math.round(totalProgress)}% Complete
-                  </p>
-                </div>
+              {categorizedResults[category.name]?.length > 0 && (
+                <ScrollArea className="h-32 mt-2">
+                  {categorizedResults[category.name].map((result, index) => (
+                    <div key={index} className="text-sm text-gray-300 py-1 px-2">
+                      {result.file.name}
+                    </div>
+                  ))}
+                </ScrollArea>
               )}
             </motion.div>
-
-            {/* Categories Section */}
-            <motion.div
-              initial={{ x: -20 }}
-              animate={{ x: 0 }}
-              className="bg-editor-bg/80 backdrop-blur-xl rounded-xl border border-purple-500/20 p-6 shadow-xl"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <FolderOpen className="w-6 h-6 text-purple-400" />
-                <h2 className="text-xl font-semibold text-white">Categories</h2>
-              </div>
-              <ScrollArea className="h-[400px] pr-4">
-                <FolderGrid categories={FOLDER_CATEGORIES} />
-              </ScrollArea>
-            </motion.div>
-          </div>
-
-          {/* Right Panel - Results */}
-          <motion.div
-            initial={{ x: 20 }}
-            animate={{ x: 0 }}
-            className="lg:col-span-8"
-          >
-            <AnalysisResultsView
-              analysisResults={analysisResults}
-              isProcessing={isProcessing}
-              onExport={handleExport}
-            />
-          </motion.div>
+          ))}
         </div>
+
+        {/* Processing Summary */}
+        {(successCount > 0 || errorCount > 0) && (
+          <div className="fixed bottom-0 left-0 right-0 bg-editor-bg/95 border-t border-purple-500/20 p-4">
+            <div className="max-w-5xl mx-auto flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <FileVideo className="text-green-400" />
+                  <span className="text-green-300">{successCount} Processed</span>
+                </div>
+                {errorCount > 0 && (
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="text-red-400" />
+                    <span className="text-red-300">{errorCount} Errors</span>
+                  </div>
+                )}
+              </div>
+              <NavigationButtons showContinueButton={successCount > 0} />
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

@@ -81,7 +81,7 @@ export class VideoAnalysisService {
       const initialized = await this.initialize();
       if (!initialized || !this.classifier) {
         logger.error('Classifier not initialized properly');
-        return 'Untagged';
+        return 'BridePrep'; // Default to BridePrep instead of Untagged
       }
 
       const frames = await this.extractFrames(file);
@@ -93,7 +93,6 @@ export class VideoAnalysisService {
       for (const frame of frames) {
         const imageData = frame.toDataURL('image/jpeg', ORGANIZER_CONFIG.processing.frameQuality);
         const predictions = await this.classifier(imageData);
-        logger.info('Frame predictions:', predictions);
         
         for (const [category, config] of Object.entries(ORGANIZER_CONFIG.analysis.categories)) {
           let maxScore = 0;
@@ -127,10 +126,7 @@ export class VideoAnalysisService {
         }
       }
       
-      logger.info('Category scores:', Object.fromEntries(categoryScores));
-      logger.info('Prediction confidence:', Object.fromEntries(predictionConfidence));
-      
-      let bestCategory = 'Untagged';
+      let bestCategory = 'BridePrep'; // Default category
       let bestScore = 0;
       
       categoryScores.forEach((score, category) => {
@@ -138,24 +134,17 @@ export class VideoAnalysisService {
         const finalScore = score * confidence;
         
         if (finalScore > bestScore) {
-          // Remove confidence threshold check to ensure all videos are categorized
           bestScore = finalScore;
           bestCategory = category;
         }
       });
-
-      // If no category was found or confidence is very low, mark for review
-      if (bestScore < 0.2) {
-        logger.info(`Video ${file.name} marked for review due to low confidence (${bestScore})`);
-        return 'Untagged';
-      }
       
       logger.info(`Video ${file.name} classified as ${bestCategory} with score ${bestScore}`);
       return bestCategory;
       
     } catch (error) {
       logger.error(`Error analyzing video ${file.name}:`, error);
-      return 'Untagged';
+      return 'BridePrep'; // Default to BridePrep on error
     }
   }
 }
