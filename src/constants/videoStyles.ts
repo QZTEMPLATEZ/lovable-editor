@@ -70,5 +70,29 @@ export const VIDEO_STYLES = [
       pacing: "Extended shots (5-15 seconds)",
       effects: "Subtle stabilization only"
     }
+  },
+  {
+    id: 'dynamic',
+    title: 'Dynamic',
+    description: 'Energetic & Bold',
+    previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?raw=1',
+    features: [
+      "High-energy editing synchronized with music beats",
+      "Vibrant color treatment with enhanced saturation",
+      "Fast-paced cuts timed to musical rhythm",
+      "Creative speed ramping and time manipulation",
+      "Modern transition effects (whips, zooms, morphs)",
+      "Split-screen and multi-angle compositions",
+      "Advanced motion graphics and text animations",
+      "Contemporary sound design with beat matching",
+      "Dramatic slow motion and time-lapse sequences",
+      "Cutting-edge visual effects and overlays"
+    ],
+    technicalDetails: {
+      colorGrading: "High saturation, vibrant look",
+      transitions: "Fast cuts, whip pans, zooms",
+      pacing: "Rapid cuts (0.5-2 seconds)",
+      effects: "Speed ramping, motion graphics"
+    }
   }
 ];
