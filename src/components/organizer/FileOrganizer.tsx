@@ -10,7 +10,9 @@ import { useFileProcessing } from '../../hooks/useFileProcessing';
 import FileProcessingSection from './processing/FileProcessingSection';
 import AnalysisResultsView from './analysis/AnalysisResultsView';
 import { Button } from '../ui/button';
-import { Save } from 'lucide-react';
+import { Save, FolderOpen, FileVideo } from 'lucide-react';
+import { ScrollArea } from '../ui/scroll-area';
+import { Separator } from '../ui/separator';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -77,39 +79,57 @@ const FileOrganizer = () => {
     <div className="max-w-7xl mx-auto space-y-6 p-6">
       <NavigationButtons showContinueButton={analysisResults.length > 0} />
 
-      <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 pointer-events-none" />
-        
-        <div className="relative space-y-6">
-          <FileProcessingSection
-            isProcessing={isProcessing}
-            onFilesSelected={handleFilesSelected}
-            totalFiles={files.length}
-            processedFiles={successCount + errorCount}
-            successCount={successCount}
-            errorCount={errorCount}
-            currentFile={currentFile?.name}
-          />
-
-          <AnalysisResultsView
-            analysisResults={analysisResults}
-            isProcessing={isProcessing}
-            onExport={handleExportPremiereSequence}
-          />
-
-          {analysisResults.length > 0 && !isProcessing && (
-            <div className="flex justify-center mt-8 pt-8 border-t border-purple-500/20">
-              <Button
-                onClick={handleExportPremiereSequence}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save Organized Premiere Sequence
-              </Button>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Panel - Upload and Processing */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-6 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <FileVideo className="w-5 h-5 text-purple-400" />
+              <h2 className="text-lg font-semibold text-white">Upload Videos</h2>
             </div>
-          )}
+            <FileProcessingSection
+              isProcessing={isProcessing}
+              onFilesSelected={handleFilesSelected}
+              totalFiles={files.length}
+              processedFiles={successCount + errorCount}
+              successCount={successCount}
+              errorCount={errorCount}
+              currentFile={currentFile?.name}
+            />
+          </div>
 
-          <FolderGrid categories={FOLDER_CATEGORIES} />
+          <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-6 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <FolderOpen className="w-5 h-5 text-purple-400" />
+              <h2 className="text-lg font-semibold text-white">Available Categories</h2>
+            </div>
+            <ScrollArea className="h-[400px] pr-4">
+              <FolderGrid categories={FOLDER_CATEGORIES} />
+            </ScrollArea>
+          </div>
+        </div>
+
+        {/* Right Panel - Results and Export */}
+        <div className="lg:col-span-8">
+          <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-6 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl">
+            <AnalysisResultsView
+              analysisResults={analysisResults}
+              isProcessing={isProcessing}
+              onExport={handleExportPremiereSequence}
+            />
+
+            {analysisResults.length > 0 && !isProcessing && (
+              <div className="flex justify-center mt-8 pt-8 border-t border-purple-500/20">
+                <Button
+                  onClick={handleExportPremiereSequence}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Organized Premiere Sequence
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
