@@ -100,12 +100,12 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 w-full h-full object-cover object-center opacity-100"
+            className="absolute inset-0 w-full h-full object-cover object-center"
           >
             <source src="https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/50" />
         </div>
         
         <div className="relative container mx-auto h-full max-w-[2560px] px-4 lg:px-8">
@@ -121,60 +121,58 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
         </div>
       </div>
 
-      <div className="w-full">
-        {VIDEO_SIZES.map((size) => {
-          const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
-          
-          return (
-            <motion.div
-              key={`${size.min}-${size.max}`}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-              className={`relative w-full p-8 border-b transition-all duration-300 cursor-pointer
-                ${isSelected 
-                  ? 'border-editor-glow-purple bg-editor-glow-purple/10' 
-                  : 'border-gray-700/30 hover:bg-editor-glow-purple/5'
-                }`}
-              onClick={() => handleSizeSelect(size)}
-            >
-              <div className="container mx-auto max-w-[2560px]">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-3">
-                      <h3 className="text-xl font-medium text-white">{size.name}</h3>
-                      <div className="flex items-center gap-2 text-sm text-gray-300">
-                        <Clock className="w-4 h-4" />
-                        <span>{size.label}</span>
-                      </div>
-                      <PlanBadge tier={size.tier} />
+      {VIDEO_SIZES.map((size) => {
+        const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
+        
+        return (
+          <motion.div
+            key={`${size.min}-${size.max}`}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            className={`relative w-full p-8 border-b transition-all duration-300 cursor-pointer
+              ${isSelected 
+                ? 'border-editor-glow-purple bg-editor-glow-purple/10' 
+                : 'border-gray-700/30 hover:bg-editor-glow-purple/5'
+              }`}
+            onClick={() => handleSizeSelect(size)}
+          >
+            <div className="container mx-auto max-w-[2560px]">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <div className="flex items-center gap-4 mb-3">
+                    <h3 className="text-xl font-medium text-white">{size.name}</h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                      <Clock className="w-4 h-4" />
+                      <span>{size.label}</span>
                     </div>
-
-                    <p className="text-sm text-gray-400 mb-4 max-w-2xl whitespace-pre-line">
-                      {size.description}
-                    </p>
-
-                    <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg inline-block">
-                      <Clock className="w-3 h-3" />
-                      <span>Recommended Tracks: {size.recommendedTracks}</span>
-                    </div>
+                    <PlanBadge tier={size.tier} />
                   </div>
 
-                  {isSelected && (
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0, opacity: 0 }}
-                      className="bg-editor-glow-purple rounded-full p-3"
-                    >
-                      <Check className="w-5 h-5 text-white" />
-                    </motion.div>
-                  )}
+                  <p className="text-sm text-gray-400 mb-4 max-w-2xl whitespace-pre-line">
+                    {size.description}
+                  </p>
+
+                  <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg inline-block">
+                    <Clock className="w-3 h-3" />
+                    <span>Recommended Tracks: {size.recommendedTracks}</span>
+                  </div>
                 </div>
+
+                {isSelected && (
+                  <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    className="bg-editor-glow-purple rounded-full p-3"
+                  >
+                    <Check className="w-5 h-5 text-white" />
+                  </motion.div>
+                )}
               </div>
-            </motion.div>
-          );
-        })}
-      </div>
+            </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 };
