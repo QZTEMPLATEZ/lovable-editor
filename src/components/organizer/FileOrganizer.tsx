@@ -12,6 +12,8 @@ import ProcessingStatus from './processing/ProcessingStatus';
 import CategoryGrid from './categories/CategoryGrid';
 import { FileVideo, AlertCircle } from 'lucide-react';
 import ProjectExportOptions from '../editor/ProjectExportOptions';
+import { generatePremiereSequence } from '@/utils/premiere/sequenceGenerator';
+import { logger } from '@/utils/logger';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -39,6 +41,12 @@ const FileOrganizer = () => {
     }
 
     try {
+      // Show processing toast
+      toast({
+        title: "Generating Sequence",
+        description: "Please wait while we prepare your sequence file...",
+      });
+
       const processedClips = analysisResults.map(result => ({
         file: result.file,
         type: result.category as "preparation" | "ceremony" | "celebration",
@@ -59,17 +67,45 @@ const FileOrganizer = () => {
         }
       };
 
+      // Create organization result structure for sequence generation
+      const categorizedFiles = new Map<string, File[]>();
+      analysisResults.forEach(result => {
+        const category = result.category;
+        if (!categorizedFiles.has(category)) {
+          categorizedFiles.set(category, []);
+        }
+        categorizedFiles.get(category)?.push(result.file);
+      });
+
+      const organizationResult = {
+        categorizedFiles,
+        unorganizedFiles: [],
+        stats: {
+          totalFiles: analysisResults.length,
+          categorizedCount: analysisResults.length,
+          uncategorizedCount: 0
+        }
+      };
+
       // Export all versions for Premiere Pro
       if (format === 'premiere') {
         const versions = ['legacy', 'current', 'compatible'] as const;
+        
         for (const version of versions) {
-          const exportedFile = await exportProject(project, { format, version });
-          const fileName = `organized_sequence_${version}.prproj`;
+          logger.info(`Generating ${version} version of Premiere sequence`);
           
-          const url = URL.createObjectURL(exportedFile);
+          // Generate sequence XML
+          const sequenceXML = await generatePremiereSequence(organizationResult, {
+            version,
+            projectName: 'Wedding Highlights'
+          });
+
+          // Create blob and trigger download
+          const blob = new Blob([sequenceXML], { type: 'application/xml' });
+          const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = fileName;
+          a.download = `wedding_highlights_${version}.prproj`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -77,8 +113,8 @@ const FileOrganizer = () => {
         }
 
         toast({
-          title: "Multiple Versions Exported",
-          description: "Three different versions have been exported. Please try each version to find the most compatible one with your Premiere Pro version.",
+          title: "Export Successful",
+          description: "Three versions have been exported. Please try each version to find the most compatible one with your Premiere Pro.",
         });
       } else {
         // Handle other formats as before
@@ -103,6 +139,7 @@ const FileOrganizer = () => {
         });
       }
     } catch (error) {
+      logger.error('Export error:', error);
       toast({
         variant: "destructive",
         title: "Export Failed",
