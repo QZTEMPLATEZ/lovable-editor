@@ -60,7 +60,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect }: VideoSizeSelectorProp
         ))}
       </div>
 
-      <RawFilesBanner onUpload={handleRawUpload} />
+      <RawFilesBanner onUploadClick={handleRawUpload} />
 
       {selectedSize && (
         <motion.div
