@@ -2,12 +2,11 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Play } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
-import { APP_CONFIG, ERROR_MESSAGES } from '@/config/appConfig';
 
 interface FileProcessingProps {
   files: File[];
   isProcessing: boolean;
-  onProcessStart: () => void;
+  onProcessStart: (files: File[]) => void;
 }
 
 const FileProcessing = ({ files, isProcessing, onProcessStart }: FileProcessingProps) => {
@@ -22,7 +21,7 @@ const FileProcessing = ({ files, isProcessing, onProcessStart }: FileProcessingP
       });
       return;
     }
-    onProcessStart();
+    onProcessStart(files);
   };
 
   return (
