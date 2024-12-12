@@ -6,16 +6,37 @@ interface ExportOptions {
 
 const generatePremiereXML = (project: EditingProject): string => {
   return `<?xml version="1.0" encoding="UTF-8"?>
-    <PremiereData Version="1">
+    <PremiereData Version="25.0">
       <Project>
-        <Timeline>
+        <ProjectSettings>
+          <ClipRenderQuality>Maximum Bit Depth</ClipRenderQuality>
+          <VideoSettings>
+            <VideoPreviewSettings>
+              <MaxRenderQuality>true</MaxRenderQuality>
+            </VideoPreviewSettings>
+          </VideoSettings>
+        </ProjectSettings>
+        <Sequence>
+          <SequenceSettings>
+            <VideoSettings>
+              <FrameSize>
+                <Width>1920</Width>
+                <Height>1080</Height>
+              </FrameSize>
+              <FrameRate>30</FrameRate>
+              <PixelAspectRatio>1.0</PixelAspectRatio>
+            </VideoSettings>
+          </SequenceSettings>
           ${project.clips.map((clip, index) => `
             <ClipItem>
               <Source>${clip.file.name}</Source>
               <Type>${clip.type}</Type>
+              <Start>0</Start>
+              <End>${clip.file.size}</End>
+              <MediaType>Video</MediaType>
             </ClipItem>
           `).join('')}
-        </Timeline>
+        </Sequence>
       </Project>
     </PremiereData>`;
 };
