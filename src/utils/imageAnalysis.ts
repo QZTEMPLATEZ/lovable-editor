@@ -1,104 +1,140 @@
 import { pipeline } from '@huggingface/transformers';
-import { logger } from './logger';
+import { toast } from "@/components/ui/use-toast";
+
+let classifier: any = null;
 
 export interface ImageClassification {
   category: string;
   confidence: number;
-  labels: string[];
 }
 
-let classifier: any = null;
+// Lowered threshold for better categorization
+const CONFIDENCE_THRESHOLD = 0.3;
 
-const initializeClassifier = async () => {
+// Expanded category mappings with more keywords
+const CATEGORY_MAPPINGS = {
+  // Making Of related terms
+  'wedding dress': 'MakingOf',
+  'makeup': 'MakingOf',
+  'hairstyle': 'MakingOf',
+  'preparation': 'MakingOf',
+  'getting ready': 'MakingOf',
+  'bride preparation': 'MakingOf',
+  'groom preparation': 'MakingOf',
+
+  // Decor related terms
+  'flower arrangement': 'Decor',
+  'table setting': 'Decor',
+  'chandelier': 'Decor',
+  'decoration': 'Decor',
+  'centerpiece': 'Decor',
+  'venue': 'Decor',
+
+  // Ceremony related terms
+  'altar': 'Ceremony',
+  'bride': 'Ceremony',
+  'groom': 'Ceremony',
+  'wedding ceremony': 'Ceremony',
+  'vows': 'Ceremony',
+  'ring exchange': 'Ceremony',
+  'wedding service': 'Ceremony',
+
+  // Reception related terms
+  'dance floor': 'Reception',
+  'wedding cake': 'Reception',
+  'party': 'Reception',
+  'celebration': 'Reception',
+  'toast': 'Reception',
+  'dinner': 'Reception',
+
+  // Details related terms
+  'ring': 'Details',
+  'invitation': 'Details',
+  'jewelry': 'Details',
+  'bouquet': 'Details',
+  'shoes': 'Details',
+  'accessories': 'Details',
+} as const;
+
+export const initializeImageClassifier = async () => {
   try {
     if (!classifier) {
       classifier = await pipeline(
         'image-classification',
         'Xenova/vit-base-patch16-224'
       );
-      logger.info('Image classifier initialized successfully');
+      console.log('Image classifier initialized successfully');
     }
     return true;
   } catch (error) {
-    logger.error('Failed to initialize image classifier:', error);
+    console.error('Failed to initialize image classifier:', error);
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: "Failed to initialize image recognition system. Files will be categorized based on names only.",
+    });
     return false;
   }
 };
 
 export const analyzeImage = async (file: File): Promise<ImageClassification> => {
+  if (!classifier) {
+    await initializeImageClassifier();
+  }
+
   try {
-    const initialized = await initializeClassifier();
-    if (!initialized || !classifier) {
-      logger.error('Classifier not initialized properly');
-      return {
-        category: 'Untagged',
-        confidence: 0,
-        labels: []
-      };
+    if (!classifier) {
+      throw new Error('Classifier not initialized');
     }
 
-    // Create object URL for the image file
+    // Create object URL for the file
     const objectUrl = URL.createObjectURL(file);
 
-    try {
-      // Analyze the image
-      const results = await classifier(objectUrl);
+    // Get predictions from the model
+    const results = await classifier(objectUrl);
+    console.log('Classification results for', file.name, ':', results);
+
+    // Clean up object URL
+    URL.revokeObjectURL(objectUrl);
+
+    // Find the best matching category
+    for (const prediction of results) {
+      const label = prediction.label.toLowerCase();
       
-      // Clean up the object URL after analysis
-      URL.revokeObjectURL(objectUrl);
-
-      // Extract labels from results
-      const labels = results.map((result: any) => result.label.toLowerCase());
-
-      // Process results to determine category
-      let bestCategory = 'Untagged';
-      let bestConfidence = 0;
-
-      // Map the results to categories based on labels
-      const categoryMappings = {
-        'BridePrep': ['bride', 'wedding dress', 'makeup', 'bridal'],
-        'GroomPrep': ['groom', 'suit', 'tuxedo', 'tie'],
-        'Ceremony': ['altar', 'church', 'ceremony', 'wedding'],
-        'Reception': ['party', 'dance', 'celebration', 'reception'],
-        'Decoration': ['flowers', 'decor', 'arrangement', 'venue'],
-        'DroneFootage': ['aerial', 'drone', 'landscape', 'sky']
-      };
-
-      // Calculate confidence for each category
-      Object.entries(categoryMappings).forEach(([category, keywords]) => {
-        const matchingLabels = labels.filter(label => 
-          keywords.some(keyword => label.includes(keyword))
-        );
-        
-        if (matchingLabels.length > 0) {
-          const confidence = matchingLabels.length / keywords.length;
-          if (confidence > bestConfidence) {
-            bestConfidence = confidence;
-            bestCategory = category;
-          }
+      // Check each mapping
+      for (const [keyword, category] of Object.entries(CATEGORY_MAPPINGS)) {
+        if (label.includes(keyword) || file.name.toLowerCase().includes(keyword)) {
+          console.log(`Match found for ${file.name}: ${category} (confidence: ${prediction.score})`);
+          return {
+            category,
+            confidence: prediction.score
+          };
         }
-      });
-
-      logger.info(`Image ${file.name} classified as ${bestCategory} with confidence ${bestConfidence}`);
-
-      return {
-        category: bestCategory,
-        confidence: bestConfidence,
-        labels
-      };
-
-    } catch (error) {
-      logger.error(`Error analyzing image ${file.name}:`, error);
-      URL.revokeObjectURL(objectUrl); // Clean up in case of error
-      throw error;
+      }
     }
 
-  } catch (error) {
-    logger.error(`Failed to analyze image ${file.name}:`, error);
+    // If no confident match is found but filename contains category hints
+    const fileName = file.name.toLowerCase();
+    for (const [keyword, category] of Object.entries(CATEGORY_MAPPINGS)) {
+      if (fileName.includes(keyword)) {
+        console.log(`Filename match found for ${file.name}: ${category}`);
+        return {
+          category,
+          confidence: 0.5 // Medium confidence for filename matches
+        };
+      }
+    }
+
+    console.log(`No category match found for ${file.name}, marking as Extras`);
     return {
-      category: 'Untagged',
-      confidence: 0,
-      labels: []
+      category: 'Extras',
+      confidence: 0
+    };
+  } catch (error) {
+    console.error('Error analyzing image:', error, 'for file:', file.name);
+    return {
+      category: 'Extras',
+      confidence: 0
     };
   }
 };
