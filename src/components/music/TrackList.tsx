@@ -12,7 +12,7 @@ export interface Track {
 }
 
 export interface TrackListProps {
-  selectedMusic: File[];
+  tracks: Track[];
   playingTrack: string | null;
   isAnalyzing: boolean;
   onTogglePlay: (fileName: string) => void;
@@ -20,13 +20,13 @@ export interface TrackListProps {
 }
 
 const TrackList = ({
-  selectedMusic,
+  tracks,
   playingTrack,
   isAnalyzing,
   onTogglePlay,
   onRemoveTrack,
 }: TrackListProps) => {
-  if (selectedMusic.length === 0) return null;
+  if (tracks.length === 0) return null;
 
   return (
     <motion.div
@@ -35,15 +35,14 @@ const TrackList = ({
       exit={{ opacity: 0, y: -20 }}
       className="mt-6 grid grid-cols-1 gap-4"
     >
-      {selectedMusic.map((file, index) => (
+      {tracks.map((track, index) => (
         <TrackItem
-          key={file.name}
-          file={file}
-          isPlaying={playingTrack === file.name}
+          key={track.file.name}
+          track={track}
+          isPlaying={playingTrack === track.file.name}
           isAnalyzing={isAnalyzing}
-          onTogglePlay={() => onTogglePlay(file.name)}
+          onTogglePlay={() => onTogglePlay(track.file.name)}
           onRemove={() => onRemoveTrack(index)}
-          isSelected={true} // All tracks in this list are selected
         />
       ))}
     </motion.div>

@@ -61,6 +61,10 @@ const AppContent = () => {
     console.log('Custom video uploaded:', file);
   };
 
+  const handleMusicSelect = (file: File, beats: any[]) => {
+    console.log('Music selected:', file, beats);
+  };
+
   const currentStep = getCurrentStep();
 
   return (
@@ -98,7 +102,7 @@ const AppContent = () => {
               />
               <Route 
                 path="/music" 
-                element={<MusicSelector />}
+                element={<MusicSelector onMusicSelect={handleMusicSelect} />}
               />
               <Route 
                 path="/organize" 

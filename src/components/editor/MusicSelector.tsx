@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Music } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from "@/components/ui/button";
-import TrackList from '../music/TrackList';
+import TrackList, { Track } from '../music/TrackList';
 import MusicUploadSection from '../music/MusicUploadSection';
 import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
 import { detectBeats } from '@/utils/audioProcessing';
@@ -14,12 +14,11 @@ interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
 }
 
-interface SelectedTrack {
-  file: File;
+interface SelectedTrack extends Track {
   beats: any[];
 }
 
-const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
+const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
@@ -168,11 +167,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
           />
 
           <TrackList
-            tracks={selectedTracks.map(track => ({
-              file: track.file,
-              duration: '',
-              intensity: 1
-            }))}
+            tracks={selectedTracks}
             playingTrack={playingTrack}
             isAnalyzing={isAnalyzing}
             onTogglePlay={togglePlayPause}
@@ -195,4 +190,4 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   );
 };
 
-export default MusicTrackSelector;
+export default MusicSelector;
