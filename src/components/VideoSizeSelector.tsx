@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
-import { Clock, Check, ChevronLeft } from 'lucide-react';
+import { Clock, Check, ChevronLeft, FolderOpen } from 'lucide-react';
 import { VideoSizeRange } from '../types';
 import { useVideoType } from '../contexts/VideoTypeContext';
 import { Button } from './ui/button';
@@ -80,6 +80,14 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
       description: `Selected ${size.name} (${size.label})`,
     });
     navigate('/style');
+  };
+
+  const handleRawFileOrganization = () => {
+    toast({
+      title: "Raw File Organization",
+      description: "Proceeding to file organization without editing",
+    });
+    navigate('/organize');
   };
 
   return (
@@ -173,6 +181,38 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
           </motion.div>
         );
       })}
+
+      {/* New Raw File Organization Banner */}
+      <motion.div
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.99 }}
+        className="relative w-full p-8 border-b border-gray-700/30 hover:bg-editor-glow-purple/5 transition-all duration-300 cursor-pointer"
+        onClick={handleRawFileOrganization}
+      >
+        <div className="container mx-auto max-w-[2560px]">
+          <div className="flex justify-between items-start">
+            <div className="flex-1">
+              <div className="flex items-center gap-4 mb-3">
+                <h3 className="text-xl font-medium text-white">Raw File Organization</h3>
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <FolderOpen className="w-4 h-4" />
+                  <span>File Separation Only</span>
+                </div>
+                <PlanBadge tier="basic" />
+              </div>
+
+              <p className="text-sm text-gray-400 mb-4 max-w-2xl whitespace-pre-line">
+                Organize and categorize your raw footage without editing\n• AI-powered file categorization\n• Smart file organization\n• No editing or style applied\n• Perfect for manual editing workflow
+              </p>
+
+              <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg inline-block">
+                <FolderOpen className="w-3 h-3" />
+                <span>Skip to file organization</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 };
