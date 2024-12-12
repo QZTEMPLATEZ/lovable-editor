@@ -4,11 +4,11 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from "@/components/ui/button";
 import TrackList from './music/TrackList';
 import MusicUploadSection from './music/MusicUploadSection';
-import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
-import { detectBeats } from '@/utils/audioProcessing';
 import { useNavigate } from 'react-router-dom';
 import { APP_CONFIG } from '@/config/appConfig';
 import { useVideoType } from '@/contexts/VideoTypeContext';
+import { TrackAnalyzer } from './music/TrackAnalyzer';
+import { useAudioController } from './music/AudioController';
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
@@ -21,117 +21,30 @@ interface SelectedTrack {
 
 const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>([]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [playingTrack, setPlayingTrack] = useState<string | null>(null);
-  const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
   const { toast } = useToast();
   const navigate = useNavigate();
   const { setSelectedMusic } = useVideoType();
 
-  const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files) return;
+  const { handleMusicUpload, isAnalyzing } = TrackAnalyzer({
+    onAnalysisComplete: (file, beats) => {
+      onMusicSelect(file, beats);
+      setSelectedTracks(prev => [...prev, { file, beats }]);
+      audioController.addAudioElement(file);
+    },
+    selectedTracksCount: selectedTracks.length
+  });
 
-    const newFiles = Array.from(files).filter(validateAudioFile);
-    
-    if (selectedTracks.length + newFiles.length > APP_CONFIG.music.maxTracks) {
-      toast({
-        variant: "destructive",
-        title: "Too many tracks",
-        description: `Maximum ${APP_CONFIG.music.maxTracks} tracks allowed`,
-      });
-      return;
-    }
-
-    if (newFiles.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Invalid file format",
-        description: "Please upload WAV or MP3 files only",
-      });
-      return;
-    }
-
-    setIsAnalyzing(true);
-    
-    try {
-      const analyzedTracks: SelectedTrack[] = [];
-      
-      for (const file of newFiles) {
-        const beats = await detectBeats(file);
-        onMusicSelect(file, beats);
-        
-        const audio = createAudioElement(file);
-        setAudioElements(prev => ({
-          ...prev,
-          [file.name]: audio
-        }));
-
-        analyzedTracks.push({ file, beats });
-      }
-
-      // Update selected tracks and context
-      const updatedTracks = [...selectedTracks, ...analyzedTracks];
+  const audioController = useAudioController({
+    onTrackRemoved: (index) => {
+      const updatedTracks = selectedTracks.filter((_, i) => i !== index);
       setSelectedTracks(updatedTracks);
-      
-      // Update context with all files
-      const allFiles = updatedTracks.map(track => track.file);
-      setSelectedMusic(allFiles);
-
+      setSelectedMusic(updatedTracks.map(track => track.file));
       toast({
-        title: "Music Analysis Complete",
-        description: `${newFiles.length} track${newFiles.length === 1 ? '' : 's'} analyzed. Total tracks: ${updatedTracks.length}`,
+        title: "Track Removed",
+        description: "Music track has been removed from the selection",
       });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Analysis Failed",
-        description: "Unable to analyze music beats. Please try another track.",
-      });
-    } finally {
-      setIsAnalyzing(false);
     }
-  };
-
-  const togglePlayPause = (fileName: string) => {
-    const audio = audioElements[fileName];
-    if (!audio) return;
-
-    if (playingTrack === fileName) {
-      audio.pause();
-      setPlayingTrack(null);
-    } else {
-      if (playingTrack && audioElements[playingTrack]) {
-        audioElements[playingTrack].pause();
-      }
-      audio.play();
-      setPlayingTrack(fileName);
-    }
-  };
-
-  const removeTrack = (index: number) => {
-    const removedFile = selectedTracks[index];
-    if (audioElements[removedFile.file.name]) {
-      cleanupAudioElement(audioElements[removedFile.file.name]);
-      const newAudioElements = { ...audioElements };
-      delete newAudioElements[removedFile.file.name];
-      setAudioElements(newAudioElements);
-    }
-    
-    const updatedTracks = selectedTracks.filter((_, i) => i !== index);
-    setSelectedTracks(updatedTracks);
-    
-    // Update the context with the remaining files
-    setSelectedMusic(updatedTracks.map(track => track.file));
-    
-    if (playingTrack === removedFile.file.name) {
-      setPlayingTrack(null);
-    }
-    toast({
-      title: "Track Removed",
-      description: "Music track has been removed from the selection",
-    });
-  };
+  });
 
   const handleContinue = () => {
     if (selectedTracks.length === 0) {
@@ -143,7 +56,6 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       return;
     }
     
-    // Ensure context is updated with all selected tracks before navigating
     setSelectedMusic(selectedTracks.map(track => track.file));
     navigate('/organize');
   };
@@ -177,10 +89,10 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
               duration: '',
               intensity: 1
             }))}
-            playingTrack={playingTrack}
+            playingTrack={audioController.playingTrack}
             isAnalyzing={isAnalyzing}
-            onTogglePlay={togglePlayPause}
-            onRemoveTrack={removeTrack}
+            onTogglePlay={audioController.togglePlayPause}
+            onRemoveTrack={audioController.removeTrack}
           />
 
           {selectedTracks.length > 0 && (
