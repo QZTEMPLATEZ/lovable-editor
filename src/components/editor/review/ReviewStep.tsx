@@ -7,14 +7,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Save, FileVideo, Music, Download } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
+import { OrganizationResult } from '@/types/organizer';
 
 interface ReviewStepProps {
   rawFiles: File[];
   selectedMusic: File[];
   selectedStyle: VideoStyle | null;
+  organizationResult: OrganizationResult;
 }
 
-const ReviewStep = ({ rawFiles, selectedMusic, selectedStyle }: ReviewStepProps) => {
+const ReviewStep = ({ rawFiles, selectedMusic, selectedStyle, organizationResult }: ReviewStepProps) => {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const { toast } = useToast();

@@ -3,21 +3,38 @@ import { Button } from "@/components/ui/button";
 import { Save } from 'lucide-react';
 import { motion } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
+import { validateExportParameters } from '@/utils/validation/exportValidation';
+import { OrganizationResult } from '@/types/organizer';
 
 interface ProjectExportOptionsProps {
   onExport: (format: 'premiere' | 'finalcut' | 'resolve') => void;
   isProcessing: boolean;
+  organizationResult: OrganizationResult;
 }
 
-const ProjectExportOptions = ({ onExport, isProcessing }: ProjectExportOptionsProps) => {
+const ProjectExportOptions = ({ onExport, isProcessing, organizationResult }: ProjectExportOptionsProps) => {
   const { toast } = useToast();
 
-  const handlePremiereExport = async () => {
-    onExport('premiere');
-    toast({
-      title: "Multiple Versions Exported",
-      description: "Three different versions have been exported. Please try each version to find the most compatible one with your Premiere Pro version.",
-    });
+  const handleExport = async (format: 'premiere' | 'finalcut' | 'resolve') => {
+    const validation = validateExportParameters(organizationResult, format);
+    
+    if (!validation.isValid) {
+      toast({
+        variant: "destructive",
+        title: "Export Validation Failed",
+        description: validation.errors.join('. '),
+      });
+      return;
+    }
+
+    if (format === 'premiere') {
+      toast({
+        title: "Multiple Versions Exported",
+        description: "Three different versions have been exported. Please try each version to find the most compatible one with your Premiere Pro version.",
+      });
+    }
+
+    onExport(format);
   };
 
   return (
@@ -39,7 +56,7 @@ const ProjectExportOptions = ({ onExport, isProcessing }: ProjectExportOptionsPr
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Button
-            onClick={handlePremiereExport}
+            onClick={() => handleExport('premiere')}
             disabled={isProcessing}
             className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition-all duration-300 transform hover:scale-105"
           >
@@ -48,7 +65,7 @@ const ProjectExportOptions = ({ onExport, isProcessing }: ProjectExportOptionsPr
           </Button>
 
           <Button
-            onClick={() => onExport('finalcut')}
+            onClick={() => handleExport('finalcut')}
             disabled={isProcessing}
             className="bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition-all duration-300 transform hover:scale-105"
           >
@@ -57,7 +74,7 @@ const ProjectExportOptions = ({ onExport, isProcessing }: ProjectExportOptionsPr
           </Button>
 
           <Button
-            onClick={() => onExport('resolve')}
+            onClick={() => handleExport('resolve')}
             disabled={isProcessing}
             className="bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 transition-all duration-300 transform hover:scale-105"
           >

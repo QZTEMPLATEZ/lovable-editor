@@ -1,5 +1,5 @@
 import React from 'react';
-import PricingPlans from "@/components/pricing/PricingPlans";
+import PricingPlans from '../pricing/PricingPlans';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface LoginModalProps {

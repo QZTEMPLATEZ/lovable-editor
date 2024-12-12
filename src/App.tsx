@@ -1,6 +1,6 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import TopNavigation from "./components/TopNavigation";
 import Index from "./pages/Index";
 import VideoSizeSelector from "./components/VideoSizeSelector";
@@ -21,11 +21,27 @@ import VideoOrganizer from "./components/organizer/VideoOrganizer";
 const queryClient = new QueryClient();
 
 const AppContent = () => {
+  const location = useLocation();
   const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
   const [showIntro, setShowIntro] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
+
+  const getCurrentStep = () => {
+    switch (location.pathname) {
+      case '/duration':
+        return 0;
+      case '/style':
+        return 1;
+      case '/music':
+        return 2;
+      case '/organize':
+        return 3;
+      default:
+        return -1;
+    }
+  };
 
   const handleIntroComplete = () => {
     setShowIntro(false);
@@ -53,6 +69,8 @@ const AppContent = () => {
     console.log('Music selected:', file, beats);
   };
 
+  const currentStep = getCurrentStep();
+
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
@@ -71,48 +89,33 @@ const AppContent = () => {
           <TopNavigation />
           <VideoTypeIndicator />
           <div className="container mx-auto px-4 py-8">
+            {currentStep >= 0 && (
+              <StepIndicator currentStep={currentStep} steps={EDITOR_STEPS} />
+            )}
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/plans" element={<PricingPlans />} />
               <Route 
                 path="/duration" 
-                element={
-                  <>
-                    <StepIndicator currentStep={0} steps={EDITOR_STEPS} />
-                    <VideoSizeSelector selectedSize={selectedSize} onSizeSelect={setSelectedSize} />
-                  </>
-                } 
+                element={<VideoSizeSelector selectedSize={selectedSize} onSizeSelect={setSelectedSize} />} 
               />
               <Route 
                 path="/style" 
                 element={
-                  <>
-                    <StepIndicator currentStep={1} steps={EDITOR_STEPS} />
-                    <VideoStyleSelector 
-                      selectedStyle={selectedStyle}
-                      onStyleSelect={handleStyleSelect}
-                      onCustomVideoUpload={handleCustomVideoUpload}
-                    />
-                  </>
+                  <VideoStyleSelector 
+                    selectedStyle={selectedStyle}
+                    onStyleSelect={handleStyleSelect}
+                    onCustomVideoUpload={handleCustomVideoUpload}
+                  />
                 } 
               />
               <Route 
                 path="/music" 
-                element={
-                  <>
-                    <StepIndicator currentStep={2} steps={EDITOR_STEPS} />
-                    <MusicSelector onMusicSelect={handleMusicSelect} />
-                  </>
-                }
+                element={<MusicSelector onMusicSelect={handleMusicSelect} />}
               />
               <Route 
                 path="/organize" 
-                element={
-                  <>
-                    <StepIndicator currentStep={3} steps={EDITOR_STEPS} />
-                    <VideoOrganizer />
-                  </>
-                }
+                element={<VideoOrganizer />}
               />
             </Routes>
           </div>
