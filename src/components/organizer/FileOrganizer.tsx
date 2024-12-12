@@ -13,6 +13,17 @@ import { Progress } from '../ui/progress';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription } from '../ui/alert';
 
+const mapCategoryToClipType = (category: string): "preparation" | "ceremony" | "celebration" => {
+  // Map categories to clip types
+  if (category.toLowerCase().includes('prep') || category.toLowerCase().includes('detail')) {
+    return 'preparation';
+  }
+  if (category.toLowerCase().includes('ceremony') || category.toLowerCase().includes('vow')) {
+    return 'ceremony';
+  }
+  return 'celebration'; // Default to celebration for other categories
+};
+
 const FileOrganizer = () => {
   const { toast } = useToast();
   const { selectedVideoType } = useVideoType();
@@ -31,7 +42,7 @@ const FileOrganizer = () => {
       const processedClips = await Promise.all(
         analysisResults.map(async result => ({
           file: result.file,
-          type: result.category || 'Untagged',
+          type: mapCategoryToClipType(result.category || 'Untagged'),
           startTime: 0,
           endTime: 30,
           significance: 1
