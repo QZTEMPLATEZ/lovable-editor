@@ -19,10 +19,10 @@ const DurationOption = ({ duration, onSelect }: DurationOptionProps) => {
       <div className="absolute inset-0 bg-gradient-to-br from-editor-panel/60 via-editor-panel/40 to-editor-panel/60 z-[1]" />
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
       
-      <div className="relative z-10 flex items-center justify-between h-full w-full px-8 md:px-16">
-        <div className="space-y-1">
+      <div className="relative z-10 flex items-center justify-between h-full w-full px-6 md:px-12">
+        <div className="space-y-0.5">
           <motion.h2 
-            className="text-4xl md:text-6xl font-cinzel tracking-wider text-white"
+            className="text-2xl md:text-4xl font-cinzel tracking-wider text-white"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -30,7 +30,7 @@ const DurationOption = ({ duration, onSelect }: DurationOptionProps) => {
             {duration.name}
           </motion.h2>
           <motion.p 
-            className="text-[10px] md:text-xs tracking-[0.2em] uppercase text-gray-400 font-italiana"
+            className="text-[8px] md:text-[10px] tracking-[0.2em] uppercase text-gray-400 font-italiana"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -38,7 +38,7 @@ const DurationOption = ({ duration, onSelect }: DurationOptionProps) => {
             {duration.label}
           </motion.p>
           <motion.p 
-            className="text-[10px] md:text-xs text-gray-400 max-w-xl"
+            className="text-[8px] md:text-[10px] text-gray-400 max-w-lg"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -59,7 +59,7 @@ const DurationOption = ({ duration, onSelect }: DurationOptionProps) => {
         >
           <Button 
             variant="outline" 
-            className="border-2 border-white text-white hover:bg-white/10 uppercase tracking-wider text-xs md:text-sm px-6 py-6"
+            className="border-2 border-white text-white hover:bg-white/10 uppercase tracking-wider text-[10px] md:text-xs px-4 py-4"
           >
             SELECT
           </Button>
