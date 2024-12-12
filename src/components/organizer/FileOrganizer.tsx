@@ -7,7 +7,7 @@ import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { useFileProcessing } from '../../hooks/useFileProcessing';
 import FileUploadHandler from './upload/FileUploadHandler';
 import ProcessingStatusBar from './ProcessingStatusBar';
-import { FileVideo, AlertCircle, Download } from 'lucide-react';
+import { FileVideo, AlertCircle } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { motion } from 'framer-motion';
 import { ClipType } from '@/types/video';
@@ -94,6 +94,13 @@ const FileOrganizer = () => {
     return acc;
   }, {} as Record<string, typeof analysisResults>);
 
+  const onFilesSelected = (selectedFiles: File[]) => {
+    console.log('Files selected:', selectedFiles);
+    if (selectedFiles.length > 0) {
+      handleFilesSelected(selectedFiles);
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -104,7 +111,7 @@ const FileOrganizer = () => {
         {/* Upload Section */}
         <div className="mb-8">
           <FileUploadHandler 
-            onFilesSelected={handleFilesSelected}
+            onFilesSelected={onFilesSelected}
             isProcessing={isProcessing}
           />
         </div>
