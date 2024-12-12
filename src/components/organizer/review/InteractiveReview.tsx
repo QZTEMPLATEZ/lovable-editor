@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { motion } from 'framer-motion';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, Clock, Check } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface VideoClip {
   id: string;
@@ -25,6 +26,7 @@ interface InteractiveReviewProps {
 const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredCategory, setFilteredCategory] = useState<string | null>(null);
+  const [recentlyMoved, setRecentlyMoved] = useState<string[]>([]);
   const { toast } = useToast();
 
   const handleDragEnd = (result: DropResult) => {
@@ -36,6 +38,13 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
 
     if (sourceCategory !== destinationCategory) {
       onClipMove(clipId, sourceCategory, destinationCategory);
+      setRecentlyMoved((prev) => [...prev, clipId]);
+      
+      // Remove the "recently moved" status after 2 seconds
+      setTimeout(() => {
+        setRecentlyMoved((prev) => prev.filter(id => id !== clipId));
+      }, 2000);
+
       toast({
         title: "Clip Reclassified",
         description: `Moved to ${destinationCategory}. This will help improve our AI.`,
@@ -97,48 +106,55 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                   </div>
 
                   <ScrollArea className="h-[400px]">
-                    {clipsByCategory[category.name]?.map((clip, index) => (
-                      <Draggable key={clip.id} draggableId={clip.id} index={index}>
-                        {(provided, snapshot) => (
-                          <motion.div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            initial={false}
-                            animate={{ scale: snapshot.isDragging ? 1.05 : 1 }}
-                            style={provided.draggableProps.style}
-                            className={`mb-3 rounded-lg overflow-hidden border ${
-                              snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
-                            }`}
-                          >
-                            <div className="aspect-video bg-black relative">
-                              <img
-                                src={clip.thumbnail}
-                                alt={clip.name}
-                                className="w-full h-full object-cover"
-                              />
-                              <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs">
-                                {clip.duration}
-                              </div>
-                            </div>
-                            <div className="p-2 bg-editor-panel/80">
-                              <p className="text-sm text-white truncate">{clip.name}</p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <div className="flex-1 bg-gray-700 h-1 rounded-full">
-                                  <div
-                                    className="bg-purple-500 h-full rounded-full"
-                                    style={{ width: `${clip.confidence * 100}%` }}
-                                  />
-                                </div>
-                                <span className="text-xs text-gray-400">
-                                  {Math.round(clip.confidence * 100)}%
-                                </span>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </Draggable>
-                    ))}
+                    <div className="grid grid-cols-2 gap-2">
+                      {clipsByCategory[category.name]?.map((clip, index) => (
+                        <Draggable key={clip.id} draggableId={clip.id} index={index}>
+                          {(provided, snapshot) => (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <motion.div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    initial={false}
+                                    animate={{ 
+                                      scale: snapshot.isDragging ? 1.05 : 1,
+                                      borderColor: recentlyMoved.includes(clip.id) ? '#22c55e' : undefined
+                                    }}
+                                    style={provided.draggableProps.style}
+                                    className={`relative rounded-lg overflow-hidden border ${
+                                      snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
+                                    } ${recentlyMoved.includes(clip.id) ? 'border-green-500' : ''}`}
+                                  >
+                                    <div className="aspect-video bg-black relative">
+                                      <img
+                                        src={clip.thumbnail}
+                                        alt={clip.name}
+                                        className="w-full h-full object-cover"
+                                      />
+                                      <div className="absolute bottom-1 right-1 bg-black/80 px-1.5 py-0.5 rounded text-[10px] flex items-center gap-1">
+                                        <Clock className="w-3 h-3" />
+                                        {clip.duration}
+                                      </div>
+                                      {recentlyMoved.includes(clip.id) && (
+                                        <div className="absolute top-1 right-1 bg-green-500 rounded-full p-0.5">
+                                          <Check className="w-3 h-3 text-white" />
+                                        </div>
+                                      )}
+                                    </div>
+                                  </motion.div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p className="font-medium">{clip.name}</p>
+                                  <p className="text-xs text-gray-400">Confidence: {Math.round(clip.confidence * 100)}%</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+                        </Draggable>
+                      ))}
+                    </div>
                     {provided.placeholder}
                   </ScrollArea>
                 </div>
