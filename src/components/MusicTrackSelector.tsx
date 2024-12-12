@@ -67,8 +67,9 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
 
         setSelectedTracks(prev => [...prev, { file, beats }]);
         
-        // Update context immediately after each successful analysis
-        setSelectedMusic(prev => prev ? [...prev, file] : [file]);
+        // Update context with the new file array directly
+        const updatedFiles = selectedTracks.map(track => track.file).concat(file);
+        setSelectedMusic(updatedFiles);
       }
 
       toast({
