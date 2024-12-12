@@ -137,7 +137,7 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
       {VIDEO_SIZES.map((size) => (
         <DurationOption
           key={`${size.min}-${size.max}`}
-          size={size}
+          duration={size}
           isSelected={selectedSize?.min === size.min && selectedSize?.max === size.max}
           onSelect={handleSizeSelect}
         />
