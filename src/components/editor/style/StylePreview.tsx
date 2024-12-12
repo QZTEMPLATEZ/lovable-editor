@@ -14,7 +14,7 @@ const StylePreview = ({ videoUrl, isHovered, videoRef, onError }: StylePreviewPr
       initial={{ opacity: 0 }}
       animate={{ opacity: isHovered ? 1 : 0 }}
       transition={{ duration: 0.3 }}
-      className="absolute inset-0 z-[3]"
+      className="absolute inset-0 z-[3] w-full h-full"
     >
       <video
         ref={videoRef}
