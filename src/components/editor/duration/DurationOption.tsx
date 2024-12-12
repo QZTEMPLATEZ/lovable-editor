@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Clock } from 'lucide-react';
-import { VideoSizeRange } from '../../../types';
+import { Clock, Check } from 'lucide-react';
 import PlanBadge from '../../PlanBadge';
+import { VideoSizeRange } from '../../../types';
 
 interface DurationOptionProps {
   duration: VideoSizeRange;
@@ -18,11 +18,12 @@ const DurationOption = ({ duration, isSelected, onSelect }: DurationOptionProps)
   return (
     <motion.div
       whileHover={{ scale: 1.01 }}
-      className={`p-6 rounded-xl border transition-all duration-300 cursor-pointer ${
-        isSelected
+      whileTap={{ scale: 0.99 }}
+      className={`relative w-full p-8 border-b transition-all duration-300 cursor-pointer
+        ${isSelected 
           ? 'border-editor-glow-purple bg-editor-glow-purple/10' 
           : 'border-gray-700/30 hover:bg-editor-glow-purple/5'
-      }`}
+        }`}
       onClick={() => onSelect(duration)}
     >
       <div className="container mx-auto max-w-[2560px]">
@@ -46,6 +47,17 @@ const DurationOption = ({ duration, isSelected, onSelect }: DurationOptionProps)
               <span>Recommended Tracks: {duration.recommendedTracks}</span>
             </div>
           </div>
+
+          {isSelected && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              className="bg-editor-glow-purple rounded-full p-3"
+            >
+              <Check className="w-5 h-5 text-white" />
+            </motion.div>
+          )}
         </div>
       </div>
     </motion.div>
