@@ -20,20 +20,7 @@ const RawFilesBanner = ({ onClick }: RawFilesBannerProps) => {
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-3">
               <h3 className="text-2xl font-semibold text-white/90 tracking-wide">Raw File Organization</h3>
-              <div className="flex items-center gap-2 text-sm bg-purple-500/20 px-3 py-1 rounded-full">
-                <FolderOpen className="w-4 h-4 text-purple-300" />
-                <span className="text-purple-200">File Separation Only</span>
-              </div>
               <PlanBadge tier="basic" />
-            </div>
-
-            <p className="text-sm text-gray-300 mb-4 max-w-2xl whitespace-pre-line leading-relaxed">
-              Organize and categorize your raw footage without editing\n• AI-powered file categorization\n• Smart file organization\n• No editing or style applied\n• Perfect for manual editing workflow
-            </p>
-
-            <div className="flex items-center gap-2 text-sm text-white/90 bg-purple-500/20 p-2 rounded-lg inline-block hover:bg-purple-500/30 transition-colors">
-              <FolderOpen className="w-3 h-3" />
-              <span>Skip to file organization</span>
             </div>
           </div>
         </div>
