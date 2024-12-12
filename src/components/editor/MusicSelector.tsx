@@ -66,7 +66,12 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
           [file.name]: audio
         }));
 
-        analyzedTracks.push({ file, beats });
+        analyzedTracks.push({ 
+          file, 
+          beats,
+          duration: '', // We'll update this once we have the actual duration
+          intensity: 1
+        });
       }
 
       const updatedTracks = [...selectedTracks, ...analyzedTracks];

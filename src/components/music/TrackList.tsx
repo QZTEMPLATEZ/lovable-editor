@@ -5,10 +5,7 @@ import TrackItem from './TrackItem';
 export interface Track {
   file: File;
   duration: string;
-  bpm?: number;
-  key?: string;
   intensity: number;
-  audioElement?: HTMLAudioElement;
 }
 
 export interface TrackListProps {
