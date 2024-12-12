@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Dialog,
   DialogContent,
@@ -18,22 +17,22 @@ interface LoginModalProps {
 const LoginModal = ({ isOpen, onClose, onPlanSelect }: LoginModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[800px] bg-editor-panel border-editor-border">
-        <DialogHeader>
-          <DialogTitle className="text-3xl font-light text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-2">
+      <DialogContent className="sm:max-w-[95vw] md:max-w-[800px] bg-editor-panel border-editor-border p-6 overflow-y-auto max-h-[90vh]">
+        <DialogHeader className="mb-6">
+          <DialogTitle className="text-2xl md:text-3xl font-light text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 mb-2">
             Welcome to OSÍRIZ
           </DialogTitle>
-          <p className="text-center text-gray-400 text-lg">
+          <p className="text-center text-gray-400 text-base md:text-lg">
             Choose your plan to start creating amazing videos
           </p>
         </DialogHeader>
 
-        <div className="space-y-8 py-6">
-          <div className="flex flex-col gap-4 items-center">
+        <div className="space-y-8">
+          <div className="flex flex-col gap-3 items-center max-w-sm mx-auto w-full">
             <Button 
               variant="outline" 
               size="lg"
-              className="w-full max-w-md border-editor-border hover:bg-editor-accent/10 gap-2"
+              className="w-full border-editor-border hover:bg-editor-accent/10 gap-2"
             >
               <Mail className="w-5 h-5" />
               Continue with Email
@@ -41,7 +40,7 @@ const LoginModal = ({ isOpen, onClose, onPlanSelect }: LoginModalProps) => {
             <Button 
               variant="outline"
               size="lg" 
-              className="w-full max-w-md border-editor-border hover:bg-editor-accent/10 gap-2"
+              className="w-full border-editor-border hover:bg-editor-accent/10 gap-2"
             >
               <Lock className="w-5 h-5" />
               Sign in Securely
@@ -57,7 +56,9 @@ const LoginModal = ({ isOpen, onClose, onPlanSelect }: LoginModalProps) => {
             </div>
           </div>
 
-          <PricingPlans onComplete={onPlanSelect} />
+          <div className="overflow-y-auto">
+            <PricingPlans onSelect={onPlanSelect} />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
