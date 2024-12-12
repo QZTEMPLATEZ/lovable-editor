@@ -49,7 +49,8 @@ export class VideoAnalysisService {
 
       // Find the best prediction
       const bestPrediction = Object.entries(groupedConfidence).reduce(
-        (best, [label, score]) => (score > best.score ? { label, score } : best),
+        (best: { label: string; score: number }, [label, score]: [string, number]) => 
+          score > best.score ? { label, score } : best,
         { label: 'untagged', score: 0 }
       );
 
