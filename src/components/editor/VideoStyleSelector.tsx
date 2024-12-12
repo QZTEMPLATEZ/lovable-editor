@@ -40,17 +40,17 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         {VIDEO_STYLES.map((style) => (
           <VideoStyleItem
             key={style.id}
-            style={style}
-            isHovered={hoveredStyle === style.id}
-            onMouseEnter={() => setHoveredStyle(style.id)}
-            onMouseLeave={() => setHoveredStyle(null)}
-            onStyleSelect={() => onStyleSelect({
+            style={{
               id: style.id,
               name: style.title,
               description: style.description,
               thumbnail: style.previewVideo,
               videoUrl: style.previewVideo
-            })}
+            }}
+            isHovered={hoveredStyle === style.id}
+            onMouseEnter={() => setHoveredStyle(style.id)}
+            onMouseLeave={() => setHoveredStyle(null)}
+            onStyleSelect={onStyleSelect}
           />
         ))}
       </div>
@@ -60,10 +60,22 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         input.type = 'file';
         input.accept = 'video/*';
         input.onchange = (e) => {
-          if (e.target instanceof HTMLInputElement) {
+          if (e.target instanceof HTMLInputElement && e.target.files) {
             handleFileUpload({
-              ...e,
-              target: e.target
+              target: e.target,
+              currentTarget: e.target,
+              type: 'change',
+              nativeEvent: e,
+              isDefaultPrevented: () => false,
+              isPropagationStopped: () => false,
+              persist: () => {},
+              preventDefault: () => {},
+              stopPropagation: () => {},
+              bubbles: true,
+              cancelable: true,
+              defaultPrevented: false,
+              isTrusted: true,
+              timeStamp: Date.now()
             } as React.ChangeEvent<HTMLInputElement>);
           }
         };
