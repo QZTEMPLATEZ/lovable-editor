@@ -13,12 +13,6 @@ export const useFileProcessing = () => {
   const [successCount, setSuccessCount] = useState(0);
   const [errorCount, setErrorCount] = useState(0);
 
-  const stopProcessing = () => {
-    setIsProcessing(false);
-    setCurrentFile(null);
-    setProgress(0);
-  };
-
   const processFiles = async (filesToProcess: File[]) => {
     setIsProcessing(true);
     setProgress(0);
@@ -29,8 +23,6 @@ export const useFileProcessing = () => {
       logger.info(`Starting processing of ${filesToProcess.length} files`);
 
       for (let i = 0; i < filesToProcess.length; i++) {
-        if (!isProcessing) break; // Check if processing was stopped
-        
         setCurrentFile(filesToProcess[i]);
         setProgress((i / filesToProcess.length) * 100);
 
@@ -81,7 +73,6 @@ export const useFileProcessing = () => {
     currentFile,
     successCount,
     errorCount,
-    handleFilesSelected,
-    stopProcessing
+    handleFilesSelected
   };
 };

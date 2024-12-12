@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import React from 'react';
+import { useToast } from '@/components/ui/use-toast';
 import { logger } from '../../../utils/logger';
 import { ORGANIZER_CONFIG } from '../../../config/organizerConfig';
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -15,7 +15,6 @@ const FileUploadHandler: React.FC<FileUploadHandlerProps> = ({
   isProcessing
 }) => {
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const validateFiles = (files: File[]): File[] => {
     return files.filter(file => {
@@ -66,17 +65,10 @@ const FileUploadHandler: React.FC<FileUploadHandlerProps> = ({
     }
   };
 
-  const handleClick = () => {
-    if (!isProcessing && fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   return (
     <div
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
-      onClick={handleClick}
       className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300
         ${isProcessing 
           ? 'border-gray-500/30 bg-gray-500/5 cursor-not-allowed' 
@@ -84,14 +76,17 @@ const FileUploadHandler: React.FC<FileUploadHandlerProps> = ({
     >
       <input
         type="file"
-        ref={fileInputRef}
         onChange={handleFileSelect}
         className="hidden"
+        id="file-upload"
         multiple
         accept={ORGANIZER_CONFIG.analysis.supportedFileTypes.join(',')}
         disabled={isProcessing}
       />
-      <div className={isProcessing ? 'cursor-not-allowed' : 'cursor-pointer'}>
+      <label 
+        htmlFor="file-upload" 
+        className={`cursor-pointer ${isProcessing ? 'cursor-not-allowed' : ''}`}
+      >
         <Upload className="w-12 h-12 mx-auto text-purple-400 mb-4" />
         <p className="text-lg text-purple-200 mb-2">
           {isProcessing 
@@ -99,9 +94,9 @@ const FileUploadHandler: React.FC<FileUploadHandlerProps> = ({
             : 'Drag and drop your files here or click to browse'}
         </p>
         <p className="text-sm text-purple-300/70">
-          Supported formats: Video (MP4, MOV)
+          Supported formats: Images (JPG, PNG), Video (MP4, MOV)
         </p>
-      </div>
+      </label>
 
       <Alert className="mt-4 bg-purple-500/10 border-purple-500/30">
         <AlertDescription className="text-purple-200">
