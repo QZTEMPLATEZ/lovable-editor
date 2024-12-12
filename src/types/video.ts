@@ -15,13 +15,3 @@ export interface MusicAnalysis {
   energy: number;
   danceability: number;
 }
-
-export type ClipType = "preparation" | "ceremony" | "celebration";
-
-export interface Clip {
-  file: File;
-  type: ClipType;
-  startTime: number;
-  endTime: number;
-  significance: number;
-}

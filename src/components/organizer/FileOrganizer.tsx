@@ -12,7 +12,6 @@ import { ScrollArea } from '../ui/scroll-area';
 import { Progress } from '../ui/progress';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription } from '../ui/alert';
-import { ClipType } from '@/types/video';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -30,16 +29,13 @@ const FileOrganizer = () => {
   const handleExport = async (format: 'premiere' | 'finalcut' | 'resolve') => {
     try {
       const processedClips = await Promise.all(
-        analysisResults.map(async result => {
-          const clipType = (result.category?.toLowerCase() || 'preparation') as ClipType;
-          return {
-            file: result.file,
-            type: clipType,
-            startTime: 0,
-            endTime: 30,
-            significance: 1
-          };
-        })
+        analysisResults.map(async result => ({
+          file: result.file,
+          type: result.category || 'Untagged', // Ensure every video has a category
+          startTime: 0,
+          endTime: 30,
+          significance: 1
+        }))
       );
 
       const project = {
