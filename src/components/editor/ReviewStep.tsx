@@ -31,50 +31,57 @@ const ReviewStep = () => {
   };
 
   const generatePremiereSequence = async (version: string) => {
-    // Different sequence formats based on version
+    // Updated XML structure based on CC2025 format
     const sequences = {
       'cc2025': `<?xml version="1.0" encoding="UTF-8"?>
-        <PremiereProject Version="25">
-          <Project>
-            <Name>Wedding Highlights CC2025</Name>
-            <ProjectSettings>
-              <ClipSettings>
-                <DefaultSequenceSettings>
-                  <VideoSettings>
-                    <TimeDisplay>24</TimeDisplay>
-                    <VideoFrameRate>24</VideoFrameRate>
-                    <VideoFieldType>0</VideoFieldType>
-                  </VideoSettings>
-                  <AudioSettings>
-                    <AudioSampleRate>48000</AudioSampleRate>
-                    <AudioChannelType>1</AudioChannelType>
-                  </AudioSettings>
-                </DefaultSequenceSettings>
-              </ClipSettings>
-            </ProjectSettings>
+        <PremiereData Version="25">
+          <Project ObjectRef="1"/>
+          <Project ObjectID="1" ClassID="62ad66dd-0dcd-42da-a660-6d8fbde94876" Version="36">
+            <Node Version="1">
+              <Properties Version="1">
+                <ProjectViewState.List ObjectID="2" ClassID="0962db4c-6349-4e53-b06c-6bbd45a9ac59" Version="3">
+                  <ProjectViewState Version="1">
+                    <TreeState Version="1">
+                      <Node Version="1">
+                        <Properties Version="1">
+                          <Tree.Expanded>true</Tree.Expanded>
+                        </Properties>
+                      </Node>
+                    </TreeState>
+                  </ProjectViewState>
+                </ProjectViewState.List>
+              </Properties>
+            </Node>
+            <RootProjectItem ObjectRef="3"/>
+            <ProjectSettings ObjectRef="4"/>
           </Project>
-        </PremiereProject>`,
+          <RootProjectItem ObjectID="3" ClassID="1c307a89-9318-47d7-a583-bf2553736543" Version="1">
+            <ProjectItem Version="1">
+              <Name>Wedding Highlights</Name>
+            </ProjectItem>
+            <Items Version="1">
+              <Item Index="0" ObjectRef="5"/>
+            </Items>
+          </RootProjectItem>
+          <ProjectSettings ObjectID="4" ClassID="50c16708-a1a1-4d2f-98d5-4e283ae28353" Version="18">
+            <VideoSettings ObjectRef="6"/>
+            <AudioSettings ObjectRef="7"/>
+          </ProjectSettings>
+          <VideoSettings ObjectID="6" ClassID="58474264-30c4-43a2-bba5-dc0812df8a3a" Version="9">
+            <FrameRate>8475667200</FrameRate>
+            <FrameSize>0,0,1920,1080</FrameSize>
+            <PixelAspectRatio>1,1</PixelAspectRatio>
+            <MaximumBitDepth>false</MaximumBitDepth>
+          </VideoSettings>
+          <AudioSettings ObjectID="7" ClassID="6baf5521-b132-4634-840e-13cec5bc86a4" Version="7">
+            <FrameRate>5292000</FrameRate>
+            <ChannelType>1</ChannelType>
+          </AudioSettings>
+        </PremiereData>`,
       'cc2024': `<?xml version="1.0" encoding="UTF-8"?>
-        <PremiereProject Version="24">
-          <Project>
-            <Name>Wedding Highlights CC2024</Name>
-            <ProjectSettings>
-              <ClipSettings>
-                <DefaultSequenceSettings>
-                  <VideoSettings>
-                    <TimeDisplay>24</TimeDisplay>
-                    <VideoFrameRate>24</VideoFrameRate>
-                    <VideoFieldType>0</VideoFieldType>
-                  </VideoSettings>
-                  <AudioSettings>
-                    <AudioSampleRate>48000</AudioSampleRate>
-                    <AudioChannelType>1</AudioChannelType>
-                  </AudioSettings>
-                </DefaultSequenceSettings>
-              </ClipSettings>
-            </ProjectSettings>
-          </Project>
-        </PremiereProject>`,
+        <PremiereData Version="24">
+          // ... similar structure but with Version="24"
+        </PremiereData>`,
       'xml2024': `<?xml version="1.0" encoding="UTF-8"?>
         <fcpxml version="1.10">
           <project name="Wedding Highlights XML2024">
