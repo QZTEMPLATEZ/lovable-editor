@@ -11,16 +11,7 @@ import { motion } from 'framer-motion';
 import ProcessingStatus from './processing/ProcessingStatus';
 import CategoryGrid from './categories/CategoryGrid';
 import { FileVideo, AlertCircle } from 'lucide-react';
-
-const mapCategoryToClipType = (category: string): "preparation" | "ceremony" | "celebration" => {
-  if (category.toLowerCase().includes('prep') || category.toLowerCase().includes('detail')) {
-    return 'preparation';
-  }
-  if (category.toLowerCase().includes('ceremony') || category.toLowerCase().includes('vow')) {
-    return 'ceremony';
-  }
-  return 'celebration';
-};
+import ProjectExportOptions from '../editor/ProjectExportOptions';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -37,16 +28,23 @@ const FileOrganizer = () => {
   } = useFileProcessing();
 
   const handleExport = async (format: 'premiere' | 'finalcut' | 'resolve') => {
+    if (analysisResults.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "No files to export",
+        description: "Please process some files before exporting.",
+      });
+      return;
+    }
+
     try {
-      const processedClips = await Promise.all(
-        analysisResults.map(async result => ({
-          file: result.file,
-          type: mapCategoryToClipType(result.category || 'Untagged'),
-          startTime: 0,
-          endTime: 30,
-          significance: 1
-        }))
-      );
+      const processedClips = analysisResults.map(result => ({
+        file: result.file,
+        type: result.category || 'Untagged',
+        startTime: 0,
+        endTime: 30,
+        significance: 1
+      }));
 
       const project = {
         clips: processedClips,
@@ -126,6 +124,16 @@ const FileOrganizer = () => {
           categories={FOLDER_CATEGORIES}
           analysisResults={analysisResults}
         />
+
+        {/* Export Options */}
+        {analysisResults.length > 0 && !isProcessing && (
+          <div className="mt-8">
+            <ProjectExportOptions
+              onExport={handleExport}
+              isProcessing={isProcessing}
+            />
+          </div>
+        )}
 
         {/* Processing Summary */}
         {(successCount > 0 || errorCount > 0) && (
