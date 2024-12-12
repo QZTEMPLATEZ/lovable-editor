@@ -27,7 +27,7 @@ const FileOrganizer = () => {
     handleFilesSelected
   } = useFileProcessing();
 
-  const handleExportPremiereSequence = async () => {
+  const handleExport = async (format: 'premiere' | 'finalcut' | 'resolve') => {
     try {
       const processedClips = await Promise.all(
         analysisResults.map(async result => ({
@@ -51,12 +51,15 @@ const FileOrganizer = () => {
         }
       };
 
-      const exportedFile = await exportProject(project, { format: 'premiere' });
+      const exportedFile = await exportProject(project, { format });
+      
+      const fileExtension = format === 'premiere' ? 'prproj' : format === 'finalcut' ? 'fcpxml' : 'drp';
+      const fileName = `organized_sequence.${fileExtension}`;
       
       const url = URL.createObjectURL(exportedFile);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'organized_wedding_sequence.prproj';
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -64,7 +67,11 @@ const FileOrganizer = () => {
 
       toast({
         title: "Sequence Exported Successfully",
-        description: "Your organized sequence has been exported for Adobe Premiere Pro. You can now proceed to the editing step.",
+        description: `Your organized sequence has been exported for ${
+          format === 'premiere' ? 'Adobe Premiere Pro' : 
+          format === 'finalcut' ? 'Final Cut Pro' : 
+          'DaVinci Resolve'
+        }.`,
       });
     } catch (error) {
       toast({
@@ -115,17 +122,31 @@ const FileOrganizer = () => {
             <AnalysisResultsView
               analysisResults={analysisResults}
               isProcessing={isProcessing}
-              onExport={handleExportPremiereSequence}
+              onExport={handleExport}
             />
 
             {analysisResults.length > 0 && !isProcessing && (
-              <div className="flex justify-center mt-8 pt-8 border-t border-purple-500/20">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 pt-8 border-t border-purple-500/20">
                 <Button
-                  onClick={handleExportPremiereSequence}
+                  onClick={() => handleExport('premiere')}
                   className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  Save Organized Premiere Sequence
+                  Export to Premiere Pro
+                </Button>
+                <Button
+                  onClick={() => handleExport('finalcut')}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Export to Final Cut Pro
+                </Button>
+                <Button
+                  onClick={() => handleExport('resolve')}
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+                >
+                  <Save className="w-4 h-4 mr-2" />
+                  Export to DaVinci Resolve
                 </Button>
               </div>
             )}
