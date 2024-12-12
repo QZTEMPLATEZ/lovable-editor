@@ -15,6 +15,22 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
   const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const { toast } = useToast();
 
+  const handleStyleSelect = (style: any) => {
+    const videoStyle: VideoStyle = {
+      id: style.id,
+      name: style.title,
+      description: style.description,
+      thumbnail: style.previewVideo,
+      videoUrl: style.previewVideo
+    };
+    
+    onStyleSelect(videoStyle);
+    toast({
+      title: "Style Selected",
+      description: `${style.title} style has been selected for your video.`,
+    });
+  };
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -50,7 +66,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
             isHovered={hoveredStyle === style.id}
             onMouseEnter={() => setHoveredStyle(style.id)}
             onMouseLeave={() => setHoveredStyle(null)}
-            onStyleSelect={onStyleSelect}
+            onStyleSelect={() => handleStyleSelect(style)}
           />
         ))}
       </div>
@@ -60,7 +76,7 @@ const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload 
         input.type = 'file';
         input.accept = 'video/*';
         input.onchange = (e) => {
-          if (e.target instanceof HTMLInputElement && e.target.files) {
+          if (e.target instanceof HTMLInputElement) {
             handleFileUpload({
               target: e.target,
               currentTarget: e.target,
