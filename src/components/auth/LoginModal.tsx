@@ -1,12 +1,13 @@
 import React from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
-interface LoginModalProps {
+export interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onPlanSelect?: () => void;
 }
 
-const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
+const LoginModal = ({ isOpen, onClose, onPlanSelect }: LoginModalProps) => {
   if (!isOpen) return null;
   
   return (
