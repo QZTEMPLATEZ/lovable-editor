@@ -10,6 +10,7 @@ import FileUploadHandler from './upload/FileUploadHandler';
 import { motion } from 'framer-motion';
 import ProcessingStatus from './processing/ProcessingStatus';
 import CategoryGrid from './categories/CategoryGrid';
+import { FileVideo, AlertCircle } from 'lucide-react';
 
 const mapCategoryToClipType = (category: string): "preparation" | "ceremony" | "celebration" => {
   if (category.toLowerCase().includes('prep') || category.toLowerCase().includes('detail')) {
