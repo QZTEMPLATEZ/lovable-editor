@@ -172,7 +172,11 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
           />
 
           <TrackList
-            selectedMusic={selectedTracks.map(track => track.file)}
+            tracks={selectedTracks.map(track => ({
+              file: track.file,
+              duration: '',
+              intensity: 1
+            }))}
             playingTrack={playingTrack}
             isAnalyzing={isAnalyzing}
             onTogglePlay={togglePlayPause}
