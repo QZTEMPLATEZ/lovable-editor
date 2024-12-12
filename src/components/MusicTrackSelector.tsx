@@ -92,7 +92,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
             playingTrack={audioController.playingTrack}
             isAnalyzing={isAnalyzing}
             onTogglePlay={audioController.togglePlayPause}
-            onRemoveTrack={audioController.removeTrack}
+            onRemoveTrack={(index, fileName) => audioController.removeTrack(index)}
           />
 
           {selectedTracks.length > 0 && (

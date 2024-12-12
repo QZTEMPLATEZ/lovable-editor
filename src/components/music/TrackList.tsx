@@ -13,7 +13,7 @@ export interface TrackListProps {
   playingTrack: string | null;
   isAnalyzing: boolean;
   onTogglePlay: (fileName: string) => void;
-  onRemoveTrack: (index: number) => void;
+  onRemoveTrack: (index: number, fileName: string) => void;
 }
 
 const TrackList = ({
@@ -39,7 +39,7 @@ const TrackList = ({
           isPlaying={playingTrack === track.file.name}
           isAnalyzing={isAnalyzing}
           onTogglePlay={() => onTogglePlay(track.file.name)}
-          onRemove={() => onRemoveTrack(index)}
+          onRemove={() => onRemoveTrack(index, track.file.name)}
         />
       ))}
     </motion.div>

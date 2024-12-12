@@ -33,18 +33,7 @@ export const useAudioController = ({ onTrackRemoved }: AudioControllerProps) => 
     }
   };
 
-  const removeTrack = (index: number, fileName: string) => {
-    if (audioElements[fileName]) {
-      cleanupAudioElement(audioElements[fileName]);
-      const newAudioElements = { ...audioElements };
-      delete newAudioElements[fileName];
-      setAudioElements(newAudioElements);
-    }
-    
-    if (playingTrack === fileName) {
-      setPlayingTrack(null);
-    }
-
+  const removeTrack = (index: number) => {
     onTrackRemoved(index);
   };
 
