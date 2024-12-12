@@ -14,8 +14,13 @@ interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
 }
 
+interface TrackData {
+  file: File;
+  beats: any[];
+}
+
 const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
-  const [selectedTracks, setSelectedTracks] = useState<{ file: File; beats: any[] }[]>([]);
+  const [selectedTracks, setSelectedTracks] = useState<TrackData[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
@@ -47,7 +52,6 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       return;
     }
 
-    setSelectedMusic(prev => [...prev, ...newFiles]);
     setIsAnalyzing(true);
     
     try {
@@ -60,10 +64,12 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
           ...prev,
           [file.name]: audio
         }));
+
+        setSelectedTracks(prev => [...prev, { file, beats }]);
       }
 
-      // Update the context with the new music files
-      setSelectedMusic(prev => [...prev, ...newFiles]);
+      // Update the context with just the files
+      setSelectedMusic(newFiles);
 
       toast({
         title: "Music Analysis Complete",
@@ -105,6 +111,10 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       setAudioElements(newAudioElements);
     }
     setSelectedTracks(prev => prev.filter((_, i) => i !== index));
+    
+    // Update the context with the remaining files
+    setSelectedMusic(selectedTracks.filter((_, i) => i !== index).map(track => track.file));
+    
     if (playingTrack === removedFile.file.name) {
       setPlayingTrack(null);
     }
@@ -150,7 +160,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
           />
 
           <TrackList
-            selectedMusic={selectedTracks}
+            selectedMusic={selectedTracks.map(track => track.file)}
             playingTrack={playingTrack}
             isAnalyzing={isAnalyzing}
             onTogglePlay={togglePlayPause}
