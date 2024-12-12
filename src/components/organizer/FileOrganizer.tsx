@@ -84,7 +84,6 @@ const FileOrganizer = () => {
     }
   };
 
-  // Group results by category
   const categorizedResults = analysisResults.reduce((acc, result) => {
     const category = result.category || 'Untagged';
     if (!acc[category]) {
@@ -98,6 +97,10 @@ const FileOrganizer = () => {
     console.log('Files selected:', selectedFiles);
     if (selectedFiles.length > 0) {
       handleFilesSelected(selectedFiles);
+      toast({
+        title: "Processing Started",
+        description: `Starting to process ${selectedFiles.length} files...`,
+      });
     }
   };
 
