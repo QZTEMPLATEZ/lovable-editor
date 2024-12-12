@@ -1,6 +1,6 @@
 import { pipeline } from '@huggingface/transformers';
-import { ORGANIZER_CONFIG } from '../config/organizerConfig';
 import { logger } from '../utils/logger';
+import { ORGANIZER_CONFIG } from '../config/organizerConfig';
 
 export class VideoAnalysisService {
   private static instance: VideoAnalysisService;
@@ -20,8 +20,7 @@ export class VideoAnalysisService {
       if (!this.classifier) {
         this.classifier = await pipeline(
           'image-classification',
-          'microsoft/resnet-50',
-          { quantized: false }
+          'microsoft/resnet-50'
         );
         logger.info('Video analysis classifier initialized successfully');
       }
