@@ -11,7 +11,7 @@ export class VideoAnalysisService {
     if (!this.classifier) {
       try {
         this.classifier = await pipeline('image-classification', 'Xenova/vit-base-patch16-224', {
-          dtype: 'float32',
+          dtype: 'fp32', // Changed from 'float32' to 'fp32' to match valid types
           revision: 'main'
         });
         logger.info('Video classifier initialized successfully');
@@ -40,7 +40,7 @@ export class VideoAnalysisService {
       const predictions = allPredictions.flat();
       
       // Group predictions by label and aggregate scores
-      const groupedConfidence = predictions.reduce((acc, p) => {
+      const groupedConfidence = predictions.reduce((acc, p: { label: string; score: number }) => {
         acc[p.label] = (acc[p.label] || 0) + p.score;
         return acc;
       }, {} as Record<string, number>);
