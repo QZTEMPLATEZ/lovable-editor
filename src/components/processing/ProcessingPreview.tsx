@@ -1,13 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Film } from 'lucide-react';
+import { Badge } from '../ui/badge';
 
 interface ProcessingPreviewProps {
   videoFiles: File[];
   currentFrameIndex: number;
+  currentCategory?: string;
 }
 
-const ProcessingPreview = ({ videoFiles, currentFrameIndex }: ProcessingPreviewProps) => {
+const ProcessingPreview = ({ videoFiles, currentFrameIndex, currentCategory }: ProcessingPreviewProps) => {
   return (
     <div className="relative rounded-2xl overflow-hidden border border-purple-500/20 bg-editor-bg/80 backdrop-blur-xl group">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
@@ -50,11 +52,13 @@ const ProcessingPreview = ({ videoFiles, currentFrameIndex }: ProcessingPreviewP
       <div className="p-4 bg-editor-panel/30 backdrop-blur-sm border-t border-purple-500/10">
         <div className="flex justify-between items-center">
           <span className="text-sm text-purple-300/70">
-            Processing Frame {currentFrameIndex + 1}
+            Processing Frame {currentFrameIndex + 1} of {videoFiles.length}
           </span>
-          <span className="text-sm text-purple-300/70">
-            {videoFiles.length} Total Frames
-          </span>
+          {currentCategory && (
+            <Badge variant="secondary" className="capitalize">
+              {currentCategory}
+            </Badge>
+          )}
         </div>
       </div>
     </div>
