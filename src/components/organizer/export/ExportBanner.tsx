@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { FileVideo, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
 
 interface ExportBannerProps {
   successCount: number;
@@ -15,41 +15,41 @@ const ExportBanner = ({ successCount, onExport }: ExportBannerProps) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-12 border border-purple-500/30 mt-12 mb-24 shadow-2xl"
+      className="w-full bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-16 border border-purple-500/20 mt-16 mb-24 shadow-xl"
     >
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col items-center justify-center gap-10">
-          <div className="space-y-6 text-center">
-            <h3 className="text-5xl font-cinzel tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-purple-200 to-gray-400">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col items-center justify-center gap-12">
+          <div className="space-y-4 text-center">
+            <h3 className="text-4xl font-light tracking-wide text-white/90">
               Export Your Sequence
             </h3>
-            <p className="text-2xl font-italiana text-gray-300 tracking-wide">
+            <p className="text-lg text-white/60 font-light tracking-wider">
               Download your organized sequence for professional editing software
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
             <Button
               onClick={() => onExport('premiere')}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition-all duration-300 transform hover:scale-105 py-8 text-lg font-cinzel tracking-wider shadow-lg"
+              className="bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300 py-6 text-base font-light tracking-wider shadow-sm"
             >
-              <Download className="w-7 h-7 mr-4" />
+              <Download className="w-5 h-5 mr-3 opacity-70" />
               Adobe Premiere Pro
             </Button>
 
             <Button
               onClick={() => onExport('finalcut')}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition-all duration-300 transform hover:scale-105 py-8 text-lg font-cinzel tracking-wider shadow-lg"
+              className="bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300 py-6 text-base font-light tracking-wider shadow-sm"
             >
-              <Download className="w-7 h-7 mr-4" />
+              <Download className="w-5 h-5 mr-3 opacity-70" />
               Final Cut Pro
             </Button>
 
             <Button
               onClick={() => onExport('resolve')}
-              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 transition-all duration-300 transform hover:scale-105 py-8 text-lg font-cinzel tracking-wider shadow-lg"
+              className="bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-300 py-6 text-base font-light tracking-wider shadow-sm"
             >
-              <Download className="w-7 h-7 mr-4" />
+              <Download className="w-5 h-5 mr-3 opacity-70" />
               DaVinci Resolve
             </Button>
           </div>
