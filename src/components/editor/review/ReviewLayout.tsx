@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useVideoType } from '@/contexts/VideoTypeContext';
 import ReviewHeader from './ReviewHeader';
@@ -6,10 +6,12 @@ import ReviewSummary from './ReviewSummary';
 import ActionButtons from './ActionButtons';
 import PreDownloadModal from './PreDownloadModal';
 import { useToast } from "@/hooks/use-toast";
+import { buildPremiereSequence } from '@/utils/premiere/sequenceBuilder';
+import { logger } from '@/utils/logger';
 
 export const ReviewLayout = () => {
-  const [isDownloadModalOpen, setIsDownloadModalOpen] = React.useState(false);
-  const [isProcessing, setIsProcessing] = React.useState(false);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { selectedMusic, selectedStyle, selectedVideoType } = useVideoType();
   const { toast } = useToast();
 
@@ -25,18 +27,51 @@ export const ReviewLayout = () => {
 
     setIsProcessing(true);
     try {
-      // Simulate processing time
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Show processing toast
+      toast({
+        title: "Generating Sequence",
+        description: "Please wait while we prepare your sequence file...",
+      });
+
+      // Generate all three versions
+      const versions = ['legacy', 'current', 'compatible'] as const;
+      
+      for (const version of versions) {
+        const sequenceXML = await buildPremiereSequence({
+          categorizedFiles: new Map([['Main', selectedMusic]]),
+          unorganizedFiles: [],
+          stats: {
+            totalFiles: selectedMusic.length,
+            categorizedCount: selectedMusic.length,
+            uncategorizedCount: 0
+          }
+        }, {
+          version,
+          projectName: 'Wedding Highlights'
+        });
+
+        // Create blob and trigger download
+        const blob = new Blob([sequenceXML], { type: 'application/xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `wedding_highlights_${version}.prproj`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
       toast({
         title: "Success",
-        description: "Your project is ready for editing!",
+        description: "Your sequences have been generated and downloaded!",
       });
-      window.location.href = '/edit';
     } catch (error) {
+      logger.error('Sequence generation failed:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to start editing. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to generate sequence files.",
       });
     } finally {
       setIsProcessing(false);
