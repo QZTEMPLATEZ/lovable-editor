@@ -7,12 +7,14 @@ import NavigationButtons from './NavigationButtons';
 import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { useFileProcessing } from '../../hooks/useFileProcessing';
 import FileUploadHandler from './upload/FileUploadHandler';
-import { FileVideo, AlertCircle } from 'lucide-react';
+import { FileVideo, AlertCircle, Download } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { Progress } from '../ui/progress';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription } from '../ui/alert';
 import { ClipType } from '@/types/video';
+import { Button } from '../ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 
 const FileOrganizer = () => {
   const { toast } = useToast();
@@ -84,16 +86,6 @@ const FileOrganizer = () => {
     }
   };
 
-  // Group results by category
-  const categorizedResults = analysisResults.reduce((acc, result) => {
-    const category = result.category || 'Untagged';
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(result);
-    return acc;
-  }, {} as Record<string, typeof analysisResults>);
-
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -148,6 +140,31 @@ const FileOrganizer = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Export Options */}
+        {successCount > 0 && (
+          <div className="flex justify-center mb-8">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="bg-purple-500 hover:bg-purple-600">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export Sequence
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => handleExport('premiere')}>
+                  Adobe Premiere Pro
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport('finalcut')}>
+                  Final Cut Pro
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport('resolve')}>
+                  DaVinci Resolve
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
 
         {/* Processing Summary */}
         {(successCount > 0 || errorCount > 0) && (
