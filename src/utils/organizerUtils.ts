@@ -2,13 +2,20 @@ import { OrganizationCategory, OrganizationResult, ProjectStructure } from '../t
 import { Camera, Video, Music, Image } from 'lucide-react';
 import React from 'react';
 import { analyzeImage } from './imageAnalysis';
+import { ORGANIZER_CONFIG } from '../config/organizerConfig';
 
 export const DEFAULT_CATEGORIES: OrganizationCategory[] = [
   {
-    name: 'MakingOf',
-    keywords: ['making_of', 'prep', 'makeup', 'getting_ready', 'preparation', 'bride_prep', 'groom_prep'],
-    description: 'Preparation footage including makeup, hair, and getting ready',
+    name: 'BridePrep',
+    keywords: ['bride_prep', 'makeup', 'getting_ready', 'bride_preparation', 'bridal'],
+    description: 'Bride preparation footage including makeup, hair, and getting ready',
     icon: () => React.createElement(Camera, { className: "w-4 h-4" })
+  },
+  {
+    name: 'GroomPrep',
+    keywords: ['groom_prep', 'groom', 'suit', 'tuxedo', 'groomsmen'],
+    description: 'Groom preparation footage',
+    icon: () => React.createElement(Video, { className: "w-4 h-4" })
   },
   {
     name: 'Ceremony',
@@ -51,32 +58,56 @@ export const organizeFiles = async (
   for (const file of files) {
     let categorized = false;
     const fileName = file.name.toLowerCase();
+    let bestMatch = {
+      category: '',
+      confidence: 0
+    };
 
-    // First try keyword matching from filename
-    for (const category of categories) {
-      if (category.keywords.some(keyword => fileName.includes(keyword))) {
-        const categoryFiles = categorizedFiles.get(category.name) || [];
-        categoryFiles.push(file);
-        categorizedFiles.set(category.name, categoryFiles);
-        categorized = true;
-        console.log(`File ${file.name} categorized as ${category.name} based on filename`);
-        break;
-      }
-    }
-
-    // If not categorized by filename and it's an image/video, try AI classification
-    if (!categorized && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
+    // First try AI classification for images/videos
+    if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
       try {
         const analysis = await analyzeImage(file);
-        if (analysis.category !== 'Extras') {
-          const categoryFiles = categorizedFiles.get(analysis.category) || [];
+        
+        // Find the category with highest confidence above threshold
+        Object.entries(ORGANIZER_CONFIG.analysis.categories).forEach(([category, config]) => {
+          const matchScore = config.visualCues.reduce((score, cue) => {
+            if (analysis.labels.includes(cue.toLowerCase())) {
+              score += 1;
+            }
+            return score;
+          }, 0) / config.visualCues.length;
+
+          if (matchScore > config.confidence && matchScore > bestMatch.confidence) {
+            bestMatch = {
+              category,
+              confidence: matchScore
+            };
+          }
+        });
+
+        if (bestMatch.category) {
+          const categoryFiles = categorizedFiles.get(bestMatch.category) || [];
           categoryFiles.push(file);
-          categorizedFiles.set(analysis.category, categoryFiles);
+          categorizedFiles.set(bestMatch.category, categoryFiles);
           categorized = true;
-          console.log(`File ${file.name} categorized as ${analysis.category} based on AI analysis`);
+          console.log(`File ${file.name} categorized as ${bestMatch.category} with confidence ${bestMatch.confidence}`);
         }
       } catch (error) {
         console.error(`Failed to analyze file ${file.name}:`, error);
+      }
+    }
+
+    // If AI classification failed, try keyword matching from filename
+    if (!categorized) {
+      for (const category of categories) {
+        if (category.keywords.some(keyword => fileName.includes(keyword))) {
+          const categoryFiles = categorizedFiles.get(category.name) || [];
+          categoryFiles.push(file);
+          categorizedFiles.set(category.name, categoryFiles);
+          categorized = true;
+          console.log(`File ${file.name} categorized as ${category.name} based on filename`);
+          break;
+        }
       }
     }
 

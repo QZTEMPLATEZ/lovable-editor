@@ -26,7 +26,7 @@ export const ORGANIZER_CONFIG = {
           'wedding gown',
           'bridal accessories'
         ],
-        confidence: 0.65
+        confidence: 0.75 // Increased confidence threshold
       },
       GroomPrep: {
         visualCues: [
@@ -43,7 +43,7 @@ export const ORGANIZER_CONFIG = {
           'bow tie',
           'tuxedo'
         ],
-        confidence: 0.65
+        confidence: 0.75
       },
       Ceremony: {
         visualCues: [
@@ -60,7 +60,7 @@ export const ORGANIZER_CONFIG = {
           'wedding rings',
           'bride entrance'
         ],
-        confidence: 0.70
+        confidence: 0.80
       },
       Decoration: {
         visualCues: [
@@ -77,7 +77,7 @@ export const ORGANIZER_CONFIG = {
           'venue setup',
           'wedding venue'
         ],
-        confidence: 0.65
+        confidence: 0.75
       },
       Reception: {
         visualCues: [
@@ -94,7 +94,7 @@ export const ORGANIZER_CONFIG = {
           'party lights',
           'wedding guests dancing'
         ],
-        confidence: 0.65
+        confidence: 0.75
       },
       DroneFootage: {
         visualCues: [
@@ -109,7 +109,7 @@ export const ORGANIZER_CONFIG = {
           'aerial ceremony',
           'aerial reception'
         ],
-        confidence: 0.70
+        confidence: 0.85
       }
     }
   },
@@ -119,6 +119,6 @@ export const ORGANIZER_CONFIG = {
     timeout: 300000,
     frameExtractionCount: 15,
     frameQuality: 0.90,
-    confidenceThreshold: 0.20 // Lowered threshold to catch more videos
+    confidenceThreshold: 0.65 // Increased base confidence threshold
   }
 };
