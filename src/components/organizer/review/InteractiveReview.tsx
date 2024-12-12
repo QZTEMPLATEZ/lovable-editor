@@ -40,7 +40,6 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
       onClipMove(clipId, sourceCategory, destinationCategory);
       setRecentlyMoved((prev) => [...prev, clipId]);
       
-      // Remove the "recently moved" status after 2 seconds
       setTimeout(() => {
         setRecentlyMoved((prev) => prev.filter(id => id !== clipId));
       }, 2000);
@@ -122,7 +121,6 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                                       scale: snapshot.isDragging ? 1.05 : 1,
                                       borderColor: recentlyMoved.includes(clip.id) ? '#22c55e' : undefined
                                     }}
-                                    style={provided.draggableProps.style}
                                     className={`relative rounded-lg overflow-hidden border ${
                                       snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
                                     } ${recentlyMoved.includes(clip.id) ? 'border-green-500' : ''}`}
