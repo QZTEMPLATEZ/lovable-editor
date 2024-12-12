@@ -54,13 +54,29 @@ const StyleItem = ({
     }
   }, [isHovered, handleVideoPlay, videoError]);
 
+  // Map style IDs to video URLs
+  const getVideoUrl = (styleId: string) => {
+    switch (styleId) {
+      case 'classic':
+        return "https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?raw=1";
+      case 'modern':
+        return "https://www.dropbox.com/scl/fi/ng9ndcl10lcownk1mtx4g/CINEMATOGRAFICO-LONG-OK.mp4?raw=1";
+      case 'documentary':
+        return "https://www.dropbox.com/scl/fi/rxab2rc98t7ox9hxcrb4b/251219_Urban-Couple-Photoshoot-Photography_By_Azulroto_Artlist_4K.mp4?raw=1";
+      case 'dynamic':
+        return "https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?raw=1";
+      default:
+        return style.previewVideo;
+    }
+  };
+
   const handleSelect = () => {
     const videoStyle: VideoStyle = {
       id: style.id,
       name: style.title,
       description: style.description,
       thumbnail: style.previewVideo,
-      videoUrl: style.previewVideo
+      videoUrl: getVideoUrl(style.id)
     };
     onStyleSelect(videoStyle);
   };
@@ -78,7 +94,7 @@ const StyleItem = ({
       <div className="absolute inset-0 z-[2] bg-[url('/grid.svg')] opacity-5" />
       
       <StylePreview
-        videoUrl={style.previewVideo}
+        videoUrl={getVideoUrl(style.id)}
         isHovered={isHovered}
         videoRef={videoRef}
         onError={() => setVideoError(true)}
