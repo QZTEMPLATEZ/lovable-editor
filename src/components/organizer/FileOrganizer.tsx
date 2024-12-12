@@ -31,7 +31,7 @@ const FileOrganizer = () => {
       const processedClips = await Promise.all(
         analysisResults.map(async result => ({
           file: result.file,
-          type: result.category || 'Untagged', // Ensure every video has a category
+          type: result.category || 'Untagged',
           startTime: 0,
           endTime: 30,
           significance: 1
