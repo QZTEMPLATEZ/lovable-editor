@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { pipeline } from '@huggingface/transformers';
 import { useNavigate } from 'react-router-dom';
+import FileUploadZone from './FileUploadZone';
 
 interface VideoFile {
   id: string;
@@ -57,7 +58,6 @@ const VideoOrganizer = () => {
       const results = await classifier(frame);
       console.log('Frame analysis results:', results);
       
-      // Map predictions to categories
       for (const prediction of results) {
         const label = prediction.label.toLowerCase();
         
@@ -160,8 +160,19 @@ const VideoOrganizer = () => {
     setFiles(prev => [...prev, ...droppedFiles]);
   }, []);
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const selectedFiles = Array.from(e.target.files)
+        .filter(file => file.type.startsWith('video/'))
+        .map(file => ({
+          id: Math.random().toString(36).substr(2, 9),
+          file,
+          category: null,
+          analyzing: false
+        }));
+
+      setFiles(prev => [...prev, ...selectedFiles]);
+    }
   };
 
   const handleContinue = () => {
@@ -206,19 +217,7 @@ const VideoOrganizer = () => {
         </Button>
       </div>
 
-      <div
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-        className="border-2 border-dashed border-purple-500/30 rounded-xl p-8 text-center cursor-pointer hover:border-purple-500/50 transition-all duration-300"
-      >
-        <FileVideo className="w-12 h-12 mx-auto text-purple-400 mb-4" />
-        <p className="text-lg text-purple-200 mb-2">
-          Drag and drop your wedding videos here
-        </p>
-        <p className="text-sm text-purple-300/70">
-          Videos will be automatically analyzed and categorized
-        </p>
-      </div>
+      <FileUploadZone onDrop={handleDrop} onFileSelect={handleFileSelect} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {CATEGORIES.map((category) => (
