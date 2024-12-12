@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { FileVideo, Check, Undo } from 'lucide-react';
+import { FileVideo, Check, Undo, ArrowRight } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 interface ReviewClassificationStepProps {
   rawFiles?: File[];
@@ -17,6 +18,7 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
   onClassificationUpdate
 }) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [files, setFiles] = useState<{ id: string; file: File; category: string }[]>(
     rawFiles.map((file, index) => ({
       id: `file-${index}`,
@@ -83,6 +85,19 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
         description: "File moved back to original category",
       });
     }
+  };
+
+  const handleNext = () => {
+    const untaggedFiles = files.filter(file => file.category === 'untagged');
+    if (untaggedFiles.length > 0) {
+      toast({
+        variant: "destructive",
+        title: "Untagged Files",
+        description: "Please categorize all files before proceeding.",
+      });
+      return;
+    }
+    navigate('/review');
   };
 
   return (
@@ -179,6 +194,16 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
           ))}
         </div>
       </DragDropContext>
+
+      <div className="flex justify-end mt-8">
+        <Button
+          onClick={handleNext}
+          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+        >
+          Next Step
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </Button>
+      </div>
     </div>
   );
 };
