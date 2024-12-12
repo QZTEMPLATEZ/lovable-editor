@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { VideoStyle } from '../../types/video';
-import { createImageUrlFromBase64, cleanupImageUrl } from '../../utils/imageUtils';
-import { Button } from '../ui/button';
-import { useNavigate } from 'react-router-dom';
+import { VIDEO_STYLES } from '@/constants/videoStyles';
+import VideoStyleItem from './VideoStyleItem';
+import ReferenceVideoBanner from './ReferenceVideoBanner';
 import { useToast } from '../ui/use-toast';
 
 interface VideoStyleSelectorProps {
@@ -12,68 +12,56 @@ interface VideoStyleSelectorProps {
 }
 
 const VideoStyleSelector = ({ selectedStyle, onStyleSelect, onCustomVideoUpload }: VideoStyleSelectorProps) => {
-  const [imageUrls, setImageUrls] = useState<{ [key: string]: string }>({});
-  const navigate = useNavigate();
+  const [hoveredStyle, setHoveredStyle] = useState<string | null>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    // Create object URLs for all base64 images
-    const urls: { [key: string]: string } = {};
-    
-    // Process your images here
-    // Example:
-    // urls.image1 = createImageUrlFromBase64(base64String1);
-    // urls.image2 = createImageUrlFromBase64(base64String2);
-    
-    setImageUrls(urls);
-
-    // Cleanup function
-    return () => {
-      Object.values(urls).forEach(url => cleanupImageUrl(url));
-    };
-  }, []);
-
-  const handleStyleSelect = (style: VideoStyle) => {
-    onStyleSelect(style);
-    toast({
-      title: "Style Selected",
-      description: `Selected ${style.name} style`,
-    });
-    navigate('/music');
-  };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      onCustomVideoUpload(file);
+      if (file.type.startsWith('video/')) {
+        onCustomVideoUpload(file);
+        toast({
+          title: "Reference video uploaded",
+          description: "Your custom reference video will be used for style guidance.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Invalid file type",
+          description: "Please upload a video file.",
+        });
+      }
     }
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white">Choose Your Style</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Your style options rendering here */}
+    <div className="space-y-8">
+      <div className="w-full max-w-none px-0 space-y-0 bg-[#0A0A0A]/95 backdrop-blur-sm">
+        {VIDEO_STYLES.map((style) => (
+          <VideoStyleItem
+            key={style.id}
+            style={style}
+            isHovered={hoveredStyle === style.id}
+            onMouseEnter={() => setHoveredStyle(style.id)}
+            onMouseLeave={() => setHoveredStyle(null)}
+            onStyleSelect={() => onStyleSelect({
+              id: style.id,
+              name: style.title,
+              description: style.description,
+              thumbnail: style.previewVideo,
+              videoUrl: style.previewVideo
+            })}
+          />
+        ))}
       </div>
-      
-      <div className="mt-8">
-        <input
-          type="file"
-          accept="video/*"
-          onChange={handleFileUpload}
-          className="hidden"
-          id="video-upload"
-        />
-        <label htmlFor="video-upload">
-          <Button
-            variant="outline"
-            className="w-full text-white border-purple-500 hover:bg-purple-500/20"
-            asChild
-          >
-            <span>Upload Custom Video</span>
-          </Button>
-        </label>
-      </div>
+
+      <ReferenceVideoBanner onFileInputClick={() => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'video/*';
+        input.onchange = (e) => handleFileUpload(e as React.ChangeEvent<HTMLInputElement>);
+        input.click();
+      }} />
     </div>
   );
 };
