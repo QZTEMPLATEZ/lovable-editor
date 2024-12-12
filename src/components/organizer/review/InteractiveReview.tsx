@@ -112,20 +112,21 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <motion.div
+                                  <div
                                     ref={provided.innerRef}
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
-                                    initial={false}
-                                    animate={{
-                                      scale: snapshot.isDragging ? 1.05 : 1,
-                                      borderColor: recentlyMoved.includes(clip.id) ? '#22c55e' : undefined
-                                    }}
                                     className={`relative rounded-lg overflow-hidden border ${
                                       snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
                                     } ${recentlyMoved.includes(clip.id) ? 'border-green-500' : ''}`}
                                   >
-                                    <div className="aspect-video bg-black relative">
+                                    <motion.div
+                                      initial={false}
+                                      animate={{
+                                        scale: snapshot.isDragging ? 1.05 : 1,
+                                      }}
+                                      className="aspect-video bg-black relative"
+                                    >
                                       <img
                                         src={clip.thumbnail}
                                         alt={clip.name}
@@ -140,8 +141,8 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                                           <Check className="w-3 h-3 text-white" />
                                         </div>
                                       )}
-                                    </div>
-                                  </motion.div>
+                                    </motion.div>
+                                  </div>
                                 </TooltipTrigger>
                                 <TooltipContent>
                                   <p className="font-medium">{clip.name}</p>
