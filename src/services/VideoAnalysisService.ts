@@ -1,4 +1,4 @@
-import { VideoCategory } from '../types';
+import { VideoCategory } from '../types/video';
 import { logger } from '../utils/logger';
 
 export class VideoAnalysisService {
@@ -103,3 +103,8 @@ export class VideoAnalysisService {
     }
   }
 }
+
+// Create and export the singleton instance
+export const videoAnalysisService = {
+  analyzeVideo: VideoAnalysisService.analyzeVideo.bind(VideoAnalysisService)
+};

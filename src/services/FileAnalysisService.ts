@@ -49,12 +49,12 @@ export class FileAnalysisService {
       }
 
       // Perform visual analysis
-      const category = await videoAnalysisService.analyzeVideo(file);
+      const { category, confidence } = await videoAnalysisService.analyzeVideo(file);
       
       return {
         file,
         category,
-        confidence: 1.0, // We'll trust the video analysis service's internal confidence scoring
+        confidence,
         metadata
       };
     } catch (error) {
