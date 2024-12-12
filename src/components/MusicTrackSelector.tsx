@@ -14,13 +14,8 @@ interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
 }
 
-interface TrackData {
-  file: File;
-  beats: any[];
-}
-
 const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
-  const [selectedTracks, setSelectedTracks] = useState<TrackData[]>([]);
+  const [selectedTracks, setSelectedTracks] = useState<{ file: File; beats: any[] }[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
@@ -110,10 +105,12 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       delete newAudioElements[removedFile.file.name];
       setAudioElements(newAudioElements);
     }
-    setSelectedTracks(prev => prev.filter((_, i) => i !== index));
+    
+    const updatedTracks = selectedTracks.filter((_, i) => i !== index);
+    setSelectedTracks(updatedTracks);
     
     // Update the context with the remaining files
-    setSelectedMusic(selectedTracks.filter((_, i) => i !== index).map(track => track.file));
+    setSelectedMusic(updatedTracks.map(track => track.file));
     
     if (playingTrack === removedFile.file.name) {
       setPlayingTrack(null);
@@ -133,6 +130,9 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       });
       return;
     }
+    
+    // Update selected music in context before navigating
+    setSelectedMusic(selectedTracks.map(track => track.file));
     navigate('/organize');
   };
 

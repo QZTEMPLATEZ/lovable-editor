@@ -39,11 +39,9 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
 
   return (
     <div className="relative mb-4">
-      {/* Compact glass background */}
       <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-pink-500/5 rounded-lg backdrop-blur-sm" />
       
       <div className="relative p-4">
-        {/* Thinner progress line */}
         <div className="absolute top-[2.5rem] left-0 w-full h-[1px] bg-editor-border/20" />
         <motion.div 
           className="absolute top-[2.5rem] left-0 h-[1px] bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue"
@@ -87,7 +85,6 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                     </span>
                   )}
 
-                  {/* Subtle glow effect for current step */}
                   {index === currentStep && (
                     <div className="absolute -inset-1 rounded-lg animate-pulse bg-editor-glow-pink/10" />
                   )}
@@ -111,7 +108,6 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                   {step.description}
                 </p>
 
-                {/* Display selected values with enhanced visibility */}
                 {index <= currentStep && (
                   <>
                     {index === 0 && selectedVideoType && (
@@ -134,7 +130,6 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                   </>
                 )}
 
-                {/* Subtle hover line */}
                 <motion.div 
                   className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-[1px] 
                              bg-gradient-to-r from-editor-glow-purple to-editor-glow-pink 
