@@ -1,5 +1,4 @@
 import React from 'react';
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import PricingPlans from '../pricing/PricingPlans';
 
 interface LoginModalProps {
@@ -13,13 +12,9 @@ const LoginModal: React.FC<LoginModalProps> = ({
   onClose,
   onPlanSelect,
 }) => {
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <PricingPlans onComplete={onPlanSelect} />
-      </DialogContent>
-    </Dialog>
-  );
+  if (!isOpen) return null;
+  
+  return <PricingPlans onComplete={onPlanSelect} />;
 };
 
 export default LoginModal;
