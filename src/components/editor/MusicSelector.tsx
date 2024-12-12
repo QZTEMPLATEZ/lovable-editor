@@ -106,7 +106,17 @@ const MusicSelector = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white mb-4">Select Music</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-white">Select Music</h2>
+        {selectedTracks.length > 0 && (
+          <Button
+            onClick={handleContinue}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+          >
+            Continue to Organize
+          </Button>
+        )}
+      </div>
       
       <Alert className="bg-purple-500/10 border-purple-500/30 mb-4">
         <AlertDescription className="text-purple-200">
@@ -176,15 +186,6 @@ const MusicSelector = () => {
               </Button>
             </div>
           ))}
-          
-          <div className="flex justify-end mt-6">
-            <Button
-              onClick={handleContinue}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-            >
-              Continue to Organize
-            </Button>
-          </div>
         </div>
       )}
 
