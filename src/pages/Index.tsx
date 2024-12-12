@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Wand2 } from 'lucide-react';
 import RecentProjects from '../components/dashboard/RecentProjects';
 import TutorialSection from '../components/dashboard/TutorialSection';
-import LoginModal from '../components/auth/LoginModal';
 
 const Index = () => {
   const navigate = useNavigate();
-  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Sample data for recent projects
   const recentProjects = [
@@ -73,22 +71,11 @@ const Index = () => {
   };
 
   const handleStartProject = () => {
-    setShowLoginModal(true);
-  };
-
-  const handlePlanSelect = () => {
-    setShowLoginModal(false);
     navigate('/duration');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95">
-      <LoginModal 
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onPlanSelect={handlePlanSelect}
-      />
-      
       {/* Hero Section */}
       <div className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
