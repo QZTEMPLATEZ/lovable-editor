@@ -1,13 +1,4 @@
 import React, { useState } from 'react';
-import { DragDropContext, Droppable, Draggable, DropResult } from
-
-I understand you're having a TypeScript error related to drag event handling in the InteractiveReview component, where there's a conflict between Framer Motion's drag events and React DnD's drag events. Let's fix this issue while maintaining all existing functionality.
-
-<lov-code>
-Let's update the InteractiveReview component to properly handle the drag events:
-
-<lov-write file_path="src/components/organizer/review/InteractiveReview.tsx">
-import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { motion, PanInfo } from 'framer-motion';
 import { Search, Filter } from 'lucide-react';
@@ -63,10 +54,6 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
     return acc;
   }, {} as Record<string, VideoClip[]>);
 
-  const handleFramerDragStart = (_event: MouseEvent | TouchEvent | PointerEvent, _info: PanInfo) => {
-    // Handle Framer Motion drag start
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4 mb-6">
@@ -119,10 +106,7 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                             {...provided.dragHandleProps}
                             initial={false}
                             animate={{ scale: snapshot.isDragging ? 1.05 : 1 }}
-                            onDragStart={handleFramerDragStart}
-                            style={{
-                              ...provided.draggableProps.style,
-                            }}
+                            style={provided.draggableProps.style}
                             className={`mb-3 rounded-lg overflow-hidden border ${
                               snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
                             }`}
