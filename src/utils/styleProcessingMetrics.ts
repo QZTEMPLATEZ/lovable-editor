@@ -9,9 +9,19 @@ interface StyleProcessingMetrics {
 
 const metrics: Map<string, StyleProcessingMetrics> = new Map();
 
+declare global {
+  interface Performance {
+    memory?: {
+      usedJSHeapSize: number;
+      totalJSHeapSize: number;
+      jsHeapSizeLimit: number;
+    };
+  }
+}
+
 export const startStyleProcessing = (styleId: string) => {
   const startTime = performance.now();
-  const memoryUsage = window.performance?.memory?.usedJSHeapSize;
+  const memoryUsage = performance.memory?.usedJSHeapSize;
   
   metrics.set(styleId, {
     startTime,
@@ -33,8 +43,10 @@ export const endStyleProcessing = (styleId: string) => {
 
   const endTime = performance.now();
   const processingDuration = endTime - metric.startTime;
-  const currentMemoryUsage = window.performance?.memory?.usedJSHeapSize;
-  const memoryDelta = currentMemoryUsage ? currentMemoryUsage - (metric.memoryUsage || 0) : undefined;
+  const currentMemoryUsage = performance.memory?.usedJSHeapSize;
+  const memoryDelta = currentMemoryUsage && metric.memoryUsage 
+    ? currentMemoryUsage - metric.memoryUsage 
+    : undefined;
 
   logger.info(`Completed style processing for ${styleId}`, {
     duration: processingDuration,
