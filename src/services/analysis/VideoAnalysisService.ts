@@ -1,71 +1,71 @@
 import { logger } from '../../utils/logger';
-import { pipeline } from '@huggingface/transformers';
+import { ModelService } from './ModelService';
 import { FrameExtractor } from './FrameExtractor';
 import { CategoryMatcher } from './CategoryMatcher';
 
-export class VideoAnalysisService {
-  private static classifier: any = null;
-  private static readonly CONFIDENCE_THRESHOLD = 0.2; // Lowered threshold for debugging
+interface Prediction {
+  label: string;
+  score: number;
+}
 
-  private static async initializeClassifier() {
-    if (!this.classifier) {
-      try {
-        this.classifier = await pipeline('image-classification', 'Xenova/vit-base-patch16-224', {
-          dtype: 'fp32', // Changed from 'float32' to 'fp32' to match valid types
-          revision: 'main'
-        });
-        logger.info('Video classifier initialized successfully');
-      } catch (error) {
-        logger.error('Failed to initialize video classifier:', error);
-        throw error;
-      }
-    }
-    return this.classifier;
-  }
+export class VideoAnalysisService {
+  private static readonly MIN_CONFIDENCE_THRESHOLD = 0.2;
+  private static readonly MAX_CONFIDENCE_THRESHOLD = 0.6;
 
   static async analyzeVideo(file: File): Promise<{ category: string; confidence: number }> {
     try {
       logger.info(`Starting comprehensive analysis for file: ${file.name}`);
       
-      // Extract multiple frames
+      // Initialize classifier
+      const classifier = await ModelService.initializeClassifier();
+      
+      // Extract frames using the improved FrameExtractor
       const frames = await FrameExtractor.extractMultipleFrames(file);
       logger.info(`Extracted ${frames.length} frames for analysis from ${file.name}`);
       
-      // Initialize classifier if needed
-      const classifier = await this.initializeClassifier();
-      
       // Analyze each frame
-      const predictionPromises = frames.map(frame => classifier(frame));
+      const predictionPromises = frames.map(async frame => {
+        const predictions = await classifier(frame);
+        return predictions.map((p: any) => ({ ...p, filename: file.name }));
+      });
+      
       const allPredictions = await Promise.all(predictionPromises);
-      const predictions = allPredictions.flat();
+      const predictions = allPredictions.flat() as Prediction[];
       
       // Group predictions by label and aggregate scores
-      const groupedConfidence = predictions.reduce((acc, p: { label: string; score: number }) => {
+      const groupedConfidence = predictions.reduce((acc: Record<string, number>, p: Prediction) => {
         acc[p.label] = (acc[p.label] || 0) + p.score;
         return acc;
-      }, {} as Record<string, number>);
-
+      }, {});
+      
       logger.info(`Grouped confidences for ${file.name}:`, groupedConfidence);
-
-      // Find the best prediction
+      
+      // Calculate prediction diversity for dynamic threshold
+      const scores = Object.values(groupedConfidence);
+      const diversity = Math.max(...scores) - Math.min(...scores);
+      const dynamicThreshold = this.calculateDynamicThreshold(diversity);
+      
+      logger.info(`Prediction diversity: ${diversity}, Dynamic threshold: ${dynamicThreshold}`);
+      
+      // Find the best prediction using typed parameters
       const bestPrediction = Object.entries(groupedConfidence).reduce(
         (best: { label: string; score: number }, [label, score]: [string, number]) => 
           score > best.score ? { label, score } : best,
         { label: 'untagged', score: 0 }
       );
-
+      
       logger.info(`Best prediction for ${file.name}: ${bestPrediction.label} (confidence: ${bestPrediction.score})`);
-
+      
+      // Return untagged if confidence is below dynamic threshold
+      if (bestPrediction.score < dynamicThreshold) {
+        logger.info(`Low confidence for ${file.name}, marking as untagged`);
+        return { category: 'untagged', confidence: 0.1 };
+      }
+      
       // Get category match using the best prediction
       const result = CategoryMatcher.matchCategoryFromPredictions([
         { label: bestPrediction.label, score: bestPrediction.score }
       ]);
-      
-      // Return untagged if confidence is below threshold
-      if (result.confidence < this.CONFIDENCE_THRESHOLD) {
-        logger.info(`Low confidence for ${file.name}, marking as untagged`);
-        return { category: 'untagged', confidence: 0.1 };
-      }
       
       logger.info(`Final classification for ${file.name}: ${result.category} (confidence: ${result.confidence})`);
       return result;
@@ -74,6 +74,14 @@ export class VideoAnalysisService {
       logger.error(`Error analyzing file ${file.name}:`, error);
       return { category: 'untagged', confidence: 0.1 };
     }
+  }
+
+  private static calculateDynamicThreshold(diversity: number): number {
+    // Lower threshold when predictions are diverse (less certain)
+    // Higher threshold when predictions are concentrated (more certain)
+    const normalizedDiversity = Math.min(Math.max(diversity, 0), 1);
+    return this.MAX_CONFIDENCE_THRESHOLD - 
+           (normalizedDiversity * (this.MAX_CONFIDENCE_THRESHOLD - this.MIN_CONFIDENCE_THRESHOLD));
   }
 }
 
