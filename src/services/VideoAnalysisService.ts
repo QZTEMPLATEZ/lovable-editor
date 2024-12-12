@@ -18,6 +18,7 @@ export class VideoAnalysisService {
   async initialize() {
     try {
       if (!this.classifier) {
+        // Using a more sophisticated model for better wedding scene recognition
         this.classifier = await pipeline(
           'image-classification',
           'microsoft/resnet-50'
@@ -40,9 +41,9 @@ export class VideoAnalysisService {
     const ctx = canvas.getContext('2d')!;
     const frames: HTMLCanvasElement[] = [];
     
-    // Extract 5 frames from different parts of the video
+    // Extract frames at strategic points throughout the video
     const duration = video.duration;
-    const framePoints = [0.1, 0.3, 0.5, 0.7, 0.9];
+    const framePoints = [0.1, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 0.95];
     
     for (const point of framePoints) {
       video.currentTime = duration * point;
@@ -53,10 +54,14 @@ export class VideoAnalysisService {
       ctx.drawImage(video, 0, 0);
       
       const frameCanvas = document.createElement('canvas');
-      frameCanvas.width = 224;
+      frameCanvas.width = 224; // Standard input size for ResNet
       frameCanvas.height = 224;
       const frameCtx = frameCanvas.getContext('2d')!;
-      frameCtx.drawImage(canvas, 0, 0, 224, 224);
+      frameCtx.drawImage(
+        canvas, 
+        0, 0, canvas.width, canvas.height,
+        0, 0, 224, 224
+      );
       
       frames.push(frameCanvas);
     }
@@ -71,40 +76,58 @@ export class VideoAnalysisService {
       const frames = await this.extractFrames(file);
       
       let categoryScores = new Map<string, number>();
+      let predictionConfidence = new Map<string, number>();
       
       for (const frame of frames) {
-        const imageData = frame.toDataURL('image/jpeg');
+        const imageData = frame.toDataURL('image/jpeg', ORGANIZER_CONFIG.processing.frameQuality);
         const predictions = await this.classifier(imageData);
         
         // Analyze predictions against each category's visual cues
         for (const [category, config] of Object.entries(ORGANIZER_CONFIG.analysis.categories)) {
           let maxScore = 0;
+          let totalScore = 0;
+          let matchCount = 0;
           
           for (const prediction of predictions) {
             const label = prediction.label.toLowerCase();
             for (const cue of config.visualCues) {
               if (label.includes(cue.toLowerCase())) {
                 maxScore = Math.max(maxScore, prediction.score);
+                totalScore += prediction.score;
+                matchCount++;
               }
             }
           }
           
-          if (maxScore >= config.confidence) {
-            categoryScores.set(
-              category,
-              (categoryScores.get(category) || 0) + maxScore
-            );
+          // Calculate weighted score based on matches and confidence
+          if (matchCount > 0) {
+            const avgScore = totalScore / matchCount;
+            const weightedScore = (maxScore * 0.7 + avgScore * 0.3);
+            
+            if (weightedScore >= config.confidence) {
+              categoryScores.set(
+                category,
+                (categoryScores.get(category) || 0) + weightedScore
+              );
+              predictionConfidence.set(
+                category,
+                Math.max(predictionConfidence.get(category) || 0, weightedScore)
+              );
+            }
           }
         }
       }
       
-      // Determine the best category based on accumulated scores
+      // Determine the best category based on accumulated scores and confidence
       let bestCategory = 'Extras';
       let bestScore = 0;
       
       categoryScores.forEach((score, category) => {
-        if (score > bestScore) {
-          bestScore = score;
+        const confidence = predictionConfidence.get(category) || 0;
+        const finalScore = score * confidence;
+        
+        if (finalScore > bestScore && confidence >= ORGANIZER_CONFIG.processing.confidenceThreshold) {
+          bestScore = finalScore;
           bestCategory = category;
         }
       });

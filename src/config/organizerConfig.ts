@@ -8,8 +8,8 @@ export const ORGANIZER_CONFIG = {
       'image/png'
     ],
     maxFileSize: 2 * 1024 * 1024 * 1024, // 2GB
-    minDuration: 1, // 1 second
-    maxDuration: 3600, // 1 hour
+    minDuration: 1,
+    maxDuration: 3600,
     categories: {
       MakingOf: {
         visualCues: [
@@ -18,9 +18,13 @@ export const ORGANIZER_CONFIG = {
           'dressing room',
           'getting ready',
           'bride preparation',
-          'groom preparation'
+          'groom preparation',
+          'mirror reflection',
+          'cosmetics',
+          'wedding dress hanging',
+          'suit preparation'
         ],
-        confidence: 0.7
+        confidence: 0.65
       },
       Ceremony: {
         visualCues: [
@@ -29,9 +33,13 @@ export const ORGANIZER_CONFIG = {
           'wedding ceremony',
           'bride and groom standing',
           'exchange rings',
-          'wedding vows'
+          'wedding vows',
+          'priest',
+          'wedding arch',
+          'aisle walking',
+          'wedding guests seated'
         ],
-        confidence: 0.75
+        confidence: 0.70
       },
       Reception: {
         visualCues: [
@@ -40,7 +48,11 @@ export const ORGANIZER_CONFIG = {
           'dinner tables',
           'wedding cake',
           'toast glasses',
-          'party celebration'
+          'party celebration',
+          'dancing couples',
+          'wedding reception',
+          'table decorations',
+          'wedding entertainment'
         ],
         confidence: 0.65
       },
@@ -51,15 +63,22 @@ export const ORGANIZER_CONFIG = {
           'wedding dress',
           'wedding shoes',
           'decorations',
-          'close up objects'
+          'close up objects',
+          'wedding invitations',
+          'wedding bands',
+          'table settings',
+          'wedding accessories'
         ],
-        confidence: 0.8
+        confidence: 0.75
       }
     }
   },
   processing: {
     maxConcurrent: 3,
-    chunkSize: 10 * 1024 * 1024, // 10MB chunks for large files
-    timeout: 300000 // 5 minutes
+    chunkSize: 10 * 1024 * 1024,
+    timeout: 300000,
+    frameExtractionCount: 8, // Number of frames to extract per video
+    frameQuality: 0.8, // JPEG quality for extracted frames
+    confidenceThreshold: 0.6 // Minimum confidence score for classification
   }
 };
