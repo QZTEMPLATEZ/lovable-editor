@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import {
@@ -10,12 +10,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User } from 'lucide-react';
+import LoginModal from './auth/LoginModal';
 
 const TopNavigation = () => {
   const navigate = useNavigate();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const handlePlanSelect = () => {
+    setShowLoginModal(false);
+    navigate('/duration');
+  };
 
   return (
     <nav className="w-full bg-editor-panel">
+      <LoginModal 
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onPlanSelect={handlePlanSelect}
+      />
+      
       <div className="container mx-auto flex justify-between items-center py-6 px-8">
         <span 
           onClick={() => navigate('/duration')}
@@ -28,7 +41,7 @@ const TopNavigation = () => {
           <Button 
             variant="ghost" 
             className="text-white hover:text-purple-300 transition-colors"
-            onClick={() => navigate('/plans')}
+            onClick={() => setShowLoginModal(true)}
           >
             Pricing
           </Button>
@@ -43,14 +56,20 @@ const TopNavigation = () => {
             <DropdownMenuContent className="w-56 bg-editor-glass-dark border-editor-border">
               <DropdownMenuLabel className="text-white">My Account</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-editor-border" />
-              <DropdownMenuItem className="text-white hover:bg-purple-400/10 cursor-pointer">
+              <DropdownMenuItem 
+                className="text-white hover:bg-purple-400/10 cursor-pointer"
+                onClick={() => setShowLoginModal(true)}
+              >
                 Profile
               </DropdownMenuItem>
               <DropdownMenuItem className="text-white hover:bg-purple-400/10 cursor-pointer">
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-editor-border" />
-              <DropdownMenuItem className="text-white hover:bg-purple-400/10 cursor-pointer">
+              <DropdownMenuItem 
+                className="text-white hover:bg-purple-400/10 cursor-pointer"
+                onClick={() => setShowLoginModal(true)}
+              >
                 Log in
               </DropdownMenuItem>
             </DropdownMenuContent>
