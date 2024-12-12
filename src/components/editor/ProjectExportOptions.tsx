@@ -10,7 +10,7 @@ interface ProjectExportOptionsProps {
 
 const ProjectExportOptions = ({ onExport, isProcessing }: ProjectExportOptionsProps) => {
   return (
-    <div className="w-full bg-gradient-to-r from-editor-glow-purple/10 via-editor-glow-pink/10 to-editor-glow-blue/10 rounded-xl overflow-hidden">
+    <div className="w-full bg-editor-panel rounded-xl overflow-hidden border border-editor-border">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
