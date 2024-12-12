@@ -14,8 +14,13 @@ interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
 }
 
+interface SelectedTrack {
+  file: File;
+  beats: any[];
+}
+
 const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
-  const [selectedTracks, setSelectedTracks] = useState<{ file: File; beats: any[] }[]>([]);
+  const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
@@ -63,7 +68,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
         setSelectedTracks(prev => [...prev, { file, beats }]);
         
         // Update context immediately after each successful analysis
-        setSelectedMusic(prev => [...(prev || []), file]);
+        setSelectedMusic(prev => prev ? [...prev, file] : [file]);
       }
 
       toast({
