@@ -1,17 +1,15 @@
 import React from 'react';
 import { useVideoType } from '../../contexts/VideoTypeContext';
 import { exportProject } from '@/utils/projectExport';
-import { categorizeClip } from '@/utils/videoEditingLogic';
 import { useToast } from '@/hooks/use-toast';
 import NavigationButtons from './NavigationButtons';
 import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { useFileProcessing } from '../../hooks/useFileProcessing';
 import FileUploadHandler from './upload/FileUploadHandler';
+import ProcessingStatusBar from './ProcessingStatusBar';
 import { FileVideo, AlertCircle, Download } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
-import { Progress } from '../ui/progress';
 import { motion } from 'framer-motion';
-import { Alert, AlertDescription } from '../ui/alert';
 import { ClipType } from '@/types/video';
 import { Button } from '../ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
@@ -26,7 +24,8 @@ const FileOrganizer = () => {
     currentFile,
     successCount,
     errorCount,
-    handleFilesSelected
+    handleFilesSelected,
+    stopProcessing
   } = useFileProcessing();
 
   const handleExport = async (format: 'premiere' | 'finalcut' | 'resolve') => {
@@ -113,13 +112,12 @@ const FileOrganizer = () => {
 
         {/* Processing Status */}
         {isProcessing && (
-          <Alert className="mb-6 bg-purple-500/10 border-purple-500/30">
-            <AlertDescription className="flex items-center gap-2">
-              <FileVideo className="animate-pulse" />
-              <span>Processing: {currentFile?.name}</span>
-              <Progress value={(successCount + errorCount) / files.length * 100} className="ml-4" />
-            </AlertDescription>
-          </Alert>
+          <ProcessingStatusBar
+            currentFile={currentFile}
+            totalFiles={files.length}
+            processedFiles={successCount + errorCount}
+            onStop={stopProcessing}
+          />
         )}
 
         {/* Categories Grid */}
