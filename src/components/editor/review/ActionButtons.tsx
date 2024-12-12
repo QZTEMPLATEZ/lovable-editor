@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Download, Wand2 } from 'lucide-react';
+import { Wand2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -10,7 +10,7 @@ interface ActionButtonsProps {
   isProcessing: boolean;
 }
 
-const ActionButtons = ({ onStartEditing, onPreDownload, isProcessing }: ActionButtonsProps) => {
+const ActionButtons = ({ onStartEditing, isProcessing }: ActionButtonsProps) => {
   return (
     <div className="flex flex-col items-center gap-6">
       <motion.div
@@ -44,21 +44,6 @@ const ActionButtons = ({ onStartEditing, onPreDownload, isProcessing }: ActionBu
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-      >
-        <Button
-          variant="outline"
-          onClick={onPreDownload}
-          className="gap-2 text-purple-300 border-purple-500/30 hover:bg-purple-500/10"
-        >
-          <Download className="w-4 h-4" />
-          Download Pre-Separated Tracks
-        </Button>
       </motion.div>
     </div>
   );
