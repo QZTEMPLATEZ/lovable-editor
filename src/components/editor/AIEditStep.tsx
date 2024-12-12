@@ -59,19 +59,27 @@ const AIEditStep: React.FC<AIEditStepProps> = ({
     if (!editingProject) return;
 
     try {
-      const projectBlob = await exportProject(editingProject, { format: 'premiere' });
-      const url = URL.createObjectURL(projectBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'wedding_highlights.prproj';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      // Export all three versions for Premiere Pro
+      const versions = ['legacy', 'current', 'compatible'] as const;
+      for (const version of versions) {
+        const projectBlob = await exportProject(editingProject, { 
+          format: 'premiere',
+          version 
+        });
+        
+        const url = URL.createObjectURL(projectBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `wedding_highlights_${version}.prproj`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
 
       toast({
         title: "Export Successful",
-        description: "Your project has been exported for Adobe Premiere Pro.",
+        description: "Three versions have been exported. Please try each version to find the most compatible one with your Premiere Pro.",
       });
     } catch (error) {
       toast({

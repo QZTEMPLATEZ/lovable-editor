@@ -1,73 +1,169 @@
 import { EditingProject } from './videoEditingLogic';
+import { logger } from './logger';
 
 interface ExportOptions {
   format: 'premiere' | 'finalcut' | 'resolve';
   version?: 'legacy' | 'current' | 'compatible';
 }
 
+const validatePaths = (project: EditingProject): boolean => {
+  return project.clips.every(clip => {
+    const hasValidFile = clip.file && clip.file.name;
+    if (!hasValidFile) {
+      logger.error(`Invalid file path found in clip: ${JSON.stringify(clip)}`);
+      return false;
+    }
+    return true;
+  });
+};
+
 const generatePremiereXMLLegacy = (project: EditingProject): string => {
+  const timebase = 30; // NTSC timebase
+  const mediaStart = 0;
+  
   return `<?xml version="1.0" encoding="UTF-8"?>
-    <Project ObjectRef="1">
-      <Group>1</Group>
-      <Children ObjectRef="2"/>
-      <BinTreeGroup>
-        <Items>
-          ${project.clips.map((clip, index) => `
-            <Item ObjectID="${index + 3}">
-              <Name>${clip.file.name}</Name>
-              <Type>Clip</Type>
-              <Media>
-                <Video>
-                  <FilePathURL>${clip.file.name}</FilePathURL>
-                </Video>
-              </Media>
-            </Item>
-          `).join('')}
-        </Items>
-      </BinTreeGroup>
-    </Project>`;
+<!DOCTYPE xmeml>
+<xmeml version="4">
+  <sequence>
+    <name>Wedding Highlights</name>
+    <duration>${project.duration.max * timebase * 60}</duration>
+    <rate>
+      <timebase>${timebase}</timebase>
+      <ntsc>TRUE</ntsc>
+    </rate>
+    <media>
+      <video>
+        ${project.clips.map((clip, index) => `
+          <track>
+            <clipitem id="clipitem-${index + 1}">
+              <name>${clip.file.name}</name>
+              <duration>${clip.endTime - clip.startTime}</duration>
+              <rate>
+                <timebase>${timebase}</timebase>
+                <ntsc>TRUE</ntsc>
+              </rate>
+              <start>${mediaStart}</start>
+              <end>${clip.endTime - clip.startTime}</end>
+              <file id="file-${index + 1}">
+                <name>${clip.file.name}</name>
+                <pathurl>${clip.file.name}</pathurl>
+                <media>
+                  <video>
+                    <samplecharacteristics>
+                      <rate>
+                        <timebase>${timebase}</timebase>
+                        <ntsc>TRUE</ntsc>
+                      </rate>
+                    </samplecharacteristics>
+                  </video>
+                </media>
+              </file>
+            </clipitem>
+          </track>
+        `).join('')}
+      </video>
+      <audio>
+        ${project.music ? `
+          <track>
+            <clipitem>
+              <name>${project.music.file.name}</name>
+              <duration>${project.duration.max * timebase * 60}</duration>
+              <file id="audio-1">
+                <name>${project.music.file.name}</name>
+                <pathurl>${project.music.file.name}</pathurl>
+              </file>
+            </clipitem>
+          </track>
+        ` : ''}
+      </audio>
+    </media>
+  </sequence>
+</xmeml>`;
 };
 
 const generatePremiereXMLCurrent = (project: EditingProject): string => {
   return `<?xml version="1.0" encoding="UTF-8"?>
-    <PremiereData Version="7">
-      <Project>
-        <Timeline>
+<premiere-project version="7">
+  <project>
+    <sequences>
+      <sequence id="sequence-1">
+        <duration>${project.duration.max * 60}</duration>
+        <videoTracks>
           ${project.clips.map((clip, index) => `
-            <ClipItem>
-              <Source>${clip.file.name}</Source>
-              <Type>${clip.type}</Type>
-              <Start>0</Start>
-              <End>300</End>
-            </ClipItem>
+            <track id="${index + 1}">
+              <clip>
+                <name>${clip.file.name}</name>
+                <pathurl>${clip.file.name}</pathurl>
+                <duration>${clip.endTime - clip.startTime}</duration>
+                <start>0</start>
+                <end>${clip.endTime - clip.startTime}</end>
+              </clip>
+            </track>
           `).join('')}
-        </Timeline>
-      </Project>
-    </PremiereData>`;
+        </videoTracks>
+        <audioTracks>
+          ${project.music ? `
+            <track id="audio-1">
+              <clip>
+                <name>${project.music.file.name}</name>
+                <pathurl>${project.music.file.name}</pathurl>
+                <duration>${project.duration.max * 60}</duration>
+              </clip>
+            </track>
+          ` : ''}
+        </audioTracks>
+      </sequence>
+    </sequences>
+  </project>
+</premiere-project>`;
 };
 
 const generatePremiereXMLCompatible = (project: EditingProject): string => {
   return `<?xml version="1.0" encoding="UTF-8"?>
-    <xmeml version="5">
-      <sequence>
-        <name>Organized Sequence</name>
-        <media>
-          ${project.clips.map((clip, index) => `
-            <video>
-              <track>
-                <clipitem>
-                  <name>${clip.file.name}</name>
-                  <file>
-                    <name>${clip.file.name}</name>
-                    <pathurl>${clip.file.name}</pathurl>
-                  </file>
-                </clipitem>
-              </track>
-            </video>
-          `).join('')}
-        </media>
-      </sequence>
-    </xmeml>`;
+<premieredata version="1">
+  <sequence>
+    <name>Wedding Highlights</name>
+    <duration>${project.duration.max * 60}</duration>
+    <timebase>30</timebase>
+    <media>
+      <video>
+        ${project.clips.map((clip, index) => `
+          <track>
+            <clipitem>
+              <masterclip>${clip.file.name}</masterclip>
+              <name>${clip.file.name}</name>
+              <enabled>TRUE</enabled>
+              <duration>${clip.endTime - clip.startTime}</duration>
+              <start>0</start>
+              <end>${clip.endTime - clip.startTime}</end>
+              <in>0</in>
+              <out>${clip.endTime - clip.startTime}</out>
+              <file>
+                <name>${clip.file.name}</name>
+                <pathurl>${clip.file.name}</pathurl>
+              </file>
+            </clipitem>
+          </track>
+        `).join('')}
+      </video>
+      <audio>
+        ${project.music ? `
+          <track>
+            <clipitem>
+              <name>${project.music.file.name}</name>
+              <enabled>TRUE</enabled>
+              <duration>${project.duration.max * 60}</duration>
+              <file>
+                <name>${project.music.file.name}</name>
+                <pathurl>${project.music.file.name}</pathurl>
+              </file>
+            </clipitem>
+          </track>
+        ` : ''}
+      </audio>
+    </media>
+  </sequence>
+</premieredata>`;
 };
 
 const generateFinalCutXML = (project: EditingProject): string => {
@@ -104,6 +200,10 @@ export const exportProject = async (
   project: EditingProject,
   options: ExportOptions
 ): Promise<Blob> => {
+  if (!validatePaths(project)) {
+    throw new Error('Invalid file paths detected in project');
+  }
+
   let exportData: string;
 
   if (options.format === 'premiere') {
@@ -123,5 +223,21 @@ export const exportProject = async (
     exportData = generateResolveXML(project);
   }
 
-  return new Blob([exportData], { type: 'application/xml' });
+  // Validate XML structure
+  try {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(exportData, 'application/xml');
+    const parseError = xmlDoc.querySelector('parsererror');
+    if (parseError) {
+      throw new Error('Generated XML is invalid');
+    }
+  } catch (error) {
+    logger.error('XML validation failed:', error);
+    throw new Error('Failed to generate valid sequence file');
+  }
+
+  return new Blob([exportData], { 
+    type: 'application/xml',
+    endings: 'native'  // Use native line endings
+  });
 };
