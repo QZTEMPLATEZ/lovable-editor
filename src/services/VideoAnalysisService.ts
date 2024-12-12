@@ -35,35 +35,45 @@ export class VideoAnalysisService {
   private async extractFrames(file: File): Promise<ImageData[]> {
     return new Promise((resolve, reject) => {
       const video = document.createElement('video');
-      video.crossOrigin = "anonymous"; // Add cross-origin attribute
+      video.crossOrigin = "anonymous";
+      video.playsInline = true;
+      video.muted = true;
       
       const frames: ImageData[] = [];
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d')!;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
 
       video.onloadedmetadata = async () => {
+        canvas.width = 224;
+        canvas.height = 224;
+        
         const framePoints = Array.from(
           { length: ORGANIZER_CONFIG.processing.frameExtractionCount },
           (_, i) => i / (ORGANIZER_CONFIG.processing.frameExtractionCount - 1)
         );
-        
-        canvas.width = 224;
-        canvas.height = 224;
 
-        for (const point of framePoints) {
-          video.currentTime = video.duration * point;
-          await new Promise(resolve => (video.onseeked = resolve));
+        try {
+          await video.play();
           
-          ctx.drawImage(video, 0, 0, 224, 224);
-          frames.push(ctx.getImageData(0, 0, 224, 224));
-        }
+          for (const point of framePoints) {
+            video.currentTime = video.duration * point;
+            await new Promise(resolve => (video.onseeked = resolve));
+            
+            ctx.drawImage(video, 0, 0, 224, 224);
+            frames.push(ctx.getImageData(0, 0, 224, 224));
+          }
 
-        URL.revokeObjectURL(video.src);
-        resolve(frames);
+          video.pause();
+          URL.revokeObjectURL(video.src);
+          resolve(frames);
+        } catch (error) {
+          reject(error);
+        }
       };
 
       video.onerror = reject;
-      video.src = URL.createObjectURL(file);
+      const objectUrl = URL.createObjectURL(file);
+      video.src = objectUrl;
     });
   }
 
@@ -82,7 +92,6 @@ export class VideoAnalysisService {
       let predictionConfidence = new Map<string, number>();
       
       for (const frame of frames) {
-        // Convert ImageData to base64 without triggering CORS
         const predictions = await this.classifier(frame);
         
         for (const [category, config] of Object.entries(ORGANIZER_CONFIG.analysis.categories)) {
