@@ -43,6 +43,7 @@ const TrackList = ({
           isAnalyzing={isAnalyzing}
           onTogglePlay={() => onTogglePlay(file.name)}
           onRemove={() => onRemoveTrack(index)}
+          isSelected={true} // All tracks in this list are selected
         />
       ))}
     </motion.div>

@@ -10,11 +10,13 @@ interface StartEditingButtonProps {
 const StartEditingButton = ({ onClick, disabled }: StartEditingButtonProps) => {
   return (
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: disabled ? 1 : 1.02 }}
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
       onClick={onClick}
       disabled={disabled}
-      className="relative w-full group"
+      className={`relative w-full max-w-md group ${
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
+      }`}
     >
       {/* Glow effect */}
       <div className="absolute inset-0 bg-gradient-to-r from-editor-glow-purple via-editor-glow-pink to-editor-glow-blue rounded-xl blur-2xl opacity-30 group-hover:opacity-70 transition-opacity" />
@@ -28,35 +30,6 @@ const StartEditingButton = ({ onClick, disabled }: StartEditingButtonProps) => {
           Start AI Editing
         </span>
         <Sparkles className="w-6 h-6 text-pink-300 absolute -top-2 right-4 animate-pulse" />
-        
-        {/* Particle effects */}
-        <div className="absolute -top-2 -right-2">
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-            }}
-            className="w-4 h-4 bg-purple-400 rounded-full blur-sm"
-          />
-        </div>
-        <div className="absolute -bottom-2 -left-2">
-          <motion.div
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              delay: 1,
-            }}
-            className="w-4 h-4 bg-pink-400 rounded-full blur-sm"
-          />
-        </div>
       </div>
     </motion.button>
   );
