@@ -15,7 +15,7 @@ interface MusicTrackSelectorProps {
 }
 
 const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
-  const [selectedMusic, setSelectedMusic] = useState<File[]>([]);
+  const [selectedTracks, setSelectedTracks] = useState<{ file: File; beats: any[] }[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
@@ -29,7 +29,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
 
     const newFiles = Array.from(files).filter(validateAudioFile);
     
-    if (selectedMusic.length + newFiles.length > APP_CONFIG.music.maxTracks) {
+    if (selectedTracks.length + newFiles.length > APP_CONFIG.music.maxTracks) {
       toast({
         variant: "destructive",
         title: "Too many tracks",
@@ -97,15 +97,15 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   };
 
   const removeTrack = (index: number) => {
-    const removedFile = selectedMusic[index];
-    if (audioElements[removedFile.name]) {
-      cleanupAudioElement(audioElements[removedFile.name]);
+    const removedFile = selectedTracks[index];
+    if (audioElements[removedFile.file.name]) {
+      cleanupAudioElement(audioElements[removedFile.file.name]);
       const newAudioElements = { ...audioElements };
-      delete newAudioElements[removedFile.name];
+      delete newAudioElements[removedFile.file.name];
       setAudioElements(newAudioElements);
     }
-    setSelectedMusic(prev => prev.filter((_, i) => i !== index));
-    if (playingTrack === removedFile.name) {
+    setSelectedTracks(prev => prev.filter((_, i) => i !== index));
+    if (playingTrack === removedFile.file.name) {
       setPlayingTrack(null);
     }
     toast({
@@ -115,7 +115,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   };
 
   const handleContinue = () => {
-    if (selectedMusic.length === 0) {
+    if (selectedTracks.length === 0) {
       toast({
         variant: "destructive",
         title: "No music selected",
@@ -140,7 +140,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
               </h3>
             </div>
             <span className="text-sm text-purple-300">
-              {selectedMusic.length} / {APP_CONFIG.music.maxTracks} tracks
+              {selectedTracks.length} / {APP_CONFIG.music.maxTracks} tracks
             </span>
           </div>
 
@@ -150,14 +150,14 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
           />
 
           <TrackList
-            selectedMusic={selectedMusic}
+            selectedMusic={selectedTracks}
             playingTrack={playingTrack}
             isAnalyzing={isAnalyzing}
             onTogglePlay={togglePlayPause}
             onRemoveTrack={removeTrack}
           />
 
-          {selectedMusic.length > 0 && (
+          {selectedTracks.length > 0 && (
             <div className="flex justify-end mt-6">
               <Button
                 onClick={handleContinue}
