@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import ReviewSummary from './review/ReviewSummary';
+import GenerationProgress from './review/GenerationProgress';
 import ExportOptions from './review/ExportOptions';
 import { useToast } from '@/components/ui/use-toast';
-import { Progress } from '@/components/ui/progress';
 import { useVideoType } from '@/contexts/VideoTypeContext';
 
 const ReviewStep = () => {
@@ -58,14 +58,7 @@ const ReviewStep = () => {
       <ReviewSummary />
 
       {/* Progress Section */}
-      {isGenerating && (
-        <div className="space-y-4">
-          <Progress value={progress} className="h-2" />
-          <p className="text-center text-sm text-gray-400">
-            Generating your project... {progress}%
-          </p>
-        </div>
-      )}
+      <GenerationProgress progress={progress} isGenerating={isGenerating} />
 
       {/* Export Options */}
       <div className="max-w-md mx-auto">

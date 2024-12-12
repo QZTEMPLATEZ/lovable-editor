@@ -1,6 +1,6 @@
 import React from 'react';
-import { useVideoType } from '@/contexts/VideoTypeContext';
 import { Clock, Film, Music, Palette } from 'lucide-react';
+import { useVideoType } from '@/contexts/VideoTypeContext';
 
 const ReviewSummary = () => {
   const { selectedVideoType, selectedStyle, selectedMusic } = useVideoType();
