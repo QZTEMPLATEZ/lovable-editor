@@ -50,7 +50,7 @@ const VideoStyleSelector = ({
             playsInline
             className="absolute inset-0 w-full h-full object-cover opacity-40"
           >
-            <source src="https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1" type="video/mp4" />
+            <source src="https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK.mp4?raw=1" type="video/mp4" />
           </video>
           {/* Darker gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/90 to-black/95" />
