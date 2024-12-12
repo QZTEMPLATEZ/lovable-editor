@@ -56,7 +56,7 @@ const AppContent = () => {
     setShowLoginModal(true);
   };
 
-  const handleLoginModalClose = () => {
+  const handlePlanSelect = () => {
     setShowLoginModal(false);
   };
 
@@ -81,8 +81,8 @@ const AppContent = () => {
         {showTutorial && !showIntro && <TutorialVideo onComplete={handleTutorialComplete} />}
         <LoginModal 
           isOpen={showLoginModal} 
-          onClose={handleLoginModalClose}
-          onPlanSelect={handleLoginModalClose}
+          onClose={() => setShowLoginModal(false)}
+          onPlanSelect={handlePlanSelect}
         />
 
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />

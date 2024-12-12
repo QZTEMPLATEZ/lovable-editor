@@ -10,7 +10,7 @@ interface StyleGridProps {
 
 const StyleGrid = ({ onStyleSelect }: StyleGridProps) => {
   return (
-    <div className="w-full max-w-none px-0 space-y-4 bg-[#0A0A0A]/95 backdrop-blur-sm">
+    <div className="w-full max-w-none px-0 space-y-0 bg-[#0A0A0A]/95 backdrop-blur-sm">
       <AnimatePresence>
         {VIDEO_STYLES.map((style) => (
           <StyleItem
