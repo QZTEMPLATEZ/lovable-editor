@@ -29,77 +29,90 @@ export class VideoAnalysisService extends BaseAnalysisService {
       const frames = await this.extractFrames(file);
       logger.info(`Analyzing ${frames.length} frames for video: ${file.name}`);
       
-      let bridePrepFrames = 0;
-      let groomPrepFrames = 0;
-      let decorationFrames = 0;
-      let droneFrames = 0;
-      let totalBridePrepConfidence = 0;
-      let totalGroomPrepConfidence = 0;
-      let totalDecorationConfidence = 0;
-      let totalDroneConfidence = 0;
+      // Initialize counters for each category
+      const categoryScores = {
+        BridePrep: { frames: 0, confidence: 0 },
+        GroomPrep: { frames: 0, confidence: 0 },
+        Decoration: { frames: 0, confidence: 0 },
+        Drone: { frames: 0, confidence: 0 },
+        Ceremony: { frames: 0, confidence: 0 },
+        Reception: { frames: 0, confidence: 0 }
+      };
       
+      // Analyze each frame
       for (const frame of frames) {
         const imageData = frame.toDataURL('image/jpeg', 0.8);
         const predictions = await this.classifier(imageData);
         
+        // Check each category with lower confidence thresholds
         const bridePrep = PrepAnalyzer.isBridePrepScene(predictions);
         const groomPrep = PrepAnalyzer.isGroomPrepScene(predictions);
         const decoration = DecorationAnalyzer.isDecorationScene(predictions);
         const drone = DroneAnalyzer.isDroneShot(predictions);
 
-        if (bridePrep.isPrep) {
-          bridePrepFrames++;
-          totalBridePrepConfidence += bridePrep.confidence;
+        // Update scores with lower thresholds
+        if (bridePrep.isPrep || bridePrep.confidence > 0.3) {
+          categoryScores.BridePrep.frames++;
+          categoryScores.BridePrep.confidence += bridePrep.confidence;
         }
 
-        if (groomPrep.isPrep) {
-          groomPrepFrames++;
-          totalGroomPrepConfidence += groomPrep.confidence;
+        if (groomPrep.isPrep || groomPrep.confidence > 0.3) {
+          categoryScores.GroomPrep.frames++;
+          categoryScores.GroomPrep.confidence += groomPrep.confidence;
         }
 
-        if (decoration.isDecoration) {
-          decorationFrames++;
-          totalDecorationConfidence += decoration.confidence;
+        if (decoration.isDecoration || decoration.confidence > 0.3) {
+          categoryScores.Decoration.frames++;
+          categoryScores.Decoration.confidence += decoration.confidence;
         }
 
-        if (drone.isDrone) {
-          droneFrames++;
-          totalDroneConfidence += drone.confidence;
+        if (drone.isDrone || drone.confidence > 0.3) {
+          categoryScores.Drone.frames++;
+          categoryScores.Drone.confidence += drone.confidence;
+        }
+
+        // Basic ceremony detection (can be improved with a dedicated analyzer)
+        if (predictions.some(p => 
+          p.label.toLowerCase().includes('ceremony') || 
+          p.label.toLowerCase().includes('wedding') ||
+          p.label.toLowerCase().includes('altar')
+        )) {
+          categoryScores.Ceremony.frames++;
+          categoryScores.Ceremony.confidence += 0.7; // Default confidence for ceremony scenes
+        }
+
+        // Basic reception detection
+        if (predictions.some(p => 
+          p.label.toLowerCase().includes('party') || 
+          p.label.toLowerCase().includes('reception') ||
+          p.label.toLowerCase().includes('dance')
+        )) {
+          categoryScores.Reception.frames++;
+          categoryScores.Reception.confidence += 0.7; // Default confidence for reception scenes
         }
       }
       
-      const bridePrepRatio = bridePrepFrames / frames.length;
-      const groomPrepRatio = groomPrepFrames / frames.length;
-      const decorationRatio = decorationFrames / frames.length;
-      const droneRatio = droneFrames / frames.length;
-      
-      const avgBridePrepConfidence = bridePrepFrames > 0 ? totalBridePrepConfidence / bridePrepFrames : 0;
-      const avgGroomPrepConfidence = groomPrepFrames > 0 ? totalGroomPrepConfidence / groomPrepFrames : 0;
-      const avgDecorationConfidence = decorationFrames > 0 ? totalDecorationConfidence / decorationFrames : 0;
-      const avgDroneConfidence = droneFrames > 0 ? totalDroneConfidence / droneFrames : 0;
-      
-      logger.info(`Video ${file.name} analysis results:`, {
-        bridePrepRatio,
-        groomPrepRatio,
-        decorationRatio,
-        droneRatio,
-        avgBridePrepConfidence,
-        avgGroomPrepConfidence,
-        avgDecorationConfidence,
-        avgDroneConfidence
-      });
+      // Calculate average confidence and frame ratios for each category
+      const totalFrames = frames.length;
+      const categoryRatios = Object.entries(categoryScores).map(([category, scores]) => ({
+        category,
+        ratio: scores.frames / totalFrames,
+        avgConfidence: scores.frames > 0 ? scores.confidence / scores.frames : 0
+      }));
 
-      // Determine the most likely category based on ratio and confidence
-      if (droneRatio > 0.4 && avgDroneConfidence > 0.5) {
-        return 'DroneFootage';
-      } else if (decorationRatio > 0.4 && avgDecorationConfidence > 0.5) {
-        return 'Decoration';
-      } else if (bridePrepRatio > 0.3 && avgBridePrepConfidence > 0.4) {
-        return 'BridePrep';
-      } else if (groomPrepRatio > 0.3 && avgGroomPrepConfidence > 0.4) {
-        return 'GroomPrep';
+      // Sort by ratio and confidence to find the best match
+      categoryRatios.sort((a, b) => 
+        (b.ratio * b.avgConfidence) - (a.ratio * a.avgConfidence)
+      );
+
+      // Lower the threshold for classification
+      const bestMatch = categoryRatios[0];
+      if (bestMatch.ratio > 0.15 && bestMatch.avgConfidence > 0.3) {
+        logger.info(`Classified ${file.name} as ${bestMatch.category} with confidence ${bestMatch.avgConfidence}`);
+        return bestMatch.category;
       }
       
+      logger.info(`Could not confidently classify ${file.name}, marking as Untagged`);
       return 'Untagged';
       
     } catch (error) {
