@@ -1,15 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Upload, Heart, Video, Image, Plane, PartyPopper, HelpCircle } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import ProcessingStatus from './ProcessingStatus';
 import { useToast } from "@/hooks/use-toast";
-import { motion, AnimatePresence } from 'framer-motion';
+import DropZone from './organizer/DropZone';
+import FolderGrid from './organizer/FolderGrid';
 
 interface RawFilesSectionProps {
   onDrop: (e: React.DragEvent) => void;
@@ -91,33 +85,17 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
               });
             }, 1000);
           }
-        }, index * 2000); // Process each file with a delay
+        }, index * 2000);
       });
     }
   }, [videoFiles, toast]);
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        {FOLDERS.map((folder) => (
-          <motion.div
-            key={folder.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="relative flex items-center justify-between p-4 rounded-xl border border-purple-500/20 bg-black/40 backdrop-blur-sm"
-          >
-            <div className="flex items-center gap-3">
-              <div className="text-purple-400">
-                {folder.icon}
-              </div>
-              <span className="text-white font-medium">{folder.name}</span>
-            </div>
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-black/60 text-white">
-              {categorizedFiles[folder.name]}
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      <FolderGrid 
+        folders={FOLDERS}
+        categorizedFiles={categorizedFiles}
+      />
 
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-8 border border-purple-500/30">
         {isProcessing || isComplete ? (
@@ -129,27 +107,13 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
             isComplete={isComplete}
           />
         ) : (
-          <div 
+          <DropZone
             onDrop={onDrop}
             onDragOver={onDragOver}
             onClick={handleClick}
-            className="border-2 border-dashed border-purple-500/50 rounded-xl p-12 text-center cursor-pointer hover:bg-purple-500/5 transition-all duration-300 backdrop-blur-sm relative overflow-hidden group"
-          >
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileSelect}
-              accept="video/*"
-              multiple
-              className="hidden"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 transform group-hover:scale-105 transition-transform duration-300" />
-            <Upload className="w-16 h-16 mx-auto mb-6 text-purple-400 animate-bounce" />
-            <p className="text-xl mb-2 font-medium relative z-10">
-              Drag and drop your raw wedding footage here
-            </p>
-            <p className="text-sm text-gray-400 relative z-10">or click to browse</p>
-          </div>
+            fileInputRef={fileInputRef}
+            handleFileSelect={handleFileSelect}
+          />
         )}
       </div>
     </div>
