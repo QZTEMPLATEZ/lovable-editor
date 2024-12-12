@@ -1,4 +1,4 @@
-import { Camera, Video, Music, Image, Gift, Mic, FileVideo, Plane, Clock, Film, Heart, Ring, Party, HelpCircle } from 'lucide-react';
+import { Camera, Video, Music, Image, Gift, Mic, FileVideo, Plane, Clock, Film, Heart, Gem, PartyPopper, HelpCircle } from 'lucide-react';
 import { FolderCategory } from '../types';
 
 export const FOLDER_CATEGORIES: FolderCategory[] = [
@@ -25,7 +25,7 @@ export const FOLDER_CATEGORIES: FolderCategory[] = [
       },
       {
         name: 'BridalDetails',
-        icon: <Ring className="w-4 h-4" />,
+        icon: <Gem className="w-4 h-4" />,
         description: 'Bride accessories and details',
         expectedTypes: '.mp4, .mov',
         color: 'from-pink-400/20 to-pink-300/20'
@@ -48,7 +48,7 @@ export const FOLDER_CATEGORIES: FolderCategory[] = [
       },
       {
         name: 'GroomDetails',
-        icon: <Ring className="w-4 h-4" />,
+        icon: <Gem className="w-4 h-4" />,
         description: 'Groom accessories and details',
         expectedTypes: '.mp4, .mov',
         color: 'from-blue-400/20 to-blue-300/20'
@@ -78,7 +78,7 @@ export const FOLDER_CATEGORIES: FolderCategory[] = [
       },
       {
         name: 'RingExchange',
-        icon: <Ring className="w-4 h-4" />,
+        icon: <Gem className="w-4 h-4" />,
         description: 'Ring exchange moment',
         expectedTypes: '.mp4, .mov',
         color: 'from-purple-400/20 to-purple-300/20'
@@ -117,7 +117,7 @@ export const FOLDER_CATEGORIES: FolderCategory[] = [
   },
   {
     name: 'Reception',
-    icon: <Party className="w-5 h-5" />,
+    icon: <PartyPopper className="w-5 h-5" />,
     description: 'Wedding party and celebration',
     expectedTypes: '.mp4, .mov',
     color: 'from-green-500/20 to-emerald-500/20',
@@ -131,7 +131,7 @@ export const FOLDER_CATEGORIES: FolderCategory[] = [
       },
       {
         name: 'Party',
-        icon: <Party className="w-4 h-4" />,
+        icon: <PartyPopper className="w-4 h-4" />,
         description: 'Party celebration footage',
         expectedTypes: '.mp4, .mov',
         color: 'from-green-400/20 to-green-300/20'
