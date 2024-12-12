@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Music } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from "@/components/ui/button";
 import TrackList from './music/TrackList';
 import MusicUploadSection from './music/MusicUploadSection';
 import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
 import { detectBeats } from '@/utils/audioProcessing';
 import { useNavigate } from 'react-router-dom';
-import { APP_CONFIG, ERROR_MESSAGES } from '@/config/appConfig';
+import { APP_CONFIG } from '@/config/appConfig';
+import { useVideoType } from '@/contexts/VideoTypeContext';
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
@@ -20,6 +21,7 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { setSelectedMusic } = useVideoType();
 
   const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -59,9 +61,13 @@ const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
           [file.name]: audio
         }));
       }
+
+      // Update the context with the new music files
+      setSelectedMusic(prev => [...prev, ...newFiles]);
+
       toast({
         title: "Music Analysis Complete",
-        description: "Beat patterns detected and ready for AI processing",
+        description: `${newFiles.length} track${newFiles.length === 1 ? '' : 's'} analyzed and ready for processing`,
       });
     } catch (error) {
       toast({

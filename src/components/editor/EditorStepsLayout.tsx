@@ -1,6 +1,6 @@
 import React from 'react';
 import { useVideoType } from '@/contexts/VideoTypeContext';
-import { Clock, Palette } from 'lucide-react';
+import { Clock, Palette, Music } from 'lucide-react';
 
 interface EditorStepsLayoutProps {
   currentStep: number;
@@ -12,7 +12,12 @@ interface EditorStepsLayoutProps {
 }
 
 const EditorStepsLayout = ({ currentStep, steps, children }: EditorStepsLayoutProps) => {
-  const { selectedVideoType, selectedStyle } = useVideoType();
+  const { selectedVideoType, selectedStyle, selectedMusic } = useVideoType();
+
+  const getMusicText = () => {
+    if (!selectedMusic || selectedMusic.length === 0) return null;
+    return `${selectedMusic.length} track${selectedMusic.length === 1 ? '' : 's'} selected`;
+  };
 
   return (
     <div className="min-h-screen bg-editor-background">
@@ -30,6 +35,12 @@ const EditorStepsLayout = ({ currentStep, steps, children }: EditorStepsLayoutPr
               <div className="flex items-center gap-2 text-sm text-white/70">
                 <Palette className="w-4 h-4" />
                 <span>{selectedStyle.name}</span>
+              </div>
+            )}
+            {getMusicText() && (
+              <div className="flex items-center gap-2 text-sm text-white/70">
+                <Music className="w-4 h-4" />
+                <span>{getMusicText()}</span>
               </div>
             )}
           </div>
