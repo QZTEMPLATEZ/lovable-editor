@@ -32,48 +32,39 @@ export class VideoAnalysisService {
     }
   }
 
-  private async extractFrames(file: File): Promise<HTMLCanvasElement[]> {
-    const video = document.createElement('video');
-    video.src = URL.createObjectURL(file);
-    
-    await new Promise((resolve, reject) => {
-      video.onloadedmetadata = resolve;
+  private async extractFrames(file: File): Promise<ImageData[]> {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      video.crossOrigin = "anonymous"; // Add cross-origin attribute
+      
+      const frames: ImageData[] = [];
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d')!;
+
+      video.onloadedmetadata = async () => {
+        const framePoints = Array.from(
+          { length: ORGANIZER_CONFIG.processing.frameExtractionCount },
+          (_, i) => i / (ORGANIZER_CONFIG.processing.frameExtractionCount - 1)
+        );
+        
+        canvas.width = 224;
+        canvas.height = 224;
+
+        for (const point of framePoints) {
+          video.currentTime = video.duration * point;
+          await new Promise(resolve => (video.onseeked = resolve));
+          
+          ctx.drawImage(video, 0, 0, 224, 224);
+          frames.push(ctx.getImageData(0, 0, 224, 224));
+        }
+
+        URL.revokeObjectURL(video.src);
+        resolve(frames);
+      };
+
       video.onerror = reject;
+      video.src = URL.createObjectURL(file);
     });
-
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d')!;
-    const frames: HTMLCanvasElement[] = [];
-    
-    // Extract frames at key moments with more samples
-    const framePoints = Array.from({ length: ORGANIZER_CONFIG.processing.frameExtractionCount }, 
-      (_, i) => i / (ORGANIZER_CONFIG.processing.frameExtractionCount - 1));
-    
-    const duration = video.duration;
-    
-    for (const point of framePoints) {
-      video.currentTime = duration * point;
-      await new Promise((resolve) => (video.onseeked = resolve));
-      
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0);
-      
-      const frameCanvas = document.createElement('canvas');
-      frameCanvas.width = 224;
-      frameCanvas.height = 224;
-      const frameCtx = frameCanvas.getContext('2d')!;
-      frameCtx.drawImage(
-        canvas, 
-        0, 0, canvas.width, canvas.height,
-        0, 0, 224, 224
-      );
-      
-      frames.push(frameCanvas);
-    }
-
-    URL.revokeObjectURL(video.src);
-    return frames;
   }
 
   async analyzeVideo(file: File): Promise<string> {
@@ -81,7 +72,7 @@ export class VideoAnalysisService {
       const initialized = await this.initialize();
       if (!initialized || !this.classifier) {
         logger.error('Classifier not initialized properly');
-        return 'BridePrep'; // Default to BridePrep instead of Untagged
+        return 'BridePrep';
       }
 
       const frames = await this.extractFrames(file);
@@ -91,8 +82,8 @@ export class VideoAnalysisService {
       let predictionConfidence = new Map<string, number>();
       
       for (const frame of frames) {
-        const imageData = frame.toDataURL('image/jpeg', ORGANIZER_CONFIG.processing.frameQuality);
-        const predictions = await this.classifier(imageData);
+        // Convert ImageData to base64 without triggering CORS
+        const predictions = await this.classifier(frame);
         
         for (const [category, config] of Object.entries(ORGANIZER_CONFIG.analysis.categories)) {
           let maxScore = 0;
@@ -126,7 +117,7 @@ export class VideoAnalysisService {
         }
       }
       
-      let bestCategory = 'BridePrep'; // Default category
+      let bestCategory = 'BridePrep';
       let bestScore = 0;
       
       categoryScores.forEach((score, category) => {
@@ -144,7 +135,7 @@ export class VideoAnalysisService {
       
     } catch (error) {
       logger.error(`Error analyzing video ${file.name}:`, error);
-      return 'BridePrep'; // Default to BridePrep on error
+      return 'BridePrep';
     }
   }
 }
