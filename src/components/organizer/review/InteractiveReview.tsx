@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { motion } from 'framer-motion';
+import { motion, PanInfo } from 'framer-motion';
 import { Search, Filter } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -99,53 +99,49 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                   <ScrollArea className="h-[400px]">
                     {clipsByCategory[category.name]?.map((clip, index) => (
                       <Draggable key={clip.id} draggableId={clip.id} index={index}>
-                        {(provided, snapshot) => {
-                          const dragStyle = {
-                            ...provided.draggableProps.style,
-                            transform: snapshot.isDragging
-                              ? provided.draggableProps.style?.transform
-                              : 'none',
-                          };
-
-                          return (
-                            <motion.div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              initial={false}
-                              animate={{ scale: snapshot.isDragging ? 1.05 : 1 }}
-                              className={`mb-3 rounded-lg overflow-hidden border ${
-                                snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
-                              }`}
-                              style={dragStyle}
-                            >
-                              <div className="aspect-video bg-black relative">
-                                <img
-                                  src={clip.thumbnail}
-                                  alt={clip.name}
-                                  className="w-full h-full object-cover"
-                                />
-                                <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs">
-                                  {clip.duration}
-                                </div>
+                        {(provided, snapshot) => (
+                          <motion.div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            initial={false}
+                            animate={{ scale: snapshot.isDragging ? 1.05 : 1 }}
+                            className={`mb-3 rounded-lg overflow-hidden border ${
+                              snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
+                            }`}
+                            style={{
+                              ...provided.draggableProps.style,
+                              transform: snapshot.isDragging
+                                ? provided.draggableProps.style?.transform
+                                : 'none'
+                            }}
+                          >
+                            <div className="aspect-video bg-black relative">
+                              <img
+                                src={clip.thumbnail}
+                                alt={clip.name}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute bottom-2 right-2 bg-black/80 px-2 py-1 rounded text-xs">
+                                {clip.duration}
                               </div>
-                              <div className="p-2 bg-editor-panel/80">
-                                <p className="text-sm text-white truncate">{clip.name}</p>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <div className="flex-1 bg-gray-700 h-1 rounded-full">
-                                    <div
-                                      className="bg-purple-500 h-full rounded-full"
-                                      style={{ width: `${clip.confidence * 100}%` }}
-                                    />
-                                  </div>
-                                  <span className="text-xs text-gray-400">
-                                    {Math.round(clip.confidence * 100)}%
-                                  </span>
+                            </div>
+                            <div className="p-2 bg-editor-panel/80">
+                              <p className="text-sm text-white truncate">{clip.name}</p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <div className="flex-1 bg-gray-700 h-1 rounded-full">
+                                  <div
+                                    className="bg-purple-500 h-full rounded-full"
+                                    style={{ width: `${clip.confidence * 100}%` }}
+                                  />
                                 </div>
+                                <span className="text-xs text-gray-400">
+                                  {Math.round(clip.confidence * 100)}%
+                                </span>
                               </div>
-                            </motion.div>
-                          );
-                        }}
+                            </div>
+                          </motion.div>
+                        )}
                       </Draggable>
                     ))}
                     {provided.placeholder}
