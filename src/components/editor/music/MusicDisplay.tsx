@@ -2,7 +2,7 @@ import React from 'react';
 import { useVideoType } from '@/contexts/VideoTypeContext';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Music } from 'lucide-react';
-import TrackList from './TrackList';
+import TrackList, { Track } from './TrackList';
 
 const MusicDisplay = () => {
   const { selectedMusic } = useVideoType();
@@ -17,6 +17,12 @@ const MusicDisplay = () => {
     );
   }
 
+  const tracks: Track[] = selectedMusic.map(file => ({
+    file,
+    duration: '',
+    intensity: 1
+  }));
+
   return (
     <div className="space-y-4">
       <Alert className="bg-purple-500/10 border-purple-500/30">
@@ -25,11 +31,12 @@ const MusicDisplay = () => {
         </AlertDescription>
       </Alert>
       <TrackList
-        selectedMusic={selectedMusic}
+        tracks={tracks}
         playingTrack={null}
         isAnalyzing={false}
         onTogglePlay={() => {}}
         onRemoveTrack={() => {}}
+        onIntensityChange={() => {}}
       />
     </div>
   );

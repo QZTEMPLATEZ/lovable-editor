@@ -1,26 +1,40 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import React, { useState } from 'react';
 import { Music } from 'lucide-react';
-import { motion } from 'framer-motion';
-import MusicUploadSection from './music/MusicUploadSection';
-import MusicDisplay from './music/MusicDisplay';
-import { useVideoType } from '../../contexts/VideoTypeContext';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from "@/components/ui/button";
+import TrackList from '../music/TrackList';
+import MusicUploadSection from '../music/MusicUploadSection';
+import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
+import { detectBeats } from '@/utils/audioProcessing';
+import { useNavigate } from 'react-router-dom';
 import { APP_CONFIG } from '@/config/appConfig';
+import { useVideoType } from '@/contexts/VideoTypeContext';
 
-const MusicSelector = () => {
-  const navigate = useNavigate();
+interface MusicTrackSelectorProps {
+  onMusicSelect: (file: File, beats: any[]) => void;
+}
+
+interface SelectedTrack {
+  file: File;
+  beats: any[];
+}
+
+const MusicTrackSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
+  const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [playingTrack, setPlayingTrack] = useState<string | null>(null);
+  const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
   const { toast } = useToast();
-  const { selectedMusic, setSelectedMusic } = useVideoType();
+  const navigate = useNavigate();
+  const { setSelectedMusic } = useVideoType();
 
   const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
 
-    const newFiles = Array.from(files);
+    const newFiles = Array.from(files).filter(validateAudioFile);
     
-    if (selectedMusic.length + newFiles.length > APP_CONFIG.music.maxTracks) {
+    if (selectedTracks.length + newFiles.length > APP_CONFIG.music.maxTracks) {
       toast({
         variant: "destructive",
         title: "Too many tracks",
@@ -29,17 +43,95 @@ const MusicSelector = () => {
       return;
     }
 
-    // Update context with new files
-    setSelectedMusic([...selectedMusic, ...newFiles]);
+    if (newFiles.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Invalid file format",
+        description: "Please upload WAV or MP3 files only",
+      });
+      return;
+    }
+
+    setIsAnalyzing(true);
     
+    try {
+      const analyzedTracks: SelectedTrack[] = [];
+      
+      for (const file of newFiles) {
+        const beats = await detectBeats(file);
+        onMusicSelect(file, beats);
+        
+        const audio = createAudioElement(file);
+        setAudioElements(prev => ({
+          ...prev,
+          [file.name]: audio
+        }));
+
+        analyzedTracks.push({ file, beats });
+      }
+
+      const updatedTracks = [...selectedTracks, ...analyzedTracks];
+      setSelectedTracks(updatedTracks);
+      
+      const allFiles = updatedTracks.map(track => track.file);
+      setSelectedMusic(allFiles);
+
+      toast({
+        title: "Music Analysis Complete",
+        description: `${newFiles.length} track${newFiles.length === 1 ? '' : 's'} analyzed. Total tracks: ${updatedTracks.length}`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Analysis Failed",
+        description: "Unable to analyze music beats. Please try another track.",
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const togglePlayPause = (fileName: string) => {
+    const audio = audioElements[fileName];
+    if (!audio) return;
+
+    if (playingTrack === fileName) {
+      audio.pause();
+      setPlayingTrack(null);
+    } else {
+      if (playingTrack && audioElements[playingTrack]) {
+        audioElements[playingTrack].pause();
+      }
+      audio.play();
+      setPlayingTrack(fileName);
+    }
+  };
+
+  const removeTrack = (index: number) => {
+    const removedFile = selectedTracks[index];
+    if (audioElements[removedFile.file.name]) {
+      cleanupAudioElement(audioElements[removedFile.file.name]);
+      const newAudioElements = { ...audioElements };
+      delete newAudioElements[removedFile.file.name];
+      setAudioElements(newAudioElements);
+    }
+    
+    const updatedTracks = selectedTracks.filter((_, i) => i !== index);
+    setSelectedTracks(updatedTracks);
+    
+    setSelectedMusic(updatedTracks.map(track => track.file));
+    
+    if (playingTrack === removedFile.file.name) {
+      setPlayingTrack(null);
+    }
     toast({
-      title: "Music Added",
-      description: `${newFiles.length} track${newFiles.length === 1 ? '' : 's'} added successfully`,
+      title: "Track Removed",
+      description: "Music track has been removed from the selection",
     });
   };
 
   const handleContinue = () => {
-    if (selectedMusic.length === 0) {
+    if (selectedTracks.length === 0) {
       toast({
         variant: "destructive",
         title: "No music selected",
@@ -47,6 +139,8 @@ const MusicSelector = () => {
       });
       return;
     }
+    
+    setSelectedMusic(selectedTracks.map(track => track.file));
     navigate('/organize');
   };
 
@@ -64,7 +158,7 @@ const MusicSelector = () => {
               </h3>
             </div>
             <span className="text-sm text-purple-300">
-              {selectedMusic.length} / {APP_CONFIG.music.maxTracks} tracks
+              {selectedTracks.length} / {APP_CONFIG.music.maxTracks} tracks
             </span>
           </div>
 
@@ -73,21 +167,27 @@ const MusicSelector = () => {
             maxTracks={APP_CONFIG.music.maxTracks}
           />
 
-          <MusicDisplay />
+          <TrackList
+            tracks={selectedTracks.map(track => ({
+              file: track.file,
+              duration: '',
+              intensity: 1
+            }))}
+            playingTrack={playingTrack}
+            isAnalyzing={isAnalyzing}
+            onTogglePlay={togglePlayPause}
+            onRemoveTrack={removeTrack}
+          />
 
-          {selectedMusic.length > 0 && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex justify-end mt-6"
-            >
+          {selectedTracks.length > 0 && (
+            <div className="flex justify-end mt-6">
               <Button
                 onClick={handleContinue}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
               >
                 Continue to Organize
               </Button>
-            </motion.div>
+            </div>
           )}
         </div>
       </div>
@@ -95,4 +195,4 @@ const MusicSelector = () => {
   );
 };
 
-export default MusicSelector;
+export default MusicTrackSelector;

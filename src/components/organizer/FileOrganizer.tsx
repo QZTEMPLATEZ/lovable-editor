@@ -16,6 +16,7 @@ import ProjectExportOptions from '../editor/ProjectExportOptions';
 const FileOrganizer = () => {
   const { toast } = useToast();
   const { selectedVideoType } = useVideoType();
+
   const {
     files,
     analysisResults,
@@ -40,7 +41,7 @@ const FileOrganizer = () => {
     try {
       const processedClips = analysisResults.map(result => ({
         file: result.file,
-        type: result.category || 'Untagged',
+        type: result.category as "preparation" | "ceremony" | "celebration",
         startTime: 0,
         endTime: 30,
         significance: 1
