@@ -1,4 +1,3 @@
-import { VideoCategory } from '../types/video';
 import { logger } from '../utils/logger';
 import { pipeline } from '@huggingface/transformers';
 import { ORGANIZER_CONFIG } from '../config/organizerConfig';
@@ -12,7 +11,7 @@ export class VideoAnalysisService {
       try {
         this.classifier = await pipeline(
           'image-classification',
-          'Xenova/vit-base-patch16-224'
+          'microsoft/resnet-50'
         );
         logger.info('Video classifier initialized successfully');
       } catch (error) {
@@ -23,25 +22,39 @@ export class VideoAnalysisService {
     return this.classifier;
   }
 
-  private static async extractFrameFromVideo(file: File): Promise<HTMLCanvasElement> {
+  private static async extractFrameFromVideo(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const video = document.createElement('video');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      video.autoplay = false;
+      video.muted = true;
       video.src = URL.createObjectURL(file);
       
       video.onloadeddata = () => {
-        const canvas = document.createElement('canvas');
+        // Set canvas dimensions to match video
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
         
-        // Capture frame from middle of video
+        // Seek to middle of video for representative frame
         video.currentTime = video.duration / 2;
-        
-        video.onseeked = () => {
-          ctx?.drawImage(video, 0, 0);
+      };
+      
+      video.onseeked = () => {
+        if (ctx) {
+          // Draw the video frame on the canvas
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          
+          // Convert canvas to base64 image
+          const imageData = canvas.toDataURL('image/jpeg', 0.8);
+          
+          // Cleanup
           URL.revokeObjectURL(video.src);
-          resolve(canvas);
-        };
+          resolve(imageData);
+        } else {
+          reject(new Error('Could not get canvas context'));
+        }
       };
       
       video.onerror = () => {
@@ -51,8 +64,11 @@ export class VideoAnalysisService {
     });
   }
 
-  private static matchCategoryFromPredictions(predictions: any[]): { category: VideoCategory; confidence: number } {
-    const categoryMatches = new Map<VideoCategory, number>();
+  private static matchCategoryFromPredictions(predictions: any[]): { category: string; confidence: number } {
+    const categoryMatches = new Map<string, number>();
+
+    // Log predictions for debugging
+    logger.info('Raw predictions:', predictions);
 
     for (const prediction of predictions) {
       const label = prediction.label.toLowerCase();
@@ -62,15 +78,16 @@ export class VideoAnalysisService {
       for (const [category, config] of Object.entries(ORGANIZER_CONFIG.analysis.categories)) {
         for (const cue of config.visualCues) {
           if (label.includes(cue.toLowerCase())) {
-            const currentScore = categoryMatches.get(category as VideoCategory) || 0;
-            categoryMatches.set(category as VideoCategory, Math.max(currentScore, score));
+            const currentScore = categoryMatches.get(category) || 0;
+            categoryMatches.set(category, Math.max(currentScore, score));
+            logger.info(`Match found for category ${category} with cue ${cue} (score: ${score})`);
           }
         }
       }
     }
 
     // Find best matching category
-    let bestCategory: VideoCategory = 'untagged';
+    let bestCategory = 'untagged';
     let bestConfidence = 0;
 
     categoryMatches.forEach((confidence, category) => {
@@ -80,13 +97,14 @@ export class VideoAnalysisService {
       }
     });
 
+    logger.info(`Best category match: ${bestCategory} with confidence ${bestConfidence}`);
     return {
       category: bestCategory,
       confidence: bestConfidence
     };
   }
 
-  static async analyzeVideo(file: File): Promise<{ category: VideoCategory; confidence: number }> {
+  static async analyzeVideo(file: File): Promise<{ category: string; confidence: number }> {
     try {
       logger.info(`Starting analysis for file: ${file.name}`);
       
@@ -94,53 +112,63 @@ export class VideoAnalysisService {
       const classifier = await this.initializeClassifier();
       
       // Extract frame from video
-      const frame = await this.extractFrameFromVideo(file);
+      const frameImage = await this.extractFrameFromVideo(file);
+      logger.info(`Frame extracted successfully for ${file.name}`);
       
       // Get predictions from classifier
-      const predictions = await classifier(frame);
-      logger.info(`Predictions for ${file.name}:`, predictions);
+      const predictions = await classifier(frameImage);
+      logger.info(`Predictions received for ${file.name}:`, predictions);
       
       // Match predictions to categories
       const result = this.matchCategoryFromPredictions(predictions);
       
+      // If confidence is too low, try filename-based classification
       if (result.confidence < this.CONFIDENCE_THRESHOLD) {
-        logger.info(`Low confidence classification for ${file.name}, falling back to filename analysis`);
+        logger.info(`Low confidence classification for ${file.name}, checking filename`);
         const filenameResult = this.classifyByFilename(file.name);
-        if (filenameResult) {
+        if (filenameResult.confidence > result.confidence) {
+          logger.info(`Using filename-based classification for ${file.name}: ${filenameResult.category}`);
           return filenameResult;
         }
       }
       
-      logger.info(`File ${file.name} classified as ${result.category} with confidence ${result.confidence}`);
+      logger.info(`Final classification for ${file.name}: ${result.category} (confidence: ${result.confidence})`);
       return result;
     } catch (error) {
       logger.error(`Error analyzing file ${file.name}:`, error);
-      return { category: 'untagged', confidence: 0 };
+      // Fallback to filename-based classification on error
+      return this.classifyByFilename(file.name);
     }
   }
 
-  private static classifyByFilename(filename: string): { category: VideoCategory; confidence: number } | null {
+  private static classifyByFilename(filename: string): { category: string; confidence: number } {
+    const lowerFilename = filename.toLowerCase();
+    
+    // Define patterns for each category
     const patterns = {
-      brideprep: [/bride.*prep/i, /noiva.*prep/i, /makeup/i, /maquiagem/i],
-      groomprep: [/groom.*prep/i, /noivo.*prep/i, /suit/i, /terno/i],
-      decoration: [/decor/i, /flores/i, /flowers/i, /venue/i],
-      drone: [/drone/i, /aerial/i, /dji/i, /mavic/i],
-      ceremony: [/cerim[oôó]nia/i, /ceremony/i, /altar/i, /church/i],
-      reception: [/recep[cç][aã]o/i, /reception/i, /party/i, /festa/i]
+      brideprep: ['bride', 'noiva', 'makeup', 'maquiagem', 'getting_ready'],
+      groomprep: ['groom', 'noivo', 'suit', 'terno'],
+      decoration: ['decor', 'flores', 'flowers', 'venue'],
+      drone: ['drone', 'aerial', 'dji', 'mavic'],
+      ceremony: ['ceremony', 'cerimonia', 'altar', 'church'],
+      reception: ['reception', 'party', 'festa', 'dance']
     };
 
-    const lowercaseFilename = filename.toLowerCase();
-    
-    for (const [category, categoryPatterns] of Object.entries(patterns)) {
-      if (categoryPatterns.some(pattern => pattern.test(lowercaseFilename))) {
+    for (const [category, keywords] of Object.entries(patterns)) {
+      if (keywords.some(keyword => lowerFilename.includes(keyword))) {
+        logger.info(`Filename match found for ${filename}: ${category}`);
         return {
-          category: category as VideoCategory,
-          confidence: 0.7 // Moderate confidence for filename-based classification
+          category,
+          confidence: 0.6 // Moderate confidence for filename-based classification
         };
       }
     }
-    
-    return null;
+
+    logger.info(`No filename match found for ${filename}, marking as untagged`);
+    return {
+      category: 'untagged',
+      confidence: 0.1
+    };
   }
 }
 
