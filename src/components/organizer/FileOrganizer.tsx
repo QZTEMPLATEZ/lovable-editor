@@ -86,6 +86,16 @@ const FileOrganizer = () => {
     }
   };
 
+  // Group results by category
+  const categorizedResults = analysisResults.reduce((acc, result) => {
+    const category = result.category || 'Untagged';
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(result);
+    return acc;
+  }, {} as Record<string, typeof analysisResults>);
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
