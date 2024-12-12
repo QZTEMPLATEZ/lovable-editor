@@ -1,199 +1,96 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Music, Upload } from 'lucide-react';
+import { Music } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import MusicUploadSection from './music/MusicUploadSection';
+import MusicDisplay from './music/MusicDisplay';
 import { useVideoType } from '../../contexts/VideoTypeContext';
-import { MusicAnalysis } from '@/types';
+import { APP_CONFIG } from '@/config/appConfig';
 
 const MusicSelector = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [dragActive, setDragActive] = useState(false);
-  const { selectedVideoType } = useVideoType();
-  const [selectedTracks, setSelectedTracks] = useState<MusicAnalysis[]>([]);
+  const { selectedMusic, setSelectedMusic } = useVideoType();
 
-  const getRecommendedTracks = () => {
-    if (!selectedVideoType) return 1;
-    return selectedVideoType.recommendedTracks;
-  };
+  const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
 
-  const handleMusicSelect = (analysis: MusicAnalysis) => {
-    setSelectedTracks(prev => [...prev, analysis]);
+    const newFiles = Array.from(files);
+    
+    if (selectedMusic.length + newFiles.length > APP_CONFIG.music.maxTracks) {
+      toast({
+        variant: "destructive",
+        title: "Too many tracks",
+        description: `Maximum ${APP_CONFIG.music.maxTracks} tracks allowed`,
+      });
+      return;
+    }
+
+    // Update context with new files
+    setSelectedMusic([...selectedMusic, ...newFiles]);
+    
     toast({
-      title: "Music Selected",
-      description: `Track added to selection`,
+      title: "Music Added",
+      description: `${newFiles.length} track${newFiles.length === 1 ? '' : 's'} added successfully`,
     });
   };
 
   const handleContinue = () => {
-    if (selectedTracks.length === 0) {
+    if (selectedMusic.length === 0) {
       toast({
         variant: "destructive",
-        title: "No Music Selected",
-        description: "Please select at least one music track before continuing.",
+        title: "No music selected",
+        description: "Please upload at least one music track before continuing.",
       });
       return;
     }
     navigate('/organize');
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    
-    const files = Array.from(e.dataTransfer.files);
-    handleFiles(files);
-  };
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      handleFiles(files);
-    }
-  };
-
-  const handleFiles = (files: File[]) => {
-    const validFiles = files.filter(file => 
-      file.type === 'audio/mpeg' || file.type === 'audio/wav'
-    );
-
-    if (validFiles.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Invalid Files",
-        description: "Please upload MP3 or WAV files only",
-      });
-      return;
-    }
-
-    validFiles.forEach(file => {
-      const analysis: MusicAnalysis = {
-        bpm: 120,
-        key: 'C',
-        tempo: 120,
-        duration: 180,
-        energy: 0.8,
-        danceability: 0.7,
-        valence: 0.6
-      };
-      handleMusicSelect(analysis);
-    });
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-  };
-
-  const removeTrack = (index: number) => {
-    setSelectedTracks(prev => prev.filter((_, i) => i !== index));
-    toast({
-      title: "Track Removed",
-      description: "Music track has been removed from selection",
-    });
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-white">Select Music</h2>
-        {selectedTracks.length > 0 && (
-          <Button
-            onClick={handleContinue}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-          >
-            Continue to Organize
-          </Button>
-        )}
-      </div>
-      
-      <Alert className="bg-purple-500/10 border-purple-500/30 mb-4">
-        <AlertDescription className="text-purple-200">
-          For your {selectedVideoType?.name || 'video'}, we recommend {getRecommendedTracks()} music track{getRecommendedTracks() > 1 ? 's' : ''}.
-          Total duration should be around {selectedVideoType?.label || 'the selected duration'}.
-        </AlertDescription>
-      </Alert>
-
-      <div
-        className={`relative border-2 border-dashed rounded-lg p-8 transition-all duration-200 ${
-          dragActive 
-            ? 'border-purple-500 bg-purple-500/10' 
-            : 'border-purple-500/30 hover:border-purple-500/50'
-        }`}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        <input
-          type="file"
-          accept=".mp3,.wav,audio/mpeg,audio/wav"
-          onChange={handleFileInput}
-          className="hidden"
-          id="music-upload"
-          multiple
-        />
-        <label
-          htmlFor="music-upload"
-          className="flex flex-col items-center cursor-pointer"
-        >
-          <Upload className="w-12 h-12 text-purple-400 mb-4" />
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
-            <p className="text-lg text-purple-200 mb-2">
-              Drag and drop your music files here
-            </p>
-            <p className="text-sm text-purple-300/70">
-              or click to browse
-            </p>
-            <p className="text-xs text-purple-300/50 mt-2">
-              Supported formats: MP3, WAV
-            </p>
-          </motion.div>
-        </label>
-      </div>
-
-      {selectedTracks.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-purple-200">Selected Tracks</h3>
-          {selectedTracks.map((track, index) => (
-            <div key={index} className="flex items-center justify-between bg-purple-500/10 p-4 rounded-lg">
-              <div>
-                <p className="text-purple-200">Track {index + 1}</p>
-                <p className="text-sm text-purple-300/70">
-                  BPM: {track.bpm} | Key: {track.key} | Duration: {track.duration}s
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                onClick={() => removeTrack(index)}
-                className="text-red-400 hover:text-red-300"
-              >
-                Remove
-              </Button>
+    <div className="space-y-6 w-full max-w-4xl mx-auto">
+      <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 pointer-events-none" />
+        
+        <div className="relative space-y-4">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Music className="w-5 h-5 text-purple-400" />
+              <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
+                Select Your Soundtrack
+              </h3>
             </div>
-          ))}
-        </div>
-      )}
+            <span className="text-sm text-purple-300">
+              {selectedMusic.length} / {APP_CONFIG.music.maxTracks} tracks
+            </span>
+          </div>
 
-      <Alert className="bg-purple-500/10 border-purple-500/30">
-        <AlertDescription className="text-purple-200">
-          Upload your music files to create a synchronized video edit. We'll analyze the beats and tempo automatically.
-        </AlertDescription>
-      </Alert>
+          <MusicUploadSection 
+            onMusicUpload={handleMusicUpload}
+            maxTracks={APP_CONFIG.music.maxTracks}
+          />
+
+          <MusicDisplay />
+
+          {selectedMusic.length > 0 && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex justify-end mt-6"
+            >
+              <Button
+                onClick={handleContinue}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+              >
+                Continue to Organize
+              </Button>
+            </motion.div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
