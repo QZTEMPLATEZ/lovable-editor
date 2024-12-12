@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
-import { motion } from 'framer-motion';
+import { motion, HTMLMotionProps } from 'framer-motion';
 import { Search, Filter, Clock, Check } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -124,7 +124,6 @@ const InteractiveReview: React.FC<InteractiveReviewProps> = ({ clips, onClipMove
                                     className={`relative rounded-lg overflow-hidden border ${
                                       snapshot.isDragging ? 'border-purple-500' : 'border-purple-500/20'
                                     } ${recentlyMoved.includes(clip.id) ? 'border-green-500' : ''}`}
-                                    // Remove drag event handlers from motion.div
                                   >
                                     <div className="aspect-video bg-black relative">
                                       <img
