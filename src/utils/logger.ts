@@ -1,4 +1,4 @@
-import { LogLevel, LogEntry } from '../config/organizerConfig';
+import { LogLevel, LogEntry } from '../types/logger';
 
 class Logger {
   private static instance: Logger;
