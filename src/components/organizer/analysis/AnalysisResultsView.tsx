@@ -15,6 +15,23 @@ const AnalysisResultsView = ({
   isProcessing, 
   onExport 
 }: AnalysisResultsViewProps) => {
+  // Create organization result from analysis results
+  const organizationResult = {
+    categorizedFiles: new Map(
+      analysisResults
+        .filter(r => !r.error)
+        .map(r => [r.category, [r.file]])
+    ),
+    unorganizedFiles: analysisResults
+      .filter(r => r.error)
+      .map(r => r.file),
+    stats: {
+      totalFiles: analysisResults.length,
+      categorizedCount: analysisResults.filter(r => !r.error).length,
+      uncategorizedCount: analysisResults.filter(r => r.error).length
+    }
+  };
+
   if (analysisResults.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -34,29 +51,14 @@ const AnalysisResultsView = ({
         </span>
       </div>
 
-      <OrganizationResults 
-        results={{
-          categorizedFiles: new Map(
-            analysisResults
-              .filter(r => !r.error)
-              .map(r => [r.category, [r.file]])
-          ),
-          unorganizedFiles: analysisResults
-            .filter(r => r.error)
-            .map(r => r.file),
-          stats: {
-            totalFiles: analysisResults.length,
-            categorizedCount: analysisResults.filter(r => !r.error).length,
-            uncategorizedCount: analysisResults.filter(r => r.error).length
-          }
-        }} 
-      />
+      <OrganizationResults results={organizationResult} />
 
       {!isProcessing && analysisResults.length > 0 && (
         <div className="mt-8 pt-8 border-t border-purple-500/30">
           <ProjectExportOptions
             onExport={onExport}
             isProcessing={isProcessing}
+            organizationResult={organizationResult}
           />
         </div>
       )}
