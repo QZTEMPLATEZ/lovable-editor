@@ -7,11 +7,12 @@ import NavigationButtons from './NavigationButtons';
 import { FOLDER_CATEGORIES } from '../../constants/folderCategories';
 import { useFileProcessing } from '../../hooks/useFileProcessing';
 import FileUploadHandler from './upload/FileUploadHandler';
-import { FileVideo, AlertCircle } from 'lucide-react';
+import { FileVideo, AlertCircle, StopCircle } from 'lucide-react';
 import { ScrollArea } from '../ui/scroll-area';
 import { Progress } from '../ui/progress';
 import { motion } from 'framer-motion';
 import { Alert, AlertDescription } from '../ui/alert';
+import { Button } from '../ui/button';
 
 const mapCategoryToClipType = (category: string): "preparation" | "ceremony" | "celebration" => {
   // Map categories to clip types
@@ -34,7 +35,8 @@ const FileOrganizer = () => {
     currentFile,
     successCount,
     errorCount,
-    handleFilesSelected
+    handleFilesSelected,
+    stopProcessing
   } = useFileProcessing();
 
   const handleExport = async (format: 'premiere' | 'finalcut' | 'resolve') => {
@@ -91,15 +93,12 @@ const FileOrganizer = () => {
     }
   };
 
-  // Group results by category
-  const categorizedResults = analysisResults.reduce((acc, result) => {
-    const category = result.category || 'Untagged';
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(result);
-    return acc;
-  }, {} as Record<string, typeof analysisResults>);
+  // Calculate progress percentage
+  const totalProgress = files.length > 0 ? ((successCount + errorCount) / files.length) * 100 : 0;
+  const remainingFiles = files.length - (successCount + errorCount);
+  const estimatedTimePerFile = 30; // seconds per file
+  const remainingTimeSeconds = remainingFiles * estimatedTimePerFile;
+  const remainingTimeMinutes = Math.ceil(remainingTimeSeconds / 60);
 
   return (
     <motion.div 
@@ -116,15 +115,35 @@ const FileOrganizer = () => {
           />
         </div>
 
-        {/* Processing Status */}
+        {/* Processing Status with Stop Button and Remaining Time */}
         {isProcessing && (
-          <Alert className="mb-6 bg-purple-500/10 border-purple-500/30">
-            <AlertDescription className="flex items-center gap-2">
-              <FileVideo className="animate-pulse" />
-              <span>Processing: {currentFile?.name}</span>
-              <Progress value={(successCount + errorCount) / files.length * 100} className="ml-4" />
-            </AlertDescription>
-          </Alert>
+          <div className="space-y-4 mb-8">
+            <Alert className="bg-purple-500/10 border-purple-500/30">
+              <AlertDescription className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FileVideo className="animate-pulse" />
+                  <span>Processing: {currentFile?.name}</span>
+                </div>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={stopProcessing}
+                  className="bg-red-500/10 hover:bg-red-500/20 text-red-400"
+                >
+                  <StopCircle className="w-4 h-4 mr-2" />
+                  Stop Processing
+                </Button>
+              </AlertDescription>
+            </Alert>
+            
+            <div className="space-y-2">
+              <Progress value={totalProgress} className="h-2" />
+              <div className="flex justify-between text-sm text-gray-400">
+                <span>{Math.round(totalProgress)}% Complete</span>
+                <span>~{remainingTimeMinutes} minutes remaining</span>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Categories Grid */}
@@ -140,16 +159,18 @@ const FileOrganizer = () => {
                 {category.icon}
                 <h3 className="font-semibold text-white">{category.name}</h3>
                 <span className="ml-auto bg-white/10 px-2 py-1 rounded-full text-sm">
-                  {categorizedResults[category.name]?.length || 0}
+                  {analysisResults.filter(r => r.category === category.name).length}
                 </span>
               </div>
-              {categorizedResults[category.name]?.length > 0 && (
+              {analysisResults.filter(r => r.category === category.name).length > 0 && (
                 <ScrollArea className="h-32 mt-2">
-                  {categorizedResults[category.name].map((result, index) => (
-                    <div key={index} className="text-sm text-gray-300 py-1 px-2">
-                      {result.file.name}
-                    </div>
-                  ))}
+                  {analysisResults
+                    .filter(r => r.category === category.name)
+                    .map((result, index) => (
+                      <div key={index} className="text-sm text-gray-300 py-1 px-2">
+                        {result.file.name}
+                      </div>
+                    ))}
                 </ScrollArea>
               )}
             </motion.div>
