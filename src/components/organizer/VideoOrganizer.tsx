@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { FileVideo, FolderOpen, Loader2 } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
@@ -51,11 +50,42 @@ const VideoOrganizer = () => {
     }
   };
 
-  const analyzeFrame = async (frame: HTMLCanvasElement) => {
+  const extractFrameAsBase64 = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      video.src = URL.createObjectURL(file);
+      
+      video.onloadeddata = () => {
+        video.currentTime = video.duration / 2; // Get middle frame
+      };
+      
+      video.onseeked = () => {
+        if (ctx) {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0);
+          URL.revokeObjectURL(video.src);
+          resolve(canvas.toDataURL('image/jpeg', 0.8));
+        } else {
+          reject(new Error('Could not get canvas context'));
+        }
+      };
+      
+      video.onerror = () => {
+        URL.revokeObjectURL(video.src);
+        reject(new Error('Failed to load video'));
+      };
+    });
+  };
+
+  const analyzeFrame = async (base64Image: string) => {
     if (!classifier) return null;
     
     try {
-      const results = await classifier(frame);
+      const results = await classifier(base64Image);
       console.log('Frame analysis results:', results);
       
       for (const prediction of results) {
@@ -88,37 +118,6 @@ const VideoOrganizer = () => {
     }
   };
 
-  const extractFrameFromVideo = async (file: File): Promise<HTMLCanvasElement | null> => {
-    return new Promise((resolve) => {
-      const video = document.createElement('video');
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      
-      video.src = URL.createObjectURL(file);
-      
-      video.onloadeddata = () => {
-        video.currentTime = video.duration / 2; // Get middle frame
-      };
-      
-      video.onseeked = () => {
-        if (ctx) {
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          ctx.drawImage(video, 0, 0);
-          URL.revokeObjectURL(video.src);
-          resolve(canvas);
-        } else {
-          resolve(null);
-        }
-      };
-      
-      video.onerror = () => {
-        URL.revokeObjectURL(video.src);
-        resolve(null);
-      };
-    });
-  };
-
   const analyzeVideo = async (videoFile: VideoFile) => {
     if (!classifier) {
       const newClassifier = await initializeClassifier();
@@ -129,21 +128,19 @@ const VideoOrganizer = () => {
       f.id === videoFile.id ? { ...f, analyzing: true } : f
     ));
 
-    const frame = await extractFrameFromVideo(videoFile.file);
-    if (!frame) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: `Failed to analyze ${videoFile.file.name}`,
-      });
-      return;
+    try {
+      const base64Frame = await extractFrameAsBase64(videoFile.file);
+      const category = await analyzeFrame(base64Frame);
+      
+      setFiles(prev => prev.map(f => 
+        f.id === videoFile.id ? { ...f, category, analyzing: false } : f
+      ));
+    } catch (error) {
+      console.error('Error analyzing video:', error);
+      setFiles(prev => prev.map(f => 
+        f.id === videoFile.id ? { ...f, category: 'untagged', analyzing: false } : f
+      ));
     }
-
-    const category = await analyzeFrame(frame);
-    
-    setFiles(prev => prev.map(f => 
-      f.id === videoFile.id ? { ...f, category, analyzing: false } : f
-    ));
   };
 
   const handleDrop = useCallback((e: React.DragEvent) => {
