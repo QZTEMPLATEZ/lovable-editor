@@ -3,7 +3,7 @@ export const VIDEO_STYLES = [
     id: 'classic',
     title: 'Classic Cinematic',
     description: 'Timeless & Emotional',
-    previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK.mp4?raw=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/6qe8m4ab7nzjj14ne0h6u/CLASSIC-LONG-OK-OK.mp4?raw=1',
     features: [
       "Warm, film-inspired color grading for timeless appeal",
       "Perfectly balanced framing with golden ratio composition",
@@ -51,7 +51,7 @@ export const VIDEO_STYLES = [
     id: 'documentary',
     title: 'Documentary',
     description: 'Authentic & Natural',
-    previewVideo: 'https://www.dropbox.com/scl/fi/1mlqx5aq31pvyo67mpz4x/DOC-LONG-OK.mp4?raw=1',
+    previewVideo: 'https://www.dropbox.com/scl/fi/rxab2rc98t7ox9hxcrb4b/251219_Urban-Couple-Photoshoot-Photography_By_Azulroto_Artlist_4K.mp4?raw=1',
     features: [
       "Natural color grading preserving true-to-life colors",
       "Authentic storytelling following real events",
@@ -69,30 +69,6 @@ export const VIDEO_STYLES = [
       transitions: "Simple cuts, minimal effects",
       pacing: "Extended shots (5-15 seconds)",
       effects: "Subtle stabilization only"
-    }
-  },
-  {
-    id: 'dynamic',
-    title: 'Dynamic',
-    description: 'Energetic & Bold',
-    previewVideo: 'https://www.dropbox.com/scl/fi/m75wtfagul3ui9qbi996b/DINAMICO-OK.mp4?raw=1',
-    features: [
-      "High-energy editing synchronized with music beats",
-      "Vibrant color treatment with enhanced saturation",
-      "Fast-paced cuts timed to musical rhythm",
-      "Creative speed ramping and time manipulation",
-      "Modern transition effects (whips, zooms, morphs)",
-      "Split-screen and multi-angle compositions",
-      "Advanced motion graphics and text animations",
-      "Contemporary sound design with beat matching",
-      "Dramatic slow motion and time-lapse sequences",
-      "Cutting-edge visual effects and overlays"
-    ],
-    technicalDetails: {
-      colorGrading: "High saturation, vibrant look",
-      transitions: "Fast cuts, whip pans, zooms",
-      pacing: "Rapid cuts (0.5-2 seconds)",
-      effects: "Speed ramping, motion graphics"
     }
   }
 ];

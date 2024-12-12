@@ -4,6 +4,7 @@ import { VideoStyle } from '../../../types/video';
 import StylePreviewVideo from './StylePreviewVideo';
 import StyleContent from './StyleContent';
 import StyleActions from './StyleActions';
+import { useToast } from "@/components/ui/use-toast";
 
 interface StyleItemProps {
   style: {
@@ -23,6 +24,7 @@ const StyleItem = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const { toast } = useToast();
 
   const handleVideoPlay = useCallback(async () => {
     if (videoRef.current) {
@@ -31,9 +33,14 @@ const StyleItem = ({
       } catch (error) {
         console.log('Video autoplay failed:', error);
         setVideoError(true);
+        toast({
+          variant: "destructive",
+          title: "Video Playback Error",
+          description: "Failed to play the preview video. Please try again.",
+        });
       }
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -57,20 +64,6 @@ const StyleItem = ({
     onStyleSelect(videoStyle);
   };
 
-  // Map style IDs to video URLs
-  const getVideoUrl = (styleId: string) => {
-    switch (styleId) {
-      case 'classic':
-        return "https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1";
-      case 'modern':
-        return "https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1";
-      case 'documentary':
-        return "https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1";
-      default:
-        return "https://www.dropbox.com/scl/fi/2ctxlrnuqeqe8r4lcnnoz/first-page.mp4?rlkey=qknrts8gb6lwepv0vhupydosy&raw=1";
-    }
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -79,6 +72,7 @@ const StyleItem = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleSelect}
+      key={style.id}
     >
       <div className="absolute inset-0 z-[1] bg-editor-panel" />
       <div className="absolute inset-0 z-[2] bg-[url('/grid.svg')] opacity-5" />
@@ -91,7 +85,7 @@ const StyleItem = ({
       >
         <video
           ref={videoRef}
-          src={getVideoUrl(style.id)}
+          src={style.previewVideo}
           className="absolute inset-0 w-full h-full object-cover"
           loop
           muted
