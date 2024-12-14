@@ -1,16 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { Wand2 } from 'lucide-react';
 import RecentProjects from '../components/dashboard/RecentProjects';
 import TutorialSection from '../components/dashboard/TutorialSection';
 
 const Index = () => {
   const navigate = useNavigate();
-
-  const handleStartProject = () => {
-    navigate('/duration');
-  };
 
   // Sample data for recent projects
   const recentProjects = [
@@ -76,24 +70,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95">
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-16 space-y-20">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Wedding Video Editor
-          </h1>
-          <p className="text-gray-300 max-w-2xl mx-auto mb-8">
-            Transform your wedding footage into stunning videos with our AI-powered editor
-          </p>
-          <Button
-            onClick={handleStartProject}
-            className="px-8 py-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
-          >
-            <Wand2 className="w-5 h-5 mr-2" />
-            Start New Project
-          </Button>
-        </div>
-
         <RecentProjects 
           projects={recentProjects}
           onResumeProject={handleResumeProject}
