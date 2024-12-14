@@ -1,8 +1,7 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import TopNavigation from "./components/TopNavigation";
-import Index from "./pages/Index";
 import VideoSizeSelector from "./components/VideoSizeSelector";
 import VideoStyleSelector from "./components/editor/VideoStyleSelector";
 import MusicSelector from "./components/editor/MusicSelector";
@@ -93,7 +92,7 @@ const AppContent = () => {
               <StepIndicator currentStep={currentStep} steps={EDITOR_STEPS} />
             )}
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<Navigate to="/duration" replace />} />
               <Route path="/plans" element={<PricingPlans />} />
               <Route 
                 path="/duration" 
