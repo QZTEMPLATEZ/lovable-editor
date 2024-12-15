@@ -1,6 +1,7 @@
 import React from 'react';
 import EditorHeader from '../EditorHeader';
 import VideoStyleSelector from './VideoStyleSelector';
+import EditingInterface from '../EditingInterface';
 import RawFilesSection from '../RawFilesSection';
 import AIEditStep from './AIEditStep';
 import ReviewStep from './review/ReviewStep';
@@ -42,17 +43,6 @@ const EditorContent = ({
   setRawFiles,
   setSelectedMusic,
 }: EditorContentProps) => {
-  // Create a mock organization result for the review step
-  const mockOrganizationResult = {
-    categorizedFiles: new Map([['Main', rawFiles]]),
-    unorganizedFiles: [],
-    stats: {
-      totalFiles: rawFiles.length,
-      categorizedCount: rawFiles.length,
-      uncategorizedCount: 0
-    }
-  };
-
   return (
     <>
       {currentStep === 0 && (
@@ -72,6 +62,10 @@ const EditorContent = ({
       )}
       
       {currentStep === 2 && (
+        <EditingInterface />
+      )}
+      
+      {currentStep === 3 && (
         <RawFilesSection
           onDrop={(e) => {
             e.preventDefault();
@@ -83,7 +77,7 @@ const EditorContent = ({
         />
       )}
       
-      {currentStep === 3 && (
+      {currentStep === 4 && (
         <AIEditStep 
           aiScript={aiScript}
           onChange={onAIScriptChange}
@@ -93,22 +87,29 @@ const EditorContent = ({
         />
       )}
 
-      {currentStep === 4 && (
+      {currentStep === 5 && (
         <ReviewClassificationStep 
           rawFiles={rawFiles}
           onClassificationUpdate={(fileId: string, newCategory: string) => {
-            // Here we would update the classification in the backend
             console.log(`File ${fileId} moved to category ${newCategory}`);
           }}
         />
       )}
 
-      {currentStep === 5 && (
+      {currentStep === 6 && (
         <ReviewStep 
           rawFiles={rawFiles}
           selectedMusic={selectedMusic}
           selectedStyle={selectedStyle}
-          organizationResult={mockOrganizationResult}
+          organizationResult={{
+            categorizedFiles: new Map([['Main', rawFiles]]),
+            unorganizedFiles: [],
+            stats: {
+              totalFiles: rawFiles.length,
+              categorizedCount: rawFiles.length,
+              uncategorizedCount: 0
+            }
+          }}
         />
       )}
     </>
