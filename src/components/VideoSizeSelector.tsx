@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { VideoSizeRange } from '../types';
@@ -8,6 +8,7 @@ import { useVideoType } from '../contexts/VideoTypeContext';
 import { Button } from './ui/button';
 import DurationOption from './editor/duration/DurationOption';
 import RawFilesBanner from './editor/duration/RawFilesBanner';
+import { createPremiereSequence } from '../utils/premiere/sequenceCreator';
 
 const VIDEO_SIZES: VideoSizeRange[] = [
   {
@@ -73,14 +74,34 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
   const navigate = useNavigate();
   const { setSelectedVideoType } = useVideoType();
 
-  const handleSizeSelect = (size: VideoSizeRange) => {
-    onSizeSelect(size);
-    setSelectedVideoType(size);
-    toast({
-      title: "Duration Selected",
-      description: `Selected ${size.name} (${size.label})`,
-    });
-    navigate('/style');
+  const handleSizeSelect = async (size: VideoSizeRange) => {
+    try {
+      // Create new sequence in Premiere Pro
+      await createPremiereSequence({
+        name: size.name,
+        duration: size.max * 60, // Convert minutes to seconds
+        frameRate: 29.97,
+        width: 1920,
+        height: 1080
+      });
+
+      onSizeSelect(size);
+      setSelectedVideoType(size);
+      
+      toast({
+        title: "Sequence Created",
+        description: `Created new ${size.name} sequence (${size.label})`,
+      });
+      
+      navigate('/style');
+    } catch (error) {
+      console.error('Error creating sequence:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to create sequence in Premiere Pro. Please ensure Premiere is running.",
+      });
+    }
   };
 
   const handleRawFileOrganization = () => {
