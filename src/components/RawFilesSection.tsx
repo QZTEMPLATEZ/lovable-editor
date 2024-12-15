@@ -1,14 +1,13 @@
-import React, { useRef, useState } from 'react';
-import { Upload, Heart, Video, Image, Plane, PartyPopper, HelpCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { FolderOpen, Heart, Video, Image, Plane, PartyPopper, HelpCircle } from 'lucide-react';
 import ProcessingStatus from './ProcessingStatus';
 import { useToast } from "@/hooks/use-toast";
-import DropZone from './organizer/DropZone';
+import { Button } from "@/components/ui/button";
 import FolderGrid from './organizer/FolderGrid';
 import { FolderCategory } from '@/types';
 
 interface RawFilesSectionProps {
-  onDrop: (e: React.DragEvent) => void;
-  onDragOver: (e: React.DragEvent) => void;
+  onOrganize: () => void;
   videoFiles: File[];
   onContinue?: () => void;
 }
@@ -23,8 +22,7 @@ const FOLDERS: FolderCategory[] = [
   { name: 'Untagged', icon: <HelpCircle className="w-5 h-5" />, description: 'Uncategorized footage', expectedTypes: '.mp4,.mov', color: 'from-gray-500/20 to-slate-500/20' },
 ];
 
-const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProps) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+const RawFilesSection = ({ onOrganize, videoFiles }: RawFilesSectionProps) => {
   const [currentFile, setCurrentFile] = useState<string>();
   const [currentCategory, setCurrentCategory] = useState<string>();
   const [progress, setProgress] = useState(0);
@@ -35,71 +33,62 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
   );
   const { toast } = useToast();
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const dragEvent = new DragEvent('drop');
-      Object.defineProperty(dragEvent, 'dataTransfer', {
-        value: {
-          files: e.target.files
+  const handleOrganizeClick = async () => {
+    setIsProcessing(true);
+    setProgress(0);
+    setIsComplete(false);
+    setCategorizedFiles(FOLDERS.reduce((acc, folder) => ({ ...acc, [folder.name]: 0 }), {}));
+
+    // Simulate processing each file from Premiere Pro
+    videoFiles.forEach((file, index) => {
+      setTimeout(() => {
+        setCurrentFile(file.name);
+        // Simulate category detection
+        const categories = FOLDERS.map(f => f.name).filter(f => f !== 'Untagged');
+        const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+        setCurrentCategory(randomCategory);
+        
+        // Update categorized files count
+        setCategorizedFiles(prev => ({
+          ...prev,
+          [randomCategory]: prev[randomCategory] + 1
+        }));
+        
+        setProgress(((index + 1) / videoFiles.length) * 100);
+
+        if (index === videoFiles.length - 1) {
+          setTimeout(() => {
+            setIsComplete(true);
+            setIsProcessing(false);
+            toast({
+              title: "Organization Complete",
+              description: "All files have been successfully categorized in Premiere Pro bins.",
+            });
+          }, 1000);
         }
-      });
-      onDrop(dragEvent as unknown as React.DragEvent);
-    }
+      }, index * 2000);
+    });
   };
-
-  const handleClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  // Start processing automatically when files are added
-  React.useEffect(() => {
-    if (videoFiles.length > 0 && !isProcessing) {
-      setIsProcessing(true);
-      setProgress(0);
-      setIsComplete(false);
-      setCategorizedFiles(FOLDERS.reduce((acc, folder) => ({ ...acc, [folder.name]: 0 }), {}));
-
-      // Simulate processing each file
-      videoFiles.forEach((file, index) => {
-        setTimeout(() => {
-          setCurrentFile(file.name);
-          // Simulate category detection
-          const categories = FOLDERS.map(f => f.name).filter(f => f !== 'Untagged');
-          const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-          setCurrentCategory(randomCategory);
-          
-          // Update categorized files count
-          setCategorizedFiles(prev => ({
-            ...prev,
-            [randomCategory]: prev[randomCategory] + 1
-          }));
-          
-          setProgress(((index + 1) / videoFiles.length) * 100);
-
-          if (index === videoFiles.length - 1) {
-            setTimeout(() => {
-              setIsComplete(true);
-              setIsProcessing(false);
-              toast({
-                title: "Organization Complete",
-                description: "All files have been successfully categorized.",
-              });
-            }, 1000);
-          }
-        }, index * 2000);
-      });
-    }
-  }, [videoFiles, toast]);
 
   return (
     <div className="space-y-6">
-      <FolderGrid 
-        categories={FOLDERS}
-        categorizedFiles={categorizedFiles}
-      />
-
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 rounded-xl p-8 border border-purple-500/30">
-        {isProcessing || isComplete ? (
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl font-semibold text-white">Organize Files in Premiere Pro</h2>
+          <p className="text-gray-400">
+            Click the button below to analyze and organize your imported files into appropriate bins
+          </p>
+          <Button
+            onClick={handleOrganizeClick}
+            disabled={isProcessing}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+          >
+            <FolderOpen className="w-5 h-5 mr-2" />
+            {isProcessing ? "Organizing..." : "Organize Files"}
+          </Button>
+        </div>
+
+        {(isProcessing || isComplete) && (
           <ProcessingStatus
             currentStep="organizing"
             progress={progress}
@@ -107,26 +96,13 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
             currentCategory={currentCategory}
             isComplete={isComplete}
           />
-        ) : (
-          <DropZone
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onClick={() => fileInputRef.current?.click()}
-            fileInputRef={fileInputRef}
-            handleFileSelect={(e) => {
-              if (e.target.files && e.target.files.length > 0) {
-                const dragEvent = new DragEvent('drop');
-                Object.defineProperty(dragEvent, 'dataTransfer', {
-                  value: {
-                    files: e.target.files
-                  }
-                });
-                onDrop(dragEvent as unknown as React.DragEvent);
-              }
-            }}
-          />
         )}
       </div>
+
+      <FolderGrid 
+        categories={FOLDERS}
+        categorizedFiles={categorizedFiles}
+      />
     </div>
   );
 };
