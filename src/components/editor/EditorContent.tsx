@@ -43,6 +43,17 @@ const EditorContent = ({
   setRawFiles,
   setSelectedMusic,
 }: EditorContentProps) => {
+  // Create a mock organization result for the review step
+  const mockOrganizationResult = {
+    categorizedFiles: new Map([['Main', rawFiles]]),
+    unorganizedFiles: [],
+    stats: {
+      totalFiles: rawFiles.length,
+      categorizedCount: rawFiles.length,
+      uncategorizedCount: 0
+    }
+  };
+
   return (
     <>
       {currentStep === 0 && (
@@ -62,7 +73,11 @@ const EditorContent = ({
       )}
       
       {currentStep === 2 && (
-        <EditingInterface />
+        <EditingInterface 
+          onMusicSelect={(file) => {
+            setSelectedMusic([file]);
+          }} 
+        />
       )}
       
       {currentStep === 3 && (
@@ -91,6 +106,7 @@ const EditorContent = ({
         <ReviewClassificationStep 
           rawFiles={rawFiles}
           onClassificationUpdate={(fileId: string, newCategory: string) => {
+            // Here we would update the classification in the backend
             console.log(`File ${fileId} moved to category ${newCategory}`);
           }}
         />
@@ -101,15 +117,7 @@ const EditorContent = ({
           rawFiles={rawFiles}
           selectedMusic={selectedMusic}
           selectedStyle={selectedStyle}
-          organizationResult={{
-            categorizedFiles: new Map([['Main', rawFiles]]),
-            unorganizedFiles: [],
-            stats: {
-              totalFiles: rawFiles.length,
-              categorizedCount: rawFiles.length,
-              uncategorizedCount: 0
-            }
-          }}
+          organizationResult={mockOrganizationResult}
         />
       )}
     </>
