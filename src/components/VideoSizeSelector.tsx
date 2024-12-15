@@ -75,8 +75,12 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
   const { setSelectedVideoType } = useVideoType();
 
   const handleSizeSelect = async (size: VideoSizeRange) => {
+    // First, update the UI state and navigate
+    onSizeSelect(size);
+    setSelectedVideoType(size);
+    
+    // Then, try to create the sequence in Premiere Pro
     try {
-      // Create new sequence in Premiere Pro
       await createPremiereSequence({
         name: size.name,
         duration: size.max * 60, // Convert minutes to seconds
@@ -85,23 +89,21 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
         height: 1080
       });
 
-      onSizeSelect(size);
-      setSelectedVideoType(size);
-      
       toast({
         title: "Sequence Created",
         description: `Created new ${size.name} sequence (${size.label})`,
       });
-      
-      navigate('/style');
     } catch (error) {
       console.error('Error creating sequence:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to create sequence in Premiere Pro. Please ensure Premiere is running.",
+        title: "Premiere Pro Error",
+        description: "Failed to create sequence in Premiere Pro, but you can continue with the web app.",
       });
     }
+
+    // Always navigate to next step, regardless of Premiere Pro sequence creation success
+    navigate('/style');
   };
 
   const handleRawFileOrganization = () => {
