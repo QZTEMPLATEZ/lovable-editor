@@ -1,7 +1,6 @@
 import React from 'react';
 import EditorHeader from '../EditorHeader';
 import VideoStyleSelector from './VideoStyleSelector';
-import EditingInterface from '../EditingInterface';
 import RawFilesSection from '../RawFilesSection';
 import AIEditStep from './AIEditStep';
 import ReviewStep from './review/ReviewStep';
@@ -73,14 +72,6 @@ const EditorContent = ({
       )}
       
       {currentStep === 2 && (
-        <EditingInterface 
-          onMusicSelect={(file) => {
-            setSelectedMusic([file]);
-          }} 
-        />
-      )}
-      
-      {currentStep === 3 && (
         <RawFilesSection
           onDrop={(e) => {
             e.preventDefault();
@@ -92,7 +83,7 @@ const EditorContent = ({
         />
       )}
       
-      {currentStep === 4 && (
+      {currentStep === 3 && (
         <AIEditStep 
           aiScript={aiScript}
           onChange={onAIScriptChange}
@@ -102,7 +93,7 @@ const EditorContent = ({
         />
       )}
 
-      {currentStep === 5 && (
+      {currentStep === 4 && (
         <ReviewClassificationStep 
           rawFiles={rawFiles}
           onClassificationUpdate={(fileId: string, newCategory: string) => {
@@ -112,7 +103,7 @@ const EditorContent = ({
         />
       )}
 
-      {currentStep === 6 && (
+      {currentStep === 5 && (
         <ReviewStep 
           rawFiles={rawFiles}
           selectedMusic={selectedMusic}
