@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import TopNavigation from "./components/TopNavigation";
 import VideoSizeSelector from "./components/VideoSizeSelector";
 import VideoStyleSelector from "./components/editor/VideoStyleSelector";
-import MusicSelector from "./components/editor/MusicSelector";
 import { useState } from "react";
 import { VideoStyle } from "./types/video";
 import PricingPlans from "./components/pricing/PricingPlans";
@@ -33,10 +32,8 @@ const AppContent = () => {
         return 0;
       case '/style':
         return 1;
-      case '/music':
-        return 2;
       case '/organize':
-        return 3;
+        return 2;
       default:
         return -1;
     }
@@ -62,10 +59,6 @@ const AppContent = () => {
 
   const handleCustomVideoUpload = (file: File) => {
     console.log('Custom video uploaded:', file);
-  };
-
-  const handleMusicSelect = (file: File, beats: any[]) => {
-    console.log('Music selected:', file, beats);
   };
 
   const currentStep = getCurrentStep();
@@ -107,10 +100,6 @@ const AppContent = () => {
                     onCustomVideoUpload={handleCustomVideoUpload}
                   />
                 } 
-              />
-              <Route 
-                path="/music" 
-                element={<MusicSelector onMusicSelect={handleMusicSelect} />}
               />
               <Route 
                 path="/organize" 
