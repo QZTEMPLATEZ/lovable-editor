@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="7.0" ExtensionBundleId="com.meuexemplo.minhaextensao" ExtensionBundleVersion="1.0.0"
+<ExtensionManifest Version="7.0" ExtensionBundleId="com.qztemplates.videoeditor" ExtensionBundleVersion="1.0.0"
     ExtensionBundleName="QZ Templatez" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ExtensionList>
-        <Extension Id="com.meuexemplo.minhaextensao.panel" Version="1.0" />
+        <Extension Id="com.qztemplates.videoeditor.panel" Version="1.0" />
     </ExtensionList>
     <ExecutionEnvironment>
         <HostList>
@@ -15,7 +15,7 @@
             <RequiredRuntime Name="CSXS" Version="11.0" />
         </RequiredRuntimeList>
         <DispatchInfoList>
-            <Extension Id="com.meuexemplo.minhaextensao.panel">
+            <Extension Id="com.qztemplates.videoeditor.panel">
                 <DispatchInfo>
                     <Resources>
                         <MainPath>./index.html</MainPath>
