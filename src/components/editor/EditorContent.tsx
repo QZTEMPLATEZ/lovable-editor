@@ -8,6 +8,8 @@ import { EditingMode } from '../EditingModeSelector';
 import { VideoSizeRange } from '../../types';
 import { VideoStyle } from '../../types/video';
 import ReviewClassificationStep from './review/ReviewClassificationStep';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
 
 interface EditorContentProps {
   currentStep: number;
@@ -42,6 +44,9 @@ const EditorContent = ({
   setRawFiles,
   setSelectedMusic,
 }: EditorContentProps) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files).filter(
@@ -53,6 +58,18 @@ const EditorContent = ({
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     return false;
+  };
+
+  const handleOrganize = () => {
+    if (rawFiles.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Nenhum arquivo",
+        description: "Por favor, adicione alguns arquivos de vídeo primeiro."
+      });
+      return;
+    }
+    navigate('/organize');
   };
 
   // Create a mock organization result for the review step
@@ -88,6 +105,8 @@ const EditorContent = ({
         <RawFilesSection
           videoFiles={rawFiles}
           onFileSelect={setRawFiles}
+          onOrganize={handleOrganize}
+          onContinue={() => navigate('/organize')}
         />
       )}
       
@@ -105,7 +124,6 @@ const EditorContent = ({
         <ReviewClassificationStep 
           rawFiles={rawFiles}
           onClassificationUpdate={(fileId: string, newCategory: string) => {
-            // Here we would update the classification in the backend
             console.log(`File ${fileId} moved to category ${newCategory}`);
           }}
         />
