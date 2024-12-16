@@ -14,7 +14,7 @@ interface StepIndicatorProps {
 
 const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
   const navigate = useNavigate();
-  const { selectedVideoType, selectedStyle, selectedMusic } = useVideoType();
+  const { selectedVideoType, selectedStyle } = useVideoType();
 
   const getStepPath = (index: number) => {
     switch (index) {
@@ -30,11 +30,6 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
     if (index <= currentStep) {
       navigate(getStepPath(index));
     }
-  };
-
-  const getTrackCountText = (count: number | undefined) => {
-    if (!count || count === 0) return "No tracks selected";
-    return `${count} track${count === 1 ? '' : 's'} selected`;
   };
 
   return (
@@ -119,13 +114,6 @@ const StepIndicator = ({ currentStep, steps }: StepIndicatorProps) => {
                       <p className="text-sm text-purple-300 mt-1 font-medium">
                         {selectedStyle.name}
                       </p>
-                    )}
-                    {index === 2 && (
-                      <div className="mt-1">
-                        <p className="text-sm text-purple-300 font-medium">
-                          {getTrackCountText(selectedMusic?.length)}
-                        </p>
-                      </div>
                     )}
                   </>
                 )}
