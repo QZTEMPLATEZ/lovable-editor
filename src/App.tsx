@@ -1,127 +1,15 @@
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
-import TopNavigation from "./components/TopNavigation";
-import VideoSizeSelector from "./components/VideoSizeSelector";
-import VideoStyleSelector from "./components/editor/VideoStyleSelector";
-import { useState } from "react";
-import { VideoStyle } from "./types/video";
-import PricingPlans from "./components/pricing/PricingPlans";
-import StepIndicator from "./components/StepIndicator";
-import { EDITOR_STEPS } from "./components/editor/EditorSteps";
-import TutorialVideo from "./components/TutorialVideo";
-import IntroScreen from "./components/IntroScreen";
-import { VideoTypeProvider } from "./contexts/VideoTypeContext";
-import VideoTypeIndicator from "./components/VideoTypeIndicator";
-import LoginModal from "./components/auth/LoginModal";
-import VideoOrganizer from "./components/organizer/VideoOrganizer";
-
-const queryClient = new QueryClient();
-
-const AppContent = () => {
-  const location = useLocation();
-  const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
-  const [showIntro, setShowIntro] = useState(true);
-  const [showTutorial, setShowTutorial] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [selectedSize, setSelectedSize] = useState(null);
-
-  const getCurrentStep = () => {
-    switch (location.pathname) {
-      case '/duration':
-        return 0;
-      case '/style':
-        return 1;
-      case '/organize':
-        return 2;
-      default:
-        return -1;
-    }
-  };
-
-  const handleIntroComplete = () => {
-    setShowIntro(false);
-    setShowTutorial(true);
-  };
-
-  const handleTutorialComplete = () => {
-    setShowTutorial(false);
-    setShowLoginModal(true);
-  };
-
-  const handlePlanSelect = () => {
-    setShowLoginModal(false);
-  };
-
-  const handleStyleSelect = (style: VideoStyle) => {
-    setSelectedStyle(style);
-  };
-
-  const handleCustomVideoUpload = (file: File) => {
-    console.log('Custom video uploaded:', file);
-  };
-
-  const currentStep = getCurrentStep();
-
-  return (
-    <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
-        {showIntro && <IntroScreen onComplete={handleIntroComplete} />}
-        {showTutorial && !showIntro && <TutorialVideo onComplete={handleTutorialComplete} />}
-        <LoginModal 
-          isOpen={showLoginModal} 
-          onClose={() => setShowLoginModal(false)}
-          onPlanSelect={handlePlanSelect}
-        />
-
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
-        
-        <div className="relative">
-          <TopNavigation />
-          <VideoTypeIndicator />
-          <div className="container mx-auto px-4 py-8">
-            {currentStep >= 0 && (
-              <StepIndicator currentStep={currentStep} steps={EDITOR_STEPS} />
-            )}
-            <Routes>
-              <Route path="/" element={<Navigate to="/duration" replace />} />
-              <Route path="/plans" element={<PricingPlans />} />
-              <Route 
-                path="/duration" 
-                element={<VideoSizeSelector selectedSize={selectedSize} onSizeSelect={setSelectedSize} />} 
-              />
-              <Route 
-                path="/style" 
-                element={
-                  <VideoStyleSelector 
-                    selectedStyle={selectedStyle}
-                    onStyleSelect={handleStyleSelect}
-                    onCustomVideoUpload={handleCustomVideoUpload}
-                  />
-                } 
-              />
-              <Route 
-                path="/organize" 
-                element={<VideoOrganizer />}
-              />
-            </Routes>
-          </div>
-        </div>
-      </div>
-    </TooltipProvider>
-  );
-};
+import React from 'react';
+import ManifestDisplay from './components/ManifestDisplay';
+import { Toaster } from "@/components/ui/toaster";
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <VideoTypeProvider>
-          <AppContent />
-        </VideoTypeProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="container mx-auto py-8">
+        <ManifestDisplay />
+      </div>
+      <Toaster />
+    </div>
   );
 };
 
