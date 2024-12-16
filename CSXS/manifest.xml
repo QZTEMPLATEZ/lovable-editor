@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="7.0" ExtensionBundleId="com.wedding.editor" ExtensionBundleVersion="1.0.0"
-    ExtensionBundleName="Wedding Editor" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ExtensionManifest Version="7.0" ExtensionBundleId="com.meuexemplo.minhaextensao" ExtensionBundleVersion="1.0.0"
+    ExtensionBundleName="QZ Templatez" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ExtensionList>
-        <Extension Id="com.wedding.editor.panel" Version="1.0" />
+        <Extension Id="com.meuexemplo.minhaextensao.panel" Version="1.0" />
     </ExtensionList>
     <ExecutionEnvironment>
         <HostList>
-            <Host Name="PPRO" Version="[23.0,99.9]" />
+            <Host Name="PPRO" Version="[15.0,99.9]" />
         </HostList>
         <LocaleList>
             <Locale Code="All" />
@@ -15,11 +15,11 @@
             <RequiredRuntime Name="CSXS" Version="11.0" />
         </RequiredRuntimeList>
         <DispatchInfoList>
-            <Extension Id="com.wedding.editor.panel">
+            <Extension Id="com.meuexemplo.minhaextensao.panel">
                 <DispatchInfo>
                     <Resources>
                         <MainPath>./index.html</MainPath>
-                        <ScriptPath>./scripts/ExtendScript/myScript.jsx</ScriptPath>
+                        <ScriptPath>./main.js</ScriptPath>
                         <CEFCommandLine>
                             <Parameter>--enable-nodejs</Parameter>
                             <Parameter>--mixed-context</Parameter>
@@ -31,7 +31,7 @@
                     </Lifecycle>
                     <UI>
                         <Type>Panel</Type>
-                        <Menu>Wedding Editor</Menu>
+                        <Menu>QZ Templatez</Menu>
                         <Geometry>
                             <Size>
                                 <Height>600</Height>
