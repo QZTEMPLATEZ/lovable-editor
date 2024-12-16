@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { VideoSizeRange } from '../types';
 import { useVideoType } from '../contexts/VideoTypeContext';
 import { Button } from './ui/button';
 import DurationOption from './editor/duration/DurationOption';
-import { createPremiereSequence } from '../utils/premiere/sequenceCreator';
+import RawFilesBanner from './editor/duration/RawFilesBanner';
 
 const VIDEO_SIZES: VideoSizeRange[] = [
   {
@@ -73,36 +73,22 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
   const navigate = useNavigate();
   const { setSelectedVideoType } = useVideoType();
 
-  const handleSizeSelect = async (size: VideoSizeRange) => {
-    // First, update the UI state and navigate
+  const handleSizeSelect = (size: VideoSizeRange) => {
     onSizeSelect(size);
     setSelectedVideoType(size);
-    
-    // Then, try to create the sequence in Premiere Pro
-    try {
-      await createPremiereSequence({
-        name: size.name,
-        duration: size.max * 60, // Convert minutes to seconds
-        frameRate: 29.97,
-        width: 1920,
-        height: 1080
-      });
-
-      toast({
-        title: "Sequence Created",
-        description: `Created new ${size.name} sequence (${size.label})`,
-      });
-    } catch (error) {
-      console.error('Error creating sequence:', error);
-      toast({
-        variant: "destructive",
-        title: "Premiere Pro Error",
-        description: "Failed to create sequence in Premiere Pro, but you can continue with the web app.",
-      });
-    }
-
-    // Always navigate to next step, regardless of Premiere Pro sequence creation success
+    toast({
+      title: "Duration Selected",
+      description: `Selected ${size.name} (${size.label})`,
+    });
     navigate('/style');
+  };
+
+  const handleRawFileOrganization = () => {
+    toast({
+      title: "Raw File Organization",
+      description: "Proceeding to file organization without editing",
+    });
+    navigate('/organize');
   };
 
   return (
@@ -143,6 +129,9 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
           </div>
         </div>
       </div>
+
+      {/* Raw File Organization Banner - Now First */}
+      <RawFilesBanner onClick={handleRawFileOrganization} />
 
       {/* Duration Options */}
       {VIDEO_SIZES.map((size) => (

@@ -1,6 +1,7 @@
 import React from 'react';
 import EditorHeader from '../EditorHeader';
 import VideoStyleSelector from './VideoStyleSelector';
+import EditingInterface from '../EditingInterface';
 import RawFilesSection from '../RawFilesSection';
 import AIEditStep from './AIEditStep';
 import ReviewStep from './review/ReviewStep';
@@ -8,9 +9,6 @@ import { EditingMode } from '../EditingModeSelector';
 import { VideoSizeRange } from '../../types';
 import { VideoStyle } from '../../types/video';
 import ReviewClassificationStep from './review/ReviewClassificationStep';
-import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/hooks/use-toast';
-import PremiereAutoEdit from './premiere/PremiereAutoEdit';
 
 interface EditorContentProps {
   currentStep: number;
@@ -45,12 +43,10 @@ const EditorContent = ({
   setRawFiles,
   setSelectedMusic,
 }: EditorContentProps) => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
-
-  // Create mock organization result for demo
-  const organizationResult = {
+  // Create a mock organization result for the review step
+  const mockOrganizationResult = {
     categorizedFiles: new Map([['Main', rawFiles]]),
+    unorganizedFiles: [],
     stats: {
       totalFiles: rawFiles.length,
       categorizedCount: rawFiles.length,
@@ -59,47 +55,72 @@ const EditorContent = ({
   };
 
   return (
-    <div className="min-h-screen bg-editor-background">
-      <div className="container mx-auto px-4 py-8">
-        {currentStep === 0 && (
-          <EditorHeader 
-            editingMode={editingMode}
-            targetDuration={targetDuration}
-            onDurationChange={onDurationChange}
-          />
-        )}
-        
-        {currentStep === 1 && (
-          <VideoStyleSelector
-            selectedStyle={selectedStyle}
-            onStyleSelect={onStyleSelect}
-            onCustomVideoUpload={onCustomVideoUpload}
-          />
-        )}
-        
-        {currentStep === 2 && (
-          <RawFilesSection
-            videoFiles={rawFiles}
-            onFileSelect={setRawFiles}
-            onOrganize={() => navigate('/organize')}
-            onContinue={() => navigate('/organize')}
-          />
-        )}
-        
-        {currentStep === 3 && (
-          <ReviewClassificationStep 
-            rawFiles={rawFiles}
-            onClassificationUpdate={(fileId: string, newCategory: string) => {
-              console.log(`File ${fileId} moved to category ${newCategory}`);
-            }}
-          />
-        )}
+    <>
+      {currentStep === 0 && (
+        <EditorHeader 
+          editingMode={editingMode}
+          targetDuration={targetDuration}
+          onDurationChange={onDurationChange}
+        />
+      )}
+      
+      {currentStep === 1 && (
+        <VideoStyleSelector
+          selectedStyle={selectedStyle}
+          onStyleSelect={onStyleSelect}
+          onCustomVideoUpload={onCustomVideoUpload}
+        />
+      )}
+      
+      {currentStep === 2 && (
+        <EditingInterface 
+          onMusicSelect={(file) => {
+            setSelectedMusic([file]);
+          }} 
+        />
+      )}
+      
+      {currentStep === 3 && (
+        <RawFilesSection
+          onDrop={(e) => {
+            e.preventDefault();
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
+            setRawFiles(prevFiles => [...prevFiles, ...files]);
+          }}
+          onDragOver={(e) => e.preventDefault()}
+          videoFiles={rawFiles}
+        />
+      )}
+      
+      {currentStep === 4 && (
+        <AIEditStep 
+          aiScript={aiScript}
+          onChange={onAIScriptChange}
+          onStartEditing={onStartEditing}
+          rawFiles={rawFiles}
+          musicFile={selectedMusic[0]}
+        />
+      )}
 
-        {currentStep === 4 && (
-          <PremiereAutoEdit organizationResult={organizationResult} />
-        )}
-      </div>
-    </div>
+      {currentStep === 5 && (
+        <ReviewClassificationStep 
+          rawFiles={rawFiles}
+          onClassificationUpdate={(fileId: string, newCategory: string) => {
+            // Here we would update the classification in the backend
+            console.log(`File ${fileId} moved to category ${newCategory}`);
+          }}
+        />
+      )}
+
+      {currentStep === 6 && (
+        <ReviewStep 
+          rawFiles={rawFiles}
+          selectedMusic={selectedMusic}
+          selectedStyle={selectedStyle}
+          organizationResult={mockOrganizationResult}
+        />
+      )}
+    </>
   );
 };
 

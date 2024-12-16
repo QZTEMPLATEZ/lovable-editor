@@ -1,9 +1,11 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import TopNavigation from "./components/TopNavigation";
+import Index from "./pages/Index";
 import VideoSizeSelector from "./components/VideoSizeSelector";
 import VideoStyleSelector from "./components/editor/VideoStyleSelector";
+import MusicSelector from "./components/editor/MusicSelector";
 import { useState } from "react";
 import { VideoStyle } from "./types/video";
 import PricingPlans from "./components/pricing/PricingPlans";
@@ -32,8 +34,10 @@ const AppContent = () => {
         return 0;
       case '/style':
         return 1;
-      case '/organize':
+      case '/music':
         return 2;
+      case '/organize':
+        return 3;
       default:
         return -1;
     }
@@ -61,6 +65,10 @@ const AppContent = () => {
     console.log('Custom video uploaded:', file);
   };
 
+  const handleMusicSelect = (file: File, beats: any[]) => {
+    console.log('Music selected:', file, beats);
+  };
+
   const currentStep = getCurrentStep();
 
   return (
@@ -85,7 +93,7 @@ const AppContent = () => {
               <StepIndicator currentStep={currentStep} steps={EDITOR_STEPS} />
             )}
             <Routes>
-              <Route path="/" element={<Navigate to="/duration" replace />} />
+              <Route path="/" element={<Index />} />
               <Route path="/plans" element={<PricingPlans />} />
               <Route 
                 path="/duration" 
@@ -100,6 +108,10 @@ const AppContent = () => {
                     onCustomVideoUpload={handleCustomVideoUpload}
                   />
                 } 
+              />
+              <Route 
+                path="/music" 
+                element={<MusicSelector onMusicSelect={handleMusicSelect} />}
               />
               <Route 
                 path="/organize" 
