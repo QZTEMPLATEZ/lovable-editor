@@ -17,6 +17,6 @@ export const EDITOR_STEPS = [
   },
   {
     title: "Generate",
-    description: "Generate your final edit"
+    description: "Generate automatic edit in Premiere Pro"
   }
 ];
