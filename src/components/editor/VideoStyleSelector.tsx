@@ -34,7 +34,7 @@ const VideoStyleSelector = ({
     if (onNext) {
       onNext();
     }
-    navigate('/music');
+    navigate('/organize');
   };
 
   return (

@@ -42,6 +42,19 @@ const EditorContent = ({
   setRawFiles,
   setSelectedMusic,
 }: EditorContentProps) => {
+  const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files).filter(
+      file => file.type.startsWith('video/')
+    );
+    setRawFiles(prevFiles => [...prevFiles, ...files]);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    return false;
+  };
+
   // Create a mock organization result for the review step
   const mockOrganizationResult = {
     categorizedFiles: new Map([['Main', rawFiles]]),
@@ -73,13 +86,8 @@ const EditorContent = ({
       
       {currentStep === 2 && (
         <RawFilesSection
-          onDrop={(e) => {
-            e.preventDefault();
-            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
-            setRawFiles(prevFiles => [...prevFiles, ...files]);
-          }}
-          onDragOver={(e) => e.preventDefault()}
           videoFiles={rawFiles}
+          onFileSelect={setRawFiles}
         />
       )}
       
