@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 const VideoOrganizer = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [videoFiles] = useState<File[]>([
+  const [videoFiles, setVideoFiles] = useState<File[]>([
     new File([], "clip1.mp4"),
     new File([], "clip2.mp4"),
     new File([], "clip3.mp4"),
@@ -35,6 +35,7 @@ const VideoOrganizer = () => {
           videoFiles={videoFiles}
           onOrganize={handleOrganize}
           onContinue={handleContinue}
+          onFileSelect={setVideoFiles}
         />
         
         <div className="flex justify-end mt-6">
