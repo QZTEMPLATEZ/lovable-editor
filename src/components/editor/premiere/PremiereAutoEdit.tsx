@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
@@ -15,6 +15,14 @@ interface PremiereAutoEditProps {
   };
 }
 
+declare global {
+  interface Window {
+    createPremiereSequence: (config: any) => Promise<string>;
+    importAndOrganizeFootage: (files: any[], bins: any) => Promise<string>;
+    generatePremiereEdit: (settings: any) => Promise<string>;
+  }
+}
+
 const PremiereAutoEdit: React.FC<PremiereAutoEditProps> = ({ organizationResult }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -24,41 +32,64 @@ const PremiereAutoEdit: React.FC<PremiereAutoEditProps> = ({ organizationResult 
     try {
       setIsGenerating(true);
       
-      // Simulate connection to Premiere Pro CEP/UXP
+      // Connect to Premiere Pro through CEP
       toast({
         title: "Connecting to Premiere Pro",
         description: "Establishing connection with Adobe Premiere Pro...",
       });
 
       // Create new sequence
+      await window.createPremiereSequence({
+        name: "Wedding Highlights",
+        timebase: 30,
+        width: 1920,
+        height: 1080
+      });
       await simulateProgress(0, 20);
+      
       toast({
         title: "Creating Sequence",
         description: "Setting up new sequence with optimal settings...",
       });
 
       // Import and organize footage
+      const files = Array.from(organizationResult.categorizedFiles.entries())
+        .flatMap(([category, files]) => 
+          files.map(file => ({
+            path: URL.createObjectURL(file),
+            name: file.name,
+            category
+          }))
+        );
+
+      const bins = Object.fromEntries(
+        Array.from(organizationResult.categorizedFiles.keys())
+          .map(category => [category, []])
+      );
+
+      await window.importAndOrganizeFootage(files, bins);
       await simulateProgress(20, 40);
+      
       toast({
         title: "Organizing Footage",
         description: "Creating bins and importing footage...",
       });
 
-      // Apply AI-driven edits
-      await simulateProgress(40, 70);
-      toast({
-        title: "Generating Edit",
-        description: "Applying intelligent cuts and transitions...",
+      // Generate edit
+      await window.generatePremiereEdit({
+        duration: "auto",
+        style: "cinematic",
+        categories: Array.from(organizationResult.categorizedFiles.keys())
       });
-
-      // Finalize sequence
-      await simulateProgress(70, 100);
+      await simulateProgress(40, 100);
+      
       toast({
         title: "Edit Complete",
         description: "Your automated edit is ready in Premiere Pro!",
       });
 
     } catch (error) {
+      console.error('Generation error:', error);
       toast({
         variant: "destructive",
         title: "Generation Error",
@@ -77,7 +108,7 @@ const PremiereAutoEdit: React.FC<PremiereAutoEditProps> = ({ organizationResult 
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto p-6">
+    <div className="space-y-6 max-w-[400px] mx-auto p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
