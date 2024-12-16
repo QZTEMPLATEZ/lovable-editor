@@ -7,7 +7,6 @@ import { VideoSizeRange } from '../types';
 import { useVideoType } from '../contexts/VideoTypeContext';
 import { Button } from './ui/button';
 import DurationOption from './editor/duration/DurationOption';
-import RawFilesBanner from './editor/duration/RawFilesBanner';
 import { createPremiereSequence } from '../utils/premiere/sequenceCreator';
 
 const VIDEO_SIZES: VideoSizeRange[] = [
@@ -106,14 +105,6 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
     navigate('/style');
   };
 
-  const handleRawFileOrganization = () => {
-    toast({
-      title: "Raw File Organization",
-      description: "Proceeding to file organization without editing",
-    });
-    navigate('/organize');
-  };
-
   return (
     <div className="min-h-screen">
       <div className="relative h-[40vh] lg:h-[50vh] bg-[#0A0A0A] overflow-hidden">
@@ -152,9 +143,6 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
           </div>
         </div>
       </div>
-
-      {/* Raw File Organization Banner - Now First */}
-      <RawFilesBanner onClick={handleRawFileOrganization} />
 
       {/* Duration Options */}
       {VIDEO_SIZES.map((size) => (
