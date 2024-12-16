@@ -1,19 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>QZ TEMPLATEZ VIDEO EDITOR</title>
-    <meta name="description" content="QZ TEMPLATEZ VIDEO EDITOR - AI-Powered Video Editing" />
-    <meta name="author" content="QZ TEMPLATEZ" />
-    <meta property="og:image" content="/og-image.png" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  </head>
-
-  <body>
-    <div id="root"></div>
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>WeddingAI</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>WeddingAI</h1>
+        <div class="controls">
+            <button id="startButton" class="button">Iniciar Edição</button>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar">
+                    <div class="progress" style="width: 0%"></div>
+                </div>
+                <span id="progressText">0%</span>
+            </div>
+        </div>
+        <div id="status" class="status">Pronto para iniciar</div>
+    </div>
+    <script type="text/javascript" src="libs/CSInterface.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+</body>
 </html>
