@@ -7,9 +7,10 @@ import FolderGrid from './organizer/FolderGrid';
 import { FolderCategory } from '@/types';
 
 interface RawFilesSectionProps {
-  onOrganize: () => void;
+  onOrganize?: () => void;
   videoFiles: File[];
   onContinue?: () => void;
+  onFileSelect: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
 const FOLDERS: FolderCategory[] = [
@@ -22,7 +23,7 @@ const FOLDERS: FolderCategory[] = [
   { name: 'Untagged', icon: <HelpCircle className="w-5 h-5" />, description: 'Uncategorized footage', expectedTypes: '.mp4,.mov', color: 'from-gray-500/20 to-slate-500/20' },
 ];
 
-const RawFilesSection = ({ onOrganize, videoFiles }: RawFilesSectionProps) => {
+const RawFilesSection = ({ onOrganize, videoFiles, onFileSelect }: RawFilesSectionProps) => {
   const [currentFile, setCurrentFile] = useState<string>();
   const [currentCategory, setCurrentCategory] = useState<string>();
   const [progress, setProgress] = useState(0);
