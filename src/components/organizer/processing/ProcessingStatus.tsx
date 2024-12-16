@@ -27,7 +27,7 @@ const ProcessingStatus = ({
         <AlertDescription className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <FileVideo className="animate-pulse" />
-            <span>Processing: {currentFile?.name}</span>
+            <span>Classificando seus vídeos...</span>
           </div>
           <Button
             variant="destructive"
@@ -36,7 +36,7 @@ const ProcessingStatus = ({
             className="bg-red-500/10 hover:bg-red-500/20 text-red-400"
           >
             <StopCircle className="w-4 h-4 mr-2" />
-            Stop Processing
+            Parar Processo
           </Button>
         </AlertDescription>
       </Alert>
@@ -44,8 +44,8 @@ const ProcessingStatus = ({
       <div className="space-y-2">
         <Progress value={totalProgress} className="h-2" />
         <div className="flex justify-between text-sm text-gray-400">
-          <span>{Math.round(totalProgress)}% Complete</span>
-          <span>~{remainingTimeMinutes} minutes remaining</span>
+          <span>{Math.round(totalProgress)}% Concluído</span>
+          <span>~{remainingTimeMinutes} minutos restantes</span>
         </div>
       </div>
     </div>
