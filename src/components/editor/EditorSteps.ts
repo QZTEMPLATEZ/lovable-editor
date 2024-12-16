@@ -9,7 +9,7 @@ export const EDITOR_STEPS = [
   },
   {
     title: "Organize",
-    description: "Let AI organize your footage into categories"
+    description: "Upload and organize your footage"
   },
   {
     title: "Review",
@@ -17,6 +17,6 @@ export const EDITOR_STEPS = [
   },
   {
     title: "Generate",
-    description: "Generate your final video"
+    description: "Generate your final edit"
   }
 ];

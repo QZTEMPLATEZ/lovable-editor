@@ -9,7 +9,8 @@ import { VideoSizeRange } from '../../types';
 import { VideoStyle } from '../../types/video';
 import ReviewClassificationStep from './review/ReviewClassificationStep';
 import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
+import ProjectExportOptions from './ProjectExportOptions';
 
 interface EditorContentProps {
   currentStep: number;
@@ -64,16 +65,16 @@ const EditorContent = ({
     if (rawFiles.length === 0) {
       toast({
         variant: "destructive",
-        title: "Nenhum arquivo",
-        description: "Por favor, adicione alguns arquivos de vídeo primeiro."
+        title: "No files",
+        description: "Please add some video files first."
       });
       return;
     }
     navigate('/organize');
   };
 
-  // Create a mock organization result for the review step
-  const mockOrganizationResult = {
+  // Create organization result for the review step
+  const organizationResult = {
     categorizedFiles: new Map([['Main', rawFiles]]),
     unorganizedFiles: [],
     stats: {
@@ -84,60 +85,64 @@ const EditorContent = ({
   };
 
   return (
-    <>
-      {currentStep === 0 && (
-        <EditorHeader 
-          editingMode={editingMode}
-          targetDuration={targetDuration}
-          onDurationChange={onDurationChange}
-        />
-      )}
-      
-      {currentStep === 1 && (
-        <VideoStyleSelector
-          selectedStyle={selectedStyle}
-          onStyleSelect={onStyleSelect}
-          onCustomVideoUpload={onCustomVideoUpload}
-        />
-      )}
-      
-      {currentStep === 2 && (
-        <RawFilesSection
-          videoFiles={rawFiles}
-          onFileSelect={setRawFiles}
-          onOrganize={handleOrganize}
-          onContinue={() => navigate('/organize')}
-        />
-      )}
-      
-      {currentStep === 3 && (
-        <AIEditStep 
-          aiScript={aiScript}
-          onChange={onAIScriptChange}
-          onStartEditing={onStartEditing}
-          rawFiles={rawFiles}
-          musicFile={selectedMusic[0]}
-        />
-      )}
+    <div className="min-h-screen bg-editor-background">
+      <div className="container mx-auto px-4 py-8">
+        {currentStep === 0 && (
+          <EditorHeader 
+            editingMode={editingMode}
+            targetDuration={targetDuration}
+            onDurationChange={onDurationChange}
+          />
+        )}
+        
+        {currentStep === 1 && (
+          <VideoStyleSelector
+            selectedStyle={selectedStyle}
+            onStyleSelect={onStyleSelect}
+            onCustomVideoUpload={onCustomVideoUpload}
+          />
+        )}
+        
+        {currentStep === 2 && (
+          <RawFilesSection
+            videoFiles={rawFiles}
+            onFileSelect={setRawFiles}
+            onOrganize={handleOrganize}
+            onContinue={() => navigate('/organize')}
+          />
+        )}
+        
+        {currentStep === 3 && (
+          <ReviewClassificationStep 
+            rawFiles={rawFiles}
+            onClassificationUpdate={(fileId: string, newCategory: string) => {
+              console.log(`File ${fileId} moved to category ${newCategory}`);
+            }}
+          />
+        )}
 
-      {currentStep === 4 && (
-        <ReviewClassificationStep 
-          rawFiles={rawFiles}
-          onClassificationUpdate={(fileId: string, newCategory: string) => {
-            console.log(`File ${fileId} moved to category ${newCategory}`);
-          }}
-        />
-      )}
-
-      {currentStep === 5 && (
-        <ReviewStep 
-          rawFiles={rawFiles}
-          selectedMusic={selectedMusic}
-          selectedStyle={selectedStyle}
-          organizationResult={mockOrganizationResult}
-        />
-      )}
-    </>
+        {currentStep === 4 && (
+          <div className="space-y-8">
+            <ReviewStep 
+              rawFiles={rawFiles}
+              selectedMusic={selectedMusic}
+              selectedStyle={selectedStyle}
+              organizationResult={organizationResult}
+            />
+            <ProjectExportOptions
+              onExport={(format) => {
+                toast({
+                  title: "Exporting Project",
+                  description: `Preparing ${format} project file...`
+                });
+              }}
+              isProcessing={false}
+              organizationResult={organizationResult}
+            />
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

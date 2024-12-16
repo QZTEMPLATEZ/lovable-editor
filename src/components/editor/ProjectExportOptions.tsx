@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Save } from 'lucide-react';
 import { motion } from "framer-motion";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { validateExportParameters } from '@/utils/validation/exportValidation';
 import { OrganizationResult } from '@/types/organizer';
 
