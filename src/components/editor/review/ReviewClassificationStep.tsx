@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import CategoryDropZone from './components/CategoryDropZone';
 import ReviewHeader from './components/ReviewHeader';
+import VideoThumbnailGrid from '../../organizer/VideoThumbnailGrid';
 
 interface ReviewClassificationStepProps {
   rawFiles?: File[];
@@ -31,6 +32,12 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
     fromCategory: string;
     toCategory: string;
   } | null>(null);
+
+  // Create a map of file names to their categories for the thumbnail grid
+  const fileCategories = files.reduce((acc, { file, category }) => {
+    acc[file.name] = category;
+    return acc;
+  }, {} as { [key: string]: string });
 
   const handleDragEnd = (result: any) => {
     if (!result.destination) return;
@@ -59,8 +66,8 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
       }
 
       toast({
-        title: "Category Updated",
-        description: `File moved to ${destinationCategory}`,
+        title: "Categoria Atualizada",
+        description: `Vídeo movido para ${destinationCategory}`,
       });
     }
   };
@@ -81,8 +88,8 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
       setLastMove(null);
 
       toast({
-        title: "Action Undone",
-        description: "File moved back to original category",
+        title: "Ação Desfeita",
+        description: "Vídeo retornou à categoria original",
       });
     }
   };
@@ -92,8 +99,8 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
     if (untaggedFiles.length > 0) {
       toast({
         variant: "destructive",
-        title: "Untagged Files",
-        description: "Please categorize all files before proceeding.",
+        title: "Vídeos Não Classificados",
+        description: "Por favor, classifique todos os vídeos antes de continuar.",
       });
       return;
     }
@@ -103,6 +110,17 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
   return (
     <div className="p-6 space-y-6">
       <ReviewHeader lastMove={lastMove} onUndo={handleUndo} />
+
+      <VideoThumbnailGrid 
+        videos={files.map(f => f.file)}
+        categories={fileCategories}
+        onReclassify={(videoIndex, newCategory) => {
+          const fileId = files[videoIndex].id;
+          if (onClassificationUpdate) {
+            onClassificationUpdate(fileId, newCategory);
+          }
+        }}
+      />
 
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -122,7 +140,7 @@ const ReviewClassificationStep: React.FC<ReviewClassificationStepProps> = ({
           onClick={handleNext}
           className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
         >
-          Next Step
+          Próxima Etapa
           <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </div>
