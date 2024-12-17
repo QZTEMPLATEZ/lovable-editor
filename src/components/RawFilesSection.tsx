@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
-import { FolderCategory } from '@/types';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription } from './ui/alert';
 import ProcessingStatus from './organizer/ProcessingStatus';
@@ -8,7 +7,6 @@ import DropZone from './organizer/DropZone';
 import FolderGrid from './organizer/FolderGrid';
 import VideoThumbnailGrid from './organizer/VideoThumbnailGrid';
 import { FOLDERS } from '@/constants/folderCategories';
-import { Badge } from './ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { videoAnalysisService } from '@/services/VideoAnalysisService';
 

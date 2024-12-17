@@ -2,11 +2,11 @@ import React from 'react';
 import { Progress } from "@/components/ui/progress";
 
 interface ProcessingStatusProps {
-  currentStep: string;
+  currentStep: "organizing" | "analyzing";
   progress: number;
   currentFile?: string;
   currentCategory?: string;
-  isComplete?: boolean;
+  isComplete: boolean;
 }
 
 const ProcessingStatus = ({
@@ -20,7 +20,7 @@ const ProcessingStatus = ({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">
-          {isComplete ? "Processamento Completo!" : "Processando vídeos..."}
+          {isComplete ? "Processamento Completo!" : `${currentStep === "organizing" ? "Organizando" : "Analisando"} vídeos...`}
         </h3>
         <span className="text-sm text-gray-400">{Math.round(progress)}%</span>
       </div>
@@ -28,14 +28,12 @@ const ProcessingStatus = ({
       <Progress value={progress} className="w-full" />
       
       {currentFile && !isComplete && (
-        <div className="space-y-2">
-          <p className="text-sm text-gray-400">
-            Analisando: {currentFile}
-          </p>
+        <div className="text-sm text-gray-300">
+          Processando: {currentFile}
           {currentCategory && (
-            <p className="text-sm text-gray-400">
+            <span className="block mt-1 text-purple-400">
               Categoria detectada: {currentCategory}
-            </p>
+            </span>
           )}
         </div>
       )}

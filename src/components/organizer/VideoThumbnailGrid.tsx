@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FileVideo, Folder } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { 
