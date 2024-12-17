@@ -36,7 +36,7 @@ export class VideoAnalysisService {
       // Ensure we always return a category
       if (!result.category || result.confidence < 0.2) {
         logger.info(`Low confidence for ${file.name}, marking as untagged`);
-        return { category: 'untagged', confidence: 0.1 };
+        return { category: 'Untagged', confidence: 0.1 };
       }
       
       logger.info(`Final classification for ${file.name}: ${result.category} (confidence: ${result.confidence})`);
@@ -45,7 +45,7 @@ export class VideoAnalysisService {
     } catch (error) {
       logger.error(`Error analyzing file ${file.name}:`, error);
       // Always return untagged instead of throwing error
-      return { category: 'untagged', confidence: 0.1 };
+      return { category: 'Untagged', confidence: 0.1 };
     }
   }
 }
