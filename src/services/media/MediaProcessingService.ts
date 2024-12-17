@@ -1,4 +1,5 @@
-import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
+import { FFmpeg } from '@ffmpeg/ffmpeg';
+import { fetchFile, toBlobURL } from '@ffmpeg/util';
 import { logger } from '../../utils/logger';
 
 interface AudioAnalysisResult {
@@ -20,14 +21,11 @@ interface VideoSegment {
 
 export class MediaProcessingService {
   private static instance: MediaProcessingService;
-  private ffmpeg: any;
+  private ffmpeg: FFmpeg;
   private initialized = false;
 
   private constructor() {
-    this.ffmpeg = createFFmpeg({
-      log: true,
-      corePath: 'https://unpkg.com/@ffmpeg/core@0.12.2/dist/ffmpeg-core.js'
-    });
+    this.ffmpeg = new FFmpeg();
   }
 
   static getInstance(): MediaProcessingService {
@@ -40,7 +38,10 @@ export class MediaProcessingService {
   async initialize() {
     if (!this.initialized) {
       try {
-        await this.ffmpeg.load();
+        await this.ffmpeg.load({
+          coreURL: await toBlobURL('/ffmpeg-core.js', 'text/javascript'),
+          wasmURL: await toBlobURL('/ffmpeg-core.wasm', 'application/wasm'),
+        });
         this.initialized = true;
         logger.info('FFmpeg initialized successfully');
       } catch (error) {
@@ -57,19 +58,19 @@ export class MediaProcessingService {
       const inputFileName = 'input.mp4';
       const outputFileName = 'output.wav';
       
-      this.ffmpeg.FS('writeFile', inputFileName, await fetchFile(videoFile));
+      await this.ffmpeg.writeFile(inputFileName, await fetchFile(videoFile));
       
-      await this.ffmpeg.run(
+      await this.ffmpeg.exec([
         '-i', inputFileName,
         '-vn',
         '-acodec', 'pcm_s16le',
         '-ar', '44100',
         '-ac', '2',
         outputFileName
-      );
+      ]);
       
-      const data = this.ffmpeg.FS('readFile', outputFileName);
-      return new Blob([data.buffer], { type: 'audio/wav' });
+      const data = await this.ffmpeg.readFile(outputFileName);
+      return new Blob([data], { type: 'audio/wav' });
     } catch (error) {
       logger.error('Error extracting audio:', error);
       throw error;
@@ -96,14 +97,14 @@ export class MediaProcessingService {
       const inputFileName = 'input.mp4';
       const outputPattern = 'frame%d.jpg';
       
-      this.ffmpeg.FS('writeFile', inputFileName, await fetchFile(videoFile));
+      await this.ffmpeg.writeFile(inputFileName, await fetchFile(videoFile));
       
-      await this.ffmpeg.run(
+      await this.ffmpeg.exec([
         '-i', inputFileName,
         '-vf', `fps=${fps}`,
         '-frame_pts', '1',
         outputPattern
-      );
+      ]);
       
       // Ler os frames gerados
       const frames: Blob[] = [];
@@ -111,8 +112,8 @@ export class MediaProcessingService {
       
       while (true) {
         try {
-          const frameData = this.ffmpeg.FS('readFile', `frame${frameCount + 1}.jpg`);
-          frames.push(new Blob([frameData.buffer], { type: 'image/jpeg' }));
+          const frameData = await this.ffmpeg.readFile(`frame${frameCount + 1}.jpg`);
+          frames.push(new Blob([frameData], { type: 'image/jpeg' }));
           frameCount++;
         } catch {
           break;
@@ -138,11 +139,10 @@ export class MediaProcessingService {
   async cleanup() {
     if (this.initialized) {
       try {
-        // Limpar arquivos temporários
-        const files = this.ffmpeg.FS('readdir', '/');
+        const files = await this.ffmpeg.listFiles('/');
         for (const file of files) {
           if (file !== '.' && file !== '..') {
-            this.ffmpeg.FS('unlink', file);
+            await this.ffmpeg.deleteFile(file);
           }
         }
       } catch (error) {

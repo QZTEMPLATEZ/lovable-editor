@@ -16,7 +16,7 @@ export class ObjectDetectionService {
     return this.model;
   }
 
-  static async detectObjects(imageElement: HTMLImageElement | ImageBitmap): Promise<cocoSsd.DetectedObject[]> {
+  static async detectObjects(imageElement: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement): Promise<cocoSsd.DetectedObject[]> {
     try {
       const model = await this.initialize();
       const predictions = await model.detect(imageElement);
