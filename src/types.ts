@@ -13,7 +13,7 @@ export interface VideoSizeRange {
 
 export interface FolderCategory {
   name: string;
-  icon: ReactNode;
+  icon: () => ReactNode;  // Changed to function returning ReactNode
   description: string;
   expectedTypes: string;
   color: string;
