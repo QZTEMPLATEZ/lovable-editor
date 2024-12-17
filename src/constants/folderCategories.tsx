@@ -1,4 +1,5 @@
-import { Heart, FileVideo, PartyPopper, Camera, Users, Music } from 'lucide-react';
+import React from 'react';
+import { Heart, FileVideo, PartyPopper, Camera } from 'lucide-react';
 import { FolderCategory } from '@/types';
 
 export const FOLDERS: FolderCategory[] = [
@@ -53,5 +54,5 @@ export const FOLDERS: FolderCategory[] = [
   }
 ];
 
-// Export FOLDER_CATEGORIES as an alias of FOLDERS for backward compatibility
+// Mantendo a compatibilidade com o nome anterior
 export const FOLDER_CATEGORIES = FOLDERS;
