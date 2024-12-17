@@ -1,4 +1,5 @@
 import { logger } from '../../../utils/logger';
+import { objectDetectionService } from '../../detection/ObjectDetectionService';
 
 interface CategoryAnalysis {
   bridePrep: { isPrep: boolean; confidence: number };
@@ -7,10 +8,25 @@ interface CategoryAnalysis {
   drone: { isDrone: boolean; confidence: number };
   filename: string;
   predictions: any[];
+  sceneAnalysis?: Awaited<ReturnType<typeof objectDetectionService.analyzeWeddingScene>>;
 }
 
 export class CategoryMatcher {
-  static getBestCategory(analysis: CategoryAnalysis): { category: string; confidence: number } {
+  static async getBestCategory(analysis: CategoryAnalysis): Promise<{ category: string; confidence: number }> {
+    // Use scene analysis if available
+    if (analysis.sceneAnalysis) {
+      if (analysis.sceneAnalysis.hasBride && analysis.sceneAnalysis.confidence > 0.7) {
+        return { category: 'brideprep', confidence: analysis.sceneAnalysis.confidence };
+      }
+      if (analysis.sceneAnalysis.hasGroom && analysis.sceneAnalysis.confidence > 0.7) {
+        return { category: 'groomprep', confidence: analysis.sceneAnalysis.confidence };
+      }
+      if (analysis.sceneAnalysis.hasDecoration && analysis.sceneAnalysis.confidence > 0.6) {
+        return { category: 'decoration', confidence: analysis.sceneAnalysis.confidence };
+      }
+    }
+
+    // Fallback to traditional analysis
     const categories = [
       { name: 'brideprep', match: analysis.bridePrep.isPrep, confidence: analysis.bridePrep.confidence },
       { name: 'groomprep', match: analysis.groomPrep.isPrep, confidence: analysis.groomPrep.confidence },
