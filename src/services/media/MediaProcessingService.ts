@@ -23,6 +23,7 @@ export class MediaProcessingService {
   private static instance: MediaProcessingService;
   private ffmpeg: FFmpeg;
   private initialized = false;
+  private tempFiles: string[] = []; // Track temporary files
 
   private constructor() {
     this.ffmpeg = new FFmpeg();
@@ -58,6 +59,7 @@ export class MediaProcessingService {
       const inputFileName = 'input.mp4';
       const outputFileName = 'output.wav';
       
+      this.tempFiles.push(inputFileName, outputFileName);
       await this.ffmpeg.writeFile(inputFileName, await fetchFile(videoFile));
       
       await this.ffmpeg.exec([
@@ -97,6 +99,7 @@ export class MediaProcessingService {
       const inputFileName = 'input.mp4';
       const outputPattern = 'frame%d.jpg';
       
+      this.tempFiles.push(inputFileName);
       await this.ffmpeg.writeFile(inputFileName, await fetchFile(videoFile));
       
       await this.ffmpeg.exec([
@@ -112,7 +115,9 @@ export class MediaProcessingService {
       
       while (true) {
         try {
-          const frameData = await this.ffmpeg.readFile(`frame${frameCount + 1}.jpg`);
+          const frameFileName = `frame${frameCount + 1}.jpg`;
+          this.tempFiles.push(frameFileName);
+          const frameData = await this.ffmpeg.readFile(frameFileName);
           frames.push(new Blob([frameData], { type: 'image/jpeg' }));
           frameCount++;
         } catch {
@@ -139,12 +144,15 @@ export class MediaProcessingService {
   async cleanup() {
     if (this.initialized) {
       try {
-        const files = await this.ffmpeg.listFiles('/');
-        for (const file of files) {
-          if (file !== '.' && file !== '..') {
-            await this.ffmpeg.deleteFile(file);
+        // Delete all tracked temporary files
+        for (const fileName of this.tempFiles) {
+          try {
+            await this.ffmpeg.deleteFile(fileName);
+          } catch (error) {
+            logger.error(`Error deleting file ${fileName}:`, error);
           }
         }
+        this.tempFiles = []; // Clear the temporary files list
       } catch (error) {
         logger.error('Error during cleanup:', error);
       }
