@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Upload, FileVideo, Heart, PartyPopper, Camera } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { FolderCategory } from '@/types';
 import { ScrollArea } from './ui/scroll-area';
@@ -33,32 +32,27 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
   const { toast } = useToast();
   const [fileCategories, setFileCategories] = useState<Record<string, string>>({});
 
-  // Start processing automatically when files are added
   useEffect(() => {
     const processFiles = async () => {
       if (videoFiles.length > 0 && !isProcessing) {
         setIsProcessing(true);
         setProgress(0);
         setIsComplete(false);
-        setCategorizedFiles(FOLDERS.reduce((acc, folder) => ({ ...acc, [folder.name]: 0 }), {}));
 
         for (let i = 0; i < videoFiles.length; i++) {
           const file = videoFiles[i];
           setCurrentFile(file.name);
 
           try {
-            // Analyze video using AI service
             const result = await videoAnalysisService.analyzeVideo(file);
             const category = result.category || 'Untagged';
             setCurrentCategory(category);
             
-            // Update categorized files count
             setCategorizedFiles(prev => ({
               ...prev,
               [category]: (prev[category] || 0) + 1
             }));
 
-            // Store category for this file
             setFileCategories(prev => ({
               ...prev,
               [file.name]: category
@@ -73,7 +67,6 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
               description: `Error processing ${file.name}. File will be marked as Untagged.`,
             });
             
-            // Mark as untagged on error
             setFileCategories(prev => ({
               ...prev,
               [file.name]: 'Untagged'
@@ -97,33 +90,9 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
     processFiles();
   }, [videoFiles, toast]);
 
-  const handleReclassify = (videoIndex: number, newCategory: string) => {
-    const file = videoFiles[videoIndex];
-    if (file) {
-      const oldCategory = fileCategories[file.name];
-      
-      // Update categories count
-      setCategorizedFiles(prev => ({
-        ...prev,
-        [oldCategory]: prev[oldCategory] - 1,
-        [newCategory]: prev[newCategory] + 1
-      }));
-
-      // Update file category
-      setFileCategories(prev => ({
-        ...prev,
-        [file.name]: newCategory
-      }));
-
-      toast({
-        title: "Video Reclassified",
-        description: `Moved to ${newCategory}`,
-      });
-    }
-  };
-
   return (
     <div className="space-y-6">
+      {/* Grid de Pastas sempre visível */}
       <FolderGrid 
         categories={FOLDERS}
         categorizedFiles={categorizedFiles}
@@ -149,32 +118,10 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
                 </Alert>
                 
                 <ScrollArea className="h-[600px] rounded-lg">
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <AnimatePresence>
-                      {videoFiles.map((file, index) => (
-                        <motion.div
-                          key={file.name}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.95 }}
-                          className="relative group"
-                        >
-                          <div className="aspect-video bg-editor-panel rounded-lg overflow-hidden border border-purple-500/20 group-hover:border-purple-500 transition-colors">
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <FileVideo className="w-8 h-8 text-purple-400" />
-                            </div>
-                            <Badge 
-                              variant="secondary"
-                              className="absolute bottom-2 left-2 flex items-center gap-1"
-                            >
-                              {fileCategories[file.name] || 'Processing...'}
-                            </Badge>
-                          </div>
-                          <p className="mt-2 text-sm text-gray-300 truncate">{file.name}</p>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                  </div>
+                  <VideoThumbnailGrid
+                    videos={videoFiles}
+                    categories={fileCategories}
+                  />
                 </ScrollArea>
               </div>
             ) : (
