@@ -20,7 +20,9 @@ const ProcessingStatus = ({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">
-          {isComplete ? "Processamento Completo!" : `${currentStep === "organizing" ? "Organizando" : "Analisando"} vídeos...`}
+          {isComplete 
+            ? "Processamento Completo!" 
+            : `${currentStep === "organizing" ? "Organizando" : "Analisando"} vídeos...`}
         </h3>
         <span className="text-sm text-gray-400">{Math.round(progress)}%</span>
       </div>
