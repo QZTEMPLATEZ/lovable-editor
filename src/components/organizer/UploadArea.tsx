@@ -23,29 +23,28 @@ const UploadArea = ({
 }: UploadAreaProps) => {
   return (
     <div className="space-y-6">
-      {videoFiles.length > 0 ? (
-        <div className="space-y-6">
-          <Alert>
-            <AlertDescription>
-              Review the classification of videos below. Drag and drop to reclassify if needed.
+      <DropZone
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        onClick={() => fileInputRef.current?.click()}
+        fileInputRef={fileInputRef}
+        handleFileSelect={handleFileSelect}
+      />
+
+      {videoFiles.length > 0 && (
+        <div className="space-y-4">
+          <Alert className="bg-purple-500/10 border-purple-500/30">
+            <AlertDescription className="text-purple-200">
+              {videoFiles.length} video{videoFiles.length !== 1 ? 's' : ''} selected. 
+              Hover over thumbnails to preview.
             </AlertDescription>
           </Alert>
           
-          <ScrollArea className="h-[600px] rounded-lg">
-            <VideoThumbnailGrid
-              videos={videoFiles}
-              categories={fileCategories}
-            />
-          </ScrollArea>
+          <VideoThumbnailGrid
+            videos={videoFiles}
+            categories={fileCategories}
+          />
         </div>
-      ) : (
-        <DropZone
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          onClick={() => fileInputRef.current?.click()}
-          fileInputRef={fileInputRef}
-          handleFileSelect={handleFileSelect}
-        />
       )}
     </div>
   );
