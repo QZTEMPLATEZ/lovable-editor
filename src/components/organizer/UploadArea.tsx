@@ -9,6 +9,7 @@ interface UploadAreaProps {
   onDragOver: (e: React.DragEvent) => void;
   videoFiles: File[];
   fileCategories: Record<string, string>;
+  processingStatus: Record<string, boolean>;
   fileInputRef: React.RefObject<HTMLInputElement>;
   handleFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -18,6 +19,7 @@ const UploadArea = ({
   onDragOver,
   videoFiles,
   fileCategories,
+  processingStatus,
   fileInputRef,
   handleFileSelect
 }: UploadAreaProps) => {
@@ -43,6 +45,7 @@ const UploadArea = ({
           <VideoThumbnailGrid
             videos={videoFiles}
             categories={fileCategories}
+            processingStatus={processingStatus}
           />
         </div>
       )}
