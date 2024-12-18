@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import DropZone from './DropZone';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -36,7 +36,7 @@ const UploadArea = ({
           <Alert className="bg-purple-500/10 border-purple-500/30">
             <AlertDescription className="text-purple-200">
               {videoFiles.length} video{videoFiles.length !== 1 ? 's' : ''} selected. 
-              Hover over thumbnails to preview.
+              Processing will start automatically.
             </AlertDescription>
           </Alert>
           
