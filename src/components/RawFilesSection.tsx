@@ -22,7 +22,8 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
     isProcessing,
     isComplete,
     categorizedFiles,
-    fileCategories
+    fileCategories,
+    processingStatus
   } = useVideoProcessing(videoFiles);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +60,7 @@ const RawFilesSection = ({ onDrop, onDragOver, videoFiles }: RawFilesSectionProp
             onDragOver={onDragOver}
             videoFiles={videoFiles}
             fileCategories={fileCategories}
+            processingStatus={processingStatus}
             fileInputRef={fileInputRef}
             handleFileSelect={handleFileSelect}
           />

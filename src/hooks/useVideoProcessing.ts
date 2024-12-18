@@ -13,6 +13,7 @@ export const useVideoProcessing = (videoFiles: File[]) => {
     FOLDERS.reduce((acc, folder) => ({ ...acc, [folder.name]: 0 }), {})
   );
   const [fileCategories, setFileCategories] = useState<Record<string, string>>({});
+  const [processingStatus, setProcessingStatus] = useState<Record<string, boolean>>({});
   const { toast } = useToast();
 
   useEffect(() => {
@@ -21,6 +22,13 @@ export const useVideoProcessing = (videoFiles: File[]) => {
         setIsProcessing(true);
         setProgress(0);
         setIsComplete(false);
+
+        // Initialize processing status for all files
+        const initialStatus = videoFiles.reduce((acc, file) => ({
+          ...acc,
+          [file.name]: true
+        }), {});
+        setProcessingStatus(initialStatus);
 
         for (let i = 0; i < videoFiles.length; i++) {
           const file = videoFiles[i];
@@ -41,6 +49,12 @@ export const useVideoProcessing = (videoFiles: File[]) => {
               [file.name]: category
             }));
 
+            // Update processing status for this file
+            setProcessingStatus(prev => ({
+              ...prev,
+              [file.name]: false
+            }));
+
             setProgress(((i + 1) / videoFiles.length) * 100);
           } catch (error) {
             console.error('Error processing file:', error);
@@ -57,6 +71,12 @@ export const useVideoProcessing = (videoFiles: File[]) => {
             setCategorizedFiles(prev => ({
               ...prev,
               'Untagged': (prev['Untagged'] || 0) + 1
+            }));
+
+            // Mark as complete even if there was an error
+            setProcessingStatus(prev => ({
+              ...prev,
+              [file.name]: false
             }));
           }
         }
@@ -80,6 +100,7 @@ export const useVideoProcessing = (videoFiles: File[]) => {
     isProcessing,
     isComplete,
     categorizedFiles,
-    fileCategories
+    fileCategories,
+    processingStatus
   };
 };
