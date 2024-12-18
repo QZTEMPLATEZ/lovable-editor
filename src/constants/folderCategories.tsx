@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, FileVideo, PartyPopper, Camera } from 'lucide-react';
+import { Heart, FileVideo, PartyPopper, Camera, Image, Users, Folder } from 'lucide-react';
 import { FolderCategory } from '@/types';
 
 export const FOLDERS: FolderCategory[] = [
@@ -46,9 +46,23 @@ export const FOLDERS: FolderCategory[] = [
     color: 'from-green-500/20 to-emerald-500/20' 
   },
   { 
-    name: 'Untagged', 
-    icon: <FileVideo className="w-5 h-5" />, 
-    description: 'Videos pending classification', 
+    name: 'CoupleScenes', 
+    icon: <Users className="w-5 h-5" />, 
+    description: 'Romantic moments and couple interactions', 
+    expectedTypes: '.mp4,.mov', 
+    color: 'from-red-500/20 to-pink-500/20' 
+  },
+  { 
+    name: 'ProtocolPhotos', 
+    icon: <Image className="w-5 h-5" />, 
+    description: 'Formal and protocol photography sessions', 
+    expectedTypes: '.mp4,.mov', 
+    color: 'from-violet-500/20 to-purple-500/20' 
+  },
+  { 
+    name: 'OtherMoments', 
+    icon: <Folder className="w-5 h-5" />, 
+    description: 'Uncategorized and miscellaneous moments', 
     expectedTypes: '.mp4,.mov', 
     color: 'from-gray-500/20 to-slate-500/20' 
   }
