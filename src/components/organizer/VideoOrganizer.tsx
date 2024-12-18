@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useFileProcessing } from '../../hooks/useFileProcessing';
@@ -11,6 +11,7 @@ import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import { useToast } from "@/hooks/use-toast";
 import ProcessingStatus from './processing/ProcessingStatus';
 import ProcessingStatusDisplay from './status/ProcessingStatusDisplay';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const VideoOrganizer = () => {
   const navigate = useNavigate();
@@ -45,8 +46,7 @@ const VideoOrganizer = () => {
     }
 
     handleFilesSelected(videoFiles);
-    // Estimate remaining time based on number of files
-    setRemainingTimeMinutes(Math.ceil(videoFiles.length * 0.5)); // 30 seconds per file estimate
+    setRemainingTimeMinutes(Math.ceil(videoFiles.length * 0.5));
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,20 +65,7 @@ const VideoOrganizer = () => {
     }
 
     handleFilesSelected(videoFiles);
-    // Estimate remaining time based on number of files
-    setRemainingTimeMinutes(Math.ceil(videoFiles.length * 0.5)); // 30 seconds per file estimate
-  };
-
-  const handleContinue = () => {
-    if (analysisResults.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "No files processed",
-        description: "Please upload and process some files before continuing."
-      });
-      return;
-    }
-    navigate('/review');
+    setRemainingTimeMinutes(Math.ceil(videoFiles.length * 0.5));
   };
 
   const totalProgress = files.length ? ((successCount + errorCount) / files.length) * 100 : 0;
@@ -90,10 +77,21 @@ const VideoOrganizer = () => {
       className="container mx-auto px-4 py-8 space-y-8"
     >
       <div className="space-y-6">
-        <FileUploadZone
-          onDrop={handleDrop}
-          onFileSelect={handleFileSelect}
-        />
+        <Alert className="bg-purple-500/10 border-purple-500/30">
+          <AlertDescription className="text-purple-200">
+            Your files will be organized into the following categories using AI image recognition.
+            Upload your files when ready.
+          </AlertDescription>
+        </Alert>
+
+        <FolderGrid categories={FOLDER_CATEGORIES} />
+
+        <div className="mt-8">
+          <FileUploadZone
+            onDrop={handleDrop}
+            onFileSelect={handleFileSelect}
+          />
+        </div>
 
         <ProcessingStatus
           isProcessing={isProcessing}
@@ -115,27 +113,12 @@ const VideoOrganizer = () => {
           isProcessing={isProcessing}
         />
 
-        {analysisResults.length > 0 && (
-          <>
-            <FolderGrid categories={FOLDER_CATEGORIES} />
-            
-            <div className="flex justify-end mt-6">
-              <Button
-                onClick={handleContinue}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-              >
-                Continue to Review
-              </Button>
-            </div>
-          </>
-        )}
+        <ProcessingStatusDisplay
+          successCount={successCount}
+          errorCount={errorCount}
+          isProcessing={isProcessing}
+        />
       </div>
-
-      <ProcessingStatusDisplay
-        successCount={successCount}
-        errorCount={errorCount}
-        isProcessing={isProcessing}
-      />
     </motion.div>
   );
 };

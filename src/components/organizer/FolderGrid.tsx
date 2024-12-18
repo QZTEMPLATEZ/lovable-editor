@@ -1,6 +1,7 @@
 import React from 'react';
-import { FolderCategory } from '@/types';
 import { motion } from 'framer-motion';
+import { FolderCategory } from '@/types';
+import { Folder } from 'lucide-react';
 
 interface FolderGridProps {
   categories: FolderCategory[];
@@ -9,7 +10,7 @@ interface FolderGridProps {
 
 const FolderGrid: React.FC<FolderGridProps> = ({ categories, categorizedFiles = {} }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {categories.map((category, index) => (
         <motion.div
           key={category.name}
@@ -19,14 +20,17 @@ const FolderGrid: React.FC<FolderGridProps> = ({ categories, categorizedFiles = 
           className={`relative flex items-center gap-3 p-4 rounded-xl border border-purple-500/20 bg-gradient-to-br ${category.color} backdrop-blur-sm hover:bg-opacity-75 transition-all duration-300 group cursor-pointer`}
         >
           <div className="text-white/80 group-hover:text-white transition-colors">
-            {category.icon}
+            {category.icon || <Folder className="w-5 h-5" />}
           </div>
           <div className="flex-1">
             <h3 className="text-sm font-medium text-white/90 group-hover:text-white transition-colors">
               {category.name}
             </h3>
             <p className="text-xs text-white/60">
-              {categorizedFiles[category.name] || 0} vídeos
+              {categorizedFiles[category.name] || 0} videos
+            </p>
+            <p className="text-xs text-white/40 mt-1">
+              {category.description}
             </p>
           </div>
         </motion.div>
