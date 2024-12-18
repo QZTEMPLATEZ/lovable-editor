@@ -13,11 +13,13 @@ import {
 interface VideoThumbnailGridProps {
   videos: File[];
   categories: Record<string, string>;
+  onReclassify?: (videoIndex: number, newCategory: string) => void;
 }
 
 const VideoThumbnailGrid: React.FC<VideoThumbnailGridProps> = ({
   videos,
-  categories
+  categories,
+  onReclassify
 }) => {
   return (
     <ScrollArea className="h-[400px]">
