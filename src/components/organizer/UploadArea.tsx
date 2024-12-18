@@ -14,7 +14,7 @@ interface UploadAreaProps {
   handleFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const UploadArea = ({
+const UploadArea: React.FC<UploadAreaProps> = ({
   onDrop,
   onDragOver,
   videoFiles,
@@ -22,7 +22,7 @@ const UploadArea = ({
   processingStatus,
   fileInputRef,
   handleFileSelect
-}: UploadAreaProps) => {
+}) => {
   return (
     <div className="space-y-6">
       <DropZone
@@ -37,8 +37,8 @@ const UploadArea = ({
         <div className="space-y-4">
           <Alert className="bg-purple-500/10 border-purple-500/30">
             <AlertDescription className="text-purple-200">
-              {videoFiles.length} video{videoFiles.length !== 1 ? 's' : ''} selected. 
-              Processing will start automatically.
+              {videoFiles.length} vídeo{videoFiles.length !== 1 ? 's' : ''} selecionado{videoFiles.length !== 1 ? 's' : ''}. 
+              O processamento começará automaticamente.
             </AlertDescription>
           </Alert>
           

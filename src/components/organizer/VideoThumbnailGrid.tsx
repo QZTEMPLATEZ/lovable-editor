@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileVideo, CheckCircle2, Loader2 } from 'lucide-react';
+import { FileVideo, CheckCircle2, Loader2, Tag } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
@@ -59,8 +59,9 @@ const VideoThumbnailGrid: React.FC<VideoThumbnailGridProps> = ({
                       {categories[video.name] && (
                         <Badge 
                           variant="outline" 
-                          className="text-[10px] bg-purple-500/20 text-purple-200"
+                          className="text-[10px] bg-purple-500/20 text-purple-200 flex items-center gap-1"
                         >
+                          <Tag className="w-3 h-3" />
                           {categories[video.name]}
                         </Badge>
                       )}
@@ -69,24 +70,27 @@ const VideoThumbnailGrid: React.FC<VideoThumbnailGridProps> = ({
                 </div>
 
                 {/* Processing Status */}
-                {processingStatus[video.name] !== undefined && (
-                  <div className="absolute top-2 right-2">
-                    {processingStatus[video.name] ? (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                      >
-                        <Loader2 className="w-4 h-4 text-purple-400" />
-                      </motion.div>
-                    ) : (
+                <div className="absolute top-2 right-2">
+                  {processingStatus[video.name] ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                      className="bg-black/50 rounded-full p-1"
+                    >
+                      <Loader2 className="w-4 h-4 text-purple-400" />
+                    </motion.div>
+                  ) : (
+                    <div className="bg-black/50 rounded-full p-1">
                       <CheckCircle2 className="w-4 h-4 text-green-400" />
-                    )}
+                    </div>
+                  )}
+                </div>
+
+                {!categories[video.name] && (
+                  <div className="absolute top-2 left-2 bg-red-500/20 text-red-200 px-2 py-1 rounded-full text-xs">
+                    Não classificado
                   </div>
                 )}
-
-                <div className="absolute top-2 left-2 bg-black/80 rounded-full w-6 h-6 flex items-center justify-center">
-                  <span className="text-xs font-medium text-white">{index + 1}</span>
-                </div>
               </div>
             </motion.div>
           ))}
