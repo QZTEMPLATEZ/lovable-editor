@@ -20,23 +20,24 @@ export class VideoAnalysisService extends BaseVideoAnalyzer {
 
   async analyzeVideo(file: File): Promise<{ category: string; confidence: number }> {
     try {
-      logger.info(`Starting comprehensive analysis for file: ${file.name}`);
+      logger.info(`Starting analysis for file: ${file.name}`);
       
-      // Extract frames from different positions
-      const framePromises = [0.25, 0.5, 0.75].map(position => 
+      // Extract only key frames for efficient analysis
+      const framePositions = [0.25]; // Analyze only one frame at 25% of the video
+      const framePromises = framePositions.map(position => 
         FrameExtractor.extractFrameFromVideo(file, position)
       );
       
       const frames = await Promise.all(framePromises);
-      logger.info(`Extracted ${frames.length} frames for analysis from ${file.name}`);
+      logger.info(`Extracted ${frames.length} frame for analysis from ${file.name}`);
       
       // Initialize classifier if needed
       await this.initializeClassifier();
       
-      // Analyze each frame
+      // Analyze frame with optimized settings
       const predictions = await this.analyzePredictions(frames);
       
-      // Analyze specific categories
+      // Quick category analysis
       const [bridePrep, groomPrep, decoration, drone] = await Promise.all([
         this.prepAnalyzer.analyzePrepScene(predictions, 'bride'),
         this.prepAnalyzer.analyzePrepScene(predictions, 'groom'),
@@ -54,7 +55,7 @@ export class VideoAnalysisService extends BaseVideoAnalyzer {
         predictions
       });
 
-      logger.info(`Final classification for ${file.name}: ${result.category} (confidence: ${result.confidence})`);
+      logger.info(`Classification for ${file.name}: ${result.category} (confidence: ${result.confidence})`);
       return result;
       
     } catch (error) {
