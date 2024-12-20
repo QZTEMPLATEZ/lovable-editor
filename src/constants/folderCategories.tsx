@@ -1,4 +1,4 @@
-import { Camera, Video, Music, Image, Gift, Mic, FileVideo, Plane, Clock, Film, Heart, Gem, PartyPopper, HelpCircle } from 'lucide-react';
+import { Camera, Video, Music, Image, Gift, Mic, FileVideo, Plane, Clock, Film, Heart, Gem, PartyPopper } from 'lucide-react';
 import { FolderCategory } from '../types';
 
 export const FOLDER_CATEGORIES: FolderCategory[] = [
