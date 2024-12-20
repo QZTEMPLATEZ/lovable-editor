@@ -87,9 +87,10 @@ const Index = () => {
   };
 
   const handleStartProject = () => {
+    console.log('Starting new project...');
     try {
-      console.log('Starting new project...');
-      navigate('/duration');
+      // Forçar a navegação para a página de duração
+      window.location.href = '/duration';
       toast({
         title: "Starting New Project",
         description: "Preparing your wedding video editor...",
@@ -106,9 +107,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95">
-      {/* Hero Section - Optimized for mobile */}
       <div className={`relative flex items-center justify-center overflow-hidden ${isMobile ? 'h-[40vh]' : 'h-[60vh]'}`}>
-        {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -117,10 +116,9 @@ const Index = () => {
           }}
         />
         
-        {/* Content - Responsive text sizes */}
         <div className="relative z-10 text-center space-y-4 md:space-y-8 px-4">
           <h1 className="text-2xl md:text-5xl font-inter font-semibold tracking-wide text-white leading-tight">
-            Create Your Wedding Film
+            CREATE YOUR WEDDING FILM
           </h1>
           <p className="text-base md:text-xl text-gray-300 max-w-2xl mx-auto">
             Transform your wedding footage into a beautiful story
@@ -135,9 +133,7 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Main Content - Compact layout for mobile */}
       <div className="max-w-7xl mx-auto px-4 py-8 md:py-16 space-y-12 md:space-y-20">
-        {/* Recent Projects - Minimalist mobile version */}
         <div className={isMobile ? "space-y-4" : "space-y-8"}>
           <RecentProjects 
             projects={recentProjects.slice(0, isMobile ? 2 : 3)}
@@ -145,7 +141,6 @@ const Index = () => {
           />
         </div>
 
-        {/* Tutorials - Show only on desktop or if needed */}
         {!isMobile && (
           <TutorialSection 
             tutorials={tutorials}
