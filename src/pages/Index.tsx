@@ -66,8 +66,20 @@ const Index = () => {
   ];
 
   const handleResumeProject = (project: any) => {
-    console.log('Resuming project:', project);
-    navigate('/duration');
+    try {
+      navigate('/duration');
+      toast({
+        title: "Resuming Project",
+        description: `Opening ${project.name}...`,
+      });
+    } catch (error) {
+      console.error('Navigation error:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Could not open project. Please try again.",
+      });
+    }
   };
 
   const handleTutorialClick = (videoUrl: string) => {
@@ -127,7 +139,7 @@ const Index = () => {
         {/* Recent Projects - Minimalist mobile version */}
         <div className={isMobile ? "space-y-4" : "space-y-8"}>
           <RecentProjects 
-            projects={recentProjects.slice(0, isMobile ? 2 : 3)} // Show fewer items on mobile
+            projects={recentProjects.slice(0, isMobile ? 2 : 3)}
             onResumeProject={handleResumeProject}
           />
         </div>
