@@ -69,7 +69,8 @@ export class VideoAnalysisService extends BaseVideoAnalyzer {
     }
     
     const predictionPromises = frames.map(async frame => {
-      return await this.classifier(frame);
+      // Add the required second argument (empty object for default options)
+      return await this.classifier(frame, {});
     });
     
     const allPredictions = await Promise.all(predictionPromises);
