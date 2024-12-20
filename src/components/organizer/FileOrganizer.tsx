@@ -7,7 +7,7 @@ import { organizeFiles } from '@/utils/organizerUtils';
 import { DEFAULT_CATEGORIES } from '@/utils/organizerUtils';
 import { OrganizationResult } from '@/types/organizer';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Folder } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import ProcessStatus from './ProcessStatus';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
@@ -24,6 +24,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
   const [files, setFiles] = useState<File[]>([]);
   const [organizationResult, setOrganizationResult] = useState<OrganizationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [loadedFrames, setLoadedFrames] = useState<Set<string>>(new Set());
 
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
@@ -41,6 +42,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
   const processFiles = async (newFiles: File[]) => {
     setFiles(newFiles);
     setIsProcessing(true);
+    setLoadedFrames(new Set());
 
     try {
       const result = await organizeFiles(newFiles, DEFAULT_CATEGORIES);
@@ -48,7 +50,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
       
       toast({
         title: "Files Processed Successfully",
-        description: `${result.stats.categorizedCount} files categorized, ${result.stats.uncategorizedCount} need review.`,
+        description: `${result.stats.categorizedCount} files categorized.`,
       });
     } catch (error) {
       toast({
@@ -97,6 +99,10 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
     navigate('/edit');
   };
 
+  const handleFrameLoad = (fileName: string) => {
+    setLoadedFrames(prev => new Set(prev).add(fileName));
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -113,8 +119,8 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
       {isProcessing && (
         <ProcessStatus
           totalFiles={files.length}
-          processedFiles={0}
-          successCount={0}
+          processedFiles={loadedFrames.size}
+          successCount={loadedFrames.size}
           errorCount={0}
         />
       )}
@@ -160,6 +166,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
                               <VideoFrame
                                 file={file}
                                 className="border border-purple-500/20 hover:border-purple-500/40 transition-colors"
+                                onLoad={() => handleFrameLoad(file.name)}
                               />
                               <div className="mt-2">
                                 <p className="text-xs text-gray-300 truncate">

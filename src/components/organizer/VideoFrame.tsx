@@ -4,9 +4,10 @@ import { FileVideo } from 'lucide-react';
 interface VideoFrameProps {
   file: File;
   className?: string;
+  onLoad?: () => void;
 }
 
-const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "" }) => {
+const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -30,14 +31,20 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "" }) => {
             if (context) {
               context.drawImage(video, 0, 0, canvas.width, canvas.height);
               URL.revokeObjectURL(video.src);
+              onLoad?.();
             }
           }, { once: true });
         }
       });
+
+      // Handle errors
+      video.addEventListener('error', () => {
+        console.error('Error loading video for frame extraction');
+      });
     };
 
     extractFrame();
-  }, [file]);
+  }, [file, onLoad]);
 
   return (
     <div className={`relative aspect-video bg-black/20 rounded-lg overflow-hidden ${className}`}>
