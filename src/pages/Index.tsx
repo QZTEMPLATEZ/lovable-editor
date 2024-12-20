@@ -89,8 +89,7 @@ const Index = () => {
   const handleStartProject = () => {
     console.log('Starting new project...');
     try {
-      // Forçar a navegação para a página de duração
-      window.location.href = '/duration';
+      navigate('/duration');
       toast({
         title: "Starting New Project",
         description: "Preparing your wedding video editor...",
