@@ -9,8 +9,13 @@ import { OrganizationResult } from '@/types/organizer';
 import CategoryGrid from './categories/CategoryGrid';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import ProcessStatus from './ProcessStatus';
 
-const FileOrganizer = () => {
+interface FileOrganizerProps {
+  isEditMode?: boolean;
+}
+
+const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [files, setFiles] = useState<File[]>([]);
@@ -56,17 +61,14 @@ const FileOrganizer = () => {
   const handleCategoryUpdate = (fileId: string, newCategory: string) => {
     if (!organizationResult) return;
 
-    // Update the organization result with the new category
     const updatedFiles = new Map(organizationResult.categorizedFiles);
     
-    // Remove file from old category
     updatedFiles.forEach((files, category) => {
       const fileIndex = files.findIndex(f => f.name === fileId);
       if (fileIndex !== -1) {
         const file = files[fileIndex];
         files.splice(fileIndex, 1);
         
-        // Add file to new category
         const categoryFiles = updatedFiles.get(newCategory) || [];
         categoryFiles.push(file);
         updatedFiles.set(newCategory, categoryFiles);
@@ -93,7 +95,7 @@ const FileOrganizer = () => {
       });
       return;
     }
-    navigate('/review');
+    navigate('/edit');
   };
 
   return (
@@ -102,7 +104,7 @@ const FileOrganizer = () => {
       animate={{ opacity: 1 }}
       className="container mx-auto px-4 py-8 space-y-6"
     >
-      {!organizationResult && (
+      {!organizationResult && !isEditMode && (
         <FileUploadZone
           onDrop={handleDrop}
           onFileSelect={handleFileSelect}
@@ -110,10 +112,12 @@ const FileOrganizer = () => {
       )}
 
       {isProcessing && (
-        <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4" />
-          <p className="text-purple-300">Processing your files...</p>
-        </div>
+        <ProcessStatus
+          totalFiles={files.length}
+          processedFiles={0}
+          successCount={0}
+          errorCount={0}
+        />
       )}
 
       {organizationResult && !isProcessing && (
@@ -129,7 +133,7 @@ const FileOrganizer = () => {
               onClick={handleContinue}
               className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
             >
-              Continue to Review
+              Continue to Edit
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
