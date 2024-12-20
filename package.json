@@ -13,7 +13,10 @@
   "dependencies": {
     "@capacitor/cli": "^6.2.0",
     "@capacitor/core": "^6.2.0",
+    "@capacitor/device": "^6.0.2",
+    "@capacitor/filesystem": "^6.0.2",
     "@capacitor/ios": "^6.2.0",
+    "@capacitor/status-bar": "^6.0.2",
     "@ffmpeg/ffmpeg": "^0.12.7",
     "@ffmpeg/util": "^0.12.1",
     "@hello-pangea/dnd": "^17.0.0",
