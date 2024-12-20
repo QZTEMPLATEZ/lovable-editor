@@ -33,12 +33,6 @@ export class VideoAnalysisService {
       // Get category match using all predictions
       const result = CategoryMatcher.matchCategoryFromPredictions(combinedPredictions);
       
-      // If confidence is low or no category was found, assign to OtherMoments
-      if (!result.category || result.confidence < 0.4) {
-        logger.info(`Low confidence (${result.confidence}) for ${file.name}, moving to OtherMoments`);
-        return { category: 'OtherMoments', confidence: result.confidence || 0.1 };
-      }
-      
       logger.info(`Final classification for ${file.name}: ${result.category} (confidence: ${result.confidence})`);
       return result;
       
