@@ -88,6 +88,7 @@ const Index = () => {
 
   const handleStartProject = () => {
     try {
+      console.log('Starting new project...');
       navigate('/duration');
       toast({
         title: "Starting New Project",
@@ -126,7 +127,7 @@ const Index = () => {
           </p>
           <Button
             onClick={handleStartProject}
-            className="relative px-6 py-4 md:px-8 md:py-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-base md:text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
+            className="relative px-6 py-4 md:px-8 md:py-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-base md:text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 active:scale-95"
           >
             <Wand2 className="w-4 h-4 md:w-5 md:h-5 mr-2 animate-pulse" />
             <span>Start New Project</span>
