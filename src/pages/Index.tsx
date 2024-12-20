@@ -90,6 +90,7 @@ const Index = () => {
     console.log('Starting new project...');
     try {
       navigate('/duration');
+      console.log('Navigation triggered to /duration');
       toast({
         title: "Starting New Project",
         description: "Preparing your wedding video editor...",
