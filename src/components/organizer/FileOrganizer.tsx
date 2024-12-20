@@ -6,10 +6,12 @@ import FileUploadZone from './FileUploadZone';
 import { organizeFiles } from '@/utils/organizerUtils';
 import { DEFAULT_CATEGORIES } from '@/utils/organizerUtils';
 import { OrganizationResult } from '@/types/organizer';
-import CategoryGrid from './categories/CategoryGrid';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import ProcessStatus from './ProcessStatus';
+import { DragDropContext } from '@hello-pangea/dnd';
+import CategoryContainer from './categories/CategoryContainer';
+import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 
 interface FileOrganizerProps {
   isEditMode?: boolean;
@@ -58,23 +60,19 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
     }
   };
 
-  const handleCategoryUpdate = (fileId: string, newCategory: string) => {
-    if (!organizationResult) return;
+  const handleDragEnd = (result: any) => {
+    if (!result.destination || !organizationResult) return;
 
     const updatedFiles = new Map(organizationResult.categorizedFiles);
+    const sourceFiles = updatedFiles.get(result.source.droppableId) || [];
+    const destFiles = updatedFiles.get(result.destination.droppableId) || [];
     
-    updatedFiles.forEach((files, category) => {
-      const fileIndex = files.findIndex(f => f.name === fileId);
-      if (fileIndex !== -1) {
-        const file = files[fileIndex];
-        files.splice(fileIndex, 1);
-        
-        const categoryFiles = updatedFiles.get(newCategory) || [];
-        categoryFiles.push(file);
-        updatedFiles.set(newCategory, categoryFiles);
-      }
-    });
-
+    const [movedFile] = sourceFiles.splice(result.source.index, 1);
+    destFiles.splice(result.destination.index, 0, movedFile);
+    
+    updatedFiles.set(result.source.droppableId, sourceFiles);
+    updatedFiles.set(result.destination.droppableId, destFiles);
+    
     setOrganizationResult({
       ...organizationResult,
       categorizedFiles: updatedFiles,
@@ -82,7 +80,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
 
     toast({
       title: "Category Updated",
-      description: `File moved to ${newCategory}`,
+      description: `File moved to ${result.destination.droppableId}`,
     });
   };
 
@@ -122,11 +120,27 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
 
       {organizationResult && !isProcessing && (
         <>
-          <CategoryGrid
-            categories={DEFAULT_CATEGORIES}
-            organizationResult={organizationResult}
-            onCategoryUpdate={handleCategoryUpdate}
-          />
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {FOLDER_CATEGORIES.map((category) => (
+                <Droppable key={category.name} droppableId={category.name}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                    >
+                      <CategoryContainer
+                        category={category}
+                        files={organizationResult.categorizedFiles.get(category.name) || []}
+                        isDraggingOver={snapshot.isDraggingOver}
+                      />
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              ))}
+            </div>
+          </DragDropContext>
 
           <div className="flex justify-end mt-8">
             <Button
