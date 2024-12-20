@@ -7,11 +7,12 @@ import { organizeFiles } from '@/utils/organizerUtils';
 import { DEFAULT_CATEGORIES } from '@/utils/organizerUtils';
 import { OrganizationResult } from '@/types/organizer';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Folder } from 'lucide-react';
 import ProcessStatus from './ProcessStatus';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-import CategoryContainer from './categories/CategoryContainer';
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
+import VideoThumbnail from './VideoThumbnail';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface FileOrganizerProps {
   isEditMode?: boolean;
@@ -119,39 +120,68 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
       )}
 
       {organizationResult && !isProcessing && (
-        <>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {FOLDER_CATEGORIES.map((category) => (
-                <Droppable key={category.name} droppableId={category.name}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <div className="space-y-8">
+            {/* Folder List */}
+            <div className="bg-editor-panel/50 rounded-xl p-4 border border-purple-500/20">
+              <h3 className="text-lg font-semibold mb-4">Categories</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {FOLDER_CATEGORIES.map((category) => {
+                  const filesInCategory = organizationResult.categorizedFiles.get(category.name) || [];
+                  return (
+                    <div 
+                      key={category.name}
+                      className={`flex items-center justify-between p-3 rounded-lg ${category.color} border border-white/10`}
                     >
-                      <CategoryContainer
-                        category={category}
-                        files={organizationResult.categorizedFiles.get(category.name) || []}
-                        isDraggingOver={snapshot.isDraggingOver}
-                      />
-                      {provided.placeholder}
+                      <div className="flex items-center gap-2">
+                        {category.icon}
+                        <span>{category.name}</span>
+                      </div>
+                      <span className="bg-black/20 px-2 py-1 rounded-full text-sm">
+                        {filesInCategory.length} files
+                      </span>
                     </div>
-                  )}
-                </Droppable>
-              ))}
+                  );
+                })}
+              </div>
             </div>
-          </DragDropContext>
 
-          <div className="flex justify-end mt-8">
-            <Button
-              onClick={handleContinue}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-            >
-              Continue to Edit
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+            {/* Classified Files Grid */}
+            <div className="bg-editor-panel/50 rounded-xl p-4 border border-purple-500/20">
+              <h3 className="text-lg font-semibold mb-4">Classified Files</h3>
+              <ScrollArea className="h-[500px]">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {Array.from(organizationResult.categorizedFiles.entries()).map(([category, files]) => (
+                    files.map((file, index) => (
+                      <Droppable key={`${file.name}-${index}`} droppableId={category}>
+                        {(provided) => (
+                          <div ref={provided.innerRef} {...provided.droppableProps}>
+                            <VideoThumbnail
+                              file={file}
+                              category={category}
+                              confidence={0.95} // You might want to get this from your AI classification
+                            />
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    ))
+                  ))}
+                </div>
+              </ScrollArea>
+            </div>
+
+            <div className="flex justify-end mt-8">
+              <Button
+                onClick={handleContinue}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+              >
+                Continue to Edit
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
           </div>
-        </>
+        </DragDropContext>
       )}
     </motion.div>
   );
