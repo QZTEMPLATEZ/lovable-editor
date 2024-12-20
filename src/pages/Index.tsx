@@ -89,7 +89,8 @@ const Index = () => {
   const handleStartProject = () => {
     console.log('Starting new project...');
     try {
-      navigate('/duration');
+      // Forçar a navegação usando window.location
+      window.location.href = '/duration';
       console.log('Navigation triggered to /duration');
       toast({
         title: "Starting New Project",
