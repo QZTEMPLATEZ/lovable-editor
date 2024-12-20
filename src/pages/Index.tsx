@@ -4,29 +4,33 @@ import { Button } from "@/components/ui/button";
 import { Wand2 } from 'lucide-react';
 import RecentProjects from '../components/dashboard/RecentProjects';
 import TutorialSection from '../components/dashboard/TutorialSection';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const { toast } = useToast();
 
   // Sample data for recent projects
   const recentProjects = [
     {
       id: '1',
-      name: "Summer Vacation Edit",
+      name: "Summer Wedding",
       lastModified: "2024-03-15",
       thumbnail: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
       videoUrl: "#"
     },
     {
       id: '2',
-      name: "Product Launch",
+      name: "Beach Wedding",
       lastModified: "2024-03-14",
       thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f",
       videoUrl: "#"
     },
     {
       id: '3',
-      name: "Wedding Highlights",
+      name: "Garden Wedding",
       lastModified: "2024-03-13",
       thumbnail: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
       videoUrl: "#"
@@ -37,24 +41,24 @@ const Index = () => {
   const tutorials = [
     {
       id: '1',
-      title: "Getting Started with Video Editing",
-      description: "Learn the basics of video editing with our comprehensive guide.",
+      title: "Wedding Video Basics",
+      description: "Learn the essentials of wedding video editing.",
       duration: "5:30",
       thumbnail: "https://images.unsplash.com/photo-1473091534298-04dcbce3278c",
       videoUrl: "#"
     },
     {
       id: '2',
-      title: "Advanced Transitions",
-      description: "Master the art of smooth transitions between clips.",
+      title: "Ceremony Transitions",
+      description: "Master smooth transitions between ceremony moments.",
       duration: "8:45",
       thumbnail: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
       videoUrl: "#"
     },
     {
       id: '3',
-      title: "Color Grading Masterclass",
-      description: "Perfect your color grading skills with professional techniques.",
+      title: "Reception Highlights",
+      description: "Create engaging reception highlight reels.",
       duration: "12:20",
       thumbnail: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
       videoUrl: "#"
@@ -71,13 +75,26 @@ const Index = () => {
   };
 
   const handleStartProject = () => {
-    navigate('/duration');
+    try {
+      navigate('/duration');
+      toast({
+        title: "Starting New Project",
+        description: "Preparing your wedding video editor...",
+      });
+    } catch (error) {
+      console.error('Navigation error:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Could not start new project. Please try again.",
+      });
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95">
-      {/* Hero Section */}
-      <div className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+      {/* Hero Section - Optimized for mobile */}
+      <div className={`relative flex items-center justify-center overflow-hidden ${isMobile ? 'h-[40vh]' : 'h-[60vh]'}`}>
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center"
@@ -87,39 +104,41 @@ const Index = () => {
           }}
         />
         
-        {/* Content */}
-        <div className="relative z-10 text-center space-y-8 px-4">
-          <h1 className="text-3xl md:text-5xl font-inter font-semibold tracking-wide text-white leading-tight">
-            Create Your Next Masterpiece
+        {/* Content - Responsive text sizes */}
+        <div className="relative z-10 text-center space-y-4 md:space-y-8 px-4">
+          <h1 className="text-2xl md:text-5xl font-inter font-semibold tracking-wide text-white leading-tight">
+            Create Your Wedding Film
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
-            Transform your raw footage into stunning videos with our AI-powered editor
+          <p className="text-base md:text-xl text-gray-300 max-w-2xl mx-auto">
+            Transform your wedding footage into a beautiful story
           </p>
-          <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-            <Button
-              onClick={handleStartProject}
-              className="relative px-8 py-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 group"
-            >
-              <Wand2 className="w-5 h-5 mr-2 animate-pulse" />
-              <span className="relative bg-clip-text">Start New Project</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl animate-pulse" />
-            </Button>
-          </div>
+          <Button
+            onClick={handleStartProject}
+            className="relative px-6 py-4 md:px-8 md:py-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-base md:text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300"
+          >
+            <Wand2 className="w-4 h-4 md:w-5 md:h-5 mr-2 animate-pulse" />
+            <span>Start New Project</span>
+          </Button>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-16 space-y-20">
-        <RecentProjects 
-          projects={recentProjects}
-          onResumeProject={handleResumeProject}
-        />
+      {/* Main Content - Compact layout for mobile */}
+      <div className="max-w-7xl mx-auto px-4 py-8 md:py-16 space-y-12 md:space-y-20">
+        {/* Recent Projects - Minimalist mobile version */}
+        <div className={isMobile ? "space-y-4" : "space-y-8"}>
+          <RecentProjects 
+            projects={recentProjects.slice(0, isMobile ? 2 : 3)} // Show fewer items on mobile
+            onResumeProject={handleResumeProject}
+          />
+        </div>
 
-        <TutorialSection 
-          tutorials={tutorials}
-          onTutorialClick={handleTutorialClick}
-        />
+        {/* Tutorials - Show only on desktop or if needed */}
+        {!isMobile && (
+          <TutorialSection 
+            tutorials={tutorials}
+            onTutorialClick={handleTutorialClick}
+          />
+        )}
       </div>
     </div>
   );
