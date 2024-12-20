@@ -9,7 +9,7 @@ import { OrganizationResult } from '@/types/organizer';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import ProcessStatus from './ProcessStatus';
-import { DragDropContext } from '@hello-pangea/dnd';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import CategoryContainer from './categories/CategoryContainer';
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 
