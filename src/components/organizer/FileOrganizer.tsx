@@ -9,10 +9,10 @@ import { OrganizationResult } from '@/types/organizer';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import ProcessStatus from './ProcessStatus';
-import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+import { DragDropContext } from '@hello-pangea/dnd';
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
-import VideoFrame from './VideoFrame';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import ZoomControls from './ZoomControls';
+import ClassifiedFilesGrid from './ClassifiedFilesGrid';
 
 interface FileOrganizerProps {
   isEditMode?: boolean;
@@ -25,6 +25,21 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
   const [organizationResult, setOrganizationResult] = useState<OrganizationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [loadedFrames, setLoadedFrames] = useState<Set<string>>(new Set());
+  const [gridSize, setGridSize] = useState<number>(2); // 2 = default size
+
+  const gridColumns = {
+    1: 'grid-cols-2 md:grid-cols-3 lg:grid-cols-6',
+    2: 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+  }[gridSize];
+
+  const handleZoomIn = () => {
+    setGridSize(prev => Math.min(prev + 1, 3));
+  };
+
+  const handleZoomOut = () => {
+    setGridSize(prev => Math.max(prev - 1, 1));
+  };
 
   const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
@@ -130,7 +145,14 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
           <div className="space-y-8">
             {/* Folder List */}
             <div className="bg-editor-panel/50 rounded-xl p-4 border border-purple-500/20">
-              <h3 className="text-lg font-semibold mb-4">Categories</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Categories</h3>
+                <ZoomControls
+                  onZoomIn={handleZoomIn}
+                  onZoomOut={handleZoomOut}
+                  disabled={isProcessing}
+                />
+              </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {FOLDER_CATEGORIES.map((category) => {
                   const filesInCategory = organizationResult.categorizedFiles.get(category.name) || [];
@@ -155,36 +177,11 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
             {/* Classified Files Grid */}
             <div className="bg-editor-panel/50 rounded-xl p-4 border border-purple-500/20">
               <h3 className="text-lg font-semibold mb-4">Classified Files</h3>
-              <ScrollArea className="h-[500px]">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {Array.from(organizationResult.categorizedFiles.entries()).map(([category, files]) => (
-                    files.map((file, index) => (
-                      <Droppable key={`${file.name}-${index}`} droppableId={category}>
-                        {(provided) => (
-                          <div ref={provided.innerRef} {...provided.droppableProps}>
-                            <div className="group">
-                              <VideoFrame
-                                file={file}
-                                className="border border-purple-500/20 hover:border-purple-500/40 transition-colors"
-                                onLoad={() => handleFrameLoad(file.name)}
-                              />
-                              <div className="mt-2">
-                                <p className="text-xs text-gray-300 truncate">
-                                  {file.name}
-                                </p>
-                                <p className="text-xs text-gray-400">
-                                  {category}
-                                </p>
-                              </div>
-                            </div>
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    ))
-                  ))}
-                </div>
-              </ScrollArea>
+              <ClassifiedFilesGrid
+                organizationResult={organizationResult}
+                onFrameLoad={handleFrameLoad}
+                gridColumns={gridColumns}
+              />
             </div>
 
             <div className="flex justify-end mt-8">
