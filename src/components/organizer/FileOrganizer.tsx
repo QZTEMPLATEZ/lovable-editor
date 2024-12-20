@@ -5,9 +5,8 @@ import { useFileProcessing } from '../../hooks/useFileProcessing';
 import FileUploadZone from './FileUploadZone';
 import FileProcessing from './FileProcessing';
 import FileAnalysisStatus from './FileAnalysisStatus';
-import FolderGrid from './FolderGrid';
+import ClassificationGrid from './ClassificationGrid';
 import { Button } from "@/components/ui/button";
-import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import { useToast } from "@/hooks/use-toast";
 
 const FileOrganizer = () => {
@@ -23,6 +22,8 @@ const FileOrganizer = () => {
     handleFilesSelected,
     stopProcessing
   } = useFileProcessing();
+
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -59,6 +60,20 @@ const FileOrganizer = () => {
     }
 
     handleFilesSelected(videoFiles);
+  };
+
+  const handleReclassify = (videoId: string, newCategory: string) => {
+    // In a real implementation, this would update the backend/database
+    console.log('Reclassifying video:', videoId, 'to category:', newCategory);
+    
+    toast({
+      title: "Video Reclassified",
+      description: "The AI will learn from this correction.",
+    });
+  };
+
+  const handlePreviewVideo = (file: File) => {
+    setPreviewFile(file);
   };
 
   const handleContinue = () => {
@@ -99,7 +114,15 @@ const FileOrganizer = () => {
 
         {analysisResults.length > 0 && (
           <>
-            <FolderGrid categories={FOLDER_CATEGORIES} />
+            <ClassificationGrid
+              videos={analysisResults.map(result => ({
+                file: result.file,
+                category: result.category,
+                confidence: result.confidence
+              }))}
+              onReclassify={handleReclassify}
+              onPreviewVideo={handlePreviewVideo}
+            />
             
             <div className="flex justify-end mt-6">
               <Button
@@ -110,6 +133,26 @@ const FileOrganizer = () => {
               </Button>
             </div>
           </>
+        )}
+
+        {previewFile && (
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+            <div className="relative w-full max-w-4xl">
+              <video
+                src={URL.createObjectURL(previewFile)}
+                className="w-full rounded-lg"
+                controls
+                autoPlay
+              />
+              <Button
+                className="absolute top-4 right-4"
+                variant="outline"
+                onClick={() => setPreviewFile(null)}
+              >
+                Close Preview
+              </Button>
+            </div>
+          </div>
         )}
       </div>
     </motion.div>
