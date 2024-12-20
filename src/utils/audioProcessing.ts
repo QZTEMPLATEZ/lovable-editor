@@ -1,6 +1,3 @@
-import { mediaProcessingService } from '../services/media/MediaProcessingService';
-import { logger } from './logger';
-
 export interface BeatInfo {
   timestamp: number;
   intensity: number;
@@ -19,7 +16,7 @@ export interface MusicAnalysis {
 interface AudioSegment {
   start: number;
   end: number;
-  type: 'crescendo' | 'decrescendo' | 'steady' | 'speech' | 'music';
+  type: 'crescendo' | 'decrescendo' | 'steady';
   intensity: number;
 }
 
@@ -31,26 +28,29 @@ interface EnergyProfile {
 }
 
 export const detectBeats = async (audioFile: File): Promise<BeatInfo[]> => {
-  try {
-    // Extrair áudio se for um arquivo de vídeo
-    const audioBlob = audioFile.type.startsWith('video/') 
-      ? await mediaProcessingService.extractAudio(audioFile)
-      : audioFile;
-
-    // Analisar o áudio
-    const analysis = await mediaProcessingService.analyzeAudio(audioBlob);
-    
-    // Converter para nosso formato de beats
-    return analysis.beats.map((timestamp, index) => ({
-      timestamp,
-      intensity: 0.5 + Math.random() * 0.5, // Será substituído por análise real
-      type: index % 4 === 0 ? 'strong' : 'weak',
-      bpm: analysis.bpm
-    }));
-  } catch (error) {
-    logger.error('Error detecting beats:', error);
-    throw error;
+  console.log('Analyzing beats in:', audioFile.name);
+  
+  // This is a placeholder implementation
+  // In a real implementation, we would:
+  // 1. Use Web Audio API to analyze the audio file
+  // 2. Perform FFT analysis to detect beats
+  // 3. Calculate BPM and beat intensity
+  
+  const beats: BeatInfo[] = [];
+  const mockDuration = 180; // 3 minutes
+  const mockBPM = 128;
+  const beatsPerSecond = mockBPM / 60;
+  
+  for (let i = 0; i < mockDuration * beatsPerSecond; i++) {
+    beats.push({
+      timestamp: i * (60 / mockBPM),
+      intensity: 0.5 + Math.random() * 0.5,
+      type: Math.random() > 0.3 ? 'strong' : 'weak',
+      bpm: mockBPM
+    });
   }
+  
+  return beats;
 };
 
 export const analyzeMusicTrack = async (file: File): Promise<MusicAnalysis> => {

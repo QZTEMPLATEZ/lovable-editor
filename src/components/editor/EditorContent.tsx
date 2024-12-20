@@ -43,17 +43,6 @@ const EditorContent = ({
   setRawFiles,
   setSelectedMusic,
 }: EditorContentProps) => {
-  // Create a mock organization result for the review step
-  const mockOrganizationResult = {
-    categorizedFiles: new Map([['Main', rawFiles]]),
-    unorganizedFiles: [],
-    stats: {
-      totalFiles: rawFiles.length,
-      categorizedCount: rawFiles.length,
-      uncategorizedCount: 0
-    }
-  };
-
   return (
     <>
       {currentStep === 0 && (
@@ -117,7 +106,6 @@ const EditorContent = ({
           rawFiles={rawFiles}
           selectedMusic={selectedMusic}
           selectedStyle={selectedStyle}
-          organizationResult={mockOrganizationResult}
         />
       )}
     </>

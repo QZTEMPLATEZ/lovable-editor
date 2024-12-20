@@ -1,13 +1,12 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
+import PlanBadge from './PlanBadge';
+import { Clock, Check, ChevronLeft } from 'lucide-react';
 import { VideoSizeRange } from '../types';
 import { useVideoType } from '../contexts/VideoTypeContext';
 import { Button } from './ui/button';
-import DurationOption from './editor/duration/DurationOption';
-import RawFilesBanner from './editor/duration/RawFilesBanner';
 
 const VIDEO_SIZES: VideoSizeRange[] = [
   {
@@ -16,7 +15,7 @@ const VIDEO_SIZES: VideoSizeRange[] = [
     name: "Social",
     label: "30s - 1:30min",
     description: "Quick, high-energy edit for social media\n• Perfect for Instagram/TikTok\n• Fast-paced highlights\n• Key moments only\n• Music-driven edits\n• Vertical format ready",
-    icon: null,
+    icon: <Clock className="w-5 h-5 text-purple-400" />,
     recommendedTracks: 1,
     tier: 'basic'
   },
@@ -26,7 +25,7 @@ const VIDEO_SIZES: VideoSizeRange[] = [
     name: "Trailer",
     label: "3-5 minutes",
     description: "Dynamic event summary\n• Best moment highlights\n• Engaging transitions\n• Emotional storytelling\n• Professional pacing\n• Perfect for sharing",
-    icon: null,
+    icon: <Clock className="w-5 h-5 text-purple-400" />,
     recommendedTracks: 2,
     tier: 'pro'
   },
@@ -36,7 +35,7 @@ const VIDEO_SIZES: VideoSizeRange[] = [
     name: "Short Film",
     label: "8-12 minutes",
     description: "Detailed artistic edit\n• Complete ceremony coverage\n• Key reception moments\n• Special family moments\n• Guest interviews\n• Cinematic transitions",
-    icon: null,
+    icon: <Clock className="w-5 h-5 text-purple-400" />,
     recommendedTracks: 3,
     tier: 'pro'
   },
@@ -46,7 +45,7 @@ const VIDEO_SIZES: VideoSizeRange[] = [
     name: "Wedding Movie",
     label: "15-20 minutes",
     description: "Comprehensive coverage\n• Full ceremony with vows\n• Extended reception highlights\n• Detailed family moments\n• All important speeches\n• Multiple camera angles",
-    icon: null,
+    icon: <Clock className="w-5 h-5 text-purple-400" />,
     recommendedTracks: 4,
     tier: 'business'
   },
@@ -56,7 +55,7 @@ const VIDEO_SIZES: VideoSizeRange[] = [
     name: "Cinematic Wedding",
     label: "30-40 minutes",
     description: "Full cinematic experience\n• Complete event documentation\n• Behind-the-scenes footage\n• Extended family coverage\n• Multiple perspectives\n• Documentary style",
-    icon: null,
+    icon: <Clock className="w-5 h-5 text-purple-400" />,
     recommendedTracks: 6,
     tier: 'business'
   }
@@ -81,14 +80,6 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
       description: `Selected ${size.name} (${size.label})`,
     });
     navigate('/style');
-  };
-
-  const handleRawFileOrganization = () => {
-    toast({
-      title: "Raw File Organization",
-      description: "Proceeding to file organization without editing",
-    });
-    navigate('/organize');
   };
 
   return (
@@ -130,18 +121,58 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
         </div>
       </div>
 
-      {/* Raw File Organization Banner - Now First */}
-      <RawFilesBanner onClick={handleRawFileOrganization} />
+      {VIDEO_SIZES.map((size) => {
+        const isSelected = selectedSize && selectedSize.min === size.min && selectedSize.max === size.max;
+        
+        return (
+          <motion.div
+            key={`${size.min}-${size.max}`}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            className={`relative w-full p-8 border-b transition-all duration-300 cursor-pointer
+              ${isSelected 
+                ? 'border-editor-glow-purple bg-editor-glow-purple/10' 
+                : 'border-gray-700/30 hover:bg-editor-glow-purple/5'
+              }`}
+            onClick={() => handleSizeSelect(size)}
+          >
+            <div className="container mx-auto max-w-[2560px]">
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <div className="flex items-center gap-4 mb-3">
+                    <h3 className="text-xl font-medium text-white">{size.name}</h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-300">
+                      <Clock className="w-4 h-4" />
+                      <span>{size.label}</span>
+                    </div>
+                    <PlanBadge tier={size.tier} />
+                  </div>
 
-      {/* Duration Options */}
-      {VIDEO_SIZES.map((size) => (
-        <DurationOption
-          key={`${size.min}-${size.max}`}
-          size={size}
-          isSelected={selectedSize?.min === size.min && selectedSize?.max === size.max}
-          onSelect={handleSizeSelect}
-        />
-      ))}
+                  <p className="text-sm text-gray-400 mb-4 max-w-2xl whitespace-pre-line">
+                    {size.description}
+                  </p>
+
+                  <div className="flex items-center gap-2 text-sm text-purple-300 bg-purple-500/10 p-2 rounded-lg inline-block">
+                    <Clock className="w-3 h-3" />
+                    <span>Recommended Tracks: {size.recommendedTracks}</span>
+                  </div>
+                </div>
+
+                {isSelected && (
+                  <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    className="bg-editor-glow-purple rounded-full p-3"
+                  >
+                    <Check className="w-5 h-5 text-white" />
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 };

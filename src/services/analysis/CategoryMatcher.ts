@@ -17,7 +17,7 @@ const CATEGORIES: CategoryCriteria[] = [
       'wedding gown', 'bridal suite', 'bride preparation'
     ],
     requiredCues: ['woman', 'indoor'],
-    confidence: 0.35
+    confidence: 0.35 // Lowered threshold for better detection
   },
   {
     name: 'GroomPrep',
@@ -63,24 +63,6 @@ const CATEGORIES: CategoryCriteria[] = [
     ],
     requiredCues: ['people', 'indoor'],
     confidence: 0.4
-  },
-  {
-    name: 'CoupleScenes',
-    visualCues: [
-      'couple', 'romantic', 'kiss', 'embrace', 'love',
-      'together', 'intimate', 'portrait', 'pose', 'holding hands'
-    ],
-    requiredCues: ['people'],
-    confidence: 0.45
-  },
-  {
-    name: 'ProtocolPhotos',
-    visualCues: [
-      'formal', 'group', 'family', 'portrait', 'posed',
-      'lineup', 'traditional', 'official', 'protocol', 'formal photo'
-    ],
-    requiredCues: ['people', 'formal'],
-    confidence: 0.5
   }
 ];
 
@@ -113,7 +95,7 @@ export class CategoryMatcher {
     });
 
     // Calculate final scores and check required cues
-    let bestMatch = { category: 'OtherMoments', confidence: 0 };
+    let bestMatch = { category: 'Untagged', confidence: 0 };
 
     categoryScores.forEach((data, categoryName) => {
       if (data.matches > 0) {
@@ -148,12 +130,10 @@ export class CategoryMatcher {
       Decoration: ['decor', 'flores', 'flowers', 'venue', 'local'],
       DroneFootage: ['drone', 'aerial', 'dji', 'mavic', 'air'],
       Ceremony: ['ceremony', 'cerimonia', 'altar', 'church', 'igreja'],
-      Reception: ['reception', 'party', 'festa', 'dance', 'danca'],
-      CoupleScenes: ['couple', 'casal', 'romantic', 'love', 'together'],
-      ProtocolPhotos: ['protocol', 'formal', 'family', 'familia', 'group', 'grupo']
+      Reception: ['reception', 'party', 'festa', 'dance', 'danca']
     };
 
-    let bestMatch = { category: 'OtherMoments', confidence: 0.1 };
+    let bestMatch = { category: 'Untagged', confidence: 0.1 };
 
     for (const [category, keywords] of Object.entries(patterns)) {
       const matches = keywords.filter(keyword => lowerFilename.includes(keyword));

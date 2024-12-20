@@ -1,42 +1,14 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.lovablewedding.app',
-  appName: 'Lovable Wedding',
+  appId: 'com.qztemplates.videoeditor',
+  appName: 'QZ TEMPLATEZ VIDEO EDITOR',
   webDir: 'dist',
   server: {
-    androidScheme: 'https',
-    iosScheme: 'https',
-    cleartext: true
+    androidScheme: 'https'
   },
   ios: {
-    contentInset: 'automatic',
-    preferredContentMode: 'mobile',
-    scheme: 'lovablewedding',
-    backgroundColor: '#000000',
-    webViewConfiguration: {
-      allowsInlineMediaPlayback: true,
-      mediaTypesRequiringUserActionForPlayback: 'none',
-      allowsPictureInPictureMediaPlayback: true,
-      allowsAirPlayForMediaPlayback: true,
-      suppressesIncrementalRendering: true
-    }
-  },
-  plugins: {
-    Filesystem: {
-      ios: {
-        usesIcloudStorage: true
-      }
-    },
-    SplashScreen: {
-      launchShowDuration: 2000,
-      backgroundColor: "#000000",
-      showSpinner: false,
-      androidSpinnerStyle: "large",
-      spinnerColor: "#ffffff",
-      splashFullScreen: true,
-      splashImmersive: true
-    }
+    contentInset: 'automatic'
   }
 };
 

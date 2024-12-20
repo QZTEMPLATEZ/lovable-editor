@@ -1,72 +1,59 @@
 import { logger } from '../../utils/logger';
-import { ModelService } from './ModelService';
-import { FrameExtractor } from './FrameExtractor';
-import { CategoryMatcher } from './CategoryMatcher';
+import { FrameExtractor } from '../analysis/FrameExtractor';
+import { PrepAnalyzer } from './analyzers/PrepAnalyzer';
+import { DecorationAnalyzer } from './analyzers/DecorationAnalyzer';
+import { DroneAnalyzer } from './analyzers/DroneAnalyzer';
+import { CategoryMatcher } from './core/CategoryMatcher';
+import { BaseVideoAnalyzer } from './core/BaseVideoAnalyzer';
 
-interface Prediction {
-  label: string;
-  score: number;
-}
+export class VideoAnalysisService extends BaseVideoAnalyzer {
+  private prepAnalyzer: PrepAnalyzer;
+  private decorationAnalyzer: DecorationAnalyzer;
+  private droneAnalyzer: DroneAnalyzer;
 
-export class VideoAnalysisService {
-  private static readonly MIN_CONFIDENCE_THRESHOLD = 0.2;
-  private static readonly MAX_CONFIDENCE_THRESHOLD = 0.6;
+  constructor() {
+    super();
+    this.prepAnalyzer = new PrepAnalyzer();
+    this.decorationAnalyzer = new DecorationAnalyzer();
+    this.droneAnalyzer = new DroneAnalyzer();
+  }
 
-  static async analyzeVideo(file: File): Promise<{ category: string; confidence: number }> {
+  async analyzeVideo(file: File): Promise<{ category: string; confidence: number }> {
     try {
       logger.info(`Starting comprehensive analysis for file: ${file.name}`);
       
-      // Initialize classifier
-      const classifier = await ModelService.initializeClassifier();
-      
-      // Extract frames using the improved FrameExtractor
-      const frames = await FrameExtractor.extractMultipleFrames(file);
-      logger.info(`Extracted ${frames.length} frames for analysis from ${file.name}`);
-      
-      // Analyze each frame
-      const predictionPromises = frames.map(async frame => {
-        const predictions = await classifier(frame);
-        return predictions.map((p: any) => ({ ...p, filename: file.name }));
-      });
-      
-      const allPredictions = await Promise.all(predictionPromises);
-      const predictions = allPredictions.flat() as Prediction[];
-      
-      // Group predictions by label and aggregate scores
-      const groupedConfidence = predictions.reduce((acc: Record<string, number>, p: Prediction) => {
-        acc[p.label] = (acc[p.label] || 0) + p.score;
-        return acc;
-      }, {});
-      
-      logger.info(`Grouped confidences for ${file.name}:`, groupedConfidence);
-      
-      // Calculate prediction diversity for dynamic threshold
-      const scores = Object.values(groupedConfidence);
-      const diversity = Math.max(...scores) - Math.min(...scores);
-      const dynamicThreshold = this.calculateDynamicThreshold(diversity);
-      
-      logger.info(`Prediction diversity: ${diversity}, Dynamic threshold: ${dynamicThreshold}`);
-      
-      // Find the best prediction using typed parameters
-      const bestPrediction = Object.entries(groupedConfidence).reduce(
-        (best: { label: string; score: number }, [label, score]: [string, number]) => 
-          score > best.score ? { label, score } : best,
-        { label: 'untagged', score: 0 }
+      // Extract frames from different positions
+      const framePromises = [0.25, 0.5, 0.75].map(position => 
+        FrameExtractor.extractFrameFromVideo(file, position)
       );
       
-      logger.info(`Best prediction for ${file.name}: ${bestPrediction.label} (confidence: ${bestPrediction.score})`);
+      const frames = await Promise.all(framePromises);
+      logger.info(`Extracted ${frames.length} frames for analysis from ${file.name}`);
       
-      // Return untagged if confidence is below dynamic threshold
-      if (bestPrediction.score < dynamicThreshold) {
-        logger.info(`Low confidence for ${file.name}, marking as untagged`);
-        return { category: 'untagged', confidence: 0.1 };
-      }
+      // Initialize classifier if needed
+      await this.initializeClassifier();
       
-      // Get category match using the best prediction
-      const result = CategoryMatcher.matchCategoryFromPredictions([
-        { label: bestPrediction.label, score: bestPrediction.score }
+      // Analyze each frame
+      const predictions = await this.analyzePredictions(frames);
+      
+      // Analyze specific categories
+      const [bridePrep, groomPrep, decoration, drone] = await Promise.all([
+        this.prepAnalyzer.analyzePrepScene(predictions, 'bride'),
+        this.prepAnalyzer.analyzePrepScene(predictions, 'groom'),
+        this.decorationAnalyzer.analyzeDecorationScene(predictions),
+        this.droneAnalyzer.analyzeDroneShot(predictions)
       ]);
-      
+
+      // Get best category match
+      const result = CategoryMatcher.getBestCategory({
+        bridePrep,
+        groomPrep,
+        decoration,
+        drone,
+        filename: file.name,
+        predictions
+      });
+
       logger.info(`Final classification for ${file.name}: ${result.category} (confidence: ${result.confidence})`);
       return result;
       
@@ -76,15 +63,18 @@ export class VideoAnalysisService {
     }
   }
 
-  private static calculateDynamicThreshold(diversity: number): number {
-    // Lower threshold when predictions are diverse (less certain)
-    // Higher threshold when predictions are concentrated (more certain)
-    const normalizedDiversity = Math.min(Math.max(diversity, 0), 1);
-    return this.MAX_CONFIDENCE_THRESHOLD - 
-           (normalizedDiversity * (this.MAX_CONFIDENCE_THRESHOLD - this.MIN_CONFIDENCE_THRESHOLD));
+  protected async analyzePredictions(frames: string[]): Promise<any[]> {
+    if (!this.classifier) {
+      await this.initializeClassifier();
+    }
+    
+    const predictionPromises = frames.map(async frame => {
+      return await this.classifier(frame);
+    });
+    
+    const allPredictions = await Promise.all(predictionPromises);
+    return allPredictions.flat();
   }
 }
 
-export const videoAnalysisService = {
-  analyzeVideo: VideoAnalysisService.analyzeVideo.bind(VideoAnalysisService)
-};
+export const videoAnalysisService = new VideoAnalysisService();

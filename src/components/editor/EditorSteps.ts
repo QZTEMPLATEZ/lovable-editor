@@ -14,5 +14,13 @@ export const EDITOR_STEPS = [
   {
     title: "Organize",
     description: "Sort footage",
+  },
+  {
+    title: "Review",
+    description: "Check classification",
+  },
+  {
+    title: "Edit",
+    description: "Final edit",
   }
 ];
