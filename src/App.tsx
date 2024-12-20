@@ -8,8 +8,8 @@ import Index from './pages/Index';
 const App = () => {
   useEffect(() => {
     const initApp = async () => {
-      if (isPlatform('ios')) {
-        try {
+      try {
+        if (window?.Capacitor?.getPlatform() === 'ios') {
           await StatusBar.setStyle({ style: Style.Dark });
           
           // Handle deep links
@@ -22,27 +22,20 @@ const App = () => {
           CapacitorApp.addListener('appStateChange', ({ isActive }) => {
             console.log('App state changed. Is active?', isActive);
           });
-
-        } catch (error) {
-          console.error('Error initializing iOS app:', error);
         }
+      } catch (error) {
+        console.error('Error initializing iOS app:', error);
       }
     };
 
     initApp();
 
     return () => {
-      // Cleanup listeners when component unmounts
-      CapacitorApp.removeAllListeners();
+      if (window?.Capacitor?.getPlatform() === 'ios') {
+        CapacitorApp.removeAllListeners();
+      }
     };
   }, []);
-
-  const isPlatform = (platform: string) => {
-    if (typeof window !== 'undefined' && window.Capacitor) {
-      return window.Capacitor.getPlatform() === platform;
-    }
-    return false;
-  };
 
   return (
     <BrowserRouter>
