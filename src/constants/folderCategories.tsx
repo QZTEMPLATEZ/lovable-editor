@@ -1,4 +1,4 @@
-import { Camera, Video, Music, Image, Gift, Mic, FileVideo, Plane, Clock, Film, Heart, Gem, PartyPopper } from 'lucide-react';
+import { Camera, Video, Music, Image, Gift, Mic, FileVideo, Plane, Clock, Film, Heart, Gem, PartyPopper, FolderQuestion } from 'lucide-react';
 import { FolderCategory } from '../types';
 
 export const FOLDER_CATEGORIES: FolderCategory[] = [
@@ -43,5 +43,12 @@ export const FOLDER_CATEGORIES: FolderCategory[] = [
     description: 'Wedding party and celebration',
     expectedTypes: '.mp4, .mov',
     color: 'from-green-500/20 to-emerald-500/20'
+  },
+  {
+    name: 'OtherMoments',
+    icon: <FolderQuestion className="w-5 h-5" />,
+    description: 'Uncategorized or uncertain footage',
+    expectedTypes: '.mp4, .mov',
+    color: 'from-gray-500/20 to-gray-400/20'
   }
 ];
