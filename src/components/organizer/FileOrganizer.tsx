@@ -11,7 +11,7 @@ import { ArrowRight, Folder } from 'lucide-react';
 import ProcessStatus from './ProcessStatus';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
-import VideoThumbnail from './VideoThumbnail';
+import VideoFrame from './VideoFrame';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface FileOrganizerProps {
@@ -125,7 +125,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
             {/* Folder List */}
             <div className="bg-editor-panel/50 rounded-xl p-4 border border-purple-500/20">
               <h3 className="text-lg font-semibold mb-4">Categories</h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {FOLDER_CATEGORIES.map((category) => {
                   const filesInCategory = organizationResult.categorizedFiles.get(category.name) || [];
                   return (
@@ -156,11 +156,20 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
                       <Droppable key={`${file.name}-${index}`} droppableId={category}>
                         {(provided) => (
                           <div ref={provided.innerRef} {...provided.droppableProps}>
-                            <VideoThumbnail
-                              file={file}
-                              category={category}
-                              confidence={0.95} // You might want to get this from your AI classification
-                            />
+                            <div className="group">
+                              <VideoFrame
+                                file={file}
+                                className="border border-purple-500/20 hover:border-purple-500/40 transition-colors"
+                              />
+                              <div className="mt-2">
+                                <p className="text-xs text-gray-300 truncate">
+                                  {file.name}
+                                </p>
+                                <p className="text-xs text-gray-400">
+                                  {category}
+                                </p>
+                              </div>
+                            </div>
                             {provided.placeholder}
                           </div>
                         )}
