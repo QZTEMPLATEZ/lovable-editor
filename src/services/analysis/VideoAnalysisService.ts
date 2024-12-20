@@ -59,7 +59,7 @@ export class VideoAnalysisService extends BaseVideoAnalyzer {
       
     } catch (error) {
       logger.error(`Error analyzing file ${file.name}:`, error);
-      return { category: 'untagged', confidence: 0.1 };
+      return { category: 'OtherMoments', confidence: 0.1 };
     }
   }
 
@@ -69,8 +69,11 @@ export class VideoAnalysisService extends BaseVideoAnalyzer {
     }
     
     const predictionPromises = frames.map(async frame => {
-      // Add the required second argument (empty object for default options)
-      return await this.classifier(frame, {});
+      // Add required configuration object as second argument
+      return await this.classifier(frame, {
+        topk: 5, // Return top 5 predictions
+        threshold: 0.1 // Lower threshold to catch more potential matches
+      });
     });
     
     const allPredictions = await Promise.all(predictionPromises);
