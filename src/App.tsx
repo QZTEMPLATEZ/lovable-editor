@@ -12,15 +12,37 @@ const App = () => {
         if (window?.Capacitor?.getPlatform() === 'ios') {
           await StatusBar.setStyle({ style: Style.Dark });
           
-          // Handle deep links
+          // Handle deep links with improved error handling
           CapacitorApp.addListener('appUrlOpen', ({ url }) => {
             console.log('Deep link URL:', url);
-            // Handle deep link here
+            try {
+              const urlObj = new URL(url);
+              // Handle deep link navigation here
+              console.log('Processing deep link path:', urlObj.pathname);
+            } catch (error) {
+              console.error('Error processing deep link:', error);
+            }
           });
 
-          // Handle app state changes
+          // Enhanced app state management for iOS
           CapacitorApp.addListener('appStateChange', ({ isActive }) => {
             console.log('App state changed. Is active?', isActive);
+            if (isActive) {
+              // Resume app functionality
+              StatusBar.setStyle({ style: Style.Dark });
+            } else {
+              // Pause app functionality, save state if needed
+              console.log('App entering background state');
+            }
+          });
+
+          // Handle back button for iOS
+          CapacitorApp.addListener('backButton', ({ canGoBack }) => {
+            if (canGoBack) {
+              window.history.back();
+            } else {
+              CapacitorApp.exitApp();
+            }
           });
         }
       } catch (error) {

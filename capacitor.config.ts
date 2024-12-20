@@ -17,7 +17,9 @@ const config: CapacitorConfig = {
     webViewConfiguration: {
       allowsInlineMediaPlayback: true,
       mediaTypesRequiringUserActionForPlayback: 'none',
-      allowsPictureInPictureMediaPlayback: true
+      allowsPictureInPictureMediaPlayback: true,
+      allowsAirPlayForMediaPlayback: true,
+      suppressesIncrementalRendering: true
     }
   },
   plugins: {
@@ -25,6 +27,15 @@ const config: CapacitorConfig = {
       ios: {
         usesIcloudStorage: true
       }
+    },
+    SplashScreen: {
+      launchShowDuration: 2000,
+      backgroundColor: "#000000",
+      showSpinner: false,
+      androidSpinnerStyle: "large",
+      spinnerColor: "#ffffff",
+      splashFullScreen: true,
+      splashImmersive: true
     }
   }
 };
