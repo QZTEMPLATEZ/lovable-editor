@@ -69,7 +69,6 @@ export class VideoAnalysisService extends BaseVideoAnalyzer {
     }
     
     const predictionPromises = frames.map(async frame => {
-      // Add required configuration object as second argument
       return await this.classifier(frame, {
         topk: 5, // Return top 5 predictions
         threshold: 0.1 // Lower threshold to catch more potential matches
