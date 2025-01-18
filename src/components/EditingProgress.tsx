@@ -51,12 +51,16 @@ const EditingProgress = ({ videoFiles, progress, onStopProcessing }: EditingProg
       const mockProject: EditingProject = {
         clips: videoFiles.map((file, index) => ({
           file,
-          type: 'preparation', // Using a valid type from the Clip type
+          type: 'preparation',
           startTime: index * 10,
           endTime: (index + 1) * 10,
-          significance: Math.random() // Adding required significance value
+          significance: Math.random()
         })),
         duration: { min: 5, max: 10 },
+        music: {
+          file: new File([], "background_music.mp3"), // Adding a mock music file
+          beats: [] // Empty beats array for now
+        }
       };
 
       // Generate three versions for compatibility
