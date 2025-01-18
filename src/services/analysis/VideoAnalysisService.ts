@@ -1,84 +1,52 @@
 import { logger } from '../../utils/logger';
-import { FrameExtractor } from '../analysis/FrameExtractor';
-import { PrepAnalyzer } from './analyzers/PrepAnalyzer';
-import { DecorationAnalyzer } from './analyzers/DecorationAnalyzer';
-import { DroneAnalyzer } from './analyzers/DroneAnalyzer';
-import { CategoryMatcher } from './core/CategoryMatcher';
-import { BaseVideoAnalyzer } from './core/BaseVideoAnalyzer';
+import { ModelService } from './ModelService';
+import { FrameExtractor } from './FrameExtractor';
+import { CategoryMatcher } from './CategoryMatcher';
 
-export class VideoAnalysisService extends BaseVideoAnalyzer {
-  private prepAnalyzer: PrepAnalyzer;
-  private decorationAnalyzer: DecorationAnalyzer;
-  private droneAnalyzer: DroneAnalyzer;
-
-  constructor() {
-    super();
-    this.prepAnalyzer = new PrepAnalyzer();
-    this.decorationAnalyzer = new DecorationAnalyzer();
-    this.droneAnalyzer = new DroneAnalyzer();
-  }
-
-  async analyzeVideo(file: File): Promise<{ category: string; confidence: number }> {
+export class VideoAnalysisService {
+  static async analyzeVideo(file: File): Promise<{ category: string; confidence: number }> {
     try {
-      logger.info(`Starting analysis for file: ${file.name}`);
+      logger.info(`Starting comprehensive analysis for file: ${file.name}`);
       
-      // Extract only key frames for efficient analysis
-      const framePositions = [0.25]; // Analyze only one frame at 25% of the video
-      const framePromises = framePositions.map(position => 
+      // Initialize classifier
+      const classifier = await ModelService.initializeClassifier();
+      
+      // Extract multiple frames for better analysis
+      const framePromises = [0.25, 0.5, 0.75].map(position => 
         FrameExtractor.extractFrameFromVideo(file, position)
       );
       
       const frames = await Promise.all(framePromises);
-      logger.info(`Extracted ${frames.length} frame for analysis from ${file.name}`);
+      logger.info(`Extracted ${frames.length} frames for analysis from ${file.name}`);
       
-      // Initialize classifier if needed
-      await this.initializeClassifier();
-      
-      // Analyze frame with optimized settings
-      const predictions = await this.analyzePredictions(frames);
-      
-      // Quick category analysis
-      const [bridePrep, groomPrep, decoration, drone] = await Promise.all([
-        this.prepAnalyzer.analyzePrepScene(predictions, 'bride'),
-        this.prepAnalyzer.analyzePrepScene(predictions, 'groom'),
-        this.decorationAnalyzer.analyzeDecorationScene(predictions),
-        this.droneAnalyzer.analyzeDroneShot(predictions)
-      ]);
-
-      // Get best category match
-      const result = CategoryMatcher.getBestCategory({
-        bridePrep,
-        groomPrep,
-        decoration,
-        drone,
-        filename: file.name,
-        predictions
+      // Analyze each frame with configuration
+      const predictionPromises = frames.map(async frame => {
+        const predictions = await classifier(frame, {
+          topk: 5,
+          threshold: 0.1
+        });
+        return predictions.map((p: any) => ({ ...p, filename: file.name }));
       });
-
-      logger.info(`Classification for ${file.name}: ${result.category} (confidence: ${result.confidence})`);
+      
+      const allPredictions = await Promise.all(predictionPromises);
+      const combinedPredictions = allPredictions.flat();
+      
+      logger.info(`Combined predictions for ${file.name}:`, combinedPredictions);
+      
+      // Get category match using all predictions
+      const result = CategoryMatcher.matchCategoryFromPredictions(combinedPredictions);
+      
+      logger.info(`Final classification for ${file.name}: ${result.category} (confidence: ${result.confidence})`);
       return result;
       
     } catch (error) {
       logger.error(`Error analyzing file ${file.name}:`, error);
+      // Always return OtherMoments instead of untagged
       return { category: 'OtherMoments', confidence: 0.1 };
     }
   }
-
-  protected async analyzePredictions(frames: string[]): Promise<any[]> {
-    if (!this.classifier) {
-      await this.initializeClassifier();
-    }
-    
-    const predictionPromises = frames.map(async frame => {
-      return await this.classifier(frame, {
-        topk: 5, // Return top 5 predictions
-        threshold: 0.1 // Lower threshold to catch more potential matches
-      });
-    });
-    
-    const allPredictions = await Promise.all(predictionPromises);
-    return allPredictions.flat();
-  }
 }
 
-export const videoAnalysisService = new VideoAnalysisService();
+export const videoAnalysisService = {
+  analyzeVideo: VideoAnalysisService.analyzeVideo.bind(VideoAnalysisService)
+};

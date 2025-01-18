@@ -51,9 +51,10 @@ const EditingProgress = ({ videoFiles, progress, onStopProcessing }: EditingProg
       const mockProject: EditingProject = {
         clips: videoFiles.map((file, index) => ({
           file,
-          type: 'video',
+          type: 'preparation', // Using a valid type from the Clip type
           startTime: index * 10,
           endTime: (index + 1) * 10,
+          significance: Math.random() // Adding required significance value
         })),
         duration: { min: 5, max: 10 },
       };
