@@ -9,6 +9,9 @@ const config: CapacitorConfig = {
   },
   ios: {
     contentInset: 'automatic'
+  },
+  mac: {
+    contentInset: 'automatic'
   }
 };
 
