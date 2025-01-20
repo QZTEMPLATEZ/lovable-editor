@@ -37,7 +37,11 @@ const ExportOptions = ({ isComplete, videoFiles, onStopProcessing }: ExportOptio
     for (const version of versions) {
       const mockOrganizationResult: OrganizationResult = {
         categorizedFiles: new Map(),
-        stats: { totalFiles: videoFiles.length }
+        stats: { 
+          totalFiles: videoFiles.length,
+          categorizedCount: 0,
+          uncategorizedCount: videoFiles.length
+        }
       };
 
       await generatePremiereSequence(mockOrganizationResult, { version });
