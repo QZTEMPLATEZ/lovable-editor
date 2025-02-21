@@ -1,19 +1,16 @@
-
 import React from 'react';
 import EditingProgress from '../EditingProgress';
 
 interface ProcessingViewProps {
-  videoFiles: File[];
-  progress: number;
+  rawFiles: File[];
   onStopProcessing: () => void;
 }
 
-const ProcessingView = ({ videoFiles, progress, onStopProcessing }: ProcessingViewProps) => {
+const ProcessingView = ({ rawFiles, onStopProcessing }: ProcessingViewProps) => {
   return (
     <EditingProgress 
-      videoFiles={videoFiles}
-      progress={progress}
-      isComplete={progress === 100}
+      videoFiles={rawFiles} 
+      progress={0} 
       onStopProcessing={onStopProcessing}
     />
   );

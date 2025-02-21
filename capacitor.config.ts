@@ -1,4 +1,3 @@
-
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
@@ -6,20 +5,13 @@ const config: CapacitorConfig = {
   appName: 'QZ TEMPLATEZ VIDEO EDITOR',
   webDir: 'dist',
   server: {
-    androidScheme: 'https',
-    url: 'http://localhost:8080',
-    cleartext: true
+    androidScheme: 'https'
   },
-  electron: {
-    deepLinkingEnabled: true,
-    customUrlScheme: 'qzvideoeditor'
+  ios: {
+    contentInset: 'automatic'
   },
   mac: {
-    contentInset: 'automatic',
-    backgroundColor: '#000000',
-    windowStyle: 'fullscreen',
-    tintColor: '#000000',
-    appearance: 'dark'
+    contentInset: 'automatic'
   }
 };
 
