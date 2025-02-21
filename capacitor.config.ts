@@ -6,13 +6,20 @@ const config: CapacitorConfig = {
   appName: 'QZ TEMPLATEZ VIDEO EDITOR',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    url: 'http://localhost:8080',
+    cleartext: true
   },
-  ios: {
-    contentInset: 'automatic'
+  electron: {
+    deepLinkingEnabled: true,
+    customUrlScheme: 'qzvideoeditor'
   },
   mac: {
-    contentInset: 'automatic'
+    contentInset: 'automatic',
+    backgroundColor: '#000000',
+    windowStyle: 'fullscreen',
+    tintColor: '#000000',
+    appearance: 'dark'
   }
 };
 
