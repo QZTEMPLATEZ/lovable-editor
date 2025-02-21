@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Play, Pause, X } from 'lucide-react';
 import { motion } from 'framer-motion';
