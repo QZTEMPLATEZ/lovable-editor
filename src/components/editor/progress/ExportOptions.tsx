@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Save } from 'lucide-react';
@@ -37,6 +38,7 @@ const ExportOptions = ({ isComplete, videoFiles, onStopProcessing }: ExportOptio
     for (const version of versions) {
       const mockOrganizationResult: OrganizationResult = {
         categorizedFiles: new Map(),
+        unorganizedFiles: videoFiles, // Adicionando a propriedade faltante
         stats: { 
           totalFiles: videoFiles.length,
           categorizedCount: 0,

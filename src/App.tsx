@@ -15,15 +15,21 @@ import StepIndicator from "./components/StepIndicator";
 import { EDITOR_STEPS } from "./components/editor/EditorSteps";
 import VideoTypeIndicator from "./components/VideoTypeIndicator";
 import LoginModal from "./components/auth/LoginModal";
+import { VideoSizeRange } from "./types";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => {
   const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
+  const [selectedSize, setSelectedSize] = useState<VideoSizeRange | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleStyleSelect = (style: VideoStyle) => {
     setSelectedStyle(style);
+  };
+
+  const handleSizeSelect = (size: VideoSizeRange) => {
+    setSelectedSize(size);
   };
 
   const handleCustomVideoUpload = (file: File) => {
@@ -47,7 +53,11 @@ const AppContent = () => {
               element={
                 <>
                   <StepIndicator currentStep={0} steps={EDITOR_STEPS} />
-                  <VideoSizeSelector />
+                  <VideoSizeSelector 
+                    selectedSize={selectedSize}
+                    onSizeSelect={handleSizeSelect}
+                    userTier="basic"
+                  />
                 </>
               } 
             />
