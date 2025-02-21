@@ -1,124 +1,84 @@
-import { logger } from '../logger';
-import { OrganizationResult } from '../../types/organizer';
 
-interface SequenceOptions {
-  version: 'legacy' | 'current' | 'compatible';
-  projectName?: string;
+import { OrganizationResult } from '@/types/organizer';
+import { MusicAnalysis } from '@/utils/audioProcessing';
+
+interface SequenceConfig {
+  preferredClipDuration: number;
+  transitionDuration: number;
+  beatSyncEnabled: boolean;
 }
 
-export const generatePremiereSequence = async (
+export const generateEditSequence = (
   organizationResult: OrganizationResult,
-  options: SequenceOptions
-): Promise<string> => {
-  // Add processing delay to ensure proper generation
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  musicAnalysis: MusicAnalysis | null,
+  config: SequenceConfig
+) => {
+  console.log('Generating edit sequence with config:', config);
 
-  logger.info('Generating Premiere sequence with options:', options);
-  logger.info('Organization structure:', {
-    categories: Array.from(organizationResult.categorizedFiles.keys()),
-    totalFiles: organizationResult.stats.totalFiles
-  });
+  const sequence = [];
+  const categories = [
+    'MakingOf',
+    'Ceremony',
+    'Reception',
+    'Details',
+    'Decor'
+  ];
 
-  const bins = Array.from(organizationResult.categorizedFiles.entries())
-    .map(([category, files]) => ({
-      name: category,
-      files: files
-    }));
+  let currentTime = 0;
 
-  // Generate appropriate XML based on version
-  switch (options.version) {
-    case 'legacy':
-      return generateLegacyXML(bins, options.projectName);
-    case 'compatible':
-      return generateCompatibleXML(bins, options.projectName);
-    default:
-      return generateCurrentXML(bins, options.projectName);
+  // If we have music analysis, use it to sync cuts
+  if (musicAnalysis && config.beatSyncEnabled) {
+    console.log('Syncing to music beats:', musicAnalysis.beats.length, 'beats found');
+    
+    categories.forEach(category => {
+      const files = organizationResult.categorizedFiles.get(category) || [];
+      
+      files.forEach((file, index) => {
+        // Find nearest strong beat
+        const nearestBeat = musicAnalysis.beats.find(
+          beat => beat.timestamp >= currentTime && beat.type === 'strong'
+        );
+
+        if (nearestBeat) {
+          sequence.push({
+            file,
+            category,
+            startTime: nearestBeat.timestamp,
+            duration: config.preferredClipDuration,
+            transition: index < files.length - 1 ? {
+              type: 'dissolve',
+              duration: config.transitionDuration
+            } : null
+          });
+
+          currentTime = nearestBeat.timestamp + config.preferredClipDuration;
+        }
+      });
+    });
+  } else {
+    // No music analysis, use standard timing
+    console.log('Using standard timing for sequence generation');
+    
+    categories.forEach(category => {
+      const files = organizationResult.categorizedFiles.get(category) || [];
+      
+      files.forEach((file, index) => {
+        sequence.push({
+          file,
+          category,
+          startTime: currentTime,
+          duration: config.preferredClipDuration,
+          transition: index < files.length - 1 ? {
+            type: 'dissolve',
+            duration: config.transitionDuration
+          } : null
+        });
+
+        currentTime += config.preferredClipDuration;
+      });
+    });
   }
-};
 
-const generateLegacyXML = (bins: Array<{name: string, files: File[]}>, projectName = 'Wedding Project') => {
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xmeml>
-<xmeml version="4">
-  <sequence>
-    <name>${projectName}</name>
-    <media>
-      ${bins.map(bin => `
-        <bin>
-          <name>${bin.name}</name>
-          ${bin.files.map((file, index) => `
-            <clip id="clip-${index}">
-              <name>${file.name}</name>
-              <file>
-                <name>${file.name}</name>
-                <pathurl>${file.name}</pathurl>
-                <media>
-                  <video>
-                    <samplecharacteristics>
-                      <rate>
-                        <timebase>30</timebase>
-                        <ntsc>TRUE</ntsc>
-                      </rate>
-                    </samplecharacteristics>
-                  </video>
-                </media>
-              </file>
-            </clip>
-          `).join('')}
-        </bin>
-      `).join('')}
-    </media>
-  </sequence>
-</xmeml>`;
-};
-
-const generateCurrentXML = (bins: Array<{name: string, files: File[]}>, projectName = 'Wedding Project') => {
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<premiere-project version="7">
-  <project>
-    <name>${projectName}</name>
-    <bins>
-      ${bins.map(bin => `
-        <bin>
-          <name>${bin.name}</name>
-          ${bin.files.map((file, index) => `
-            <clip>
-              <name>${file.name}</name>
-              <pathurl>${file.name}</pathurl>
-              <media>
-                <video>
-                  <timebase>30</timebase>
-                </video>
-              </media>
-            </clip>
-          `).join('')}
-        </bin>
-      `).join('')}
-    </bins>
-  </project>
-</premiere-project>`;
-};
-
-const generateCompatibleXML = (bins: Array<{name: string, files: File[]}>, projectName = 'Wedding Project') => {
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<premieredata version="1">
-  <project>
-    <name>${projectName}</name>
-    <bins>
-      ${bins.map(bin => `
-        <bin>
-          <name>${bin.name}</name>
-          ${bin.files.map((file, index) => `
-            <clip>
-              <masterclip>${file.name}</masterclip>
-              <name>${file.name}</name>
-              <pathurl>${file.name}</pathurl>
-              <duration>300</duration>
-            </clip>
-          `).join('')}
-        </bin>
-      `).join('')}
-    </bins>
-  </project>
-</premieredata>`;
+  console.log('Generated sequence with', sequence.length, 'clips');
+  return sequence;
 };
