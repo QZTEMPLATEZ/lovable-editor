@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { VideoCamera, Sparkles, UserSquare2, Buildings, PartyPopper, Package } from 'lucide-react';
+import { Video, Sparkles, UserSquare2, Building, PartyPopper, Package } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 interface ClassificationGridProps {
@@ -14,8 +13,8 @@ const categories = [
   { id: 'brideprep', name: 'Bride Prep', icon: UserSquare2, color: 'pink' },
   { id: 'groomprep', name: 'Groom Prep', icon: UserSquare2, color: 'blue' },
   { id: 'decoration', name: 'Decoration', icon: Sparkles, color: 'purple' },
-  { id: 'drone', name: 'Drone Shots', icon: VideoCamera, color: 'sky' },
-  { id: 'ceremony', name: 'Ceremony', icon: Buildings, color: 'amber' },
+  { id: 'drone', name: 'Drone Shots', icon: Video, color: 'sky' },
+  { id: 'ceremony', name: 'Ceremony', icon: Building, color: 'amber' },
   { id: 'reception', name: 'Reception', icon: PartyPopper, color: 'green' },
   { id: 'uncategorized', name: 'Extras', icon: Package, color: 'gray' }
 ];
