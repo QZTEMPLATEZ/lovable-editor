@@ -1,3 +1,4 @@
+
 import { OrganizationCategory, OrganizationResult, ProjectStructure } from '../types/organizer';
 import { Camera, Video, Music, Image } from 'lucide-react';
 import React from 'react';
