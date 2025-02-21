@@ -1,3 +1,4 @@
+
 export interface BeatInfo {
   timestamp: number;
   intensity: number;

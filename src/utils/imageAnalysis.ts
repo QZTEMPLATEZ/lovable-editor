@@ -1,3 +1,4 @@
+
 import { pipeline } from '@huggingface/transformers';
 import { toast } from "@/components/ui/use-toast";
 
