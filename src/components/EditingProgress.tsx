@@ -15,7 +15,7 @@ const EditingProgress = ({ progress, isComplete, videoFiles, onStopProcessing }:
   // Mock organization result for export options
   const mockOrganizationResult: OrganizationResult = {
     categorizedFiles: new Map(videoFiles.map(file => ['uncategorized', [file]])),
-    unorganizedFiles: [],
+    unorganizedFiles: [], // Adicionando a propriedade faltante
     stats: {
       totalFiles: videoFiles.length,
       categorizedCount: videoFiles.length,
