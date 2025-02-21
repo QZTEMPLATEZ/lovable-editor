@@ -1,73 +1,52 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Save } from 'lucide-react';
-import { useToast } from "@/components/ui/use-toast";
-import { EditingProject } from '../../../utils/videoEditingLogic';
-import { generatePremiereSequence } from '../../../utils/premiere/sequenceGenerator';
-import { OrganizationResult } from '../../../types/organizer';
+import { FileDown } from "lucide-react";
+import { OrganizationResult } from '@/types/organizer';
 
 interface ExportOptionsProps {
-  isComplete: boolean;
-  videoFiles: File[];
-  onStopProcessing: () => void;
+  organizationResult: OrganizationResult;
+  onExport: (format: string) => void;
 }
 
-const ExportOptions = ({ isComplete, videoFiles, onStopProcessing }: ExportOptionsProps) => {
-  const { toast } = useToast();
-
-  const handleExportToPremiere = async () => {
-    const mockProject: EditingProject = {
-      clips: videoFiles.map((file, index) => ({
-        file,
-        type: 'preparation',
-        startTime: index * 10,
-        endTime: (index + 1) * 10,
-        significance: Math.random()
-      })),
-      duration: { min: 5, max: 10 },
-      music: {
-        file: new File([], "background_music.mp3"),
-        beats: []
-      }
-    };
-
-    // Generate three versions for compatibility
-    const versions = ['legacy', 'current', 'compatible'] as const;
-    
-    for (const version of versions) {
-      const mockOrganizationResult: OrganizationResult = {
-        categorizedFiles: new Map(),
-        stats: { 
-          totalFiles: videoFiles.length,
-          categorizedCount: 0,
-          uncategorizedCount: videoFiles.length
-        }
-      };
-
-      await generatePremiereSequence(mockOrganizationResult, { version });
-    }
-
-    toast({
-      title: "Project Exported",
-      description: "Three versions have been exported for maximum compatibility",
-    });
-  };
-
+const ExportOptions: React.FC<ExportOptionsProps> = ({ organizationResult, onExport }) => {
+  const { stats } = organizationResult;
+  
   return (
-    <div className="flex justify-between items-center mt-8">
-      {isComplete ? (
-        <Button
-          onClick={handleExportToPremiere}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-        >
-          <Save className="w-4 h-4 mr-2" />
-          Export to Premiere Pro
-        </Button>
-      ) : (
-        <Button variant="destructive" onClick={onStopProcessing}>
-          Stop Processing
-        </Button>
-      )}
+    <div className="space-y-4 p-4 bg-black/20 rounded-lg">
+      <h3 className="text-lg font-semibold mb-4">Export Options</h3>
+      
+      <div className="space-y-2">
+        <p className="text-sm text-gray-400">
+          Files ready for export: {stats.categorizedCount} of {stats.totalFiles}
+        </p>
+        
+        <div className="flex gap-2">
+          <Button
+            onClick={() => onExport('fcpxml')}
+            className="w-full bg-purple-600 hover:bg-purple-700"
+          >
+            <FileDown className="mr-2 h-4 w-4" />
+            Export to Final Cut Pro
+          </Button>
+          
+          <Button
+            onClick={() => onExport('premiere')}
+            className="w-full bg-blue-600 hover:bg-blue-700"
+          >
+            <FileDown className="mr-2 h-4 w-4" />
+            Export to Premiere Pro
+          </Button>
+          
+          <Button
+            onClick={() => onExport('davinci')}
+            className="w-full bg-orange-600 hover:bg-orange-700"
+          >
+            <FileDown className="mr-2 h-4 w-4" />
+            Export to DaVinci Resolve
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
