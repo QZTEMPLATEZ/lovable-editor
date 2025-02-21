@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -64,14 +65,14 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
       setOrganizationResult(result);
       
       toast({
-        title: "Files Processed Successfully",
-        description: `${result.stats.categorizedCount} files categorized.`,
+        title: "Arquivos Processados",
+        description: `${result.stats.categorizedCount} arquivos categorizados com sucesso.`,
       });
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Processing Error",
-        description: "Failed to process files. Please try again.",
+        title: "Erro no Processamento",
+        description: "Falha ao processar os arquivos. Tente novamente.",
       });
     } finally {
       setIsProcessing(false);
@@ -97,8 +98,8 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
     });
 
     toast({
-      title: "Category Updated",
-      description: `File moved to ${result.destination.droppableId}`,
+      title: "Categoria Atualizada",
+      description: `Arquivo movido para ${result.destination.droppableId}`,
     });
   };
 
@@ -106,8 +107,8 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
     if (!organizationResult || organizationResult.stats.totalFiles === 0) {
       toast({
         variant: "destructive",
-        title: "No Files Processed",
-        description: "Please upload and process files before continuing.",
+        title: "Nenhum Arquivo Processado",
+        description: "Por favor, faça o upload e processamento dos arquivos antes de continuar.",
       });
       return;
     }
@@ -143,10 +144,9 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
       {organizationResult && !isProcessing && (
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="space-y-8">
-            {/* Folder List */}
             <div className="bg-editor-panel/50 rounded-xl p-4 border border-purple-500/20">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Categories</h3>
+                <h3 className="text-lg font-semibold">Categorias</h3>
                 <ZoomControls
                   onZoomIn={handleZoomIn}
                   onZoomOut={handleZoomOut}
@@ -166,7 +166,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
                         <span>{category.name}</span>
                       </div>
                       <span className="bg-black/20 px-2 py-1 rounded-full text-sm">
-                        {filesInCategory.length} files
+                        {filesInCategory.length} arquivos
                       </span>
                     </div>
                   );
@@ -174,9 +174,8 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
               </div>
             </div>
 
-            {/* Classified Files Grid */}
             <div className="bg-editor-panel/50 rounded-xl p-4 border border-purple-500/20">
-              <h3 className="text-lg font-semibold mb-4">Classified Files</h3>
+              <h3 className="text-lg font-semibold mb-4">Arquivos Classificados</h3>
               <ClassifiedFilesGrid
                 organizationResult={organizationResult}
                 onFrameLoad={handleFrameLoad}
@@ -189,7 +188,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
                 onClick={handleContinue}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
               >
-                Continue to Edit
+                Continuar para Edição
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
