@@ -1,110 +1,99 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Building, Sparkles, UserSquare2, PartyPopper, Package } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const navigate = useNavigate();
 
+  const categories = [
+    {
+      icon: <UserSquare2 className="w-6 h-6" />,
+      title: "Making Of",
+      description: "Cenas de preparação dos noivos",
+      color: "from-blue-500/20 to-blue-600/20"
+    },
+    {
+      icon: <Building className="w-6 h-6" />,
+      title: "Cerimônia",
+      description: "Momentos da cerimônia religiosa/civil",
+      color: "from-purple-500/20 to-purple-600/20"
+    },
+    {
+      icon: <PartyPopper className="w-6 h-6" />,
+      title: "Festa",
+      description: "Momentos da celebração e recepção",
+      color: "from-pink-500/20 to-pink-600/20"
+    },
+    {
+      icon: <Package className="w-6 h-6" />,
+      title: "Extras",
+      description: "Drone, detalhes e momentos especiais",
+      color: "from-amber-500/20 to-amber-600/20"
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95">
-      {/* Hero Section */}
-      <div className="relative h-[80vh] overflow-hidden">
-        <div className="absolute inset-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover opacity-30"
-          >
-            <source src="https://www.dropbox.com/scl/fi/rxab2rc98t7ox9hxcrb4b/251219_Urban-Couple-Photoshoot-Photography_By_Azulroto_Artlist_4K.mp4?raw=1" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-editor-bg" />
-        </div>
-
-        <div className="relative container mx-auto px-4 h-full flex items-center">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl"
-          >
-            <h1 className="text-4xl md:text-6xl font-cinzel font-bold mb-6 tracking-wider">
-              Edição Automatizada de
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-                {" "}Vídeos de Casamento
-              </span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-300 mb-8">
-              Transforme suas filmagens em uma história envolvente usando inteligência artificial. 
-              Upload simples, organização automática e exportação profissional para o Adobe Premiere.
-            </p>
-            <Button
-              onClick={() => navigate('/duration')}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 px-8 py-6 text-lg"
-            >
-              Começar Novo Projeto
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Features Grid */}
-      <div className="container mx-auto px-4 py-24">
-        <motion.div 
+    <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white">
+      <div className="container mx-auto px-4 py-16 max-w-6xl">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="text-center mb-16"
         >
-          {[
-            {
-              title: "Upload Inteligente",
-              description: "Faça upload de grandes arquivos com facilidade. Suporte a múltiplos formatos e integração com serviços de nuvem.",
-              icon: "📤"
-            },
-            {
-              title: "Organização Automática",
-              description: "IA classifica seus vídeos em categorias relevantes para casamentos, como preparativos, cerimônia e festa.",
-              icon: "🤖"
-            },
-            {
-              title: "Sincronização Musical",
-              description: "Seus vídeos são automaticamente sincronizados com a música escolhida, criando transições dinâmicas.",
-              icon: "🎵"
-            },
-            {
-              title: "Edição Profissional",
-              description: "Gere arquivos XML compatíveis com Adobe Premiere para refinamentos finais em sua edição.",
-              icon: "🎬"
-            },
-            {
-              title: "Análise Inteligente",
-              description: "Detecção automática de momentos importantes, rostos e cenas de destaque.",
-              icon: "👁️"
-            },
-            {
-              title: "Preview em Tempo Real",
-              description: "Visualize sua edição antes de exportar, com controles para ajustes finos.",
-              icon: "👀"
-            }
-          ].map((feature, index) => (
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-300 bg-clip-text text-transparent">
+            Editor Inteligente de Vídeos de Casamento
+          </h1>
+          <p className="text-lg text-purple-200/70 max-w-2xl mx-auto">
+            Organize e monte seus vídeos automaticamente usando inteligência artificial. 
+            Importe seus arquivos e deixe a IA criar uma edição base profissional.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          {categories.map((category, index) => (
             <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 * index }}
-              className="bg-editor-panel/30 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20"
+              key={category.title}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ 
+                opacity: 1, 
+                x: 0,
+                transition: { delay: index * 0.1 }
+              }}
+              className={`p-6 rounded-xl border border-purple-500/20 bg-gradient-to-br ${category.color}`}
             >
-              <div className="text-4xl mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-gray-400">{feature.description}</p>
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-lg bg-purple-500/20">
+                  {category.icon}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-purple-100 mb-2">
+                    {category.title}
+                  </h3>
+                  <p className="text-purple-200/70">
+                    {category.description}
+                  </p>
+                </div>
+              </div>
             </motion.div>
           ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0, transition: { delay: 0.4 } }}
+          className="text-center"
+        >
+          <Button
+            onClick={() => navigate('/duration')}
+            size="lg"
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+          >
+            <Sparkles className="w-5 h-5 mr-2" />
+            Começar Novo Projeto
+          </Button>
         </motion.div>
       </div>
     </div>
