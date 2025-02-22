@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import ProgressDisplay from './editor/progress/ProgressDisplay';
 import ProcessingPreview from './editor/progress/ProcessingPreview';
@@ -41,6 +42,7 @@ const EditingProgress = ({ videoFiles, progress, onStopProcessing }: EditingProg
       <ProgressDisplay progress={progress} remainingTime={remainingTime} />
       <ProcessingPreview currentFile={currentFile} />
       <ExportOptions 
+        projectName="wedding-video"
         isComplete={isComplete}
         videoFiles={videoFiles}
         onStopProcessing={onStopProcessing}

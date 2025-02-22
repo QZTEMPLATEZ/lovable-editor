@@ -1,115 +1,87 @@
-import React from 'react';
-import EditorHeader from '../EditorHeader';
-import VideoStyleSelector from './VideoStyleSelector';
-import EditingInterface from '../EditingInterface';
-import RawFilesSection from '../RawFilesSection';
+
+import React, { useState } from 'react';
+import { VideoStyle } from '@/types/video';
+import { OrganizationResult } from '@/types/organizer';
+import { MusicAnalysis } from '@/utils/audioProcessing';
 import AIEditStep from './AIEditStep';
 import ReviewStep from './review/ReviewStep';
-import { EditingMode } from '../EditingModeSelector';
-import { VideoSizeRange } from '../../types';
-import { VideoStyle } from '../../types/video';
-import ReviewClassificationStep from './review/ReviewClassificationStep';
 
 interface EditorContentProps {
   currentStep: number;
-  editingMode: EditingMode;
-  targetDuration: VideoSizeRange;
-  onDurationChange: (duration: VideoSizeRange) => void;
-  selectedStyle: VideoStyle | null;
-  onStyleSelect: (style: VideoStyle) => void;
-  onCustomVideoUpload: (file: File) => void;
+  selectedStyle: VideoStyle;
   rawFiles: File[];
   selectedMusic: File[];
-  aiScript: string;
-  onAIScriptChange: (script: string) => void;
-  onStartEditing: () => void;
-  setRawFiles: React.Dispatch<React.SetStateAction<File[]>>;
-  setSelectedMusic: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
-const EditorContent = ({
+const EditorContent: React.FC<EditorContentProps> = ({
   currentStep,
-  editingMode,
-  targetDuration,
-  onDurationChange,
   selectedStyle,
-  onStyleSelect,
-  onCustomVideoUpload,
   rawFiles,
   selectedMusic,
-  aiScript,
-  onAIScriptChange,
-  onStartEditing,
-  setRawFiles,
-  setSelectedMusic,
-}: EditorContentProps) => {
-  return (
-    <>
-      {currentStep === 0 && (
-        <EditorHeader 
-          editingMode={editingMode}
-          targetDuration={targetDuration}
-          onDurationChange={onDurationChange}
-        />
-      )}
-      
-      {currentStep === 1 && (
-        <VideoStyleSelector
-          selectedStyle={selectedStyle}
-          onStyleSelect={onStyleSelect}
-          onCustomVideoUpload={onCustomVideoUpload}
-        />
-      )}
-      
-      {currentStep === 2 && (
-        <EditingInterface 
-          onMusicSelect={(file) => {
-            setSelectedMusic([file]);
-          }} 
-        />
-      )}
-      
-      {currentStep === 3 && (
-        <RawFilesSection
-          onDrop={(e) => {
-            e.preventDefault();
-            const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('video/'));
-            setRawFiles(prevFiles => [...prevFiles, ...files]);
-          }}
-          onDragOver={(e) => e.preventDefault()}
-          videoFiles={rawFiles}
-        />
-      )}
-      
-      {currentStep === 4 && (
-        <AIEditStep 
-          aiScript={aiScript}
-          onChange={onAIScriptChange}
-          onStartEditing={onStartEditing}
-          rawFiles={rawFiles}
-          musicFile={selectedMusic[0]}
-        />
-      )}
+}) => {
+  const [aiScript, setAiScript] = useState('');
+  
+  // Mock data for demo purposes - in production these would come from actual processing
+  const mockOrganizationResult: OrganizationResult = {
+    categorizedFiles: new Map([['videos', rawFiles]]),
+    unorganizedFiles: [],
+    stats: {
+      totalFiles: rawFiles.length,
+      categorizedCount: rawFiles.length,
+      uncategorizedCount: 0
+    }
+  };
 
-      {currentStep === 5 && (
-        <ReviewClassificationStep 
-          rawFiles={rawFiles}
-          onClassificationUpdate={(fileId: string, newCategory: string) => {
-            // Here we would update the classification in the backend
-            console.log(`File ${fileId} moved to category ${newCategory}`);
-          }}
-        />
-      )}
+  const mockMusicAnalysis: MusicAnalysis = {
+    beats: [],
+    bpm: 120,
+    segments: [],
+    duration: 0,
+    energyProfile: {
+      average: 0,
+      peak: 0,
+      valleys: [],
+      peaks: []
+    }
+  };
 
-      {currentStep === 6 && (
-        <ReviewStep 
-          rawFiles={rawFiles}
-          selectedMusic={selectedMusic}
-          selectedStyle={selectedStyle}
-        />
-      )}
-    </>
-  );
+  const handleStartEditing = () => {
+    console.log('Starting editing process...');
+  };
+
+  const handleFinishReview = () => {
+    console.log('Review finished');
+  };
+
+  if (currentStep === 4) {
+    return (
+      <AIEditStep
+        organizationResult={mockOrganizationResult}
+        musicAnalysis={mockMusicAnalysis}
+        aiScript={aiScript}
+        onChange={setAiScript}
+        onStartEditing={handleStartEditing}
+        rawFiles={rawFiles}
+        musicFile={selectedMusic[0]}
+      />
+    );
+  }
+
+  if (currentStep === 5) {
+    return (
+      <ReviewStep
+        projectName="wedding-video"
+        categorizedFiles={mockOrganizationResult.categorizedFiles}
+        musicTracks={selectedMusic}
+        onFinish={handleFinishReview}
+        rawFiles={rawFiles}
+        selectedMusic={selectedMusic}
+        selectedStyle={selectedStyle}
+      />
+    );
+  }
+
+  return null;
 };
 
 export default EditorContent;
