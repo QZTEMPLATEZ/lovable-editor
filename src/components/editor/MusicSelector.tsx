@@ -9,6 +9,10 @@ import { APP_CONFIG } from '@/config/appConfig';
 import { useVideoType } from '@/contexts/VideoTypeContext';
 import MusicHeader from './music/MusicHeader';
 import ContinueButton from './music/ContinueButton';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Link, CloudMusic } from 'lucide-react';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
@@ -24,6 +28,7 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
+  const [cloudLink, setCloudLink] = useState('');
   const { toast } = useToast();
   const { setSelectedMusic } = useVideoType();
 
@@ -51,12 +56,44 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       return;
     }
 
+    await processFiles(newFiles);
+  };
+
+  const handleCloudLink = async () => {
+    if (!cloudLink.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Link inválido",
+        description: "Por favor, insira um link válido",
+      });
+      return;
+    }
+
+    try {
+      // Aqui você implementaria a lógica para baixar e processar o arquivo do link
+      toast({
+        title: "Processando link",
+        description: "Iniciando download do arquivo de música...",
+      });
+      // Por enquanto vamos apenas mostrar que recebemos o link
+      console.log('Processando link:', cloudLink);
+      setCloudLink('');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erro no processamento",
+        description: "Não foi possível processar o arquivo do link fornecido",
+      });
+    }
+  };
+
+  const processFiles = async (files: File[]) => {
     setIsAnalyzing(true);
     
     try {
       const analyzedTracks: SelectedTrack[] = [];
       
-      for (const file of newFiles) {
+      for (const file of files) {
         const beats = await detectBeats(file);
         onMusicSelect(file, beats);
         
@@ -75,7 +112,7 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
 
       toast({
         title: "Music Analysis Complete",
-        description: `${newFiles.length} track${newFiles.length === 1 ? '' : 's'} analyzed. Total tracks: ${updatedTracks.length}`,
+        description: `${files.length} track${files.length === 1 ? '' : 's'} analyzed. Total tracks: ${updatedTracks.length}`,
       });
     } catch (error) {
       toast({
@@ -140,10 +177,42 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
             <ContinueButton hasSelectedTracks={selectedTracks.length > 0} />
           </div>
 
-          <MusicUploadSection 
-            onMusicUpload={handleMusicUpload}
-            maxTracks={APP_CONFIG.music.maxTracks}
-          />
+          <Alert className="bg-purple-500/10 border-purple-500/30">
+            <AlertDescription className="text-purple-200">
+              Adicione suas músicas através de upload direto ou links da nuvem (Dropbox, Google Drive, etc).
+            </AlertDescription>
+          </Alert>
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-4 w-full">
+              <Input
+                type="text"
+                placeholder="Cole aqui o link da música (Dropbox, Google Drive, etc)"
+                value={cloudLink}
+                onChange={(e) => setCloudLink(e.target.value)}
+                className="flex-1 bg-editor-bg/50 border-purple-500/30 text-purple-200 placeholder:text-purple-300/50"
+              />
+              <Button
+                onClick={handleCloudLink}
+                className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-200"
+              >
+                <Link className="w-4 h-4 mr-2" />
+                Adicionar Link
+              </Button>
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5 pointer-events-none" />
+              <div className="text-center p-4 border-2 border-dashed border-purple-500/30 rounded-xl">
+                <CloudMusic className="w-12 h-12 mx-auto text-purple-400 mb-2" />
+                <p className="text-purple-200 mb-2">ou faça upload direto dos arquivos</p>
+                <MusicUploadSection 
+                  onMusicUpload={handleMusicUpload}
+                  maxTracks={APP_CONFIG.music.maxTracks}
+                />
+              </div>
+            </div>
+          </div>
 
           <TrackList
             tracks={selectedTracks.map(track => ({
