@@ -1,7 +1,8 @@
 
 import React, { createContext, useContext, useState } from 'react';
 import { CloudLink } from '@/components/editor/types';
-import { VideoSizeRange, VideoStyle } from '@/types';
+import { VideoSizeRange } from '@/types';
+import { VideoStyle } from '@/types/video';
 
 interface VideoTypeContextProps {
   selectedMusic: File[] | null;
