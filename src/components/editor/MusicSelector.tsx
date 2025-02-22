@@ -1,8 +1,6 @@
-
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import TrackList from '../music/TrackList';
-import MusicUploadSection from '../music/MusicUploadSection';
 import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
 import { detectBeats } from '@/utils/audioProcessing';
 import { APP_CONFIG } from '@/config/appConfig';
@@ -12,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import CloudLinkInput from './sections/CloudLinkInput';
 import MaterialUploadHeader from './sections/MaterialUploadHeader';
+import MusicUploadSection from '../music/MusicUploadSection';
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
@@ -31,33 +30,6 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [videoCloudLink, setVideoCloudLink] = useState('');
   const { toast } = useToast();
   const { setSelectedMusic } = useVideoType();
-
-  const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files) return;
-
-    const newFiles = Array.from(files).filter(validateAudioFile);
-    
-    if (selectedTracks.length + newFiles.length > APP_CONFIG.music.maxTracks) {
-      toast({
-        variant: "destructive",
-        title: "Too many tracks",
-        description: `Maximum ${APP_CONFIG.music.maxTracks} tracks allowed`,
-      });
-      return;
-    }
-
-    if (newFiles.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Invalid file format",
-        description: "Please upload WAV or MP3 files only",
-      });
-      return;
-    }
-
-    await processFiles(newFiles);
-  };
 
   const handleMusicCloudLink = async () => {
     if (!musicCloudLink.trim()) {
@@ -109,6 +81,33 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
         description: "Não foi possível processar o arquivo de vídeo do link fornecido",
       });
     }
+  };
+
+    const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    const newFiles = Array.from(files).filter(validateAudioFile);
+    
+    if (selectedTracks.length + newFiles.length > APP_CONFIG.music.maxTracks) {
+      toast({
+        variant: "destructive",
+        title: "Too many tracks",
+        description: `Maximum ${APP_CONFIG.music.maxTracks} tracks allowed`,
+      });
+      return;
+    }
+
+    if (newFiles.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Invalid file format",
+        description: "Please upload WAV or MP3 files only",
+      });
+      return;
+    }
+
+    await processFiles(newFiles);
   };
 
   const processFiles = async (files: File[]) => {
@@ -204,7 +203,7 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
 
           <Alert className="bg-purple-500/10 border-purple-500/30">
             <AlertDescription className="text-purple-200">
-              Adicione seus vídeos e músicas através de upload direto ou links da nuvem (Dropbox, Google Drive, etc).
+              Adicione seus vídeos e músicas através de links da nuvem (Dropbox, Google Drive, etc).
             </AlertDescription>
           </Alert>
 
@@ -233,18 +232,6 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
                 placeholder="Cole aqui o link da música (Dropbox, Google Drive, etc)"
                 buttonText="Adicionar Música"
               />
-
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5 pointer-events-none" />
-                <div className="text-center p-4 border-2 border-dashed border-purple-500/30 rounded-xl">
-                  <Music className="w-12 h-12 mx-auto text-purple-400 mb-2" />
-                  <p className="text-purple-200 mb-2">ou faça upload direto dos arquivos</p>
-                  <MusicUploadSection 
-                    onMusicUpload={handleMusicUpload}
-                    maxTracks={APP_CONFIG.music.maxTracks}
-                  />
-                </div>
-              </div>
             </div>
           </div>
 
