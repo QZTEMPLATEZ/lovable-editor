@@ -13,7 +13,7 @@ export const EDITOR_STEPS = [
   {
     title: "Upload",
     description: "Add material",
-    path: "/music"
+    path: "/upload"
   },
   {
     title: "Organize",
