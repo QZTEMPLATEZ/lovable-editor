@@ -1,20 +1,26 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { generateEditSequence } from '@/utils/premiere/sequenceGenerator';
 import { exportProject } from '@/utils/projectExport';
 
 interface ExportOptionsProps {
   projectName: string;
-  onExport: () => void;
+  isComplete: boolean;
+  videoFiles: File[];
+  onStopProcessing: () => void;
 }
 
-const ExportOptions: React.FC<ExportOptionsProps> = ({ projectName, onExport }) => {
+const ExportOptions: React.FC<ExportOptionsProps> = ({ 
+  projectName, 
+  isComplete, 
+  videoFiles, 
+  onStopProcessing 
+}) => {
   const handleExport = async () => {
     try {
       await exportProject(
-        new Map(), // This should be replaced with actual categorizedFiles
-        [], // This should be replaced with actual musicTracks
+        new Map([['videos', videoFiles]]),
+        [],
         {
           format: 'premiere',
           includeAudio: true,
@@ -22,7 +28,7 @@ const ExportOptions: React.FC<ExportOptionsProps> = ({ projectName, onExport }) 
           projectName
         }
       );
-      onExport();
+      onStopProcessing();
     } catch (error) {
       console.error('Export error:', error);
     }
@@ -30,7 +36,15 @@ const ExportOptions: React.FC<ExportOptionsProps> = ({ projectName, onExport }) 
 
   return (
     <div className="space-y-4">
-      <Button onClick={handleExport}>Exportar para Premiere Pro</Button>
+      {isComplete ? (
+        <Button onClick={handleExport} className="bg-gradient-to-r from-purple-500 to-pink-500">
+          Exportar para Premiere Pro
+        </Button>
+      ) : (
+        <Button onClick={onStopProcessing} variant="destructive">
+          Cancelar Processamento
+        </Button>
+      )}
     </div>
   );
 };

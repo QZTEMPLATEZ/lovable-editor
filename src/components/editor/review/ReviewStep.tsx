@@ -6,19 +6,26 @@ import { FileCheck2, Settings, Download } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { usePremiereExport } from '@/hooks/usePremiereExport';
 import { motion } from 'framer-motion';
+import { VideoStyle } from '@/types/video';
 
 interface ReviewStepProps {
   projectName: string;
   categorizedFiles: Map<string, File[]>;
   musicTracks: File[];
   onFinish: () => void;
+  rawFiles: File[];
+  selectedMusic: File[];
+  selectedStyle: VideoStyle;
 }
 
 const ReviewStep: React.FC<ReviewStepProps> = ({
   projectName,
   categorizedFiles,
   musicTracks,
-  onFinish
+  onFinish,
+  rawFiles,
+  selectedMusic,
+  selectedStyle
 }) => {
   const [selectedFormat, setSelectedFormat] = useState<'premiere' | 'resolve' | 'fcpx'>('premiere');
   const { isExporting, exportToPremiereProject } = usePremiereExport();
@@ -47,6 +54,11 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
         <ScrollArea className="h-[300px] rounded-md border border-purple-500/20 p-4">
           <div className="space-y-4">
             <div className="p-4 bg-purple-500/10 rounded-lg">
+              <h4 className="font-medium mb-2">Estilo Selecionado</h4>
+              <p className="text-sm text-gray-300">{selectedStyle.name}</p>
+            </div>
+
+            <div className="p-4 bg-purple-500/10 rounded-lg">
               <h4 className="font-medium mb-2">Arquivos Processados</h4>
               {Array.from(categorizedFiles.entries()).map(([category, files]) => (
                 <div key={category} className="flex items-center justify-between text-sm text-gray-300">
@@ -59,7 +71,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
             <div className="p-4 bg-purple-500/10 rounded-lg">
               <h4 className="font-medium mb-2">Trilha Sonora</h4>
               <p className="text-sm text-gray-300">
-                {musicTracks.length} músicas selecionadas
+                {selectedMusic.length} músicas selecionadas
               </p>
             </div>
           </div>
