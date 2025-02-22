@@ -1,3 +1,4 @@
+
 export const EDITOR_STEPS = [
   {
     title: "Duration",
@@ -10,8 +11,8 @@ export const EDITOR_STEPS = [
     path: "/style"
   },
   {
-    title: "Music",
-    description: "Add soundtrack",
+    title: "Upload",
+    description: "Add material",
     path: "/music"
   },
   {
