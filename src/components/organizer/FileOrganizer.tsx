@@ -17,6 +17,20 @@ interface FileOrganizerProps {
   isEditMode?: boolean;
 }
 
+const convertDropboxToDirectLink = (dropboxLink: string): string => {
+  // Remove parâmetros de consulta existentes
+  const baseUrl = dropboxLink.split('?')[0];
+  
+  // Substitui www.dropbox.com por dl.dropboxusercontent.com
+  // e remove /scl/ se presente
+  const directLink = baseUrl
+    .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
+    .replace('/scl/', '/')
+    .replace('?dl=0', '');
+    
+  return directLink;
+};
+
 const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -49,43 +63,82 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
   useEffect(() => {
     console.log('VideoLinks:', videoLinks);
     console.log('MusicLinks:', musicLinks);
+
     const startInitialProcessing = async () => {
       setIsProcessing(true);
       try {
         const linkFiles = await Promise.all([
           ...videoLinks.map(async link => {
-            console.log('Fetching video:', link.url);
-            const response = await fetch(link.url);
-            const blob = await response.blob();
-            return new File([blob], `video-${link.id}`, { type: 'video/mp4' });
+            console.log('Processando link de vídeo:', link.url);
+            const directUrl = convertDropboxToDirectLink(link.url);
+            console.log('URL direta gerada:', directUrl);
+            
+            try {
+              const response = await fetch(directUrl, {
+                headers: {
+                  'Accept': 'video/mp4,video/*',
+                }
+              });
+
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+
+              const blob = await response.blob();
+              console.log('Blob criado com sucesso:', blob.size, 'bytes');
+              return new File([blob], `video-${link.id}`, { type: 'video/mp4' });
+            } catch (error) {
+              console.error('Erro ao buscar vídeo:', error);
+              toast({
+                variant: "destructive",
+                title: "Erro ao acessar vídeo",
+                description: `Não foi possível acessar o vídeo: ${link.url}`,
+              });
+              return null;
+            }
           }),
           ...musicLinks.map(async link => {
-            console.log('Fetching music:', link.url);
-            const response = await fetch(link.url);
-            const blob = await response.blob();
-            return new File([blob], `music-${link.id}`, { type: 'audio/mp3' });
+            console.log('Processando link de áudio:', link.url);
+            const directUrl = convertDropboxToDirectLink(link.url);
+            
+            try {
+              const response = await fetch(directUrl);
+              const blob = await response.blob();
+              return new File([blob], `music-${link.id}`, { type: 'audio/mp3' });
+            } catch (error) {
+              console.error('Erro ao buscar áudio:', error);
+              return null;
+            }
           })
         ]);
 
-        console.log('Files created:', linkFiles);
-        setFiles(linkFiles);
-        await processFiles(linkFiles);
+        // Filtra arquivos nulos (que falharam no download)
+        const validFiles = linkFiles.filter(file => file !== null) as File[];
+        console.log('Arquivos válidos criados:', validFiles.length);
+
+        if (validFiles.length === 0) {
+          throw new Error('Nenhum arquivo válido foi processado');
+        }
+
+        setFiles(validFiles);
+        await processFiles(validFiles);
       } catch (error) {
         console.error('Erro ao processar arquivos:', error);
         toast({
           variant: "destructive",
           title: "Erro no processamento",
-          description: "Não foi possível processar os arquivos dos links fornecidos. Tente novamente.",
+          description: "Não foi possível processar os arquivos dos links fornecidos. Verifique se os links do Dropbox são válidos e têm permissão de acesso.",
         });
+      } finally {
+        setIsProcessing(false);
       }
     };
 
     if (videoLinks.length > 0 || musicLinks.length > 0) {
-      console.log('Starting initial processing');
+      console.log('Iniciando processamento inicial');
       startInitialProcessing();
     } else {
-      console.log('No links to process');
-      // Mostrar mensagem ou UI inicial quando não houver arquivos
+      console.log('Sem links para processar');
       toast({
         title: "Nenhum arquivo para processar",
         description: "Por favor, selecione alguns arquivos para começar.",
