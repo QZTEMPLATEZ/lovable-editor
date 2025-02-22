@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useToast } from '@/components/ui/use-toast';
@@ -26,13 +26,41 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
   const [organizationResult, setOrganizationResult] = useState<OrganizationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [loadedFrames, setLoadedFrames] = useState<Set<string>>(new Set());
-  const [gridSize, setGridSize] = useState<number>(2); // 2 = default size
+  const [gridSize, setGridSize] = useState<number>(2);
 
   const gridColumns = {
     1: 'grid-cols-2 md:grid-cols-3 lg:grid-cols-6',
     2: 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
     3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
   }[gridSize];
+
+  useEffect(() => {
+    // Iniciar o processamento automático quando o componente for montado
+    const startInitialProcessing = async () => {
+      setIsProcessing(true);
+      try {
+        // TODO: Aqui você deve obter os links salvos na etapa anterior
+        // Por enquanto, vamos simular com um array vazio
+        const result = await organizeFiles(files, DEFAULT_CATEGORIES);
+        setOrganizationResult(result);
+        
+        toast({
+          title: "Material processado",
+          description: `${result.stats.categorizedCount} arquivos categorizados com sucesso.`,
+        });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Erro no processamento",
+          description: "Não foi possível processar os arquivos. Tente novamente.",
+        });
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+
+    startInitialProcessing();
+  }, []);
 
   const handleZoomIn = () => {
     setGridSize(prev => Math.min(prev + 1, 3));
@@ -56,7 +84,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
   };
 
   const processFiles = async (newFiles: File[]) => {
-    setFiles(newFiles);
+    setFiles(prev => [...prev, ...newFiles]);
     setIsProcessing(true);
     setLoadedFrames(new Set());
 
@@ -125,13 +153,6 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
       animate={{ opacity: 1 }}
       className="container mx-auto px-4 py-8 space-y-6"
     >
-      {!organizationResult && !isEditMode && (
-        <FileUploadZone
-          onDrop={handleDrop}
-          onFileSelect={handleFileSelect}
-        />
-      )}
-
       {isProcessing && (
         <ProcessStatus
           totalFiles={files.length}
