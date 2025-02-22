@@ -5,25 +5,13 @@ import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/ut
 import { detectBeats } from '@/utils/audioProcessing';
 import { APP_CONFIG } from '@/config/appConfig';
 import { useVideoType } from '@/contexts/VideoTypeContext';
-import { Video, Music, Link2, X } from 'lucide-react';
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import CloudLinkInput from './sections/CloudLinkInput';
-import MaterialUploadHeader from './sections/MaterialUploadHeader';
-import { Button } from '@/components/ui/button';
+import { CloudLink, SelectedTrack } from './types';
+import UploadHeader from './upload/UploadHeader';
+import LinkSection from './upload/LinkSection';
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
-}
-
-interface SelectedTrack {
-  file: File;
-  beats: any[];
-}
-
-interface CloudLink {
-  url: string;
-  id: string;
 }
 
 const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
@@ -106,14 +94,6 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
         description: "Não foi possível processar o arquivo de vídeo do link fornecido",
       });
     }
-  };
-
-  const removeVideoLink = (id: string) => {
-    setVideoLinks(videoLinks.filter(link => link.id !== id));
-  };
-
-  const removeMusicLink = (id: string) => {
-    setMusicLinks(musicLinks.filter(link => link.id !== id));
   };
 
     const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -219,22 +199,13 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
     });
   };
 
-  const LinkItem = ({ link, onRemove }: { link: CloudLink; onRemove: () => void }) => (
-    <div className="flex items-center justify-between bg-purple-500/10 rounded-lg px-4 py-2 gap-2">
-      <div className="flex items-center gap-2 flex-1 min-w-0">
-        <Link2 className="w-4 h-4 text-purple-400 shrink-0" />
-        <span className="truncate text-purple-200 text-sm">{link.url}</span>
-      </div>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-8 w-8 text-purple-300 hover:text-red-400 hover:bg-red-500/10"
-        onClick={onRemove}
-      >
-        <X className="h-4 w-4" />
-      </Button>
-    </div>
-  );
+  const removeVideoLink = (id: string) => {
+    setVideoLinks(videoLinks.filter(link => link.id !== id));
+  };
+
+  const removeMusicLink = (id: string) => {
+    setMusicLinks(musicLinks.filter(link => link.id !== id));
+  };
 
   return (
     <div className="space-y-6 w-full max-w-4xl mx-auto">
@@ -242,69 +213,34 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 pointer-events-none" />
         
         <div className="relative space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Video className="w-5 h-5 text-purple-400" />
-              <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300">
-                Upload de Material
-              </h3>
-            </div>
-          </div>
-
-          <Alert className="bg-purple-500/10 border-purple-500/30">
-            <AlertDescription className="text-purple-200">
-              Adicione seus vídeos e músicas através de links da nuvem (Dropbox, Google Drive, etc).
-            </AlertDescription>
-          </Alert>
+          <UploadHeader />
 
           <div className="space-y-6">
-            {/* Seção de Vídeos */}
-            <div className="space-y-4">
-              <MaterialUploadHeader icon="video" title="Vídeos" />
-              <CloudLinkInput
-                value={videoCloudLink}
-                onChange={setVideoCloudLink}
-                onSubmit={handleVideoCloudLink}
-                placeholder="Cole aqui o link do vídeo (Dropbox, Google Drive, etc)"
-                buttonText="Adicionar Vídeo"
-              />
-              {videoLinks.length > 0 && (
-                <div className="space-y-2">
-                  {videoLinks.map(link => (
-                    <LinkItem 
-                      key={link.id} 
-                      link={link} 
-                      onRemove={() => removeVideoLink(link.id)} 
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+            <LinkSection
+              title="Vídeos"
+              icon="video"
+              links={videoLinks}
+              inputValue={videoCloudLink}
+              onInputChange={setVideoCloudLink}
+              onSubmit={handleVideoCloudLink}
+              onRemove={removeVideoLink}
+              placeholder="Cole aqui o link do vídeo (Dropbox, Google Drive, etc)"
+              buttonText="Adicionar Vídeo"
+            />
 
             <Separator className="bg-purple-500/20" />
 
-            {/* Seção de Músicas */}
-            <div className="space-y-4">
-              <MaterialUploadHeader icon="music" title="Músicas" />
-              <CloudLinkInput
-                value={musicCloudLink}
-                onChange={setMusicCloudLink}
-                onSubmit={handleMusicCloudLink}
-                placeholder="Cole aqui o link da música (Dropbox, Google Drive, etc)"
-                buttonText="Adicionar Música"
-              />
-              {musicLinks.length > 0 && (
-                <div className="space-y-2">
-                  {musicLinks.map(link => (
-                    <LinkItem 
-                      key={link.id} 
-                      link={link} 
-                      onRemove={() => removeMusicLink(link.id)} 
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+            <LinkSection
+              title="Músicas"
+              icon="music"
+              links={musicLinks}
+              inputValue={musicCloudLink}
+              onInputChange={setMusicCloudLink}
+              onSubmit={handleMusicCloudLink}
+              onRemove={removeMusicLink}
+              placeholder="Cole aqui o link da música (Dropbox, Google Drive, etc)"
+              buttonText="Adicionar Música"
+            />
           </div>
 
           <TrackList
