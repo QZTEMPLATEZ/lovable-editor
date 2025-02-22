@@ -11,7 +11,7 @@ import MusicHeader from './music/MusicHeader';
 import ContinueButton from './music/ContinueButton';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Link, CloudMusic } from 'lucide-react';
+import { Link, Music } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface MusicTrackSelectorProps {
@@ -204,7 +204,7 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5 pointer-events-none" />
               <div className="text-center p-4 border-2 border-dashed border-purple-500/30 rounded-xl">
-                <CloudMusic className="w-12 h-12 mx-auto text-purple-400 mb-2" />
+                <Music className="w-12 h-12 mx-auto text-purple-400 mb-2" />
                 <p className="text-purple-200 mb-2">ou faça upload direto dos arquivos</p>
                 <MusicUploadSection 
                   onMusicUpload={handleMusicUpload}
