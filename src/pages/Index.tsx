@@ -4,9 +4,33 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import RecentProjects from '@/components/dashboard/RecentProjects';
 
 const Index = () => {
   const navigate = useNavigate();
+
+  // Mock data for recent projects - in a real app this would come from your backend
+  const recentProjects = [
+    {
+      id: '1',
+      name: 'Casamento Ana & João',
+      lastModified: '2024-03-15',
+      thumbnail: '/placeholder.svg',
+      videoUrl: '#'
+    },
+    {
+      id: '2',
+      name: 'Casamento Maria & Pedro',
+      lastModified: '2024-03-10',
+      thumbnail: '/placeholder.svg',
+      videoUrl: '#'
+    }
+  ];
+
+  const handleResumeProject = (project: any) => {
+    console.log('Resuming project:', project);
+    // Aqui você implementaria a lógica para retomar o projeto
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white">
@@ -31,6 +55,17 @@ const Index = () => {
             <Sparkles className="w-5 h-5 mr-2" />
             Começar Novo Projeto
           </Button>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <RecentProjects 
+            projects={recentProjects}
+            onResumeProject={handleResumeProject}
+          />
         </motion.div>
       </div>
     </div>
