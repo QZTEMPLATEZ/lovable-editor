@@ -5,12 +5,12 @@ import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/ut
 import { detectBeats } from '@/utils/audioProcessing';
 import { APP_CONFIG } from '@/config/appConfig';
 import { useVideoType } from '@/contexts/VideoTypeContext';
-import { Video, Music } from 'lucide-react';
+import { Video, Music, Link2, X } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import CloudLinkInput from './sections/CloudLinkInput';
 import MaterialUploadHeader from './sections/MaterialUploadHeader';
-import MusicUploadSection from '../music/MusicUploadSection';
+import { Button } from '@/components/ui/button';
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
@@ -21,6 +21,11 @@ interface SelectedTrack {
   beats: any[];
 }
 
+interface CloudLink {
+  url: string;
+  id: string;
+}
+
 const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [selectedTracks, setSelectedTracks] = useState<SelectedTrack[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -28,6 +33,8 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
   const [musicCloudLink, setMusicCloudLink] = useState('');
   const [videoCloudLink, setVideoCloudLink] = useState('');
+  const [musicLinks, setMusicLinks] = useState<CloudLink[]>([]);
+  const [videoLinks, setVideoLinks] = useState<CloudLink[]>([]);
   const { toast } = useToast();
   const { setSelectedMusic } = useVideoType();
 
@@ -41,12 +48,21 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       return;
     }
 
-    try {
+    if (musicLinks.length >= 3) {
       toast({
-        title: "Processando link",
-        description: "Iniciando download do arquivo de música...",
+        variant: "destructive",
+        title: "Limite atingido",
+        description: "Você pode adicionar no máximo 3 links de música",
       });
-      console.log('Processando link de música:', musicCloudLink);
+      return;
+    }
+
+    try {
+      setMusicLinks([...musicLinks, { url: musicCloudLink, id: Date.now().toString() }]);
+      toast({
+        title: "Link adicionado",
+        description: "Link da música foi adicionado com sucesso",
+      });
       setMusicCloudLink('');
     } catch (error) {
       toast({
@@ -67,12 +83,21 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       return;
     }
 
-    try {
+    if (videoLinks.length >= 3) {
       toast({
-        title: "Processando link",
-        description: "Iniciando download do arquivo de vídeo...",
+        variant: "destructive",
+        title: "Limite atingido",
+        description: "Você pode adicionar no máximo 3 links de vídeo",
       });
-      console.log('Processando link de vídeo:', videoCloudLink);
+      return;
+    }
+
+    try {
+      setVideoLinks([...videoLinks, { url: videoCloudLink, id: Date.now().toString() }]);
+      toast({
+        title: "Link adicionado",
+        description: "Link do vídeo foi adicionado com sucesso",
+      });
       setVideoCloudLink('');
     } catch (error) {
       toast({
@@ -81,6 +106,14 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
         description: "Não foi possível processar o arquivo de vídeo do link fornecido",
       });
     }
+  };
+
+  const removeVideoLink = (id: string) => {
+    setVideoLinks(videoLinks.filter(link => link.id !== id));
+  };
+
+  const removeMusicLink = (id: string) => {
+    setMusicLinks(musicLinks.filter(link => link.id !== id));
   };
 
     const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -186,6 +219,23 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
     });
   };
 
+  const LinkItem = ({ link, onRemove }: { link: CloudLink; onRemove: () => void }) => (
+    <div className="flex items-center justify-between bg-purple-500/10 rounded-lg px-4 py-2 gap-2">
+      <div className="flex items-center gap-2 flex-1 min-w-0">
+        <Link2 className="w-4 h-4 text-purple-400 shrink-0" />
+        <span className="truncate text-purple-200 text-sm">{link.url}</span>
+      </div>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 text-purple-300 hover:text-red-400 hover:bg-red-500/10"
+        onClick={onRemove}
+      >
+        <X className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+
   return (
     <div className="space-y-6 w-full max-w-4xl mx-auto">
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl relative overflow-hidden">
@@ -218,6 +268,17 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
                 placeholder="Cole aqui o link do vídeo (Dropbox, Google Drive, etc)"
                 buttonText="Adicionar Vídeo"
               />
+              {videoLinks.length > 0 && (
+                <div className="space-y-2">
+                  {videoLinks.map(link => (
+                    <LinkItem 
+                      key={link.id} 
+                      link={link} 
+                      onRemove={() => removeVideoLink(link.id)} 
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
             <Separator className="bg-purple-500/20" />
@@ -232,6 +293,17 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
                 placeholder="Cole aqui o link da música (Dropbox, Google Drive, etc)"
                 buttonText="Adicionar Música"
               />
+              {musicLinks.length > 0 && (
+                <div className="space-y-2">
+                  {musicLinks.map(link => (
+                    <LinkItem 
+                      key={link.id} 
+                      link={link} 
+                      onRemove={() => removeMusicLink(link.id)} 
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
