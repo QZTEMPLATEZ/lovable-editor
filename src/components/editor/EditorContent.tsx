@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { VideoStyle } from '@/types/video';
 import { OrganizationResult } from '@/types/organizer';
 import { MusicAnalysis } from '@/utils/audioProcessing';
@@ -53,9 +53,16 @@ const EditorContent: React.FC<EditorContentProps> = ({
   };
 
   const mockMusicAnalysis: MusicAnalysis = {
+    beats: [],
     bpm: 120,
-    key: 'C',
+    segments: [],
     duration: 0,
+    energyProfile: {
+      average: 0,
+      peak: 0,
+      valleys: [],
+      peaks: []
+    }
   };
 
   const handleFinishReview = () => {
