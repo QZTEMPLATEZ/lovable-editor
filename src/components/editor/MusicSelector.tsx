@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import TrackList from '../music/TrackList';
@@ -6,13 +7,11 @@ import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/ut
 import { detectBeats } from '@/utils/audioProcessing';
 import { APP_CONFIG } from '@/config/appConfig';
 import { useVideoType } from '@/contexts/VideoTypeContext';
-import MusicHeader from './music/MusicHeader';
-import ContinueButton from './music/ContinueButton';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Link, Music, Video } from 'lucide-react';
+import { Video, Music } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
+import CloudLinkInput from './sections/CloudLinkInput';
+import MaterialUploadHeader from './sections/MaterialUploadHeader';
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
@@ -60,30 +59,54 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
     await processFiles(newFiles);
   };
 
-  const handleCloudLink = async () => {
+  const handleMusicCloudLink = async () => {
     if (!musicCloudLink.trim()) {
       toast({
         variant: "destructive",
         title: "Link inválido",
-        description: "Por favor, insira um link válido",
+        description: "Por favor, insira um link válido para a música",
       });
       return;
     }
 
     try {
-      // Aqui você implementaria a lógica para baixar e processar o arquivo do link
       toast({
         title: "Processando link",
         description: "Iniciando download do arquivo de música...",
       });
-      // Por enquanto vamos apenas mostrar que recebemos o link
-      console.log('Processando link:', musicCloudLink);
+      console.log('Processando link de música:', musicCloudLink);
       setMusicCloudLink('');
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Erro no processamento",
-        description: "Não foi possível processar o arquivo do link fornecido",
+        description: "Não foi possível processar o arquivo de música do link fornecido",
+      });
+    }
+  };
+
+  const handleVideoCloudLink = async () => {
+    if (!videoCloudLink.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Link inválido",
+        description: "Por favor, insira um link válido para o vídeo",
+      });
+      return;
+    }
+
+    try {
+      toast({
+        title: "Processando link",
+        description: "Iniciando download do arquivo de vídeo...",
+      });
+      console.log('Processando link de vídeo:', videoCloudLink);
+      setVideoCloudLink('');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erro no processamento",
+        description: "Não foi possível processar o arquivo de vídeo do link fornecido",
       });
     }
   };
@@ -164,58 +187,6 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
     });
   };
 
-  const handleMusicCloudLink = async () => {
-    if (!musicCloudLink.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Link inválido",
-        description: "Por favor, insira um link válido para a música",
-      });
-      return;
-    }
-
-    try {
-      toast({
-        title: "Processando link",
-        description: "Iniciando download do arquivo de música...",
-      });
-      console.log('Processando link de música:', musicCloudLink);
-      setMusicCloudLink('');
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Erro no processamento",
-        description: "Não foi possível processar o arquivo de música do link fornecido",
-      });
-    }
-  };
-
-  const handleVideoCloudLink = async () => {
-    if (!videoCloudLink.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Link inválido",
-        description: "Por favor, insira um link válido para o vídeo",
-      });
-      return;
-    }
-
-    try {
-      toast({
-        title: "Processando link",
-        description: "Iniciando download do arquivo de vídeo...",
-      });
-      console.log('Processando link de vídeo:', videoCloudLink);
-      setVideoCloudLink('');
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Erro no processamento",
-        description: "Não foi possível processar o arquivo de vídeo do link fornecido",
-      });
-    }
-  };
-
   return (
     <div className="space-y-6 w-full max-w-4xl mx-auto">
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl relative overflow-hidden">
@@ -229,7 +200,6 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
                 Upload de Material
               </h3>
             </div>
-            <ContinueButton hasSelectedTracks={selectedTracks.length > 0} />
           </div>
 
           <Alert className="bg-purple-500/10 border-purple-500/30">
@@ -241,50 +211,28 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
           <div className="space-y-6">
             {/* Seção de Vídeos */}
             <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-purple-200 flex items-center gap-2">
-                <Video className="w-4 h-4" /> Vídeos
-              </h4>
-              <div className="flex items-center gap-4 w-full">
-                <Input
-                  type="text"
-                  placeholder="Cole aqui o link do vídeo (Dropbox, Google Drive, etc)"
-                  value={videoCloudLink}
-                  onChange={(e) => setVideoCloudLink(e.target.value)}
-                  className="flex-1 bg-editor-bg/50 border-purple-500/30 text-purple-200 placeholder:text-purple-300/50"
-                />
-                <Button
-                  onClick={handleVideoCloudLink}
-                  className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-200"
-                >
-                  <Link className="w-4 h-4 mr-2" />
-                  Adicionar Vídeo
-                </Button>
-              </div>
+              <MaterialUploadHeader icon="video" title="Vídeos" />
+              <CloudLinkInput
+                value={videoCloudLink}
+                onChange={setVideoCloudLink}
+                onSubmit={handleVideoCloudLink}
+                placeholder="Cole aqui o link do vídeo (Dropbox, Google Drive, etc)"
+                buttonText="Adicionar Vídeo"
+              />
             </div>
 
             <Separator className="bg-purple-500/20" />
 
             {/* Seção de Músicas */}
             <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-purple-200 flex items-center gap-2">
-                <Music className="w-4 h-4" /> Músicas
-              </h4>
-              <div className="flex items-center gap-4 w-full">
-                <Input
-                  type="text"
-                  placeholder="Cole aqui o link da música (Dropbox, Google Drive, etc)"
-                  value={musicCloudLink}
-                  onChange={(e) => setMusicCloudLink(e.target.value)}
-                  className="flex-1 bg-editor-bg/50 border-purple-500/30 text-purple-200 placeholder:text-purple-300/50"
-                />
-                <Button
-                  onClick={handleMusicCloudLink}
-                  className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-200"
-                >
-                  <Link className="w-4 h-4 mr-2" />
-                  Adicionar Música
-                </Button>
-              </div>
+              <MaterialUploadHeader icon="music" title="Músicas" />
+              <CloudLinkInput
+                value={musicCloudLink}
+                onChange={setMusicCloudLink}
+                onSubmit={handleMusicCloudLink}
+                placeholder="Cole aqui o link da música (Dropbox, Google Drive, etc)"
+                buttonText="Adicionar Música"
+              />
 
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5 pointer-events-none" />
