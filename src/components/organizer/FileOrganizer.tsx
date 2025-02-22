@@ -47,22 +47,27 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
   }[gridSize];
 
   useEffect(() => {
+    console.log('VideoLinks:', videoLinks);
+    console.log('MusicLinks:', musicLinks);
     const startInitialProcessing = async () => {
       setIsProcessing(true);
       try {
         const linkFiles = await Promise.all([
           ...videoLinks.map(async link => {
+            console.log('Fetching video:', link.url);
             const response = await fetch(link.url);
             const blob = await response.blob();
             return new File([blob], `video-${link.id}`, { type: 'video/mp4' });
           }),
           ...musicLinks.map(async link => {
+            console.log('Fetching music:', link.url);
             const response = await fetch(link.url);
             const blob = await response.blob();
             return new File([blob], `music-${link.id}`, { type: 'audio/mp3' });
           })
         ]);
 
+        console.log('Files created:', linkFiles);
         setFiles(linkFiles);
         await processFiles(linkFiles);
       } catch (error) {
@@ -76,7 +81,15 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
     };
 
     if (videoLinks.length > 0 || musicLinks.length > 0) {
+      console.log('Starting initial processing');
       startInitialProcessing();
+    } else {
+      console.log('No links to process');
+      // Mostrar mensagem ou UI inicial quando não houver arquivos
+      toast({
+        title: "Nenhum arquivo para processar",
+        description: "Por favor, selecione alguns arquivos para começar.",
+      });
     }
   }, [videoLinks, musicLinks]);
 
@@ -99,6 +112,23 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
     }
     navigate('/edit');
   };
+
+  if (!isProcessing && !organizationResult && (!videoLinks.length && !musicLinks.length)) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="container mx-auto px-4 py-8 text-center"
+      >
+        <div className="bg-editor-panel/50 rounded-xl p-8 border border-purple-500/20">
+          <h2 className="text-xl font-semibold mb-4">Nenhum arquivo para organizar</h2>
+          <p className="text-gray-400 mb-4">
+            Volte para a etapa anterior e selecione alguns arquivos para começar.
+          </p>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
