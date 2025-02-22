@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -14,6 +13,7 @@ import { DragDropContext } from '@hello-pangea/dnd';
 import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import ZoomControls from './ZoomControls';
 import ClassifiedFilesGrid from './ClassifiedFilesGrid';
+import { useVideoType } from '@/contexts/VideoTypeContext';
 
 interface FileOrganizerProps {
   isEditMode?: boolean;
@@ -22,6 +22,7 @@ interface FileOrganizerProps {
 const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { videoLinks, musicLinks } = useVideoType();
   const [files, setFiles] = useState<File[]>([]);
   const [organizationResult, setOrganizationResult] = useState<OrganizationResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -39,9 +40,22 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
     const startInitialProcessing = async () => {
       setIsProcessing(true);
       try {
-        // TODO: Aqui você deve obter os links salvos na etapa anterior
-        // Por enquanto, vamos simular com um array vazio
-        const result = await organizeFiles(files, DEFAULT_CATEGORIES);
+        // Converter os links em arquivos
+        const linkFiles = await Promise.all([
+          ...videoLinks.map(async link => {
+            const response = await fetch(link.url);
+            const blob = await response.blob();
+            return new File([blob], `video-${link.id}`, { type: 'video/mp4' });
+          }),
+          ...musicLinks.map(async link => {
+            const response = await fetch(link.url);
+            const blob = await response.blob();
+            return new File([blob], `music-${link.id}`, { type: 'audio/mp3' });
+          })
+        ]);
+
+        setFiles(linkFiles);
+        const result = await organizeFiles(linkFiles, DEFAULT_CATEGORIES);
         setOrganizationResult(result);
         
         toast({
@@ -49,18 +63,21 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
           description: `${result.stats.categorizedCount} arquivos categorizados com sucesso.`,
         });
       } catch (error) {
+        console.error('Erro ao processar arquivos:', error);
         toast({
           variant: "destructive",
           title: "Erro no processamento",
-          description: "Não foi possível processar os arquivos. Tente novamente.",
+          description: "Não foi possível processar os arquivos dos links fornecidos. Tente novamente.",
         });
       } finally {
         setIsProcessing(false);
       }
     };
 
-    startInitialProcessing();
-  }, []);
+    if (videoLinks.length > 0 || musicLinks.length > 0) {
+      startInitialProcessing();
+    }
+  }, [videoLinks, musicLinks]);
 
   const handleZoomIn = () => {
     setGridSize(prev => Math.min(prev + 1, 3));

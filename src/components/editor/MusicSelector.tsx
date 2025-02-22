@@ -22,10 +22,8 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
   const [musicCloudLink, setMusicCloudLink] = useState('');
   const [videoCloudLink, setVideoCloudLink] = useState('');
-  const [musicLinks, setMusicLinks] = useState<CloudLink[]>([]);
-  const [videoLinks, setVideoLinks] = useState<CloudLink[]>([]);
   const { toast } = useToast();
-  const { setSelectedMusic } = useVideoType();
+  const { setSelectedMusic, setVideoLinks, setMusicLinks, videoLinks, musicLinks } = useVideoType();
 
   const handleMusicCloudLink = async () => {
     if (!musicCloudLink.trim()) {
@@ -47,7 +45,8 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
     }
 
     try {
-      setMusicLinks([...musicLinks, { url: musicCloudLink, id: Date.now().toString() }]);
+      const newMusicLinks = [...musicLinks, { url: musicCloudLink, id: Date.now().toString() }];
+      setMusicLinks(newMusicLinks);
       toast({
         title: "Link adicionado",
         description: "Link da música foi adicionado com sucesso",
@@ -82,7 +81,8 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
     }
 
     try {
-      setVideoLinks([...videoLinks, { url: videoCloudLink, id: Date.now().toString() }]);
+      const newVideoLinks = [...videoLinks, { url: videoCloudLink, id: Date.now().toString() }];
+      setVideoLinks(newVideoLinks);
       toast({
         title: "Link adicionado",
         description: "Link do vídeo foi adicionado com sucesso",
