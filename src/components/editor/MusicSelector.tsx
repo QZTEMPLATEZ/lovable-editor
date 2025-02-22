@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import TrackList from '../music/TrackList';
@@ -213,7 +214,10 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 pointer-events-none" />
         
         <div className="relative space-y-6">
-          <UploadHeader />
+          <UploadHeader 
+            videoLinksCount={videoLinks.length}
+            musicLinksCount={musicLinks.length}
+          />
 
           <div className="space-y-6">
             <LinkSection
