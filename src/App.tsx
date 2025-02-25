@@ -1,9 +1,8 @@
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import TopNavigation from "./components/TopNavigation";
-import Index from "./pages/Index";
 import VideoSizeSelector from "./components/VideoSizeSelector";
 import VideoStyleSelector from "./components/editor/VideoStyleSelector";
 import MusicSelector from "./components/editor/MusicSelector";
@@ -38,16 +37,17 @@ const AppContent = () => {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-b from-editor-bg to-editor-bg/95 text-white relative overflow-hidden">
+      <div className="min-h-screen bg-[#232323] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2B2B2B] to-[#1E1E1E]" />
         
         <div className="relative">
           <TopNavigation />
           <VideoTypeIndicator />
           
           <Routes>
-            <Route path="/" element={<Index />} />
+            {/* Redireciona da raiz para a primeira etapa */}
+            <Route path="/" element={<Navigate to="/duration" replace />} />
             <Route 
               path="/duration" 
               element={
