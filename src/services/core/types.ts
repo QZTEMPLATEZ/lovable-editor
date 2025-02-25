@@ -1,13 +1,16 @@
-export type SceneType = 'emotional' | 'action' | 'default';
+
+export interface FrameData {
+  width: number;
+  height: number;
+  data: Uint8ClampedArray;
+}
 
 export interface FrameAnalysis {
   timePoint: number;
   motionScore: number;
   sceneType: SceneType;
   hasFaces: boolean;
-  peaks?: number[];
-  averageMotion?: number;
-  frameData?: ImageData;  // Adicionando frameData como opcional
+  frameData: FrameData;
 }
 
 export interface AudioAnalysis {
@@ -16,15 +19,24 @@ export interface AudioAnalysis {
   tempo: number;
 }
 
-export interface EditingRule {
-  minDuration: number;
-  maxDuration: number;
-  preferredTransition: string;
-  energyThreshold: number;
-}
+export type SceneType = 'emotional' | 'action' | 'default';
 
 export interface EditingPreset {
-  emotional: EditingRule;
-  action: EditingRule;
-  default: EditingRule;
+  [key in SceneType]: {
+    minDuration: number;
+    maxDuration: number;
+    preferredTransition: string;
+    energyThreshold: number;
+  };
+}
+
+export interface ClipInfo {
+  timePoint: number;
+  duration: number;
+  transition?: string;
+  sourceClip: any; // Referência ao clip original do Premiere
+}
+
+export interface EditingSequence {
+  clips: ClipInfo[];
 }
