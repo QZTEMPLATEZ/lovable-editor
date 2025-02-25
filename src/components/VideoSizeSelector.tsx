@@ -1,10 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
-import { Clock, Check, ChevronLeft } from 'lucide-react';
+import { Clock, Check, ChevronLeft, Activity } from 'lucide-react';
 import { VideoSizeRange } from '../types';
 import { useVideoType } from '../contexts/VideoTypeContext';
 import { Button } from './ui/button';
@@ -72,14 +72,34 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
   const { toast } = useToast();
   const navigate = useNavigate();
   const { setSelectedVideoType } = useVideoType();
+  const [motionStats, setMotionStats] = useState<{dynamicScenes: number, totalScenes: number}>({
+    dynamicScenes: 0,
+    totalScenes: 0
+  });
 
   const handleSizeSelect = (size: VideoSizeRange) => {
-    onSizeSelect(size);
-    setSelectedVideoType(size);
-    toast({
-      title: "Duration Selected",
-      description: `Selected ${size.name} (${size.label})`,
-    });
+    // Recommend size based on motion analysis
+    const dynamicRatio = motionStats.dynamicScenes / Math.max(1, motionStats.totalScenes);
+    let recommendedSize = size;
+
+    if (dynamicRatio > 0.7) {
+      // Lots of dynamic scenes - suggest shorter format
+      recommendedSize = VIDEO_SIZES[0]; // Social
+      toast({
+        title: "Sugestão de Formato",
+        description: "Detectamos muito movimento nos vídeos. Recomendamos um formato mais curto e dinâmico.",
+      });
+    } else if (dynamicRatio < 0.3) {
+      // Mostly static scenes - suggest longer format
+      recommendedSize = VIDEO_SIZES[2]; // Short Film
+      toast({
+        title: "Sugestão de Formato",
+        description: "Detectamos cenas mais calmas. Recomendamos um formato que permita contar a história com mais detalhes.",
+      });
+    }
+
+    onSizeSelect(recommendedSize);
+    setSelectedVideoType(recommendedSize);
     navigate('/style');
   };
 
@@ -118,6 +138,18 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
               Choose the perfect duration for your video project. Each option is carefully designed 
               to match different content needs.
             </p>
+
+            {motionStats.totalScenes > 0 && (
+              <div className="bg-black/40 p-4 rounded-lg backdrop-blur-sm">
+                <div className="flex items-center gap-2 text-sm text-white/80">
+                  <Activity className="w-4 h-4" />
+                  <span>Motion Analysis:</span>
+                  <span className="text-purple-400">
+                    {Math.round((motionStats.dynamicScenes / motionStats.totalScenes) * 100)}% Dynamic Scenes
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
