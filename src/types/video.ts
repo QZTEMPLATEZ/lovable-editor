@@ -12,6 +12,24 @@ export type VideoStyle = {
     pacing?: string;
     effects?: string;
   };
+  editingRules?: {
+    takeDuration: {
+      emotional: { min: number; max: number };
+      action: { min: number; max: number };
+      default: { min: number; max: number };
+    };
+    transitions: {
+      directCut: number;
+      crossDissolve: number;
+      speedRamp: number;
+      fadeToBlack: number;
+    };
+    musicSync: {
+      beatMatch: boolean;
+      energyMatch: boolean;
+      tempoRange: { min: number; max: number };
+    };
+  };
 };
 
 export type VideoCategory = 
@@ -27,4 +45,31 @@ export interface VideoAnalysisResult {
   file: File;
   category: VideoCategory;
   confidence: number;
+  motionAnalysis?: {
+    averageMotion: number;
+    peaks: number[];
+    sceneType: 'emotional' | 'action' | 'default';
+  };
+  audioAnalysis?: {
+    beats: number[];
+    energy: number;
+    tempo: number;
+  };
 }
+
+export type EditingPreset = {
+  name: string;
+  rules: {
+    takeDuration: {
+      emotional: [number, number];
+      action: [number, number];
+      default: [number, number];
+    };
+    transitions: {
+      directCut: number;
+      crossDissolve: number;
+      speedRamp: number;
+      fadeToBlack: number;
+    };
+  };
+};
