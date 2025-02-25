@@ -10,11 +10,13 @@ const mockPremiereProject = {
 };
 
 const mockSequence = {
+  id: 'test-sequence-id',
+  name: 'test-sequence',
+  clips: [],
   addClip: jest.fn(),
   addMarker: jest.fn(),
   addTransition: jest.fn(),
-  getAllClips: jest.fn(),
-  clips: []
+  getAllClips: jest.fn()
 };
 
 describe('Premiere Integration', () => {
