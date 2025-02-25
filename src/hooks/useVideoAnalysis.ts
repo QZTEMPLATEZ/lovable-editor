@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 
-interface AnalysisResult {
+export interface AnalysisResult {
   timePoint: number;
   motionScore: number;
   sceneType: 'emotional' | 'action' | 'default';
