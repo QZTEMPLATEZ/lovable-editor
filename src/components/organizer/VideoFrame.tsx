@@ -1,9 +1,9 @@
-
 import React, { useEffect, useRef } from 'react';
 import { FileVideo } from 'lucide-react';
 import { useVideoAnalysis } from '@/hooks/useVideoAnalysis';
 import { MotionAnalysisOverlay } from './video-analysis/MotionAnalysisOverlay';
 import { calculateFrameDifference, getFramePoints, determineSceneType } from '@/services/video/frameAnalysis';
+import { createEditingSequence } from '@/services/premiere/premiereIntegration';
 
 interface VideoFrameProps {
   file: File;
@@ -122,6 +122,12 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
               analyzeFrames(video, framePoints).then(() => {
                 URL.revokeObjectURL(video.src);
                 onLoad?.();
+
+                // Criar sequência no Premiere após análise
+                if (window.premiere) {
+                  createEditingSequence(analysisResults, "Auto Edit")
+                    .catch(error => console.error('Failed to create Premiere sequence:', error));
+                }
               });
             }
           }, { once: true });
@@ -135,7 +141,7 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
     };
 
     setupVideo();
-  }, [file, onLoad, addAnalysisResult]);
+  }, [file, onLoad, addAnalysisResult, analysisResults]);
 
   return (
     <div className={`relative aspect-video bg-black/20 rounded-lg overflow-hidden ${className}`}>
