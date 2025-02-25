@@ -16,7 +16,9 @@ const mockSequence = {
   addClip: jest.fn(),
   addMarker: jest.fn(),
   addTransition: jest.fn(),
-  getAllClips: jest.fn()
+  getAllClips: jest.fn(),
+  getAllAudioTracks: jest.fn(),
+  hasTransition: jest.fn()
 };
 
 describe('Premiere Integration', () => {
