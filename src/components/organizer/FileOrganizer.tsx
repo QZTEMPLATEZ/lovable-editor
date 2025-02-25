@@ -1,157 +1,139 @@
 
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useToast } from '@/components/ui/use-toast';
-import { useVideoType } from '@/contexts/VideoTypeContext';
-import { convertDropboxToDirectLink } from '@/utils/urlUtils';
-import ProcessStatus from './ProcessStatus';
-import EmptyState from './EmptyState';
-import OrganizedContent from './OrganizedContent';
-import { useFileProcessing } from './FileProcessingLogic';
-import { useDragAndDrop } from './DragAndDropHandler';
+import React, { useState } from 'react';
+import { FileVideo } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { useVideoAnalysis } from '@/hooks/useVideoAnalysis';
+import VideoFrame from './VideoFrame';
+import { createEditingSequence } from '@/services/premiere/premiereIntegration';
 
-interface FileOrganizerProps {
-  isEditMode?: boolean;
+interface OrganizedFiles {
+  brideprep: File[];
+  groomprep: File[];
+  decoration: File[];
+  drone: File[];
+  ceremony: File[];
+  reception: File[];
+  untagged: File[];
 }
 
-const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => {
-  const navigate = useNavigate();
+const FileOrganizer = ({ isEditMode = false }: { isEditMode?: boolean }) => {
   const { toast } = useToast();
-  const { videoLinks, musicLinks } = useVideoType();
-  const [gridSize, setGridSize] = useState<number>(2);
-
-  const {
-    files,
-    organizationResult,
-    isProcessing,
-    loadedFrames,
-    setFiles,
-    setOrganizationResult,
-    setIsProcessing,
-    processFiles,
-    handleFrameLoad,
-  } = useFileProcessing();
-
-  const { handleDragEnd } = useDragAndDrop({
-    organizationResult,
-    setOrganizationResult,
+  const [files, setFiles] = useState<OrganizedFiles>({
+    brideprep: [],
+    groomprep: [],
+    decoration: [],
+    drone: [],
+    ceremony: [],
+    reception: [],
+    untagged: []
   });
+  const [processing, setProcessing] = useState(false);
+  const { analysisResults, addAnalysisResult } = useVideoAnalysis();
 
-  const gridColumns = {
-    1: 'grid-cols-2 md:grid-cols-3 lg:grid-cols-6',
-    2: 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
-    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-  }[gridSize];
+  const handleFileDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    setProcessing(true);
 
-  useEffect(() => {
-    console.log('VideoLinks:', videoLinks);
-    console.log('MusicLinks:', musicLinks);
+    try {
+      // Adiciona arquivos à categoria "untagged" inicialmente
+      setFiles(prev => ({
+        ...prev,
+        untagged: [...prev.untagged, ...droppedFiles]
+      }));
 
-    const startInitialProcessing = async () => {
-      setIsProcessing(true);
-      try {
-        const linkFiles = await Promise.all([
-          ...videoLinks.map(async link => {
-            console.log('Processando link de vídeo:', link.url);
-            const directUrl = convertDropboxToDirectLink(link.url);
-            console.log('URL direta gerada:', directUrl);
-            
-            try {
-              const response = await fetch(directUrl, {
-                headers: {
-                  'Accept': 'video/mp4,video/*',
-                }
-              });
-
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-
-              const blob = await response.blob();
-              console.log('Blob criado com sucesso:', blob.size, 'bytes');
-              return new File([blob], `video-${link.id}`, { type: 'video/mp4' });
-            } catch (error) {
-              console.error('Erro ao buscar vídeo:', error);
-              toast({
-                variant: "destructive",
-                title: "Erro ao acessar vídeo",
-                description: `Não foi possível acessar o vídeo: ${link.url}`,
-              });
-              return null;
-            }
-          }),
-          ...musicLinks.map(async link => {
-            console.log('Processando link de áudio:', link.url);
-            const directUrl = convertDropboxToDirectLink(link.url);
-            
-            try {
-              const response = await fetch(directUrl);
-              const blob = await response.blob();
-              return new File([blob], `music-${link.id}`, { type: 'audio/mp3' });
-            } catch (error) {
-              console.error('Erro ao buscar áudio:', error);
-              return null;
-            }
-          })
-        ]);
-
-        const validFiles = linkFiles.filter(file => file !== null) as File[];
-        console.log('Arquivos válidos criados:', validFiles.length);
-
-        if (validFiles.length === 0) {
-          throw new Error('Nenhum arquivo válido foi processado');
-        }
-
-        setFiles(validFiles);
-        await processFiles(validFiles);
-      } catch (error) {
-        console.error('Erro ao processar arquivos:', error);
-        toast({
-          variant: "destructive",
-          title: "Erro no processamento",
-          description: "Não foi possível processar os arquivos dos links fornecidos. Verifique se os links do Dropbox são válidos e têm permissão de acesso.",
-        });
-      } finally {
-        setIsProcessing(false);
-      }
-    };
-
-    if (videoLinks.length > 0 || musicLinks.length > 0) {
-      console.log('Iniciando processamento inicial');
-      startInitialProcessing();
-    } else {
-      console.log('Sem links para processar');
+      toast({
+        title: "Arquivos importados",
+        description: `${droppedFiles.length} arquivos adicionados para análise.`,
+      });
+    } catch (error) {
+      console.error('Erro ao importar arquivos:', error);
+      toast({
+        title: "Erro ao importar",
+        description: "Não foi possível importar alguns arquivos.",
+        variant: "destructive"
+      });
+    } finally {
+      setProcessing(false);
     }
-  }, [videoLinks, musicLinks]);
+  };
 
-  if (!isProcessing && !organizationResult && (!videoLinks.length && !musicLinks.length)) {
-    return <EmptyState />;
-  }
+  const handleStartEditing = async () => {
+    setProcessing(true);
+    try {
+      await createEditingSequence(analysisResults, "Wedding Edit", (step, progress) => {
+        toast({
+          title: step,
+          description: `${progress}% concluído`,
+        });
+      });
+
+      toast({
+        title: "Edição criada",
+        description: "Sequência criada com sucesso no Premiere Pro.",
+      });
+    } catch (error) {
+      console.error('Erro ao criar sequência:', error);
+      toast({
+        title: "Erro na edição",
+        description: "Não foi possível criar a sequência.",
+        variant: "destructive"
+      });
+    } finally {
+      setProcessing(false);
+    }
+  };
 
   return (
-    <>
-      {isProcessing && (
-        <ProcessStatus
-          totalFiles={files.length}
-          processedFiles={loadedFrames.size}
-          successCount={loadedFrames.size}
-          errorCount={0}
-        />
-      )}
+    <div className="min-h-screen bg-[#1E1E1E] p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Área de Drop */}
+        <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleFileDrop}
+          className="border-2 border-dashed border-gray-600 rounded-lg p-12 text-center hover:border-purple-500 transition-colors"
+        >
+          <FileVideo className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+          <p className="text-gray-400">
+            Arraste seus arquivos aqui ou{' '}
+            <button className="text-purple-500 hover:text-purple-400">
+              escolha os arquivos
+            </button>
+          </p>
+        </div>
 
-      {organizationResult && !isProcessing && (
-        <OrganizedContent
-          organizationResult={organizationResult}
-          onDragEnd={handleDragEnd}
-          onZoomIn={() => setGridSize(prev => Math.min(prev + 1, 3))}
-          onZoomOut={() => setGridSize(prev => Math.max(prev - 1, 1))}
-          isProcessing={isProcessing}
-          gridColumns={gridColumns}
-          onFrameLoad={handleFrameLoad}
-          onContinue={() => navigate('/edit')}
-        />
-      )}
-    </>
+        {/* Grid de Vídeos */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Object.entries(files).map(([category, categoryFiles]) =>
+            categoryFiles.map((file, index) => (
+              <VideoFrame
+                key={`${category}-${index}`}
+                file={file}
+                onAnalysisResult={addAnalysisResult}
+              />
+            ))
+          )}
+        </div>
+
+        {/* Botões de Ação */}
+        <div className="flex justify-end gap-4">
+          <Button
+            variant="outline"
+            disabled={processing || !files.untagged.length}
+            onClick={() => setFiles({ ...files, untagged: [] })}
+          >
+            Limpar
+          </Button>
+          <Button
+            disabled={processing || !analysisResults.length}
+            onClick={handleStartEditing}
+          >
+            {processing ? "Processando..." : "Criar Sequência"}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

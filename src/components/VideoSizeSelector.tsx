@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
 import { Clock, Check, ChevronLeft, Activity, Users } from 'lucide-react';
