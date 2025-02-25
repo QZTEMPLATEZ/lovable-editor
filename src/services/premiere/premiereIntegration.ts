@@ -1,3 +1,4 @@
+
 import { AnalysisResult } from '@/hooks/useVideoAnalysis';
 import { PremiereSequence } from './types';
 import { removeGapsInTimeline, addClipsToTimelineSmoothly } from './timelineOperations';
