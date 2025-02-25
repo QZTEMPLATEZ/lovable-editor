@@ -77,23 +77,6 @@ export const analyzeMusicTrack = async (file: File): Promise<MusicAnalysis> => {
   };
 };
 
-export const synchronizeToBeats = (
-  beats: BeatInfo[],
-  clips: File[],
-  style: 'dynamic' | 'smooth' | 'balanced' = 'balanced'
-): void => {
-  console.log('Synchronizing clips to beats:', {
-    beatsCount: beats.length,
-    clipsCount: clips.length,
-    style
-  });
-  
-  // Calculate optimal cut points based on style
-  const cutPoints = calculateCutPoints(beats, style);
-  console.log('Generated cut points:', cutPoints);
-};
-
-// Helper functions
 const findPeaks = (beats: BeatInfo[]): number[] => {
   return beats
     .map((beat, i) => beat.intensity > 0.8 ? i : -1)
@@ -145,6 +128,22 @@ const identifySegments = (beats: BeatInfo[]): AudioSegment[] => {
   }
   
   return segments;
+};
+
+export const synchronizeToBeats = (
+  beats: BeatInfo[],
+  clips: File[],
+  style: 'dynamic' | 'smooth' | 'balanced' = 'balanced'
+): void => {
+  console.log('Synchronizing clips to beats:', {
+    beatsCount: beats.length,
+    clipsCount: clips.length,
+    style
+  });
+  
+  // Calculate optimal cut points based on style
+  const cutPoints = calculateCutPoints(beats, style);
+  console.log('Generated cut points:', cutPoints);
 };
 
 const calculateCutPoints = (
