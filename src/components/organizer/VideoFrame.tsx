@@ -12,7 +12,7 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const extractFrame = async () => {
+    const extractFrames = async () => {
       const video = document.createElement('video');
       video.src = URL.createObjectURL(file);
       
@@ -22,7 +22,7 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
           const context = canvas.getContext('2d');
           
           // Set canvas dimensions while maintaining aspect ratio
-          const maxDimension = 320; // Maximum dimension for thumbnails
+          const maxDimension = 320;
           const aspectRatio = video.videoWidth / video.videoHeight;
           
           let width = maxDimension;
@@ -36,27 +36,78 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
           
           canvas.width = width;
           canvas.height = height;
-          
-          // Draw the frame at 1 second or at the beginning if video is shorter
+
+          // Calculate frame extraction points (25%, 50%, 75% of video duration)
+          const framePoints = [
+            video.duration * 0.25,
+            video.duration * 0.5,
+            video.duration * 0.75
+          ];
+
+          // Extract first frame for thumbnail
           video.currentTime = Math.min(1, video.duration);
           
           video.addEventListener('seeked', () => {
             if (context) {
               context.drawImage(video, 0, 0, width, height);
-              URL.revokeObjectURL(video.src);
-              onLoad?.();
+              
+              // After drawing the thumbnail, we can start analyzing other frames
+              analyzeFrames(video, framePoints).then(() => {
+                URL.revokeObjectURL(video.src);
+                onLoad?.();
+              });
             }
           }, { once: true });
         }
       });
 
-      // Handle errors
       video.addEventListener('error', () => {
         console.error('Error loading video for frame extraction');
+        URL.revokeObjectURL(video.src);
       });
     };
 
-    extractFrame();
+    const analyzeFrames = async (video: HTMLVideoElement, framePoints: number[]) => {
+      const tempCanvas = document.createElement('canvas');
+      const tempContext = tempCanvas.getContext('2d');
+      
+      if (!tempContext) return;
+
+      tempCanvas.width = video.videoWidth;
+      tempCanvas.height = video.videoHeight;
+
+      for (const timePoint of framePoints) {
+        try {
+          // Seek to frame point
+          video.currentTime = timePoint;
+          
+          // Wait for seeking to complete
+          await new Promise(resolve => {
+            video.addEventListener('seeked', resolve, { once: true });
+          });
+
+          // Draw frame to temp canvas
+          tempContext.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+          
+          // Convert canvas to blob for analysis
+          const blob = await new Promise<Blob>((resolve) => {
+            tempCanvas.toBlob(blob => {
+              if (blob) resolve(blob);
+            }, 'image/jpeg');
+          });
+
+          // Create File object for analysis
+          const frameFile = new File([blob], `frame-${timePoint}.jpg`, { type: 'image/jpeg' });
+          
+          // Log frame data for debugging
+          console.log(`Extracted frame at ${timePoint}s for analysis`);
+        } catch (error) {
+          console.error(`Error extracting frame at ${timePoint}s:`, error);
+        }
+      }
+    };
+
+    extractFrames();
   }, [file, onLoad]);
 
   return (
