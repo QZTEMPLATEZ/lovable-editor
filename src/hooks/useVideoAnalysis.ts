@@ -4,14 +4,16 @@ import { useState } from 'react';
 interface AnalysisResult {
   timePoint: number;
   motionScore: number;
-  sceneType: 'static' | 'dynamic';
+  sceneType: 'emotional' | 'action' | 'default';
   hasFaces: boolean;
+  peaks?: number[];
+  averageMotion?: number;
 }
 
 export const useVideoAnalysis = () => {
   const [analysisResults, setAnalysisResults] = useState<AnalysisResult[]>([]);
   const [overallMotion, setOverallMotion] = useState<number>(0);
-  const [dominantSceneType, setDominantSceneType] = useState<'static' | 'dynamic'>('static');
+  const [dominantSceneType, setDominantSceneType] = useState<'emotional' | 'action' | 'default'>('default');
 
   const addAnalysisResult = (result: AnalysisResult) => {
     setAnalysisResults(prev => [...prev, result]);
@@ -21,9 +23,12 @@ export const useVideoAnalysis = () => {
     const avgMotion = allScores.reduce((a, b) => a + b, 0) / allScores.length;
     setOverallMotion(avgMotion);
     
-    // Update dominant scene type
-    const dynamicScenes = allScores.filter(score => score > 30).length;
-    setDominantSceneType(dynamicScenes > allScores.length / 2 ? 'dynamic' : 'static');
+    // Update dominant scene type based on motion score
+    setDominantSceneType(
+      avgMotion > 40 ? 'action' : 
+      avgMotion < 20 ? 'emotional' : 
+      'default'
+    );
   };
 
   return {

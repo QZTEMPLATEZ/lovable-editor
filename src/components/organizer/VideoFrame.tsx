@@ -125,20 +125,16 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
               peaks.push(timePoint);
             }
 
-            // Determine scene type based on motion
-            let sceneType: 'emotional' | 'action' | 'default';
-            if (motionScore < 20) {
-              sceneType = 'emotional';
-            } else if (motionScore > 40) {
-              sceneType = 'action';
-            } else {
-              sceneType = 'default';
-            }
+            // Determine scene type based on motion score
+            const sceneType = motionScore > 40 ? 'action' : 
+                            motionScore < 20 ? 'emotional' : 
+                            'default';
             
             addAnalysisResult({
               timePoint,
               motionScore,
               sceneType,
+              hasFaces: false,
               peaks,
               averageMotion: motionScores.reduce((a, b) => a + b, 0) / motionScores.length
             });
@@ -204,15 +200,14 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
           <span>Type: 
             <span className={
               dominantSceneType === 'action' ? 'text-red-400' : 
-              dominantSceneType === 'emotional' ? 'text-blue-400' : 'text-yellow-400'
+              dominantSceneType === 'emotional' ? 'text-blue-400' : 
+              'text-yellow-400'
             }>
               {' '}{dominantSceneType}
             </span>
           </span>
           <span>
-            {analysisResults.length > 0 && 
-              `Peaks: ${analysisResults.filter(r => r.peaks?.length > 0).length}`
-            }
+            Peaks: {analysisResults.reduce((acc, curr) => acc + (curr.peaks?.length || 0), 0)}
           </span>
         </div>
       </div>
