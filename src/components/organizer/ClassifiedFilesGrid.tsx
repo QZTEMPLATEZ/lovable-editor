@@ -4,6 +4,7 @@ import { Droppable } from '@hello-pangea/dnd';
 import VideoFrame from './VideoFrame';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { OrganizationResult } from '@/types/organizer';
+import { AnalysisResult } from '@/hooks/useVideoAnalysis';
 
 interface ClassifiedFilesGridProps {
   organizationResult: OrganizationResult;
@@ -16,6 +17,11 @@ const ClassifiedFilesGrid: React.FC<ClassifiedFilesGridProps> = ({
   onFrameLoad,
   gridColumns,
 }) => {
+  const handleAnalysisResult = (result: AnalysisResult) => {
+    // Lida com o resultado da análise se necessário
+    console.log('Analysis result:', result);
+  };
+
   return (
     <ScrollArea className="h-[500px]">
       <div className={`grid ${gridColumns} gap-4`}>
@@ -29,6 +35,7 @@ const ClassifiedFilesGrid: React.FC<ClassifiedFilesGridProps> = ({
                       file={file}
                       className="border border-purple-500/20 hover:border-purple-500/40 transition-colors"
                       onLoad={() => onFrameLoad(file.name)}
+                      onAnalysisResult={handleAnalysisResult}
                     />
                     <div className="mt-2">
                       <p className="text-xs text-gray-300 truncate">
