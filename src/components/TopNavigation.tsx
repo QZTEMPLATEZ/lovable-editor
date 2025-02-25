@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,7 @@ const TopNavigation = () => {
           onClick={() => navigate('/duration')}
           className="font-italiana text-lg tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-300 hover:scale-105 transition-transform duration-300 cursor-pointer uppercase"
         >
-          Wedding Video Suite
+          Wedding Video Suite @ WEDDING TEMPLATEZ
         </span>
 
         <div className="flex items-center gap-4">
