@@ -1,9 +1,11 @@
+
 import React, { useEffect, useRef } from 'react';
 import { FileVideo } from 'lucide-react';
 import { useVideoAnalysis } from '@/hooks/useVideoAnalysis';
 import { MotionAnalysisOverlay } from './video-analysis/MotionAnalysisOverlay';
 import { calculateFrameDifference, getFramePoints, determineSceneType } from '@/services/video/frameAnalysis';
 import { createEditingSequence } from '@/services/premiere/premiereIntegration';
+import EditingProgress from '../premiere/EditingProgress';
 
 interface VideoFrameProps {
   file: File;
@@ -19,6 +21,38 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
     dominantSceneType,
     addAnalysisResult
   } = useVideoAnalysis();
+
+  // Estado para controlar o progresso da edição
+  const [editingProgress, setEditingProgress] = React.useState(0);
+  const [isProcessing, setIsProcessing] = React.useState(false);
+  const [timeRemaining, setTimeRemaining] = React.useState("--:--");
+
+  const handleReEdit = async () => {
+    if (window.confirm("Deseja realmente reiniciar a edição?")) {
+      setIsProcessing(true);
+      setEditingProgress(0);
+      try {
+        await createEditingSequence(analysisResults, "Auto Edit", updateProgress);
+      } catch (error) {
+        console.error('Failed to re-edit sequence:', error);
+      }
+      setIsProcessing(false);
+    }
+  };
+
+  const handleCorrect = () => {
+    // Aqui você pode implementar a lógica para correções manuais
+    console.log("Abrindo interface de correção...");
+  };
+
+  const updateProgress = (step: string, progress: number) => {
+    setEditingProgress(progress);
+    // Calcula tempo restante aproximado baseado no progresso
+    const remainingSeconds = Math.ceil((100 - progress) * 0.5); // 0.5 segundos por % restante
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+    setTimeRemaining(`${minutes}:${seconds.toString().padStart(2, '0')}`);
+  };
 
   useEffect(() => {
     const analyzeFrames = async (video: HTMLVideoElement, framePoints: number[]) => {
@@ -125,8 +159,13 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
 
                 // Criar sequência no Premiere após análise
                 if (window.premiere) {
-                  createEditingSequence(analysisResults, "Auto Edit")
-                    .catch(error => console.error('Failed to create Premiere sequence:', error));
+                  setIsProcessing(true);
+                  createEditingSequence(analysisResults, "Auto Edit", updateProgress)
+                    .then(() => setIsProcessing(false))
+                    .catch(error => {
+                      console.error('Failed to create Premiere sequence:', error);
+                      setIsProcessing(false);
+                    });
                 }
               });
             }
@@ -144,21 +183,31 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
   }, [file, onLoad, addAnalysisResult, analysisResults]);
 
   return (
-    <div className={`relative aspect-video bg-black/20 rounded-lg overflow-hidden ${className}`}>
-      <canvas
-        ref={canvasRef}
-        className="w-full h-full object-contain"
-      />
-      
-      <MotionAnalysisOverlay
-        overallMotion={overallMotion}
-        dominantSceneType={dominantSceneType}
-        analysisResults={analysisResults}
-      />
+    <div className="space-y-4">
+      <div className={`relative aspect-video bg-black/20 rounded-lg overflow-hidden ${className}`}>
+        <canvas
+          ref={canvasRef}
+          className="w-full h-full object-contain"
+        />
+        
+        <MotionAnalysisOverlay
+          overallMotion={overallMotion}
+          dominantSceneType={dominantSceneType}
+          analysisResults={analysisResults}
+        />
 
-      <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
-        <FileVideo className="w-8 h-8 text-white" />
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+          <FileVideo className="w-8 h-8 text-white" />
+        </div>
       </div>
+
+      <EditingProgress
+        progress={editingProgress}
+        timeRemaining={timeRemaining}
+        onReEdit={handleReEdit}
+        onCorrect={handleCorrect}
+        isProcessing={isProcessing}
+      />
     </div>
   );
 };
