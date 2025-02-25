@@ -1,0 +1,53 @@
+
+{
+  "id": "com.weddingvideoai.plugin",
+  "name": "Wedding Video AI",
+  "version": "1.0.0",
+  "main": "index.html",
+  "manifestVersion": 4,
+  "host": {
+    "app": "PPRO",
+    "minVersion": "22.0.0"
+  },
+  "entrypoints": [
+    {
+      "type": "panel",
+      "id": "mainPanel",
+      "label": {
+        "default": "Wedding Video AI"
+      },
+      "icons": [
+        {
+          "width": 23,
+          "height": 23,
+          "path": "icons/dark.png",
+          "theme": ["darkest", "dark"]
+        },
+        {
+          "width": 23,
+          "height": 23,
+          "path": "icons/light.png",
+          "theme": ["lightest", "light"]
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "width": 48,
+      "height": 48,
+      "path": "icons/plugin-icon.png",
+      "theme": ["dark", "darkest", "medium", "lightest", "light", "all"]
+    }
+  ],
+  "requiredPermissions": {
+    "localFileSystem": {
+      "request": "always"
+    },
+    "allowCodeGenerationFromStrings": true,
+    "enableDynamicScriptExecution": true,
+    "launchProcess": {
+      "schemes": ["https"]
+    }
+  }
+}

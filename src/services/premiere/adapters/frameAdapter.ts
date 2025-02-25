@@ -2,14 +2,18 @@
 import { FrameData } from '../../core/types';
 
 export class PremiereFrameAdapter {
-  async extractFrame(qeClip: any, timePoint: number): Promise<FrameData | null> {
+  async extractFrame(premiereClip: any, timePoint: number): Promise<FrameData | null> {
     try {
-      console.log(`Extraindo frame em ${timePoint}s do clip`, qeClip);
+      console.log(`Extraindo frame em ${timePoint}s do clip`, premiereClip);
       
       // Usar API do Premiere para extrair frame
-      const frame = await qe.project.activeSequence.getFrameAtTime(timePoint);
+      const app = typeof window !== 'undefined' ? (window as any).app : null;
+      if (!app || !app.project || !app.project.activeSequence) {
+        console.error('Ambiente Premiere não detectado');
+        return null;
+      }
       
-      // Converter frame do Premiere para nosso formato
+      const frame = await app.project.activeSequence.getFrameAtTime(timePoint);
       const frameData = this.convertPremiereFrame(frame);
       
       return frameData;
@@ -20,18 +24,17 @@ export class PremiereFrameAdapter {
   }
 
   private convertPremiereFrame(premiereFrame: any): FrameData {
-    // Converter formato do Premiere para nosso formato interno
     const width = premiereFrame.width;
     const height = premiereFrame.height;
     const data = new Uint8ClampedArray(width * height * 4);
     
     // TODO: Implementar conversão real dos dados do frame do Premiere
-    // Isso dependerá do formato exato que o Premiere retorna
     
     return {
       width,
       height,
-      data
+      data,
+      colorSpace: 'srgb' // Valor padrão para compatibilidade com ImageData
     };
   }
 }

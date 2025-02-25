@@ -3,6 +3,7 @@ export interface FrameData {
   width: number;
   height: number;
   data: Uint8ClampedArray;
+  colorSpace: PredefinedColorSpace;
 }
 
 export interface FrameAnalysis {
@@ -21,13 +22,17 @@ export interface AudioAnalysis {
 
 export type SceneType = 'emotional' | 'action' | 'default';
 
+export interface ScenePreset {
+  minDuration: number;
+  maxDuration: number;
+  preferredTransition: string;
+  energyThreshold: number;
+}
+
 export interface EditingPreset {
-  [key in SceneType]: {
-    minDuration: number;
-    maxDuration: number;
-    preferredTransition: string;
-    energyThreshold: number;
-  };
+  emotional: ScenePreset;
+  action: ScenePreset;
+  default: ScenePreset;
 }
 
 export interface ClipInfo {
