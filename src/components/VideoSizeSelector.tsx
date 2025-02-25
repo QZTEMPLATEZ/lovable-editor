@@ -1,13 +1,14 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from 'react-router-dom';
 import PlanBadge from './PlanBadge';
-import { Clock, Check, ChevronLeft, Activity } from 'lucide-react';
+import { Clock, Check, ChevronLeft, Activity, Users } from 'lucide-react';
 import { VideoSizeRange } from '../types';
 import { useVideoType } from '../contexts/VideoTypeContext';
 import { Button } from './ui/button';
+import * as tf from '@tensorflow/tfjs';
+import * as faceDetection from '@tensorflow-models/face-detection';
 
 const VIDEO_SIZES: VideoSizeRange[] = [
   {
@@ -62,6 +63,14 @@ const VIDEO_SIZES: VideoSizeRange[] = [
   }
 ];
 
+interface VideoAnalysisStats {
+  dynamicScenes: number;
+  totalScenes: number;
+  faceDetections: number;
+  avgMotionScore: number;
+  dominantMotionType: 'static' | 'dynamic';
+}
+
 interface VideoSizeSelectorProps {
   selectedSize: VideoSizeRange | null;
   onSizeSelect: (size: VideoSizeRange) => void;
@@ -72,31 +81,71 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
   const { toast } = useToast();
   const navigate = useNavigate();
   const { setSelectedVideoType } = useVideoType();
-  const [motionStats, setMotionStats] = useState<{dynamicScenes: number, totalScenes: number}>({
+  const [analysisStats, setAnalysisStats] = useState<VideoAnalysisStats>({
     dynamicScenes: 0,
-    totalScenes: 0
+    totalScenes: 0,
+    faceDetections: 0,
+    avgMotionScore: 0,
+    dominantMotionType: 'static'
   });
+  const [detector, setDetector] = useState<faceDetection.FaceDetector | null>(null);
+
+  useEffect(() => {
+    const initializeFaceDetector = async () => {
+      await tf.ready();
+      const model = faceDetection.SupportedModels.MediaPipeFaceDetector;
+      const detector = await faceDetection.createDetector(model, {
+        runtime: 'tfjs',
+      });
+      setDetector(detector);
+    };
+
+    initializeFaceDetector().catch(console.error);
+  }, []);
+
+  const analyzeVideoFrame = async (videoElement: HTMLVideoElement) => {
+    if (!detector) return;
+
+    const faces = await detector.estimateFaces(videoElement);
+    setAnalysisStats(prev => ({
+      ...prev,
+      faceDetections: prev.faceDetections + faces.length
+    }));
+
+    return faces.length;
+  };
 
   const handleSizeSelect = (size: VideoSizeRange) => {
-    // Recommend size based on motion analysis
-    const dynamicRatio = motionStats.dynamicScenes / Math.max(1, motionStats.totalScenes);
+    const { avgMotionScore, faceDetections, totalScenes } = analysisStats;
     let recommendedSize = size;
 
-    if (dynamicRatio > 0.7) {
-      // Lots of dynamic scenes - suggest shorter format
+    // Complex recommendation logic based on multiple factors
+    if (avgMotionScore > 30 && faceDetections / totalScenes < 1) {
+      // High motion, few faces - suggest shorter format
       recommendedSize = VIDEO_SIZES[0]; // Social
       toast({
         title: "Sugestão de Formato",
-        description: "Detectamos muito movimento nos vídeos. Recomendamos um formato mais curto e dinâmico.",
+        description: "Detectamos muitas cenas dinâmicas com poucos closes. Recomendamos um formato mais curto e dinâmico.",
       });
-    } else if (dynamicRatio < 0.3) {
-      // Mostly static scenes - suggest longer format
+    } else if (avgMotionScore < 20 && faceDetections / totalScenes > 2) {
+      // Low motion, many faces - suggest longer format
       recommendedSize = VIDEO_SIZES[2]; // Short Film
       toast({
         title: "Sugestão de Formato",
-        description: "Detectamos cenas mais calmas. Recomendamos um formato que permita contar a história com mais detalhes.",
+        description: "Detectamos muitas cenas com closes e momentos íntimos. Recomendamos um formato que permita contar a história com mais detalhes.",
       });
     }
+
+    // Store analysis for AI training
+    const analysisData = {
+      timestamp: new Date().toISOString(),
+      stats: analysisStats,
+      recommendedFormat: recommendedSize.name,
+      userSelectedFormat: size.name
+    };
+    
+    // Log analysis data for future training
+    console.log('Video Analysis Data:', analysisData);
 
     onSizeSelect(recommendedSize);
     setSelectedVideoType(recommendedSize);
@@ -139,14 +188,29 @@ const VideoSizeSelector = ({ selectedSize, onSizeSelect, userTier }: VideoSizeSe
               to match different content needs.
             </p>
 
-            {motionStats.totalScenes > 0 && (
-              <div className="bg-black/40 p-4 rounded-lg backdrop-blur-sm">
+            {analysisStats.totalScenes > 0 && (
+              <div className="bg-black/40 p-4 rounded-lg backdrop-blur-sm space-y-3">
                 <div className="flex items-center gap-2 text-sm text-white/80">
                   <Activity className="w-4 h-4" />
                   <span>Motion Analysis:</span>
                   <span className="text-purple-400">
-                    {Math.round((motionStats.dynamicScenes / motionStats.totalScenes) * 100)}% Dynamic Scenes
+                    {analysisStats.dominantMotionType === 'dynamic' ? 'Dynamic' : 'Static'} Dominant
                   </span>
+                </div>
+                
+                <div className="flex items-center gap-2 text-sm text-white/80">
+                  <Users className="w-4 h-4" />
+                  <span>Face Detections:</span>
+                  <span className="text-purple-400">
+                    {Math.round(analysisStats.faceDetections / Math.max(1, analysisStats.totalScenes))} per scene
+                  </span>
+                </div>
+
+                <div className="w-full bg-gray-700 h-1.5 rounded-full">
+                  <div 
+                    className="h-full rounded-full bg-purple-400 transition-all duration-300"
+                    style={{ width: `${Math.min(100, (analysisStats.avgMotionScore / 50) * 100)}%` }}
+                  />
                 </div>
               </div>
             )}
