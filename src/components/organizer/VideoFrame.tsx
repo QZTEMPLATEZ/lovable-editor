@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
-import { FileVideo } from 'lucide-react';
+import { FileVideo, Activity } from 'lucide-react';
+import { useVideoAnalysis } from '@/hooks/useVideoAnalysis';
 
 interface VideoFrameProps {
   file: File;
@@ -10,6 +11,12 @@ interface VideoFrameProps {
 
 const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const {
+    analysisResults,
+    overallMotion,
+    dominantSceneType,
+    addAnalysisResult
+  } = useVideoAnalysis();
 
   useEffect(() => {
     const extractFrames = async () => {
@@ -115,27 +122,19 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
           if (previousFrameData) {
             const motionScore = calculateFrameDifference(previousFrameData, frameData);
             motionScores.push(motionScore);
+            
+            // Add analysis result
+            addAnalysisResult({
+              timePoint,
+              motionScore,
+              sceneType: motionScore > 30 ? 'dynamic' : 'static',
+              hasFaces: false, // To be implemented with face detection
+            });
+            
             console.log(`Motion score at ${timePoint}s:`, motionScore);
           }
           
           previousFrameData = frameData;
-
-          // Convert canvas to blob for analysis
-          const blob = await new Promise<Blob>((resolve) => {
-            tempCanvas.toBlob(blob => {
-              if (blob) resolve(blob);
-            }, 'image/jpeg');
-          });
-
-          // Create File object for analysis
-          const frameFile = new File([blob], `frame-${timePoint}.jpg`, { type: 'image/jpeg' });
-          
-          // Analyze scene type based on motion scores
-          const avgMotionScore = motionScores.reduce((a, b) => a + b, 0) / motionScores.length;
-          const sceneType = avgMotionScore > 30 ? 'dynamic' : 'static';
-          
-          console.log(`Extracted frame at ${timePoint}s. Scene type: ${sceneType}`);
-          console.log(`Motion analysis: ${avgMotionScore > 30 ? 'High motion' : 'Low motion'} scene`);
           
         } catch (error) {
           console.error(`Error extracting frame at ${timePoint}s:`, error);
@@ -154,7 +153,7 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
     };
 
     extractFrames();
-  }, [file, onLoad]);
+  }, [file, onLoad, addAnalysisResult]);
 
   return (
     <div className={`relative aspect-video bg-black/20 rounded-lg overflow-hidden ${className}`}>
@@ -162,6 +161,33 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
         ref={canvasRef}
         className="w-full h-full object-contain"
       />
+      
+      {/* Motion analysis overlay */}
+      <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-2">
+          <Activity className="w-4 h-4" />
+          <div className="flex-1">
+            <div className="flex justify-between">
+              <span>Motion Level:</span>
+              <span className={overallMotion > 30 ? 'text-red-400' : 'text-green-400'}>
+                {Math.round(overallMotion)}
+              </span>
+            </div>
+            <div className="w-full bg-gray-700 h-1 rounded-full mt-1">
+              <div 
+                className={`h-full rounded-full ${overallMotion > 30 ? 'bg-red-400' : 'bg-green-400'}`}
+                style={{ width: `${Math.min(100, (overallMotion / 50) * 100)}%` }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="mt-1">
+          Scene Type: <span className={dominantSceneType === 'dynamic' ? 'text-red-400' : 'text-green-400'}>
+            {dominantSceneType}
+          </span>
+        </div>
+      </div>
+
       <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
         <FileVideo className="w-8 h-8 text-white" />
       </div>
