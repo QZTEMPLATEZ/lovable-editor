@@ -1,4 +1,3 @@
-
 import { AnalysisResult } from '@/hooks/useVideoAnalysis';
 
 interface PremiereClip {
@@ -36,6 +35,30 @@ declare global {
   }
 }
 
+// Função de fallback para quando a criação da sequência falha
+const createFallbackSequence = async (
+  name: string,
+  resolution: string,
+  fps: string
+): Promise<PremiereSequence> => {
+  console.warn('Attempting to create fallback sequence...');
+  
+  try {
+    // Tentar criar sequência com configurações mínimas
+    const sequence = window.premiere.project.createSequence(
+      `${name}_fallback`,
+      "1280x720", // resolução menor
+      "24" // fps padrão
+    );
+
+    console.log('Fallback sequence created successfully');
+    return sequence;
+  } catch (error) {
+    console.error('Failed to create fallback sequence:', error);
+    throw error;
+  }
+};
+
 // Função para obter os clipes do projeto de forma segura
 const getWeddingFootage = async (): Promise<PremiereClip[]> => {
   try {
@@ -46,7 +69,7 @@ const getWeddingFootage = async (): Promise<PremiereClip[]> => {
   }
 };
 
-// Função para criar sequência de forma segura
+// Função atualizada para criar sequência com fallback
 const createSafeSequence = async (
   name: string,
   resolution: string = "1920x1080",
@@ -62,8 +85,8 @@ const createSafeSequence = async (
     console.log(`Creating new sequence: ${name}`);
     return window.premiere.project.createSequence(name, resolution, fps);
   } catch (error) {
-    console.error('Error creating sequence:', error);
-    throw new Error('Failed to create sequence');
+    console.error('Error creating sequence, attempting fallback:', error);
+    return createFallbackSequence(name, resolution, fps);
   }
 };
 
@@ -129,18 +152,20 @@ const markBestTakes = async (
   }
 };
 
+// Função atualizada para incluir notificações de progresso
 export const createEditingSequence = async (
   analysisResults: AnalysisResult[],
-  projectName: string
+  projectName: string,
+  onProgress?: (step: string, progress: number) => void
 ): Promise<void> => {
   try {
-    // Criar ou obter sequência existente
+    onProgress?.('Criando sequência', 0);
     const sequence = await createSafeSequence(projectName);
     
-    // Obter footage do casamento
+    onProgress?.('Obtendo footage', 20);
     const weddingFootage = await getWeddingFootage();
     
-    // Organizar clips por tipo de cena
+    onProgress?.('Organizando clips', 40);
     const organizedClips = analysisResults.reduce((acc, result) => {
       if (!acc[result.sceneType]) {
         acc[result.sceneType] = [];
@@ -149,31 +174,23 @@ export const createEditingSequence = async (
       return acc;
     }, {} as Record<string, AnalysisResult[]>);
 
-    // Ordem de edição: emotional -> default -> action
     const editingOrder = ['emotional', 'default', 'action'];
-    
     let currentTime = 0;
     
-    // Adicionar clips na timeline seguindo a ordem definida
+    onProgress?.('Montando timeline', 60);
     for (const sceneType of editingOrder) {
       const clips = organizedClips[sceneType] || [];
+      await addClipsToTimelineSmoothly(sequence, clips.map(clip => ({
+        id: clip.timePoint.toString(),
+        name: `${sceneType}_${clip.timePoint}`,
+        duration: 3
+      })));
       
-      // Adicionar clips suavemente para evitar travamentos
-      await addClipsToTimelineSmoothly(
-        sequence,
-        clips.map(clip => ({
-          id: clip.timePoint.toString(),
-          name: `${sceneType}_${clip.timePoint}`,
-          duration: 3, // duração padrão de 3 segundos
-        }))
-      );
-      
-      // Marcar melhores takes
       await markBestTakes(sequence, clips);
-
-      currentTime += clips.length * 3; // Atualizar tempo total
+      currentTime += clips.length * 3;
     }
 
+    onProgress?.('Finalizando', 100);
     console.log('Sequence created successfully in Premiere Pro');
 
   } catch (error) {
