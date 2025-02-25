@@ -1,38 +1,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { useToast } from '@/components/ui/use-toast';
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
-import { DragDropContext } from '@hello-pangea/dnd';
 import { useVideoType } from '@/contexts/VideoTypeContext';
+import { convertDropboxToDirectLink } from '@/utils/urlUtils';
 import ProcessStatus from './ProcessStatus';
-import CategoryGrid from './CategoryGrid';
-import ClassifiedFilesGrid from './ClassifiedFilesGrid';
+import EmptyState from './EmptyState';
+import OrganizedContent from './OrganizedContent';
 import { useFileProcessing } from './FileProcessingLogic';
 import { useDragAndDrop } from './DragAndDropHandler';
-
-const WEDDING_CATEGORIES = {
-  BRIDE_PREP: 'Making of Noiva',
-  GROOM_PREP: 'Making of Noivo',
-  CEREMONY: 'Cerimônia',
-  DECORATION: 'Decoração',
-  RECEPTION: 'Festa',
-  OTHER: 'Outros Momentos'
-} as const;
 
 interface FileOrganizerProps {
   isEditMode?: boolean;
 }
-
-const convertDropboxToDirectLink = (dropboxLink: string): string => {
-  const baseUrl = dropboxLink.split('?')[0];
-  return baseUrl
-    .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
-    .replace('/scl/', '/')
-    .replace('?dl=0', '');
-};
 
 const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => {
   const navigate = useNavigate();
@@ -165,28 +145,11 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
   };
 
   if (!isProcessing && !organizationResult && (!videoLinks.length && !musicLinks.length)) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="container mx-auto px-4 py-8 text-center"
-      >
-        <div className="bg-[#232323] rounded-lg p-8 border border-[#3F3F3F] shadow-lg">
-          <h2 className="text-xl font-semibold mb-4 text-[#E8E8E8]">Organize seus Clipes</h2>
-          <p className="text-[#B8B8B8] mb-4">
-            Selecione alguns arquivos para começar a organização automática.
-          </p>
-        </div>
-      </motion.div>
-    );
+    return <EmptyState />;
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="container mx-auto px-4 py-8 space-y-6"
-    >
+    <>
       {isProcessing && (
         <ProcessStatus
           totalFiles={files.length}
@@ -197,38 +160,18 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
       )}
 
       {organizationResult && !isProcessing && (
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <div className="space-y-8">
-            <CategoryGrid
-              categories={Object.values(WEDDING_CATEGORIES)}
-              organizationResult={organizationResult}
-              onZoomIn={handleZoomIn}
-              onZoomOut={handleZoomOut}
-              isProcessing={isProcessing}
-            />
-
-            <div className="bg-[#232323] rounded-lg p-4 border border-[#3F3F3F] shadow-lg">
-              <h3 className="text-lg font-semibold mb-4 text-[#E8E8E8]">Arquivos Classificados</h3>
-              <ClassifiedFilesGrid
-                organizationResult={organizationResult}
-                onFrameLoad={handleFrameLoad}
-                gridColumns={gridColumns}
-              />
-            </div>
-
-            <div className="flex justify-end mt-8">
-              <Button
-                onClick={handleContinue}
-                className="bg-[#2D9CDB] hover:bg-[#2B8CC9] text-white px-6 py-2 rounded-lg transition-colors duration-200"
-              >
-                Continuar para Edição
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </div>
-          </div>
-        </DragDropContext>
+        <OrganizedContent
+          organizationResult={organizationResult}
+          onDragEnd={handleDragEnd}
+          onZoomIn={handleZoomIn}
+          onZoomOut={handleZoomOut}
+          isProcessing={isProcessing}
+          gridColumns={gridColumns}
+          onFrameLoad={handleFrameLoad}
+          onContinue={handleContinue}
+        />
       )}
-    </motion.div>
+    </>
   );
 };
 

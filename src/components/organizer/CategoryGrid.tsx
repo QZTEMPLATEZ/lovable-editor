@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
 import { OrganizationResult } from '@/types/organizer';
 import ZoomControls from './ZoomControls';
 
 interface CategoryGridProps {
+  categories: string[];
   organizationResult: OrganizationResult;
   onZoomIn: () => void;
   onZoomOut: () => void;
@@ -12,6 +12,7 @@ interface CategoryGridProps {
 }
 
 const CategoryGrid: React.FC<CategoryGridProps> = ({
+  categories,
   organizationResult,
   onZoomIn,
   onZoomOut,
@@ -28,16 +29,15 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
         />
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {FOLDER_CATEGORIES.map((category) => {
-          const filesInCategory = organizationResult.categorizedFiles.get(category.name) || [];
+        {categories.map((category) => {
+          const filesInCategory = organizationResult.categorizedFiles.get(category) || [];
           return (
             <div 
-              key={category.name}
-              className={`flex items-center justify-between p-3 rounded-lg ${category.color} border border-white/10`}
+              key={category}
+              className="flex items-center justify-between p-3 rounded-lg bg-purple-500/10 border border-white/10"
             >
               <div className="flex items-center gap-2">
-                {category.icon}
-                <span>{category.name}</span>
+                <span>{category}</span>
               </div>
               <span className="bg-black/20 px-2 py-1 rounded-full text-sm">
                 {filesInCategory.length} arquivos
