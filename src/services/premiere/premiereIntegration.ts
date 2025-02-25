@@ -6,6 +6,7 @@ interface PremiereClip {
   duration: number;
   startTime?: number;
   energy?: number;
+  moveTo?: (time: number) => void;
 }
 
 interface PremiereSequence {
@@ -16,6 +17,8 @@ interface PremiereSequence {
   addMarker: (time: number, comment: string, color: string) => void;
   addTransition: (type: string, startTime: number, duration: number) => void;
   getAllClips: () => PremiereClip[];
+  getAllAudioTracks: () => any[];
+  hasTransition: (clip1: PremiereClip, clip2: PremiereClip) => boolean;
 }
 
 interface PremiereProject {
@@ -105,6 +108,142 @@ const addClipsToTimelineSmoothly = async (
   } catch (error) {
     console.error('Error adding clips smoothly:', error);
     throw new Error('Failed to add clips to timeline');
+  }
+};
+
+// Função para remover espaços vazios na timeline
+const removeGapsInTimeline = async (sequence: PremiereSequence): Promise<void> => {
+  try {
+    const clips = sequence.getAllClips();
+    for (let i = 1; i < clips.length; i++) {
+      const currentClip = clips[i];
+      const previousClip = clips[i - 1];
+      const gap = (currentClip.startTime || 0) - ((previousClip.startTime || 0) + previousClip.duration);
+      
+      if (gap > 0 && currentClip.moveTo) {
+        currentClip.moveTo((currentClip.startTime || 0) - gap);
+      }
+    }
+  } catch (error) {
+    console.error('Error removing gaps:', error);
+    throw new Error('Failed to remove gaps in timeline');
+  }
+};
+
+// Função para detectar silêncio no áudio
+const detectSilence = (audioTrack: any): Array<{start: number, duration: number}> => {
+  const silentSegments: Array<{start: number, duration: number}> = [];
+  const clips = audioTrack.clips || [];
+  
+  let currentTime = 0;
+  clips.forEach((clip: any) => {
+    const audioData = clip.audioData || {};
+    const rms = audioData.rms || 0;
+    
+    if (rms < 0.01) { // Threshold para silêncio
+      silentSegments.push({
+        start: currentTime,
+        duration: clip.duration
+      });
+    }
+    currentTime += clip.duration;
+  });
+  
+  return silentSegments;
+};
+
+// Função para marcar seções silenciosas
+const markSilentSections = async (sequence: PremiereSequence): Promise<void> => {
+  try {
+    const audioTracks = sequence.getAllAudioTracks();
+    
+    audioTracks.forEach(track => {
+      const silenceSegments = detectSilence(track);
+      silenceSegments.forEach(segment => {
+        sequence.addMarker(segment.start, "Silêncio Detectado", "red");
+      });
+    });
+  } catch (error) {
+    console.error('Error marking silent sections:', error);
+    throw new Error('Failed to mark silent sections');
+  }
+};
+
+// Função para sincronização fina com a música
+const fineTuneMusicSync = async (
+  sequence: PremiereSequence,
+  beats: number[]
+): Promise<void> => {
+  try {
+    sequence.getAllClips().forEach(clip => {
+      if (!clip.startTime || !clip.moveTo) return;
+      
+      const closestBeat = beats.reduce((prev, curr) => {
+        return Math.abs(curr - clip.startTime!) < Math.abs(prev - clip.startTime!)
+          ? curr
+          : prev;
+      });
+      
+      clip.moveTo(closestBeat);
+    });
+  } catch (error) {
+    console.error('Error fine-tuning music sync:', error);
+    throw new Error('Failed to fine-tune music synchronization');
+  }
+};
+
+// Função para verificar e aplicar transições
+const verifyAndApplyTransitions = async (
+  sequence: PremiereSequence,
+  defaultTransition: string = "Cross Dissolve",
+  duration: number = 1.0
+): Promise<void> => {
+  try {
+    const clips = sequence.getAllClips();
+    for (let i = 0; i < clips.length - 1; i++) {
+      if (!sequence.hasTransition(clips[i], clips[i + 1])) {
+        sequence.addTransition(
+          defaultTransition,
+          (clips[i].startTime || 0) + clips[i].duration,
+          duration
+        );
+      }
+    }
+  } catch (error) {
+    console.error('Error verifying transitions:', error);
+    throw new Error('Failed to verify and apply transitions');
+  }
+};
+
+// Função principal de verificação final
+export const performFinalCheck = async (
+  sequence: PremiereSequence,
+  beats: number[],
+  onProgress?: (step: string, progress: number) => void
+): Promise<void> => {
+  try {
+    // Remover espaços vazios
+    onProgress?.('Removendo espaços vazios', 20);
+    await removeGapsInTimeline(sequence);
+    
+    // Marcar seções silenciosas
+    onProgress?.('Verificando áudio', 40);
+    await markSilentSections(sequence);
+    
+    // Sincronizar com a música
+    onProgress?.('Ajustando sincronização', 60);
+    await fineTuneMusicSync(sequence, beats);
+    
+    // Verificar transições
+    onProgress?.('Verificando transições', 80);
+    await verifyAndApplyTransitions(sequence);
+    
+    onProgress?.('Verificação concluída', 100);
+    console.log('Final check completed successfully');
+    
+  } catch (error) {
+    console.error('Error during final check:', error);
+    throw new Error('Failed to complete final check');
   }
 };
 
