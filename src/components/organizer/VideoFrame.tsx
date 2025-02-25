@@ -44,11 +44,13 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
           canvas.width = width;
           canvas.height = height;
 
-          // Calculate frame extraction points (25%, 50%, 75% of video duration)
+          // Analyze more frames for better motion detection
           const framePoints = [
+            video.duration * 0.1,
             video.duration * 0.25,
             video.duration * 0.5,
-            video.duration * 0.75
+            video.duration * 0.75,
+            video.duration * 0.9
           ];
 
           // Extract first frame for thumbnail
@@ -58,7 +60,7 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
             if (context) {
               context.drawImage(video, 0, 0, width, height);
               
-              // After drawing the thumbnail, we can start analyzing other frames
+              // After drawing the thumbnail, analyze frames
               analyzeFrames(video, framePoints).then(() => {
                 URL.revokeObjectURL(video.src);
                 onLoad?.();
@@ -101,53 +103,67 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
 
       let previousFrameData: ImageData | null = null;
       let motionScores: number[] = [];
+      let peaks: number[] = [];
 
       for (const timePoint of framePoints) {
         try {
-          // Seek to frame point
           video.currentTime = timePoint;
           
-          // Wait for seeking to complete
           await new Promise(resolve => {
             video.addEventListener('seeked', resolve, { once: true });
           });
 
-          // Draw frame to temp canvas
           tempContext.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-          
-          // Get frame data for motion analysis
           const frameData = tempContext.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
           
-          // Calculate motion if we have a previous frame
           if (previousFrameData) {
             const motionScore = calculateFrameDifference(previousFrameData, frameData);
             motionScores.push(motionScore);
             
-            // Add analysis result
+            // Detect motion peaks
+            if (motionScore > 40) {
+              peaks.push(timePoint);
+            }
+
+            // Determine scene type based on motion
+            let sceneType: 'emotional' | 'action' | 'default';
+            if (motionScore < 20) {
+              sceneType = 'emotional';
+            } else if (motionScore > 40) {
+              sceneType = 'action';
+            } else {
+              sceneType = 'default';
+            }
+            
             addAnalysisResult({
               timePoint,
               motionScore,
-              sceneType: motionScore > 30 ? 'dynamic' : 'static',
-              hasFaces: false, // To be implemented with face detection
+              sceneType,
+              peaks,
+              averageMotion: motionScores.reduce((a, b) => a + b, 0) / motionScores.length
             });
             
-            console.log(`Motion score at ${timePoint}s:`, motionScore);
+            console.log(`Analysis at ${timePoint}s:`, {
+              motionScore,
+              sceneType,
+              peaks: peaks.length
+            });
           }
           
           previousFrameData = frameData;
           
         } catch (error) {
-          console.error(`Error extracting frame at ${timePoint}s:`, error);
+          console.error(`Error analyzing frame at ${timePoint}s:`, error);
         }
       }
 
-      // Log overall scene analysis
       if (motionScores.length > 0) {
         const avgMotion = motionScores.reduce((a, b) => a + b, 0) / motionScores.length;
-        console.log('Overall scene motion analysis:', {
+        console.log('Final scene analysis:', {
           averageMotion: avgMotion,
-          sceneType: avgMotion > 30 ? 'Dynamic Scene' : 'Static Scene',
-          samples: motionScores.length
+          sceneType: avgMotion > 40 ? 'action' : avgMotion < 20 ? 'emotional' : 'default',
+          totalPeaks: peaks.length,
+          duration: video.duration
         });
       }
     };
@@ -162,7 +178,7 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
         className="w-full h-full object-contain"
       />
       
-      {/* Motion analysis overlay */}
+      {/* Enhanced motion analysis overlay */}
       <div className="absolute bottom-0 left-0 right-0 bg-black/60 p-2 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">
         <div className="flex items-center gap-2">
           <Activity className="w-4 h-4" />
@@ -175,15 +191,28 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
             </div>
             <div className="w-full bg-gray-700 h-1 rounded-full mt-1">
               <div 
-                className={`h-full rounded-full ${overallMotion > 30 ? 'bg-red-400' : 'bg-green-400'}`}
+                className={`h-full rounded-full ${
+                  overallMotion > 40 ? 'bg-red-400' : 
+                  overallMotion > 20 ? 'bg-yellow-400' : 'bg-green-400'
+                }`}
                 style={{ width: `${Math.min(100, (overallMotion / 50) * 100)}%` }}
               />
             </div>
           </div>
         </div>
-        <div className="mt-1">
-          Scene Type: <span className={dominantSceneType === 'dynamic' ? 'text-red-400' : 'text-green-400'}>
-            {dominantSceneType}
+        <div className="mt-1 flex justify-between text-xs">
+          <span>Type: 
+            <span className={
+              dominantSceneType === 'action' ? 'text-red-400' : 
+              dominantSceneType === 'emotional' ? 'text-blue-400' : 'text-yellow-400'
+            }>
+              {' '}{dominantSceneType}
+            </span>
+          </span>
+          <span>
+            {analysisResults.length > 0 && 
+              `Peaks: ${analysisResults.filter(r => r.peaks?.length > 0).length}`
+            }
           </span>
         </div>
       </div>
