@@ -1,13 +1,22 @@
 
 import { AnalysisResult } from '@/hooks/useVideoAnalysis';
 
+interface PremiereClip {
+  id: string;
+  name: string;
+  duration: number;
+  startTime?: number;
+  energy?: number;
+}
+
 interface PremiereSequence {
   id: string;
   name: string;
-  clips: any[];
+  clips: PremiereClip[];
   addClip: (clipId: string, startTime: number) => void;
   addMarker: (time: number, comment: string, color: string) => void;
   addTransition: (type: string, startTime: number, duration: number) => void;
+  getAllClips: () => PremiereClip[];
 }
 
 interface PremiereProject {
@@ -15,6 +24,8 @@ interface PremiereProject {
   name: string;
   sequences: PremiereSequence[];
   createSequence: (name: string, resolution: string, fps: string) => PremiereSequence;
+  getSequenceByName: (name: string) => PremiereSequence | null;
+  getMediaInBin: (binName: string) => PremiereClip[];
 }
 
 declare global {
@@ -25,17 +36,110 @@ declare global {
   }
 }
 
+// Função para obter os clipes do projeto de forma segura
+const getWeddingFootage = async (): Promise<PremiereClip[]> => {
+  try {
+    return window.premiere.project.getMediaInBin("Wedding");
+  } catch (error) {
+    console.error('Error getting wedding footage:', error);
+    throw new Error('Failed to get wedding footage from bin');
+  }
+};
+
+// Função para criar sequência de forma segura
+const createSafeSequence = async (
+  name: string,
+  resolution: string = "1920x1080",
+  fps: string = "25"
+): Promise<PremiereSequence> => {
+  try {
+    const existingSequence = window.premiere.project.getSequenceByName(name);
+    if (existingSequence) {
+      console.log(`Using existing sequence: ${name}`);
+      return existingSequence;
+    }
+    
+    console.log(`Creating new sequence: ${name}`);
+    return window.premiere.project.createSequence(name, resolution, fps);
+  } catch (error) {
+    console.error('Error creating sequence:', error);
+    throw new Error('Failed to create sequence');
+  }
+};
+
+// Função para adicionar clipes na timeline de forma suave
+const addClipsToTimelineSmoothly = async (
+  sequence: PremiereSequence,
+  clips: PremiereClip[]
+): Promise<void> => {
+  try {
+    for (let i = 0; i < clips.length; i++) {
+      const clip = clips[i];
+      await sequence.addClip(clip.id, i * clip.duration);
+      // Pequena pausa para evitar sobrecarga
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+  } catch (error) {
+    console.error('Error adding clips smoothly:', error);
+    throw new Error('Failed to add clips to timeline');
+  }
+};
+
+// Função para analisar transições musicais
+const analyzeMusicTransitions = async (audioTrack: any): Promise<Array<{time: number, type: string}>> => {
+  try {
+    const transitions: Array<{time: number, type: string}> = [];
+    const clips = audioTrack.clips || [];
+    
+    for (let i = 1; i < clips.length; i++) {
+      const currentClip = clips[i];
+      const previousClip = clips[i - 1];
+      
+      if (Math.abs(currentClip.energy - previousClip.energy) > 0.2) {
+        transitions.push({
+          time: currentClip.startTime,
+          type: "Music Transition"
+        });
+      }
+    }
+    
+    return transitions;
+  } catch (error) {
+    console.error('Error analyzing music transitions:', error);
+    throw new Error('Failed to analyze music transitions');
+  }
+};
+
+// Função para marcar melhores takes na timeline
+const markBestTakes = async (
+  sequence: PremiereSequence,
+  bestTakes: AnalysisResult[]
+): Promise<void> => {
+  try {
+    bestTakes.forEach(take => {
+      sequence.addMarker(
+        take.timePoint,
+        `Best Take - Motion: ${take.motionScore}`,
+        take.motionScore > 40 ? 'green' : 'yellow'
+      );
+    });
+  } catch (error) {
+    console.error('Error marking best takes:', error);
+    throw new Error('Failed to mark best takes');
+  }
+};
+
 export const createEditingSequence = async (
   analysisResults: AnalysisResult[],
   projectName: string
 ): Promise<void> => {
   try {
-    const sequence = window.premiere.project.createSequence(
-      projectName,
-      "1920x1080",
-      "25"
-    );
-
+    // Criar ou obter sequência existente
+    const sequence = await createSafeSequence(projectName);
+    
+    // Obter footage do casamento
+    const weddingFootage = await getWeddingFootage();
+    
     // Organizar clips por tipo de cena
     const organizedClips = analysisResults.reduce((acc, result) => {
       if (!acc[result.sceneType]) {
@@ -54,31 +158,20 @@ export const createEditingSequence = async (
     for (const sceneType of editingOrder) {
       const clips = organizedClips[sceneType] || [];
       
-      for (const clip of clips) {
-        // Adicionar o clip na timeline
-        sequence.addClip(clip.timePoint.toString(), currentTime);
-        
-        // Adicionar marcador indicando o tipo de cena
-        sequence.addMarker(
-          currentTime,
-          `${sceneType.toUpperCase()} - Motion: ${clip.motionScore}`,
-          sceneType === 'action' ? 'red' : 
-          sceneType === 'emotional' ? 'blue' : 
-          'yellow'
-        );
+      // Adicionar clips suavemente para evitar travamentos
+      await addClipsToTimelineSmoothly(
+        sequence,
+        clips.map(clip => ({
+          id: clip.timePoint.toString(),
+          name: `${sceneType}_${clip.timePoint}`,
+          duration: 3, // duração padrão de 3 segundos
+        }))
+      );
+      
+      // Marcar melhores takes
+      await markBestTakes(sequence, clips);
 
-        // Adicionar transição suave entre clips
-        if (currentTime > 0) {
-          sequence.addTransition(
-            'Cross Dissolve',
-            currentTime,
-            0.5 // meio segundo de transição
-          );
-        }
-
-        // Atualizar o tempo atual (assumindo duração média de 3 segundos por clip)
-        currentTime += 3;
-      }
+      currentTime += clips.length * 3; // Atualizar tempo total
     }
 
     console.log('Sequence created successfully in Premiere Pro');
@@ -91,28 +184,35 @@ export const createEditingSequence = async (
 
 export const synchronizeWithMusic = async (
   sequence: PremiereSequence,
-  beats: number[]
+  audioTrack: any
 ): Promise<void> => {
   try {
+    // Analisar transições musicais
+    const transitions = await analyzeMusicTransitions(audioTrack);
+    
+    // Ajustar clips para sincronizar com as transições
+    const clips = sequence.getAllClips();
     let currentClip = 0;
     
-    // Ajustar os pontos de corte para coincidir com as batidas
-    for (let i = 0; i < beats.length - 1; i++) {
-      const clipDuration = beats[i + 1] - beats[i];
-      
-      // Adicionar marcador na batida
-      sequence.addMarker(
-        beats[i],
-        'Beat',
-        'green'
-      );
+    transitions.forEach((transition, index) => {
+      if (currentClip < clips.length) {
+        // Adicionar marcador na transição
+        sequence.addMarker(
+          transition.time,
+          'Music Transition',
+          'blue'
+        );
 
-      // Ajustar duração do clip atual
-      if (sequence.clips[currentClip]) {
-        sequence.clips[currentClip].duration = clipDuration;
+        // Ajustar duração do clip atual até a próxima transição
+        const nextTransition = transitions[index + 1];
+        if (nextTransition) {
+          const duration = nextTransition.time - transition.time;
+          clips[currentClip].duration = duration;
+        }
+
         currentClip++;
       }
-    }
+    });
 
     console.log('Music synchronization completed');
 
