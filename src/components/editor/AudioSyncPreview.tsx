@@ -5,7 +5,7 @@ import { CloudLink } from '@/components/editor/types';
 import { useAudioSync } from '@/hooks/useAudioSync';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Waveform } from 'lucide-react';
+import { AudioWaveform } from 'lucide-react';
 
 interface AudioSyncPreviewProps {
   videoLink: CloudLink | null;
@@ -30,7 +30,7 @@ const AudioSyncPreview: React.FC<AudioSyncPreviewProps> = ({
           variant="outline"
           className="gap-2"
         >
-          <Waveform className="w-4 h-4" />
+          <AudioWaveform className="w-4 h-4" />
           {isAnalyzing ? 'Analisando...' : 'Sincronizar com Batidas'}
         </Button>
       </div>
