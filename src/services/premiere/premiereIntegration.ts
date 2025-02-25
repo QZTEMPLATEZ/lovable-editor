@@ -1,4 +1,3 @@
-
 import { AnalysisResult } from '@/hooks/useVideoAnalysis';
 import { PremiereSequence } from './types';
 import { removeGapsInTimeline, addClipsToTimelineSmoothly } from './timelineOperations';
@@ -52,6 +51,28 @@ const getWeddingFootage = async (): Promise<any[]> => {
   } catch (error) {
     console.error('Error getting wedding footage:', error);
     throw new Error('Failed to get wedding footage from bin');
+  }
+};
+
+export const synchronizeWithMusic = async (
+  sequence: PremiereSequence,
+  audioTrack: any
+): Promise<void> => {
+  try {
+    if (!audioTrack.clips || audioTrack.clips.length === 0) {
+      console.log('No audio clips to synchronize with');
+      return;
+    }
+
+    // Adiciona marcadores nas transições de energia da música
+    audioTrack.clips.forEach((clip: any) => {
+      if (clip.energy && clip.energy > 0.7) { // Alto nível de energia
+        sequence.addMarker(clip.startTime, "High Energy Point", "yellow");
+      }
+    });
+  } catch (error) {
+    console.error('Error synchronizing with music:', error);
+    throw new Error('Failed to synchronize with music');
   }
 };
 
