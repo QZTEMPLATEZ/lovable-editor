@@ -67,6 +67,22 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
       });
     };
 
+    const calculateFrameDifference = (frame1: ImageData, frame2: ImageData): number => {
+      const data1 = frame1.data;
+      const data2 = frame2.data;
+      let diff = 0;
+      
+      // Compare pixel values between frames
+      for (let i = 0; i < data1.length; i += 4) {
+        diff += Math.abs(data1[i] - data2[i]); // R
+        diff += Math.abs(data1[i + 1] - data2[i + 1]); // G
+        diff += Math.abs(data1[i + 2] - data2[i + 2]); // B
+      }
+      
+      // Normalize difference value
+      return diff / (frame1.width * frame1.height * 3);
+    };
+
     const analyzeFrames = async (video: HTMLVideoElement, framePoints: number[]) => {
       const tempCanvas = document.createElement('canvas');
       const tempContext = tempCanvas.getContext('2d');
@@ -75,6 +91,9 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
 
       tempCanvas.width = video.videoWidth;
       tempCanvas.height = video.videoHeight;
+
+      let previousFrameData: ImageData | null = null;
+      let motionScores: number[] = [];
 
       for (const timePoint of framePoints) {
         try {
@@ -89,6 +108,18 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
           // Draw frame to temp canvas
           tempContext.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
           
+          // Get frame data for motion analysis
+          const frameData = tempContext.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+          
+          // Calculate motion if we have a previous frame
+          if (previousFrameData) {
+            const motionScore = calculateFrameDifference(previousFrameData, frameData);
+            motionScores.push(motionScore);
+            console.log(`Motion score at ${timePoint}s:`, motionScore);
+          }
+          
+          previousFrameData = frameData;
+
           // Convert canvas to blob for analysis
           const blob = await new Promise<Blob>((resolve) => {
             tempCanvas.toBlob(blob => {
@@ -99,11 +130,26 @@ const VideoFrame: React.FC<VideoFrameProps> = ({ file, className = "", onLoad })
           // Create File object for analysis
           const frameFile = new File([blob], `frame-${timePoint}.jpg`, { type: 'image/jpeg' });
           
-          // Log frame data for debugging
-          console.log(`Extracted frame at ${timePoint}s for analysis`);
+          // Analyze scene type based on motion scores
+          const avgMotionScore = motionScores.reduce((a, b) => a + b, 0) / motionScores.length;
+          const sceneType = avgMotionScore > 30 ? 'dynamic' : 'static';
+          
+          console.log(`Extracted frame at ${timePoint}s. Scene type: ${sceneType}`);
+          console.log(`Motion analysis: ${avgMotionScore > 30 ? 'High motion' : 'Low motion'} scene`);
+          
         } catch (error) {
           console.error(`Error extracting frame at ${timePoint}s:`, error);
         }
+      }
+
+      // Log overall scene analysis
+      if (motionScores.length > 0) {
+        const avgMotion = motionScores.reduce((a, b) => a + b, 0) / motionScores.length;
+        console.log('Overall scene motion analysis:', {
+          averageMotion: avgMotion,
+          sceneType: avgMotion > 30 ? 'Dynamic Scene' : 'Static Scene',
+          samples: motionScores.length
+        });
       }
     };
 
