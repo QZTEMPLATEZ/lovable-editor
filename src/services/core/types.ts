@@ -1,4 +1,3 @@
-
 export type SceneType = 'emotional' | 'action' | 'default';
 
 export interface FrameAnalysis {
@@ -8,6 +7,7 @@ export interface FrameAnalysis {
   hasFaces: boolean;
   peaks?: number[];
   averageMotion?: number;
+  frameData?: ImageData;  // Adicionando frameData como opcional
 }
 
 export interface AudioAnalysis {

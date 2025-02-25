@@ -25,7 +25,7 @@ export class VideoAnalyzer {
       const frameData = await extractFrameData(video, timePoint);
       
       if (frameData) {
-        const motionScore = this.analyses.length > 0
+        const motionScore = this.analyses.length > 0 && this.analyses[this.analyses.length - 1].frameData
           ? calculateFrameDifference(this.analyses[this.analyses.length - 1].frameData, frameData)
           : 0;
 
@@ -33,7 +33,7 @@ export class VideoAnalyzer {
           timePoint,
           motionScore,
           sceneType: determineSceneType(motionScore),
-          hasFaces: false, // Implementar detecção de faces se necessário
+          hasFaces: false,
           frameData
         });
       }
@@ -44,7 +44,8 @@ export class VideoAnalyzer {
   }
 
   async analyzeAudio(audioFile: File): Promise<AudioAnalysis> {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    const audioContext = new AudioContextClass();
     const arrayBuffer = await audioFile.arrayBuffer();
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
