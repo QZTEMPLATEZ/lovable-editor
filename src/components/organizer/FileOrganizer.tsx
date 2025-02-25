@@ -124,26 +124,6 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
     }
   }, [videoLinks, musicLinks]);
 
-  const handleZoomIn = () => {
-    setGridSize(prev => Math.min(prev + 1, 3));
-  };
-
-  const handleZoomOut = () => {
-    setGridSize(prev => Math.max(prev - 1, 1));
-  };
-
-  const handleContinue = () => {
-    if (!organizationResult || organizationResult.stats.totalFiles === 0) {
-      toast({
-        variant: "destructive",
-        title: "Nenhum Arquivo Processado",
-        description: "Por favor, faça o upload e processamento dos arquivos antes de continuar.",
-      });
-      return;
-    }
-    navigate('/edit');
-  };
-
   if (!isProcessing && !organizationResult && (!videoLinks.length && !musicLinks.length)) {
     return <EmptyState />;
   }
@@ -163,12 +143,12 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
         <OrganizedContent
           organizationResult={organizationResult}
           onDragEnd={handleDragEnd}
-          onZoomIn={handleZoomIn}
-          onZoomOut={handleZoomOut}
+          onZoomIn={() => setGridSize(prev => Math.min(prev + 1, 3))}
+          onZoomOut={() => setGridSize(prev => Math.max(prev - 1, 1))}
           isProcessing={isProcessing}
           gridColumns={gridColumns}
           onFrameLoad={handleFrameLoad}
-          onContinue={handleContinue}
+          onContinue={() => navigate('/edit')}
         />
       )}
     </>
