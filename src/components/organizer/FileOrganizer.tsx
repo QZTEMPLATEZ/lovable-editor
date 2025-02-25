@@ -13,6 +13,15 @@ import ClassifiedFilesGrid from './ClassifiedFilesGrid';
 import { useFileProcessing } from './FileProcessingLogic';
 import { useDragAndDrop } from './DragAndDropHandler';
 
+const WEDDING_CATEGORIES = {
+  BRIDE_PREP: 'Making of Noiva',
+  GROOM_PREP: 'Making of Noivo',
+  CEREMONY: 'Cerimônia',
+  DECORATION: 'Decoração',
+  RECEPTION: 'Festa',
+  OTHER: 'Outros Momentos'
+} as const;
+
 interface FileOrganizerProps {
   isEditMode?: boolean;
 }
@@ -132,10 +141,6 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
       startInitialProcessing();
     } else {
       console.log('Sem links para processar');
-      toast({
-        title: "Nenhum arquivo para processar",
-        description: "Por favor, selecione alguns arquivos para começar.",
-      });
     }
   }, [videoLinks, musicLinks]);
 
@@ -195,6 +200,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="space-y-8">
             <CategoryGrid
+              categories={Object.values(WEDDING_CATEGORIES)}
               organizationResult={organizationResult}
               onZoomIn={handleZoomIn}
               onZoomOut={handleZoomOut}
