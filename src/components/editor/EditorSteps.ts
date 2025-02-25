@@ -1,28 +1,23 @@
 
 export const EDITOR_STEPS = [
   {
-    title: "Duration",
-    description: "Select video duration",
+    title: "Duração",
+    description: "Defina a duração final",
     path: "/duration"
   },
   {
-    title: "Style",
-    description: "Choose video style",
+    title: "Estilo",
+    description: "Escolha o estilo visual",
     path: "/style"
   },
   {
-    title: "Upload",
-    description: "Add material",
-    path: "/upload"
-  },
-  {
-    title: "Organize",
-    description: "Organize and review clips",
+    title: "Organização",
+    description: "Classificação dos clipes",
     path: "/organize"
   },
   {
-    title: "Edit",
-    description: "Final adjustments",
+    title: "Automação",
+    description: "Criação da sequência",
     path: "/edit"
   }
 ];
