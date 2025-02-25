@@ -1,17 +1,11 @@
 
 import React, { useEffect } from 'react';
 import { calculateFrameDifference, getFramePoints, determineSceneType } from '@/services/video/frameAnalysis';
+import { AnalysisResult } from '@/hooks/useVideoAnalysis';
 
 interface VideoAnalyzerProps {
   file: File;
-  onAnalysisResult: (result: {
-    timePoint: number;
-    motionScore: number;
-    sceneType: string;
-    hasFaces: boolean;
-    peaks: number[];
-    averageMotion: number;
-  }) => void;
+  onAnalysisResult: (result: AnalysisResult) => void;
   onLoad?: () => void;
 }
 
@@ -49,7 +43,7 @@ const VideoAnalyzer: React.FC<VideoAnalyzerProps> = ({ file, onAnalysisResult, o
               peaks.push(timePoint);
             }
 
-            const sceneType = determineSceneType(motionScore);
+            const sceneType = determineSceneType(motionScore) as 'emotional' | 'action' | 'default';
             
             onAnalysisResult({
               timePoint,
