@@ -5,6 +5,13 @@ export type VideoStyle = {
   description: string;
   thumbnail: string;
   videoUrl: string;
+  features?: string[];
+  technicalDetails?: {
+    colorGrading?: string;
+    transitions?: string;
+    pacing?: string;
+    effects?: string;
+  };
 };
 
 export type VideoCategory = 

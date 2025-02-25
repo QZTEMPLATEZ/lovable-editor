@@ -36,16 +36,20 @@ const VideoStyleSelector = ({
         description: `Duration: ${selectedVideoType.label} - Style: ${style.description}`,
       });
 
+      // Log detalhado da configuração para debug e processamento
       console.log('Selected Configuration:', {
         duration: {
           min: selectedVideoType.min,
           max: selectedVideoType.max,
-          name: selectedVideoType.name
+          name: selectedVideoType.name,
+          recommendedTracks: selectedVideoType.recommendedTracks,
         },
         style: {
           id: style.id,
           name: style.name,
-          description: style.description
+          description: style.description,
+          features: style.features || [],
+          technicalDetails: style.technicalDetails || {}
         }
       });
     }
@@ -66,20 +70,21 @@ const VideoStyleSelector = ({
       return;
     }
 
-    // Aqui podemos processar as configurações selecionadas
+    // Configuração final que será usada para processar o vídeo
     const configuration = {
       duration: {
         min: selectedVideoType.min,
         max: selectedVideoType.max,
         name: selectedVideoType.name,
-        label: selectedVideoType.label
+        label: selectedVideoType.label,
+        recommendedTracks: selectedVideoType.recommendedTracks
       },
       style: {
         id: selectedStyle.id,
         name: selectedStyle.name,
         description: selectedStyle.description,
-        features: selectedStyle.features,
-        technicalDetails: selectedStyle.technicalDetails
+        features: selectedStyle.features || [],
+        technicalDetails: selectedStyle.technicalDetails || {}
       }
     };
 
@@ -87,7 +92,6 @@ const VideoStyleSelector = ({
     
     // Aqui você pode adicionar a lógica para enviar estas configurações
     // para o Premiere Pro ou para onde for necessário
-    
     navigate('/organize');
   };
 
