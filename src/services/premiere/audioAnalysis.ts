@@ -1,27 +1,6 @@
 
 import { PremiereSequence } from './types';
 
-export const detectSilence = (audioTrack: any): Array<{start: number, duration: number}> => {
-  const silentSegments: Array<{start: number, duration: number}> = [];
-  const clips = audioTrack.clips || [];
-  
-  let currentTime = 0;
-  clips.forEach((clip: any) => {
-    const audioData = clip.audioData || {};
-    const rms = audioData.rms || 0;
-    
-    if (rms < 0.01) {
-      silentSegments.push({
-        start: currentTime,
-        duration: clip.duration
-      });
-    }
-    currentTime += clip.duration;
-  });
-  
-  return silentSegments;
-};
-
 export const markSilentSections = async (sequence: PremiereSequence): Promise<void> => {
   try {
     const audioTracks = sequence.getAllAudioTracks();
@@ -58,4 +37,25 @@ export const fineTuneMusicSync = async (
     console.error('Error fine-tuning music sync:', error);
     throw new Error('Failed to fine-tune music synchronization');
   }
+};
+
+const detectSilence = (audioTrack: any): Array<{start: number, duration: number}> => {
+  const silentSegments: Array<{start: number, duration: number}> = [];
+  const clips = audioTrack.clips || [];
+  
+  let currentTime = 0;
+  clips.forEach((clip: any) => {
+    const audioData = clip.audioData || {};
+    const rms = audioData.rms || 0;
+    
+    if (rms < 0.01) {
+      silentSegments.push({
+        start: currentTime,
+        duration: clip.duration
+      });
+    }
+    currentTime += clip.duration;
+  });
+  
+  return silentSegments;
 };
