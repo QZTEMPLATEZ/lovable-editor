@@ -18,17 +18,11 @@ interface FileOrganizerProps {
 }
 
 const convertDropboxToDirectLink = (dropboxLink: string): string => {
-  // Remove parâmetros de consulta existentes
   const baseUrl = dropboxLink.split('?')[0];
-  
-  // Substitui www.dropbox.com por dl.dropboxusercontent.com
-  // e remove /scl/ se presente
-  const directLink = baseUrl
+  return baseUrl
     .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
     .replace('/scl/', '/')
     .replace('?dl=0', '');
-    
-  return directLink;
 };
 
 const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => {
@@ -112,7 +106,6 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
           })
         ]);
 
-        // Filtra arquivos nulos (que falharam no download)
         const validFiles = linkFiles.filter(file => file !== null) as File[];
         console.log('Arquivos válidos criados:', validFiles.length);
 
@@ -173,10 +166,10 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
         animate={{ opacity: 1 }}
         className="container mx-auto px-4 py-8 text-center"
       >
-        <div className="bg-editor-panel/50 rounded-xl p-8 border border-purple-500/20">
-          <h2 className="text-xl font-semibold mb-4">Nenhum arquivo para organizar</h2>
-          <p className="text-gray-400 mb-4">
-            Volte para a etapa anterior e selecione alguns arquivos para começar.
+        <div className="bg-[#232323] rounded-lg p-8 border border-[#3F3F3F] shadow-lg">
+          <h2 className="text-xl font-semibold mb-4 text-[#E8E8E8]">Organize seus Clipes</h2>
+          <p className="text-[#B8B8B8] mb-4">
+            Selecione alguns arquivos para começar a organização automática.
           </p>
         </div>
       </motion.div>
@@ -208,8 +201,8 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
               isProcessing={isProcessing}
             />
 
-            <div className="bg-editor-panel/50 rounded-xl p-4 border border-purple-500/20">
-              <h3 className="text-lg font-semibold mb-4">Arquivos Classificados</h3>
+            <div className="bg-[#232323] rounded-lg p-4 border border-[#3F3F3F] shadow-lg">
+              <h3 className="text-lg font-semibold mb-4 text-[#E8E8E8]">Arquivos Classificados</h3>
               <ClassifiedFilesGrid
                 organizationResult={organizationResult}
                 onFrameLoad={handleFrameLoad}
@@ -220,7 +213,7 @@ const FileOrganizer: React.FC<FileOrganizerProps> = ({ isEditMode = false }) => 
             <div className="flex justify-end mt-8">
               <Button
                 onClick={handleContinue}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+                className="bg-[#2D9CDB] hover:bg-[#2B8CC9] text-white px-6 py-2 rounded-lg transition-colors duration-200"
               >
                 Continuar para Edição
                 <ArrowRight className="w-4 h-4 ml-2" />
