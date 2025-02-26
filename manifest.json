@@ -5,29 +5,45 @@
   "version": "1.0.0",
   "main": "index.html",
   "manifestVersion": 4,
+  "requirements": {
+    "apps": [
+      {
+        "name": "Premiere Pro",
+        "apiVersion": "22.0.0"
+      }
+    ]
+  },
   "host": {
     "app": "PPRO",
-    "minVersion": "22.0.0"
+    "minVersion": "22.0.0",
+    "locales": ["en_US"],
+    "platform": ["Win", "Mac"]
   },
   "entrypoints": [
     {
       "type": "panel",
-      "id": "mainPanel",
+      "id": "weditor",
       "label": {
         "default": "Wedding Video AI"
       },
-      "icons": [
+      "minimumSize": {
+        "width": 230,
+        "height": 200
+      },
+      "maximumSize": {
+        "width": 2000,
+        "height": 2000
+      },
+      "preferredDockedSize": {
+        "width": 230,
+        "height": 300
+      },
+      "commands": [
         {
-          "width": 23,
-          "height": 23,
-          "path": "icons/dark.png",
-          "theme": ["darkest", "dark"]
-        },
-        {
-          "width": 23,
-          "height": 23,
-          "path": "icons/light.png",
-          "theme": ["lightest", "light"]
+          "id": "showPanel",
+          "label": {
+            "default": "Show Wedding Video AI"
+          }
         }
       ]
     }
