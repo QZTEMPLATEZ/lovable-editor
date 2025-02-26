@@ -1,0 +1,59 @@
+
+{
+  "id": "com.weddingvideoai.plugin",
+  "name": "Wedding Video AI",
+  "version": "1.0.0",
+  "main": "index.html",
+  "manifestVersion": 4,
+  "host": {
+    "app": "premierepro",
+    "minVersion": "25.0.0"
+  },
+  "entrypoints": [
+    {
+      "type": "panel",
+      "id": "weditor",
+      "label": {
+        "default": "Wedding Video AI"
+      },
+      "minimumSize": {
+        "width": 230,
+        "height": 200
+      },
+      "maximumSize": {
+        "width": 2000,
+        "height": 2000
+      },
+      "preferredDockedSize": {
+        "width": 230,
+        "height": 300
+      },
+      "commands": [
+        {
+          "id": "showPanel",
+          "label": {
+            "default": "Show Wedding Video AI"
+          }
+        }
+      ]
+    }
+  ],
+  "icons": [
+    {
+      "width": 48,
+      "height": 48,
+      "path": "icons/plugin-icon.png",
+      "theme": ["dark", "darkest", "medium", "lightest", "light", "all"]
+    }
+  ],
+  "requiredPermissions": {
+    "localFileSystem": {
+      "request": "always"
+    },
+    "allowCodeGenerationFromStrings": true,
+    "enableDynamicScriptExecution": true,
+    "launchProcess": {
+      "schemes": ["https"]
+    }
+  }
+}
