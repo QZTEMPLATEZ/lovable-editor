@@ -5,12 +5,13 @@ export const markSilentSections = async (sequence: PremiereSequence): Promise<vo
   try {
     const audioTracks = sequence.getAllAudioTracks();
     
-    audioTracks.forEach(track => {
-      const silenceSegments = detectSilence(track);
-      silenceSegments.forEach(segment => {
-        sequence.addMarker(segment.start, "Silêncio Detectado", "red");
-      });
-    });
+    for (const track of audioTracks) {
+      for (const clip of track.clips) {
+        if (clip.energy && clip.energy < 0.1) { // Seção silenciosa
+          sequence.addMarker(clip.startTime || 0, "Silent Section", "blue");
+        }
+      }
+    }
   } catch (error) {
     console.error('Error marking silent sections:', error);
     throw new Error('Failed to mark silent sections');
@@ -22,40 +23,20 @@ export const fineTuneMusicSync = async (
   beats: number[]
 ): Promise<void> => {
   try {
-    sequence.getAllClips().forEach(clip => {
-      if (!clip.startTime || !clip.moveTo) return;
-      
-      const closestBeat = beats.reduce((prev, curr) => {
-        return Math.abs(curr - clip.startTime!) < Math.abs(prev - clip.startTime!)
-          ? curr
-          : prev;
-      });
-      
-      clip.moveTo(closestBeat);
-    });
-  } catch (error) {
-    console.error('Error fine-tuning music sync:', error);
-    throw new Error('Failed to fine-tune music synchronization');
-  }
-};
-
-const detectSilence = (audioTrack: any): Array<{start: number, duration: number}> => {
-  const silentSegments: Array<{start: number, duration: number}> = [];
-  const clips = audioTrack.clips || [];
-  
-  let currentTime = 0;
-  clips.forEach((clip: any) => {
-    const audioData = clip.audioData || {};
-    const rms = audioData.rms || 0;
+    const clips = sequence.getAllClips();
     
-    if (rms < 0.01) {
-      silentSegments.push({
-        start: currentTime,
-        duration: clip.duration
-      });
+    for (let i = 0; i < clips.length; i++) {
+      const clip = clips[i];
+      const nearestBeat = beats.find(beat => 
+        Math.abs((clip.startTime || 0) - beat) < 0.5
+      );
+      
+      if (nearestBeat && clip.moveTo) {
+        clip.moveTo(nearestBeat);
+      }
     }
-    currentTime += clip.duration;
-  });
-  
-  return silentSegments;
+  } catch (error) {
+    console.error('Error syncing with music:', error);
+    throw new Error('Failed to sync with music beats');
+  }
 };

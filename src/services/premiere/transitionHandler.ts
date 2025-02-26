@@ -1,24 +1,25 @@
 
-import { PremiereSequence } from './types';
+import { PremiereClip, PremiereSequence } from './types';
 
-export const verifyAndApplyTransitions = async (
-  sequence: PremiereSequence,
-  defaultTransition: string = "Cross Dissolve",
-  duration: number = 1.0
-): Promise<void> => {
+export const verifyAndApplyTransitions = async (sequence: PremiereSequence): Promise<void> => {
   try {
     const clips = sequence.getAllClips();
+    
     for (let i = 0; i < clips.length - 1; i++) {
-      if (!sequence.hasTransition(clips[i], clips[i + 1])) {
-        sequence.addTransition(
-          defaultTransition,
-          (clips[i].startTime || 0) + clips[i].duration,
-          duration
+      const currentClip = clips[i];
+      const nextClip = clips[i + 1];
+      
+      if (!sequence.hasTransition(currentClip, nextClip)) {
+        // Adiciona uma transição suave entre os clips
+        await sequence.addTransition(
+          "Cross Dissolve",
+          (currentClip.startTime || 0) + currentClip.duration - 0.5,
+          1.0
         );
       }
     }
   } catch (error) {
-    console.error('Error verifying transitions:', error);
-    throw new Error('Failed to verify and apply transitions');
+    console.error('Error applying transitions:', error);
+    throw new Error('Failed to apply transitions');
   }
 };

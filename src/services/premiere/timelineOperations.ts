@@ -1,5 +1,5 @@
 
-import { PremiereSequence, PremiereClip } from './types';
+import { PremiereClip, PremiereSequence } from './types';
 
 export const removeGapsInTimeline = async (sequence: PremiereSequence): Promise<void> => {
   try {
@@ -24,14 +24,16 @@ export const addClipsToTimelineSmoothly = async (
   clips: PremiereClip[]
 ): Promise<void> => {
   try {
-    for (let i = 0; i < clips.length; i++) {
-      const clip = clips[i];
-      await sequence.addClip(clip.id, i * clip.duration);
+    let currentTime = 0;
+    
+    for (const clip of clips) {
+      await sequence.addClip(clip.id, currentTime);
       // Pequena pausa para evitar sobrecarga
       await new Promise(resolve => setTimeout(resolve, 50));
+      currentTime += clip.duration;
     }
   } catch (error) {
-    console.error('Error adding clips smoothly:', error);
+    console.error('Error adding clips:', error);
     throw new Error('Failed to add clips to timeline');
   }
 };
