@@ -1,15 +1,17 @@
+
 import { AnalysisResult } from '@/hooks/useVideoAnalysis';
 import { PremiereSequence, PremiereClip } from './types';
 import { removeGapsInTimeline, addClipsToTimelineSmoothly } from './timelineOperations';
 import { markSilentSections, fineTuneMusicSync } from './audioAnalysis';
 import { verifyAndApplyTransitions } from './transitionHandler';
+import { logger } from '@/utils/logger';
 
 const createFallbackSequence = async (
   name: string,
   resolution: string,
   fps: string
 ): Promise<PremiereSequence> => {
-  console.warn('Attempting to create fallback sequence...');
+  logger.warning('Attempting to create fallback sequence...', { name, resolution, fps });
   
   try {
     const sequence = app.ppro.project.createSequence(
@@ -17,10 +19,10 @@ const createFallbackSequence = async (
       "1280x720",
       "24"
     );
-    console.log('Fallback sequence created successfully');
+    logger.info('Fallback sequence created successfully', { sequenceId: sequence.id });
     return sequence;
   } catch (error) {
-    console.error('Failed to create fallback sequence:', error);
+    logger.error('Failed to create fallback sequence', { error });
     throw error;
   }
 };
@@ -33,41 +35,43 @@ const createSafeSequence = async (
   try {
     const existingSequence = app.ppro.project.getSequenceByName(name);
     if (existingSequence) {
-      console.log(`Using existing sequence: ${name}`);
+      logger.info(`Using existing sequence: ${name}`, { sequenceId: existingSequence.id });
       return existingSequence;
     }
     
-    console.log(`Creating new sequence: ${name}`);
+    logger.info(`Creating new sequence: ${name}`, { resolution, fps });
     return app.ppro.project.createSequence(name, resolution, fps);
   } catch (error) {
-    console.error('Error creating sequence, attempting fallback:', error);
+    logger.error('Error creating sequence, attempting fallback', { error });
     return createFallbackSequence(name, resolution, fps);
   }
 };
 
 const getWeddingFootage = async (): Promise<any[]> => {
   try {
-    return app.ppro.project.getMediaInBin("Wedding");
+    const footage = app.ppro.project.getMediaInBin("Wedding");
+    logger.info('Retrieved wedding footage', { clipCount: footage.length });
+    return footage;
   } catch (error) {
-    console.error('Error getting wedding footage:', error);
+    logger.error('Error getting wedding footage', { error });
     throw new Error('Failed to get wedding footage from bin');
   }
 };
 
 export const initializePlugin = async () => {
   if (!app.ppro) {
+    logger.error('Premiere Pro host not available');
     throw new Error('Premiere Pro host not available');
   }
   
-  console.log('Plugin initialized with Premiere Pro version:', app.ppro.version);
+  logger.info('Plugin initialized', { version: app.ppro.version });
   
-  // Registrar handlers de eventos do UXP
   app.ppro.onDocumentOpened(() => {
-    console.log('Document opened in Premiere Pro');
+    logger.info('Document opened in Premiere Pro');
   });
   
   app.ppro.onDocumentClosed(() => {
-    console.log('Document closed in Premiere Pro');
+    logger.info('Document closed in Premiere Pro');
   });
 };
 

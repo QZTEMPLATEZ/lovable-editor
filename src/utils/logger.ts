@@ -1,59 +1,72 @@
-type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
-class Logger {
-  private static instance: Logger;
-  private debugMode: boolean = false;
+import { LogLevel, LogMessage, Logger } from '../types/logger';
+
+class UXPLogger implements Logger {
+  private static instance: UXPLogger;
+  private logs: LogMessage[] = [];
 
   private constructor() {}
 
-  static getInstance(): Logger {
-    if (!Logger.instance) {
-      Logger.instance = new Logger();
+  static getInstance(): UXPLogger {
+    if (!UXPLogger.instance) {
+      UXPLogger.instance = new UXPLogger();
     }
-    return Logger.instance;
+    return UXPLogger.instance;
   }
 
-  setDebugMode(enabled: boolean): void {
-    this.debugMode = enabled;
-  }
+  private log(level: LogLevel, message: string, category: string = 'general', details?: any) {
+    const logMessage: LogMessage = {
+      level,
+      message,
+      timestamp: new Date(),
+      category,
+      details
+    };
 
-  private log(level: LogLevel, message: string, ...args: any[]): void {
-    const timestamp = new Date().toISOString();
-    const prefix = `[${timestamp}] [${level.toUpperCase()}]`;
-
+    this.logs.push(logMessage);
+    
+    // Formatar a mensagem para o console do UXP
+    const formattedMessage = `[${level.toUpperCase()}] ${category}: ${message}`;
+    
     switch (level) {
       case 'info':
-        console.info(prefix, message, ...args);
+        console.log(formattedMessage, details || '');
         break;
-      case 'warn':
-        console.warn(prefix, message, ...args);
+      case 'warning':
+        console.warn(formattedMessage, details || '');
         break;
       case 'error':
-        console.error(prefix, message, ...args);
+        console.error(formattedMessage, details || '');
         break;
       case 'debug':
-        if (this.debugMode) {
-          console.debug(prefix, message, ...args);
-        }
+        console.debug(formattedMessage, details || '');
         break;
     }
   }
 
-  info(message: string, ...args: any[]): void {
-    this.log('info', message, ...args);
+  info(message: string, details?: any) {
+    this.log('info', message, 'WeddingAI', details);
   }
 
-  warn(message: string, ...args: any[]): void {
-    this.log('warn', message, ...args);
+  warning(message: string, details?: any) {
+    this.log('warning', message, 'WeddingAI', details);
   }
 
-  error(message: string, ...args: any[]): void {
-    this.log('error', message, ...args);
+  error(message: string, details?: any) {
+    this.log('error', message, 'WeddingAI', details);
   }
 
-  debug(message: string, ...args: any[]): void {
-    this.log('debug', message, ...args);
+  debug(message: string, details?: any) {
+    this.log('debug', message, 'WeddingAI', details);
+  }
+
+  getLogs(): LogMessage[] {
+    return this.logs;
+  }
+
+  clearLogs(): void {
+    this.logs = [];
   }
 }
 
-export const logger = Logger.getInstance();
+export const logger = UXPLogger.getInstance();

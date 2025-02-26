@@ -1,8 +1,17 @@
-export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 
-export interface LogEntry {
-  timestamp: Date;
+export type LogLevel = 'info' | 'warning' | 'error' | 'debug';
+
+export interface LogMessage {
   level: LogLevel;
   message: string;
-  details?: unknown;
+  timestamp: Date;
+  category: string;
+  details?: any;
+}
+
+export interface Logger {
+  info: (message: string, details?: any) => void;
+  warning: (message: string, details?: any) => void;
+  error: (message: string, details?: any) => void;
+  debug: (message: string, details?: any) => void;
 }
