@@ -1,6 +1,5 @@
-
 import { AnalysisResult } from '@/hooks/useVideoAnalysis';
-import { PremiereSequence } from './types';
+import { PremiereSequence, PremiereClip } from './types';
 import { removeGapsInTimeline, addClipsToTimelineSmoothly } from './timelineOperations';
 import { markSilentSections, fineTuneMusicSync } from './audioAnalysis';
 import { verifyAndApplyTransitions } from './transitionHandler';
@@ -13,7 +12,7 @@ const createFallbackSequence = async (
   console.warn('Attempting to create fallback sequence...');
   
   try {
-    const sequence = window.premiere.project.createSequence(
+    const sequence = app.ppro.project.createSequence(
       `${name}_fallback`,
       "1280x720",
       "24"
@@ -32,14 +31,14 @@ const createSafeSequence = async (
   fps: string = "25"
 ): Promise<PremiereSequence> => {
   try {
-    const existingSequence = window.premiere.project.getSequenceByName(name);
+    const existingSequence = app.ppro.project.getSequenceByName(name);
     if (existingSequence) {
       console.log(`Using existing sequence: ${name}`);
       return existingSequence;
     }
     
     console.log(`Creating new sequence: ${name}`);
-    return window.premiere.project.createSequence(name, resolution, fps);
+    return app.ppro.project.createSequence(name, resolution, fps);
   } catch (error) {
     console.error('Error creating sequence, attempting fallback:', error);
     return createFallbackSequence(name, resolution, fps);
@@ -48,11 +47,28 @@ const createSafeSequence = async (
 
 const getWeddingFootage = async (): Promise<any[]> => {
   try {
-    return window.premiere.project.getMediaInBin("Wedding");
+    return app.ppro.project.getMediaInBin("Wedding");
   } catch (error) {
     console.error('Error getting wedding footage:', error);
     throw new Error('Failed to get wedding footage from bin');
   }
+};
+
+export const initializePlugin = async () => {
+  if (!app.ppro) {
+    throw new Error('Premiere Pro host not available');
+  }
+  
+  console.log('Plugin initialized with Premiere Pro version:', app.ppro.version);
+  
+  // Registrar handlers de eventos do UXP
+  app.ppro.onDocumentOpened(() => {
+    console.log('Document opened in Premiere Pro');
+  });
+  
+  app.ppro.onDocumentClosed(() => {
+    console.log('Document closed in Premiere Pro');
+  });
 };
 
 export const synchronizeWithMusic = async (

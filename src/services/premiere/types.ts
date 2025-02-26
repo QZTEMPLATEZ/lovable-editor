@@ -36,3 +36,16 @@ declare global {
     };
   }
 }
+
+export interface UXPHostApplication {
+  ppro: {
+    version: string;
+    project: PremiereProject;
+    onDocumentOpened: (callback: () => void) => void;
+    onDocumentClosed: (callback: () => void) => void;
+  };
+}
+
+declare global {
+  const app: UXPHostApplication;
+}
