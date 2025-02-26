@@ -25,7 +25,6 @@ class UXPLogger implements Logger {
 
     this.logs.push(logMessage);
     
-    // Formatar a mensagem para o console do UXP
     const formattedMessage = `[${level.toUpperCase()}] ${category}: ${message}`;
     
     switch (level) {
@@ -50,6 +49,10 @@ class UXPLogger implements Logger {
 
   warning(message: string, details?: any) {
     this.log('warning', message, 'WeddingAI', details);
+  }
+
+  warn(message: string, details?: any) {
+    this.warning(message, details);
   }
 
   error(message: string, details?: any) {
