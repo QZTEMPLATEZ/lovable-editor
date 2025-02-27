@@ -10,235 +10,78 @@ import { Clock, Film, Play } from "lucide-react";
 
 const queryClient = new QueryClient();
 
-const Banner = ({ title, description, isActive, onClick }: { 
-  title: string; 
-  description: string; 
+const StepCard = ({ 
+  title, 
+  description, 
+  icon,
+  isActive, 
+  onClick 
+}: { 
+  title: string;
+  description: string;
+  icon: React.ReactNode;
   isActive: boolean;
   onClick: () => void;
 }) => {
   return (
     <div 
-      className={`glass-panel cursor-pointer ${isActive ? 'border-[#9b87f5]' : ''}`}
       onClick={onClick}
+      className={`
+        relative overflow-hidden rounded-2xl p-6 
+        bg-gradient-to-br from-white/[0.05] to-white/[0.08]
+        border border-white/[0.05] backdrop-blur-md
+        transform transition-all duration-300 ease-out
+        hover:scale-[1.02] hover:from-white/[0.07] hover:to-white/[0.1]
+        cursor-pointer
+        ${isActive ? 'ring-2 ring-[#9b87f5] ring-opacity-50' : ''}
+      `}
     >
-      <h3 className="gradient-text text-xl mb-2">{title}</h3>
-      <p className="text-gray-400 text-sm">{description}</p>
-    </div>
-  );
-};
-
-const DurationSection = ({ onSelect }: { onSelect: (size: VideoSizeRange) => void }) => {
-  const sizes: VideoSizeRange[] = [
-    {
-      min: 0.5,
-      max: 1.5,
-      name: "Social",
-      label: "30s - 1:30min",
-      description: "Highlights para redes sociais",
-      recommendedTracks: 1,
-      tier: 'basic',
-      icon: <Clock className="w-5 h-5" />
-    },
-    {
-      min: 3,
-      max: 5,
-      name: "Trailer",
-      label: "3-5 minutos",
-      description: "Resumo dinâmico do evento",
-      recommendedTracks: 2,
-      tier: 'pro',
-      icon: <Film className="w-5 h-5" />
-    },
-    {
-      min: 15,
-      max: 20,
-      name: "Wedding Movie",
-      label: "15-20 minutos",
-      description: "Filme completo do casamento",
-      recommendedTracks: 4,
-      tier: 'business',
-      icon: <Play className="w-5 h-5" />
-    }
-  ];
-
-  return (
-    <div className="grid grid-cols-1 gap-4">
-      {sizes.map((size) => (
-        <div 
-          key={size.name}
-          className="category-card cursor-pointer"
-          onClick={() => onSelect(size)}
-        >
-          <div className="flex items-center gap-3">
-            {size.icon}
-            <div>
-              <h4 className="gradient-text text-lg mb-1">{size.name}</h4>
-              <p className="text-sm text-gray-400">{size.label}</p>
-              <p className="text-xs text-gray-500">{size.description}</p>
-            </div>
+      <div className="relative z-10">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="p-2 rounded-xl bg-white/5">
+            {icon}
           </div>
+          <h3 className="gradient-text text-2xl font-medium">{title}</h3>
         </div>
-      ))}
-    </div>
-  );
-};
-
-const StyleSection = ({ onSelect }: { onSelect: (style: VideoStyle) => void }) => {
-  const styles: VideoStyle[] = [
-    {
-      id: 'classic',
-      name: 'Classic',
-      description: 'Estilo cinematográfico clássico',
-      thumbnail: 'classic-thumb.jpg',
-      videoUrl: 'classic-preview.mp4',
-      features: ['Transições suaves', 'Cores naturais', 'Ritmo equilibrado'],
-      technicalDetails: {
-        colorGrading: 'Natural',
-        transitions: 'Dissolves suaves',
-        pacing: 'Moderado',
-        effects: 'Mínimos'
-      }
-    },
-    {
-      id: 'dynamic',
-      name: 'Dynamic',
-      description: 'Edição dinâmica e moderna',
-      thumbnail: 'dynamic-thumb.jpg',
-      videoUrl: 'dynamic-preview.mp4',
-      features: ['Cortes rápidos', 'Efeitos visuais', 'Alta energia'],
-      technicalDetails: {
-        colorGrading: 'Vibrante',
-        transitions: 'Rápidas',
-        pacing: 'Dinâmico',
-        effects: 'Modernos'
-      }
-    },
-    {
-      id: 'documentary',
-      name: 'Documentary',
-      description: 'Estilo documentário natural',
-      thumbnail: 'documentary-thumb.jpg',
-      videoUrl: 'documentary-preview.mp4',
-      features: ['Narrativa natural', 'Momentos autênticos', 'Estilo jornalístico'],
-      technicalDetails: {
-        colorGrading: 'Realista',
-        transitions: 'Discretas',
-        pacing: 'Natural',
-        effects: 'Mínimos'
-      }
-    }
-  ];
-
-  return (
-    <div className="grid grid-cols-1 gap-4">
-      {styles.map((style) => (
-        <div 
-          key={style.id}
-          className="category-card cursor-pointer"
-          onClick={() => onSelect(style)}
-        >
-          <h4 className="gradient-text text-lg mb-1">{style.name}</h4>
-          <p className="text-sm text-gray-400 mb-2">{style.description}</p>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {style.features.map((feature, index) => (
-              <span key={index} className="text-xs bg-white/10 px-2 py-1 rounded">
-                {feature}
-              </span>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const EditionSection = ({ onStart }: { onStart: () => void }) => {
-  return (
-    <div className="glass-panel">
-      <h4 className="gradient-text text-lg mb-2">Análise e Automação</h4>
-      <p className="text-sm text-gray-400 mb-4">
-        Nossa IA irá analisar seus vídeos e criar uma edição inicial com base nas suas escolhas de duração e estilo.
-      </p>
-      <div className="space-y-3 mb-4">
-        <div className="bg-white/5 p-3 rounded">
-          <p className="text-sm font-medium mb-1">Análise de Conteúdo</p>
-          <p className="text-xs text-gray-400">Identificação automática de momentos-chave</p>
-        </div>
-        <div className="bg-white/5 p-3 rounded">
-          <p className="text-sm font-medium mb-1">Sincronização Musical</p>
-          <p className="text-xs text-gray-400">Ajuste de cortes com batidas musicais</p>
-        </div>
-        <div className="bg-white/5 p-3 rounded">
-          <p className="text-sm font-medium mb-1">Sequenciamento Inteligente</p>
-          <p className="text-xs text-gray-400">Organização narrativa automática</p>
-        </div>
+        <p className="text-gray-400 text-[15px] leading-relaxed">{description}</p>
       </div>
-      <button className="elegant-button w-full" onClick={onStart}>
-        Começar
-      </button>
+      <div className="absolute inset-0 bg-gradient-to-br from-[#9b87f5]/5 to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100" />
     </div>
   );
 };
 
 const AppContent = () => {
-  const [activeSection, setActiveSection] = useState<'duration' | 'style' | 'edition'>('duration');
-  const [selectedSize, setSelectedSize] = useState<VideoSizeRange | null>(null);
-  const [selectedStyle, setSelectedStyle] = useState<VideoStyle | null>(null);
-
-  const handleSizeSelect = (size: VideoSizeRange) => {
-    setSelectedSize(size);
-    setActiveSection('style');
-  };
-
-  const handleStyleSelect = (style: VideoStyle) => {
-    setSelectedStyle(style);
-    setActiveSection('edition');
-  };
-
-  const handleStartEdition = () => {
-    console.log('Starting edition with:', { selectedSize, selectedStyle });
-    // Aqui você pode adicionar a lógica para iniciar a edição
-  };
-
-  const renderContent = () => {
-    switch (activeSection) {
-      case 'duration':
-        return <DurationSection onSelect={handleSizeSelect} />;
-      case 'style':
-        return <StyleSection onSelect={handleStyleSelect} />;
-      case 'edition':
-        return <EditionSection onStart={handleStartEdition} />;
-    }
-  };
+  const [activeStep, setActiveStep] = useState<'duration' | 'style' | 'edition'>('duration');
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-[#232323] text-white p-4 max-w-2xl mx-auto">
-        <h1 className="header-title mb-6">Wedding Video AI</h1>
-        
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <Banner 
-            title="Duração" 
-            description="Escolha a duração do seu vídeo"
-            isActive={activeSection === 'duration'}
-            onClick={() => setActiveSection('duration')}
-          />
-          <Banner 
-            title="Estilo" 
-            description="Defina o estilo da edição"
-            isActive={activeSection === 'style'}
-            onClick={() => setActiveSection('style')}
-          />
-          <Banner 
-            title="Análise e Automação" 
-            description="Inicie o processo automatizado"
-            isActive={activeSection === 'edition'}
-            onClick={() => setActiveSection('edition')}
-          />
-        </div>
-
-        <div className="mt-8">
-          {renderContent()}
+      <div className="min-h-screen bg-[#1A1A1A] text-white">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <h1 className="header-title text-4xl mb-12 text-center">Wedding Video AI</h1>
+          
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <StepCard 
+              title="Duração" 
+              description="Escolha o tempo ideal para seu vídeo, desde highlights rápidos até filmes completos"
+              icon={<Clock className="w-6 h-6 text-[#9b87f5]" />}
+              isActive={activeStep === 'duration'}
+              onClick={() => setActiveStep('duration')}
+            />
+            <StepCard 
+              title="Estilo" 
+              description="Defina a estética e o tom da sua edição, desde clássico até contemporâneo"
+              icon={<Film className="w-6 h-6 text-[#9b87f5]" />}
+              isActive={activeStep === 'style'}
+              onClick={() => setActiveStep('style')}
+            />
+            <StepCard 
+              title="Automação" 
+              description="Nossa IA analisa e monta seu vídeo seguindo suas escolhas de estilo"
+              icon={<Play className="w-6 h-6 text-[#9b87f5]" />}
+              isActive={activeStep === 'edition'}
+              onClick={() => setActiveStep('edition')}
+            />
+          </div>
         </div>
       </div>
     </TooltipProvider>
