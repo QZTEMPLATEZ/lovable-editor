@@ -18,7 +18,7 @@ const Banner = ({ title, description, isActive, onClick }: {
 }) => {
   return (
     <div 
-      className={`glass-panel cursor-pointer mb-4 ${isActive ? 'border-[#9b87f5]' : ''}`}
+      className={`glass-panel cursor-pointer ${isActive ? 'border-[#9b87f5]' : ''}`}
       onClick={onClick}
     >
       <h3 className="gradient-text text-xl mb-2">{title}</h3>
@@ -62,7 +62,7 @@ const DurationSection = ({ onSelect }: { onSelect: (size: VideoSizeRange) => voi
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="grid grid-cols-1 gap-4">
       {sizes.map((size) => (
         <div 
           key={size.name}
@@ -130,7 +130,7 @@ const StyleSection = ({ onSelect }: { onSelect: (style: VideoStyle) => void }) =
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="grid grid-cols-1 gap-4">
       {styles.map((style) => (
         <div 
           key={style.id}
@@ -139,15 +139,13 @@ const StyleSection = ({ onSelect }: { onSelect: (style: VideoStyle) => void }) =
         >
           <h4 className="gradient-text text-lg mb-1">{style.name}</h4>
           <p className="text-sm text-gray-400 mb-2">{style.description}</p>
-          {style.features && (
-            <div className="flex flex-wrap gap-2 mt-2">
-              {style.features.map((feature, index) => (
-                <span key={index} className="text-xs bg-white/10 px-2 py-1 rounded">
-                  {feature}
-                </span>
-              ))}
-            </div>
-          )}
+          <div className="flex flex-wrap gap-2 mt-2">
+            {style.features.map((feature, index) => (
+              <span key={index} className="text-xs bg-white/10 px-2 py-1 rounded">
+                {feature}
+              </span>
+            ))}
+          </div>
         </div>
       ))}
     </div>
@@ -156,30 +154,28 @@ const StyleSection = ({ onSelect }: { onSelect: (style: VideoStyle) => void }) =
 
 const EditionSection = ({ onStart }: { onStart: () => void }) => {
   return (
-    <div className="space-y-4">
-      <div className="glass-panel">
-        <h4 className="gradient-text text-lg mb-2">Análise e Automação</h4>
-        <p className="text-sm text-gray-400 mb-4">
-          Nossa IA irá analisar seus vídeos e criar uma edição inicial com base nas suas escolhas de duração e estilo.
-        </p>
-        <div className="space-y-3 mb-4">
-          <div className="bg-white/5 p-3 rounded">
-            <p className="text-sm font-medium mb-1">Análise de Conteúdo</p>
-            <p className="text-xs text-gray-400">Identificação automática de momentos-chave</p>
-          </div>
-          <div className="bg-white/5 p-3 rounded">
-            <p className="text-sm font-medium mb-1">Sincronização Musical</p>
-            <p className="text-xs text-gray-400">Ajuste de cortes com batidas musicais</p>
-          </div>
-          <div className="bg-white/5 p-3 rounded">
-            <p className="text-sm font-medium mb-1">Sequenciamento Inteligente</p>
-            <p className="text-xs text-gray-400">Organização narrativa automática</p>
-          </div>
+    <div className="glass-panel">
+      <h4 className="gradient-text text-lg mb-2">Análise e Automação</h4>
+      <p className="text-sm text-gray-400 mb-4">
+        Nossa IA irá analisar seus vídeos e criar uma edição inicial com base nas suas escolhas de duração e estilo.
+      </p>
+      <div className="space-y-3 mb-4">
+        <div className="bg-white/5 p-3 rounded">
+          <p className="text-sm font-medium mb-1">Análise de Conteúdo</p>
+          <p className="text-xs text-gray-400">Identificação automática de momentos-chave</p>
         </div>
-        <button className="elegant-button w-full" onClick={onStart}>
-          Começar
-        </button>
+        <div className="bg-white/5 p-3 rounded">
+          <p className="text-sm font-medium mb-1">Sincronização Musical</p>
+          <p className="text-xs text-gray-400">Ajuste de cortes com batidas musicais</p>
+        </div>
+        <div className="bg-white/5 p-3 rounded">
+          <p className="text-sm font-medium mb-1">Sequenciamento Inteligente</p>
+          <p className="text-xs text-gray-400">Organização narrativa automática</p>
+        </div>
       </div>
+      <button className="elegant-button w-full" onClick={onStart}>
+        Começar
+      </button>
     </div>
   );
 };
@@ -217,10 +213,10 @@ const AppContent = () => {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-[#232323] text-white p-4">
+      <div className="min-h-screen bg-[#232323] text-white p-4 max-w-2xl mx-auto">
         <h1 className="header-title mb-6">Wedding Video AI</h1>
         
-        <div className="space-y-4 mb-6">
+        <div className="grid grid-cols-3 gap-4 mb-6">
           <Banner 
             title="Duração" 
             description="Escolha a duração do seu vídeo"
@@ -241,7 +237,9 @@ const AppContent = () => {
           />
         </div>
 
-        {renderContent()}
+        <div className="mt-8">
+          {renderContent()}
+        </div>
       </div>
     </TooltipProvider>
   );
