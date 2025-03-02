@@ -25,23 +25,23 @@ const AnalysisStep: React.FC<AnalysisStepProps> = ({
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
-      <Card className="p-6 bg-black/40 backdrop-blur-md border border-gray-800 rounded-xl">
-        <h2 className="text-2xl font-bold mb-6 text-gray-200">Analyzing & Matching</h2>
+      <Card className="p-6 bg-black border border-gray-800 rounded-xl shadow-md">
+        <h2 className="text-2xl font-bold mb-6 text-white">Analyzing & Matching</h2>
         
         <div className="space-y-8">
           {/* Reference Video Analysis */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium text-gray-300">
+              <h3 className="text-lg font-medium text-white">
                 Analyzing Reference Video
               </h3>
               <span className="text-sm text-gray-400">
                 {analysisProgress < 100 ? `${analysisProgress}%` : 'Complete'}
               </span>
             </div>
-            <Progress value={analysisProgress} className="h-2 bg-gray-800" />
+            <Progress value={analysisProgress} className="h-2 bg-gray-900" />
             {analysisProgress === 100 && (
-              <div className="p-3 bg-gray-900/50 rounded-lg">
+              <div className="p-3 bg-gray-900 rounded-lg border border-gray-800">
                 <p className="text-sm text-gray-300">✓ Identified scenes in reference video</p>
                 <p className="text-sm text-gray-300">✓ Detected wedding event categories</p>
                 <p className="text-sm text-gray-300">✓ Analyzed transitions and timing</p>
@@ -53,16 +53,16 @@ const AnalysisStep: React.FC<AnalysisStepProps> = ({
           {analysisProgress === 100 && (
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium text-gray-300">
+                <h3 className="text-lg font-medium text-white">
                   Matching Raw Footage
                 </h3>
                 <span className="text-sm text-gray-400">
                   {matchingProgress < 100 ? `${matchingProgress}%` : 'Complete'}
                 </span>
               </div>
-              <Progress value={matchingProgress} className="h-2 bg-gray-800" />
+              <Progress value={matchingProgress} className="h-2 bg-gray-900" />
               {matchingProgress > 0 && (
-                <div className="p-3 bg-gray-900/50 rounded-lg">
+                <div className="p-3 bg-gray-900 rounded-lg border border-gray-800">
                   <p className="text-sm text-gray-300">
                     Processed {Math.min(rawFilesCount, Math.ceil(rawFilesCount * matchingProgress / 100))} of {rawFilesCount} raw files
                   </p>
@@ -84,7 +84,7 @@ const AnalysisStep: React.FC<AnalysisStepProps> = ({
         
         {matchingProgress === 100 && (
           <Button 
-            className="w-full mt-6 bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 text-white border border-gray-700 transition-all"
+            className="w-full mt-6 bg-black hover:bg-gray-900 text-white border border-gray-800 transition-all"
             onClick={onContinue}
           >
             <ArrowRight className="w-5 h-5 mr-2" />

@@ -37,13 +37,13 @@ const StepsIndicator: React.FC<StepsIndicatorProps> = ({
               <div 
                 className={`w-16 h-16 rounded-full flex items-center justify-center 
                   ${currentStep === step.id 
-                    ? 'bg-gradient-to-r from-purple-800 to-purple-600 shadow-lg shadow-purple-900/30' 
+                    ? 'bg-black border border-gray-800 shadow-lg' 
                     : currentStep > step.id 
-                      ? 'bg-gradient-to-r from-purple-900 to-purple-700 opacity-90' 
-                      : 'bg-gray-900 opacity-60'} 
+                      ? 'bg-gray-900 border border-gray-800' 
+                      : 'bg-gray-900 border border-gray-800 opacity-60'} 
                   transition-all duration-300 cursor-pointer hover:scale-105`}
               >
-                <div className="text-white">
+                <div className={`${currentStep === step.id ? 'text-white' : 'text-gray-400'}`}>
                   {step.icon}
                 </div>
               </div>
@@ -56,7 +56,7 @@ const StepsIndicator: React.FC<StepsIndicatorProps> = ({
             {index < steps.length - 1 && (
               <div className="h-1 flex-1 mx-2 rounded-full bg-gray-900 relative z-0">
                 <div 
-                  className="h-full bg-gradient-to-r from-purple-800 to-purple-600 rounded-full"
+                  className="h-full bg-gray-800 rounded-full"
                   style={{ 
                     width: currentStep > index + 1 
                       ? '100%' 

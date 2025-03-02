@@ -22,12 +22,12 @@ const ExportStep: React.FC<ExportStepProps> = ({
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
-      <Card className="p-6 bg-black/40 backdrop-blur-md border border-gray-800 rounded-xl">
-        <h2 className="text-2xl font-bold mb-6 text-gray-200">Export Your Project</h2>
+      <Card className="p-6 bg-black border border-gray-800 rounded-xl shadow-md">
+        <h2 className="text-2xl font-bold mb-6 text-white">Export Your Project</h2>
         
-        <div className="bg-gray-900/50 p-4 rounded-xl mb-6">
-          <h3 className="text-lg font-semibold mb-3 text-gray-300">Project Summary</h3>
-          <ul className="space-y-2 text-gray-400">
+        <div className="bg-gray-900 p-4 rounded-lg border border-gray-800 mb-6">
+          <h3 className="text-lg font-semibold mb-3 text-white">Project Summary</h3>
+          <ul className="space-y-2 text-gray-300">
             <li className="flex items-center gap-2">
               <Video className="w-4 h-4" />
               <span>1 reference video analyzed</span>
@@ -43,11 +43,11 @@ const ExportStep: React.FC<ExportStepProps> = ({
           </ul>
         </div>
         
-        <h3 className="text-lg font-medium mb-4 text-gray-300">Export Format</h3>
+        <h3 className="text-lg font-medium mb-4 text-white">Export Format</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <Button 
             variant="outline" 
-            className="border-gray-700 hover:bg-gray-800 flex items-center justify-center gap-2 py-6"
+            className="border-gray-800 bg-gray-900 hover:bg-gray-800 text-white flex items-center justify-center gap-2 py-6"
             onClick={() => onExport('xml')}
           >
             <Download className="w-5 h-5" />
@@ -59,7 +59,7 @@ const ExportStep: React.FC<ExportStepProps> = ({
           
           <Button 
             variant="outline" 
-            className="border-gray-700 hover:bg-gray-800 flex items-center justify-center gap-2 py-6"
+            className="border-gray-800 bg-gray-900 hover:bg-gray-800 text-white flex items-center justify-center gap-2 py-6"
             onClick={() => onExport('fcpxml')}
           >
             <Download className="w-5 h-5" />
@@ -71,7 +71,7 @@ const ExportStep: React.FC<ExportStepProps> = ({
           
           <Button 
             variant="outline" 
-            className="border-gray-700 hover:bg-gray-800 flex items-center justify-center gap-2 py-6"
+            className="border-gray-800 bg-gray-900 hover:bg-gray-800 text-white flex items-center justify-center gap-2 py-6"
             onClick={() => onExport('edl')}
           >
             <Download className="w-5 h-5" />
@@ -84,7 +84,7 @@ const ExportStep: React.FC<ExportStepProps> = ({
         
         <Button 
           variant="outline"
-          className="w-full border-gray-700 hover:bg-gray-800 text-white"
+          className="w-full border-gray-800 bg-black hover:bg-gray-900 text-white"
           onClick={onStartNewProject}
         >
           Start New Project
