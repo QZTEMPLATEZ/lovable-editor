@@ -1,12 +1,9 @@
-
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
 import { VideoStyle } from '@/types/video';
 import StyleGrid from './style/StyleGrid';
 import { useVideoType } from '@/contexts/VideoTypeContext';
-import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
 
 interface VideoStyleSelectorProps {
   selectedStyle: VideoStyle | null;
@@ -23,76 +20,21 @@ const VideoStyleSelector = ({
 }: VideoStyleSelectorProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { selectedVideoType, setSelectedStyle } = useVideoType();
+  const { setSelectedStyle } = useVideoType();
 
   const handleStyleSelect = (style: VideoStyle) => {
     onStyleSelect(style);
     setSelectedStyle(style);
     
-    // Verifica se temos tanto o tipo de vídeo quanto o estilo selecionados
-    if (selectedVideoType) {
-      toast({
-        title: `${style.name} Style Selected`,
-        description: `Duration: ${selectedVideoType.label} - Style: ${style.description}`,
-      });
-
-      // Log detalhado da configuração para debug e processamento
-      console.log('Selected Configuration:', {
-        duration: {
-          min: selectedVideoType.min,
-          max: selectedVideoType.max,
-          name: selectedVideoType.name,
-          recommendedTracks: selectedVideoType.recommendedTracks,
-        },
-        style: {
-          id: style.id,
-          name: style.name,
-          description: style.description,
-          features: style.features || [],
-          technicalDetails: style.technicalDetails || {}
-        }
-      });
-    }
+    toast({
+      title: `${style.name} Style Selected`,
+      description: style.description,
+    });
 
     if (onNext) {
       onNext();
     }
-    navigate('/organize');
-  };
-
-  const handleContinue = () => {
-    if (!selectedStyle || !selectedVideoType) {
-      toast({
-        title: "Please make a selection",
-        description: "Both duration and style must be selected to continue",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Configuração final que será usada para processar o vídeo
-    const configuration = {
-      duration: {
-        min: selectedVideoType.min,
-        max: selectedVideoType.max,
-        name: selectedVideoType.name,
-        label: selectedVideoType.label,
-        recommendedTracks: selectedVideoType.recommendedTracks
-      },
-      style: {
-        id: selectedStyle.id,
-        name: selectedStyle.name,
-        description: selectedStyle.description,
-        features: selectedStyle.features || [],
-        technicalDetails: selectedStyle.technicalDetails || {}
-      }
-    };
-
-    console.log('Final Configuration:', configuration);
-    
-    // Aqui você pode adicionar a lógica para enviar estas configurações
-    // para o Premiere Pro ou para onde for necessário
-    navigate('/organize');
+    navigate('/music');
   };
 
   return (
@@ -121,11 +63,8 @@ const VideoStyleSelector = ({
               SELECT YOUR<br />FILM STYLE
             </h1>
             <p className="text-sm md:text-base lg:text-lg text-white/80 mb-6 max-w-xl lg:max-w-2xl font-['Montserrat'] font-light leading-relaxed">
-              {selectedVideoType ? (
-                `Selected Duration: ${selectedVideoType.label} - Choose a style that best matches your vision.`
-              ) : (
-                'Choose the perfect style for your video project. Each option is carefully designed to match different content needs.'
-              )}
+              Choose the perfect style for your video project. Each option is carefully designed 
+              to match different content needs.
             </p>
           </div>
         </div>
@@ -133,24 +72,6 @@ const VideoStyleSelector = ({
 
       {/* Style Grid Section */}
       <StyleGrid onStyleSelect={handleStyleSelect} />
-
-      {/* Selected Configuration Summary */}
-      {(selectedStyle && selectedVideoType) && (
-        <div className="fixed bottom-8 right-8 bg-black/80 p-4 rounded-lg backdrop-blur-sm border border-purple-500/30">
-          <div className="text-white mb-2">
-            <p className="text-sm font-semibold">Selected Configuration:</p>
-            <p className="text-xs text-gray-400">Duration: {selectedVideoType.label}</p>
-            <p className="text-xs text-gray-400">Style: {selectedStyle.name}</p>
-          </div>
-          <Button 
-            className="w-full bg-purple-500 hover:bg-purple-600 text-white"
-            onClick={handleContinue}
-          >
-            <Check className="w-4 h-4 mr-2" />
-            Continue
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,6 +1,4 @@
 import React from 'react';
-import { Button } from "@/components/ui/button";
-import { Play } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 
 interface FileProcessingProps {
@@ -12,31 +10,14 @@ interface FileProcessingProps {
 const FileProcessing = ({ files, isProcessing, onProcessStart }: FileProcessingProps) => {
   const { toast } = useToast();
 
-  const handleProcessClick = () => {
-    if (!files || files.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "No files selected",
-        description: "Please select files to analyze.",
-      });
-      return;
+  // Start processing automatically when files are received
+  React.useEffect(() => {
+    if (files.length > 0 && !isProcessing) {
+      onProcessStart(files);
     }
-    onProcessStart(files);
-  };
+  }, [files, isProcessing, onProcessStart]);
 
-  return (
-    <div className="flex justify-center">
-      {files.length > 0 && !isProcessing && (
-        <Button
-          onClick={handleProcessClick}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
-        >
-          <Play className="w-4 h-4 mr-2" />
-          Start Organization Process
-        </Button>
-      )}
-    </div>
-  );
+  return null; // No button needed anymore
 };
 
 export default FileProcessing;

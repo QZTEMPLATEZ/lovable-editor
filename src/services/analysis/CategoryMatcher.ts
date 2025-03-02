@@ -14,44 +14,37 @@ const CATEGORIES: CategoryCriteria[] = [
       'woman', 'bride', 'dress', 'makeup', 'hair', 'mirror', 'getting ready',
       'wedding dress', 'bridal', 'preparation', 'beauty', 'making of',
       'makeup artist', 'hairstylist', 'bride room', 'getting dressed',
-      'wedding gown', 'bridal suite', 'bride preparation', 'face powder',
-      'lipstick', 'cosmetics', 'perfume', 'hair spray', 'beauty salon'
+      'wedding gown', 'bridal suite', 'bride preparation'
     ],
     requiredCues: ['woman', 'indoor'],
-    confidence: 0.15 // Lowered threshold for better detection
+    confidence: 0.35
   },
   {
     name: 'GroomPrep',
     visualCues: [
       'man', 'groom', 'suit', 'tie', 'formal wear', 'getting ready',
-      'cufflinks', 'tuxedo', 'preparation', 'groomsmen', 'bow tie',
-      'Windsor tie', 'suit of clothes', 'military uniform', 'formal dress',
-      'bowtie', 'formal suit'
+      'cufflinks', 'tuxedo', 'preparation', 'groomsmen'
     ],
     requiredCues: ['man', 'indoor'],
-    confidence: 0.2
+    confidence: 0.4
   },
   {
     name: 'Ceremony',
     visualCues: [
       'altar', 'church', 'ceremony', 'wedding', 'bride and groom',
-      'guests', 'rows', 'aisle', 'vows', 'rings', 'monastery',
-      'chapel', 'cathedral', 'priest', 'minister', 'wedding ceremony',
-      'gown', 'bridegroom', 'formal'
+      'guests', 'rows', 'aisle', 'vows', 'rings'
     ],
-    requiredCues: ['formal'],
-    confidence: 0.2
+    requiredCues: ['people', 'formal'],
+    confidence: 0.5
   },
   {
     name: 'Decoration',
     visualCues: [
       'flowers', 'chairs', 'arch', 'table', 'decoration', 'venue',
-      'centerpiece', 'lights', 'setup', 'arrangement', 'palace',
-      'fountain', 'garden', 'patio', 'terrace', 'vase', 'candles',
-      'restaurant', 'eating place', 'ballroom'
+      'centerpiece', 'lights', 'setup', 'arrangement'
     ],
     requiredCues: ['static'],
-    confidence: 0.15
+    confidence: 0.4
   },
   {
     name: 'DroneFootage',
@@ -60,17 +53,34 @@ const CATEGORIES: CategoryCriteria[] = [
       'drone', 'overhead', 'venue', 'building', 'outdoor'
     ],
     requiredCues: ['aerial'],
-    confidence: 0.3
+    confidence: 0.6
   },
   {
     name: 'Reception',
     visualCues: [
       'party', 'dance', 'celebration', 'guests', 'music',
-      'cake', 'dinner', 'toast', 'entertainment', 'crowd',
-      'restaurant', 'eating place', 'ballroom', 'dancing'
+      'cake', 'dinner', 'toast', 'entertainment', 'crowd'
     ],
-    requiredCues: ['indoor'],
-    confidence: 0.2
+    requiredCues: ['people', 'indoor'],
+    confidence: 0.4
+  },
+  {
+    name: 'CoupleScenes',
+    visualCues: [
+      'couple', 'romantic', 'kiss', 'embrace', 'love',
+      'together', 'intimate', 'portrait', 'pose', 'holding hands'
+    ],
+    requiredCues: ['people'],
+    confidence: 0.45
+  },
+  {
+    name: 'ProtocolPhotos',
+    visualCues: [
+      'formal', 'group', 'family', 'portrait', 'posed',
+      'lineup', 'traditional', 'official', 'protocol', 'formal photo'
+    ],
+    requiredCues: ['people', 'formal'],
+    confidence: 0.5
   }
 ];
 
@@ -91,13 +101,8 @@ export class CategoryMatcher {
       const score = prediction.score;
 
       CATEGORIES.forEach(category => {
-        // Check for visual cues with more flexible matching
-        const hasVisualCue = category.visualCues.some(cue => {
-          const cueWords = cue.toLowerCase().split(' ');
-          return cueWords.every(word => label.includes(word));
-        });
-
-        if (hasVisualCue) {
+        // Check for visual cues
+        if (category.visualCues.some(cue => label.includes(cue.toLowerCase()))) {
           const current = categoryScores.get(category.name) || { score: 0, matches: 0 };
           categoryScores.set(category.name, {
             score: current.score + score,
@@ -107,90 +112,30 @@ export class CategoryMatcher {
       });
     });
 
-    // Calculate final scores with improved logic
+    // Calculate final scores and check required cues
     let bestMatch = { category: 'OtherMoments', confidence: 0 };
-    let secondBestMatch = { category: 'OtherMoments', confidence: 0 };
 
     categoryScores.forEach((data, categoryName) => {
       if (data.matches > 0) {
         const category = CATEGORIES.find(c => c.name === categoryName)!;
         const averageScore = data.score / data.matches;
         
-        // More flexible required cues check
-        const hasRequiredCues = category.requiredCues.length === 0 || 
-          category.requiredCues.some(cue =>
-            predictions.some(p => 
-              p.label.toLowerCase().includes(cue.toLowerCase()) &&
-              p.score > 0.1 // Lowered threshold for required cues
-            )
-          );
+        // Check if required cues are present
+        const hasRequiredCues = category.requiredCues.some(cue =>
+          predictions.some(p => p.label.toLowerCase().includes(cue.toLowerCase()))
+        );
 
-        if (hasRequiredCues && averageScore > category.confidence) {
-          if (averageScore > bestMatch.confidence) {
-            secondBestMatch = { ...bestMatch };
-            bestMatch = {
-              category: categoryName,
-              confidence: averageScore
-            };
-          } else if (averageScore > secondBestMatch.confidence) {
-            secondBestMatch = {
-              category: categoryName,
-              confidence: averageScore
-            };
-          }
+        if (hasRequiredCues && averageScore > category.confidence && averageScore > bestMatch.confidence) {
+          bestMatch = {
+            category: categoryName,
+            confidence: averageScore
+          };
         }
       }
     });
 
-    // If no strong match is found, try filename analysis
-    if (bestMatch.confidence < 0.15) {
-      const filenameMatch = this.classifyByFilename(predictions[0]?.filename || '');
-      if (filenameMatch.confidence > bestMatch.confidence) {
-        bestMatch = filenameMatch;
-      }
-    }
-
-    // If still no good match, use context from predictions to make a best guess
-    if (bestMatch.confidence < 0.15) {
-      bestMatch = this.makeContextualGuess(predictions);
-    }
-
     logger.info(`Best category match: ${bestMatch.category} with confidence ${bestMatch.confidence}`);
     return bestMatch;
-  }
-
-  private static makeContextualGuess(predictions: any[]): { category: string; confidence: number } {
-    const labels = predictions.map(p => p.label.toLowerCase());
-    
-    // Check for indoor/outdoor context
-    const isIndoor = labels.some(label => 
-      ['room', 'indoor', 'interior', 'house', 'building'].some(word => label.includes(word))
-    );
-    
-    // Check for formal/casual context
-    const isFormal = labels.some(label =>
-      ['suit', 'dress', 'gown', 'formal', 'ceremony'].some(word => label.includes(word))
-    );
-
-    // Make educated guesses based on context
-    if (labels.some(l => l.includes('face') || l.includes('makeup') || l.includes('cosmetic'))) {
-      return { category: 'BridePrep', confidence: 0.2 };
-    }
-    
-    if (labels.some(l => l.includes('suit') || l.includes('tie'))) {
-      return { category: 'GroomPrep', confidence: 0.2 };
-    }
-    
-    if (labels.some(l => l.includes('flower') || l.includes('decoration'))) {
-      return { category: 'Decoration', confidence: 0.2 };
-    }
-
-    if (isFormal && isIndoor) {
-      return { category: 'Ceremony', confidence: 0.15 };
-    }
-
-    // Default to OtherMoments with low confidence if no contextual match
-    return { category: 'OtherMoments', confidence: 0.1 };
   }
 
   static classifyByFilename(filename: string): { category: string; confidence: number } {
@@ -203,18 +148,24 @@ export class CategoryMatcher {
       Decoration: ['decor', 'flores', 'flowers', 'venue', 'local'],
       DroneFootage: ['drone', 'aerial', 'dji', 'mavic', 'air'],
       Ceremony: ['ceremony', 'cerimonia', 'altar', 'church', 'igreja'],
-      Reception: ['reception', 'party', 'festa', 'dance', 'danca']
+      Reception: ['reception', 'party', 'festa', 'dance', 'danca'],
+      CoupleScenes: ['couple', 'casal', 'romantic', 'love', 'together'],
+      ProtocolPhotos: ['protocol', 'formal', 'family', 'familia', 'group', 'grupo']
     };
+
+    let bestMatch = { category: 'OtherMoments', confidence: 0.1 };
 
     for (const [category, keywords] of Object.entries(patterns)) {
       const matches = keywords.filter(keyword => lowerFilename.includes(keyword));
       if (matches.length > 0) {
-        const confidence = 0.3 + (matches.length * 0.1);
-        return { category, confidence };
+        const confidence = 0.4 + (matches.length * 0.1);
+        if (confidence > bestMatch.confidence) {
+          bestMatch = { category, confidence };
+        }
       }
     }
 
-    // If no filename match, return OtherMoments with low confidence
-    return { category: 'OtherMoments', confidence: 0.1 };
+    logger.info(`Filename analysis result for ${filename}: ${bestMatch.category} (${bestMatch.confidence})`);
+    return bestMatch;
   }
 }

@@ -1,6 +1,7 @@
 import { logger } from '../utils/logger';
-import { CategoryMatcher } from './analysis/core/CategoryMatcher';
+import { ORGANIZER_CONFIG } from '../config/organizerConfig';
 import { getVideoMetadata } from '../utils/videoProcessing';
+import { videoAnalysisService } from './VideoAnalysisService';
 
 export interface AnalysisResult {
   file: File;
@@ -33,17 +34,23 @@ export class FileAnalysisService {
     try {
       logger.info(`Starting analysis for file: ${file.name}`);
 
+      if (!ORGANIZER_CONFIG.analysis.supportedFileTypes.includes(file.type)) {
+        throw new Error(`Unsupported file type: ${file.type}`);
+      }
+
+      if (file.size > ORGANIZER_CONFIG.analysis.maxFileSize) {
+        throw new Error('File size exceeds maximum limit');
+      }
+
       // Get video metadata
       let metadata = {};
       if (file.type.startsWith('video/')) {
         metadata = await getVideoMetadata(file);
+        logger.info(`Metadata extracted for ${file.name}:`, metadata);
       }
 
-      // Get predictions from ML model
-      const predictions = await this.getPredictions(file);
-      
-      // Get best category match
-      const { category, confidence } = CategoryMatcher.getBestCategory(predictions, file.name);
+      // Perform visual analysis
+      const { category, confidence } = await videoAnalysisService.analyzeVideo(file);
       
       logger.info(`Analysis complete for ${file.name}: ${category} (${confidence})`);
       
@@ -55,23 +62,24 @@ export class FileAnalysisService {
       };
     } catch (error) {
       logger.error(`Analysis failed for file: ${file.name}`, error);
-      // Instead of returning untagged, return OtherMoments
       return {
         file,
-        category: 'OtherMoments',
-        confidence: 0.1,
+        category: 'untagged',
+        confidence: 0,
         error: error instanceof Error ? error.message : 'Unknown error occurred'
       };
     }
   }
 
-  private async getPredictions(file: File): Promise<any[]> {
-    // Implement ML model prediction logic here
-    // For now, return mock predictions
-    return [
-      { label: 'video', score: 0.9 },
-      { label: 'scene', score: 0.8 }
-    ];
+  async analyzeFiles(files: File[]): Promise<AnalysisResult[]> {
+    logger.info(`Starting batch analysis for ${files.length} files`);
+    
+    const results = await Promise.all(
+      files.map(file => this.analyzeFile(file))
+    );
+
+    logger.info(`Completed batch analysis for ${files.length} files`);
+    return results;
   }
 }
 

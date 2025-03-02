@@ -1,79 +1,69 @@
-
 # Welcome to your Lovable project
 
-## Visão Geral do Projeto
-Este é um editor de vídeos de casamento baseado em IA, desenvolvido com React, Vite, TypeScript e Tailwind CSS. O projeto é uma aplicação web que roda em qualquer sistema operacional, incluindo macOS.
+## Project info
 
-## Pré-requisitos
-- Node.js & npm - [instale com nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-- Git
-- Um navegador moderno (Chrome, Safari, Firefox)
+**URL**: https://lovable.dev/projects/104679b9-9718-44df-82ab-67ca57a99233
 
-## Configuração Inicial
+## How can I edit this code?
+
+There are several ways of editing your application.
+
+**Use Lovable**
+
+Simply visit the [Lovable Project](https://lovable.dev/projects/104679b9-9718-44df-82ab-67ca57a99233) and start prompting.
+
+Changes made via Lovable will be committed automatically to this repo.
+
+**Use your preferred IDE**
+
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+
+Follow these steps:
 
 ```sh
-# Passo 1: Clone o repositório usando a URL Git do projeto
+# Step 1: Clone the repository using the project's Git URL.
 git clone <YOUR_GIT_URL>
 
-# Passo 2: Entre no diretório do projeto
+# Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
 
-# Passo 3: Instale as dependências necessárias
+# Step 3: Install the necessary dependencies.
 npm i
 
-# Passo 4: Inicie o servidor de desenvolvimento com auto-reload e preview instantâneo
+# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
 
-## Estrutura do Projeto
-- `/src` - Código fonte do projeto
-  - `/components` - Componentes React reutilizáveis
-  - `/services` - Serviços para análise e processamento de vídeo
-  - `/utils` - Utilitários e helpers
-  - `/hooks` - Custom hooks React
-  - `/types` - Definições de tipos TypeScript
-  - `/docs` - Documentação detalhada
+**Edit a file directly in GitHub**
 
-## Tecnologias Utilizadas
-- [Vite](https://vitejs.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [React](https://reactjs.org/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
 
-## Scripts Disponíveis
-- `npm run dev` - Inicia o servidor de desenvolvimento
-- `npm run build` - Gera a build de produção
-- `npm run preview` - Visualiza a build de produção localmente
+**Use GitHub Codespaces**
 
-## Integração com Editores de Vídeo
-O projeto suporta exportação para:
-- Final Cut Pro (FCPXML)
-- Adobe Premiere Pro
-- DaVinci Resolve (EDL)
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
 
-## Desenvolvimento Local
-1. Certifique-se de ter Node.js instalado (recomendamos usar nvm)
-2. Clone o repositório
-3. Instale as dependências com `npm install`
-4. Inicie o servidor de desenvolvimento com `npm run dev`
-5. Acesse `http://localhost:8080` no seu navegador
+## What technologies are used for this project?
 
-## Estrutura de Arquivos Importantes
-- `index.html` - Ponto de entrada da aplicação
-- `vite.config.ts` - Configuração do Vite
-- `tailwind.config.ts` - Configuração do Tailwind CSS
-- `tsconfig.json` - Configuração do TypeScript
+This project is built with .
 
-## Como Contribuir
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Faça commit das suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
 
-## Ajuda e Documentação
-- Veja a pasta `/src/docs` para documentação detalhada
-- Consulte `PROJECT_DOCUMENTATION.md` para entender o fluxo de trabalho
-- Veja `APP_STRUCTURE.md` para detalhes da estrutura do projeto
+## How can I deploy this project?
 
+Simply open [Lovable](https://lovable.dev/projects/104679b9-9718-44df-82ab-67ca57a99233) and click on Share -> Publish.
+
+## I want to use a custom domain - is that possible?
+
+We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)

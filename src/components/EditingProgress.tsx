@@ -1,8 +1,9 @@
-
-import React, { useEffect, useState } from 'react';
-import ProgressDisplay from './editor/progress/ProgressDisplay';
-import ProcessingPreview from './editor/progress/ProcessingPreview';
-import ExportOptions from './editor/progress/ExportOptions';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import ProcessingHeader from './processing/ProcessingHeader';
+import ProcessingPreview from './processing/ProcessingPreview';
+import ProcessingSteps from './processing/ProcessingSteps';
+import ProcessingProgressBar from './processing/ProcessingProgressBar';
 
 interface EditingProgressProps {
   videoFiles: File[];
@@ -11,43 +12,64 @@ interface EditingProgressProps {
 }
 
 const EditingProgress = ({ videoFiles, progress, onStopProcessing }: EditingProgressProps) => {
-  const [remainingTime, setRemainingTime] = useState(60);
-  const [currentFile, setCurrentFile] = useState('');
-  const isComplete = progress === 100;
+  const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
+  const [remainingTime, setRemainingTime] = useState(300);
+  
+  useEffect(() => {
+    if (videoFiles.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setCurrentFrameIndex((prev) => (prev + 1) % videoFiles.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [videoFiles.length]);
 
   useEffect(() => {
-    if (videoFiles.length > 0) {
-      const currentIndex = Math.floor((progress / 100) * videoFiles.length);
-      if (currentIndex < videoFiles.length) {
-        setCurrentFile(videoFiles[currentIndex].name);
-      }
-    }
-  }, [progress, videoFiles]);
-
-  useEffect(() => {
-    if (!isComplete && remainingTime > 0) {
+    if (remainingTime > 0) {
       const timer = setInterval(() => {
-        setRemainingTime((prev) => Math.max(0, prev - 1));
+        setRemainingTime((prev) => prev - 1);
       }, 1000);
       return () => clearInterval(timer);
     }
-  }, [isComplete, remainingTime]);
+  }, [remainingTime]);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 p-6">
-      <h2 className="text-2xl font-bold text-center mb-8">
-        {isComplete ? 'Processing Complete!' : 'Processing Your Videos'}
-      </h2>
-
-      <ProgressDisplay progress={progress} remainingTime={remainingTime} />
-      <ProcessingPreview currentFile={currentFile} />
-      <ExportOptions 
-        projectName="wedding-video"
-        isComplete={isComplete}
-        videoFiles={videoFiles}
-        onStopProcessing={onStopProcessing}
-      />
-    </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen bg-gradient-to-br from-editor-bg via-editor-bg/95 to-editor-bg relative overflow-hidden"
+    >
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-5" />
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/5" />
+      
+      <div className="relative max-w-[1920px] mx-auto p-6 space-y-8">
+        {/* Header Section */}
+        <ProcessingHeader 
+          remainingTime={remainingTime} 
+          onStopProcessing={onStopProcessing}
+        />
+        
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Preview Section */}
+          <div className="lg:col-span-8 space-y-6">
+            <ProcessingPreview 
+              videoFiles={videoFiles}
+              currentFrameIndex={currentFrameIndex}
+            />
+            <ProcessingProgressBar progress={progress} />
+          </div>
+          
+          {/* Steps Section */}
+          <div className="lg:col-span-4">
+            <ProcessingSteps progress={progress} />
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 

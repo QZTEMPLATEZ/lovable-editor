@@ -1,88 +1,85 @@
+import { EditingProject } from './videoEditingLogic';
+import { logger } from './logger';
+import { 
+  generatePremiereXMLLegacy, 
+  generatePremiereXMLCurrent, 
+  generatePremiereXMLCompatible 
+} from './premiere/premiereXMLGenerators';
+import { validateXMLStructure, validatePaths } from './premiere/xmlValidation';
+import { ExportOptions, createExportBlob, validateProject } from './premiere/exportHelpers';
 
-import { generatePremiereXML } from './premiere/premiereXMLGenerators';
-import { toast } from "@/components/ui/use-toast";
+const generateFinalCutXML = (project: EditingProject): string => {
+  logger.info('Generating Final Cut Pro XML');
+  return `<?xml version="1.0" encoding="UTF-8"?>
+    <fcpxml version="1.9">
+      <project>
+        <sequence>
+          ${project.clips.map((clip, index) => `
+            <clip>
+              <source>${clip.file.name}</source>
+              <type>${clip.type}</type>
+            </clip>
+          `).join('')}
+        </sequence>
+      </project>
+    </fcpxml>`;
+};
 
-interface ExportOptions {
-  format: 'premiere' | 'resolve' | 'fcpx';
-  includeAudio: boolean;
-  includeTransitions: boolean;
-  projectName: string;
-}
+const generateResolveXML = (project: EditingProject): string => {
+  logger.info('Generating DaVinci Resolve XML');
+  return `<?xml version="1.0" encoding="UTF-8"?>
+    <DaVinciResolve>
+      <Timeline>
+        ${project.clips.map((clip, index) => `
+          <Clip>
+            <Source>${clip.file.name}</Source>
+            <Type>${clip.type}</Type>
+          </Clip>
+        `).join('')}
+      </Timeline>
+    </DaVinciResolve>`;
+};
 
 export const exportProject = async (
-  categorizedFiles: Map<string, File[]>,
-  musicTracks: File[],
+  project: EditingProject,
   options: ExportOptions
-): Promise<void> => {
-  try {
-    console.log('Starting project export with options:', options);
+): Promise<Blob> => {
+  logger.info('Starting project export with options:', options);
 
-    // Prepare video clips data
-    const videoClips = Array.from(categorizedFiles.entries()).flatMap(
-      ([category, files], categoryIndex) =>
-        files.map((file, fileIndex) => ({
-          id: `clip_${categoryIndex}_${fileIndex}`,
-          source: file.name,
-          inPoint: 0,
-          outPoint: 300, // Placeholder duration
-          category,
-          duration: 300
-        }))
-    );
-
-    // Prepare audio tracks data
-    const audioTracks = musicTracks.map((track, index) => ({
-      id: `audio_${index}`,
-      source: track.name,
-      startTime: 0,
-      duration: 300, // Placeholder duration
-      volume: 1.0
-    }));
-
-    // Add default transitions
-    const transitions = videoClips.slice(1).map((_, index) => ({
-      type: 'dissolve' as const,
-      duration: 30 // 1 second at 30fps
-    }));
-
-    // Generate XML based on selected format
-    let exportData: string;
-    switch (options.format) {
-      case 'premiere':
-        exportData = generatePremiereXML(
-          options.projectName,
-          videoClips,
-          options.includeAudio ? audioTracks : [],
-          options.includeTransitions ? transitions : []
-        );
-        break;
-      // Add support for other formats here
-      default:
-        throw new Error(`Unsupported export format: ${options.format}`);
-    }
-
-    // Create and download the file
-    const blob = new Blob([exportData], { type: 'text/xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${options.projectName}.xml`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    console.log('Project exported successfully');
-    toast({
-      title: "Exportação Concluída",
-      description: "Projeto exportado com sucesso. Verifique seus downloads.",
-    });
-  } catch (error) {
-    console.error('Error exporting project:', error);
-    toast({
-      variant: "destructive",
-      title: "Erro na Exportação",
-      description: "Falha ao exportar o projeto. Por favor, tente novamente.",
-    });
+  if (!validateProject(project)) {
+    throw new Error('Invalid project structure');
   }
+
+  let exportData: string;
+
+  if (options.format === 'premiere') {
+    switch (options.version) {
+      case 'legacy':
+        exportData = generatePremiereXMLLegacy(project);
+        break;
+      case 'compatible':
+        exportData = generatePremiereXMLCompatible(project);
+        break;
+      default:
+        exportData = generatePremiereXMLCurrent(project);
+    }
+  } else if (options.format === 'finalcut') {
+    exportData = generateFinalCutXML(project);
+  } else {
+    exportData = generateResolveXML(project);
+  }
+
+  // Validate XML structure and paths
+  if (!validateXMLStructure(exportData)) {
+    logger.error('XML structure validation failed');
+    throw new Error('Generated XML is invalid');
+  }
+
+  if (!validatePaths(exportData)) {
+    logger.error('Path validation failed');
+    throw new Error('Invalid file paths detected');
+  }
+
+  logger.info('Export successful');
+  return createExportBlob(exportData);
 };

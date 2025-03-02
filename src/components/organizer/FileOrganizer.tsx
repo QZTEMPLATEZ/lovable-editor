@@ -1,139 +1,118 @@
-
 import React, { useState } from 'react';
-import { FileVideo } from 'lucide-react';
-import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useFileProcessing } from '../../hooks/useFileProcessing';
+import FileUploadZone from './FileUploadZone';
+import FileProcessing from './FileProcessing';
+import FileAnalysisStatus from './FileAnalysisStatus';
+import FolderGrid from './FolderGrid';
 import { Button } from "@/components/ui/button";
-import { useVideoAnalysis } from '@/hooks/useVideoAnalysis';
-import VideoFrame from './VideoFrame';
-import { createEditingSequence } from '@/services/premiere/premiereIntegration';
+import { FOLDER_CATEGORIES } from '@/constants/folderCategories';
+import { useToast } from "@/hooks/use-toast";
 
-interface OrganizedFiles {
-  brideprep: File[];
-  groomprep: File[];
-  decoration: File[];
-  drone: File[];
-  ceremony: File[];
-  reception: File[];
-  untagged: File[];
-}
-
-const FileOrganizer = ({ isEditMode = false }: { isEditMode?: boolean }) => {
+const FileOrganizer = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
-  const [files, setFiles] = useState<OrganizedFiles>({
-    brideprep: [],
-    groomprep: [],
-    decoration: [],
-    drone: [],
-    ceremony: [],
-    reception: [],
-    untagged: []
-  });
-  const [processing, setProcessing] = useState(false);
-  const { analysisResults, addAnalysisResult } = useVideoAnalysis();
+  const {
+    files,
+    analysisResults,
+    isProcessing,
+    currentFile,
+    successCount,
+    errorCount,
+    handleFilesSelected,
+    stopProcessing
+  } = useFileProcessing();
 
-  const handleFileDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    if (isProcessing) return;
+
     const droppedFiles = Array.from(e.dataTransfer.files);
-    setProcessing(true);
-
-    try {
-      // Adiciona arquivos à categoria "untagged" inicialmente
-      setFiles(prev => ({
-        ...prev,
-        untagged: [...prev.untagged, ...droppedFiles]
-      }));
-
+    const videoFiles = droppedFiles.filter(file => file.type.startsWith('video/'));
+    
+    if (videoFiles.length === 0) {
       toast({
-        title: "Arquivos importados",
-        description: `${droppedFiles.length} arquivos adicionados para análise.`,
+        variant: "destructive",
+        title: "No video files",
+        description: "Please upload video files only."
       });
-    } catch (error) {
-      console.error('Erro ao importar arquivos:', error);
-      toast({
-        title: "Erro ao importar",
-        description: "Não foi possível importar alguns arquivos.",
-        variant: "destructive"
-      });
-    } finally {
-      setProcessing(false);
+      return;
     }
+
+    handleFilesSelected(videoFiles);
   };
 
-  const handleStartEditing = async () => {
-    setProcessing(true);
-    try {
-      await createEditingSequence(analysisResults, "Wedding Edit", (step, progress) => {
-        toast({
-          title: step,
-          description: `${progress}% concluído`,
-        });
-      });
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isProcessing || !e.target.files) return;
 
+    const selectedFiles = Array.from(e.target.files);
+    const videoFiles = selectedFiles.filter(file => file.type.startsWith('video/'));
+
+    if (videoFiles.length === 0) {
       toast({
-        title: "Edição criada",
-        description: "Sequência criada com sucesso no Premiere Pro.",
+        variant: "destructive",
+        title: "No video files",
+        description: "Please upload video files only."
       });
-    } catch (error) {
-      console.error('Erro ao criar sequência:', error);
-      toast({
-        title: "Erro na edição",
-        description: "Não foi possível criar a sequência.",
-        variant: "destructive"
-      });
-    } finally {
-      setProcessing(false);
+      return;
     }
+
+    handleFilesSelected(videoFiles);
+  };
+
+  const handleContinue = () => {
+    if (analysisResults.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "No files processed",
+        description: "Please upload and process some files before continuing."
+      });
+      return;
+    }
+    navigate('/review');
   };
 
   return (
-    <div className="min-h-screen bg-[#1E1E1E] p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Área de Drop */}
-        <div
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleFileDrop}
-          className="border-2 border-dashed border-gray-600 rounded-lg p-12 text-center hover:border-purple-500 transition-colors"
-        >
-          <FileVideo className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-          <p className="text-gray-400">
-            Arraste seus arquivos aqui ou{' '}
-            <button className="text-purple-500 hover:text-purple-400">
-              escolha os arquivos
-            </button>
-          </p>
-        </div>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="container mx-auto px-4 py-8 space-y-8"
+    >
+      <div className="space-y-6">
+        <FileUploadZone
+          onDrop={handleDrop}
+          onFileSelect={handleFileSelect}
+        />
 
-        {/* Grid de Vídeos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Object.entries(files).map(([category, categoryFiles]) =>
-            categoryFiles.map((file, index) => (
-              <VideoFrame
-                key={`${category}-${index}`}
-                file={file}
-                onAnalysisResult={addAnalysisResult}
-              />
-            ))
-          )}
-        </div>
+        <FileProcessing
+          files={files}
+          isProcessing={isProcessing}
+          onProcessStart={handleFilesSelected}
+        />
 
-        {/* Botões de Ação */}
-        <div className="flex justify-end gap-4">
-          <Button
-            variant="outline"
-            disabled={processing || !files.untagged.length}
-            onClick={() => setFiles({ ...files, untagged: [] })}
-          >
-            Limpar
-          </Button>
-          <Button
-            disabled={processing || !analysisResults.length}
-            onClick={handleStartEditing}
-          >
-            {processing ? "Processando..." : "Criar Sequência"}
-          </Button>
-        </div>
+        <FileAnalysisStatus
+          currentFile={currentFile}
+          progress={(successCount + errorCount) / (files.length || 1) * 100}
+          isProcessing={isProcessing}
+        />
+
+        {analysisResults.length > 0 && (
+          <>
+            <FolderGrid categories={FOLDER_CATEGORIES} />
+            
+            <div className="flex justify-end mt-6">
+              <Button
+                onClick={handleContinue}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90"
+              >
+                Continue to Review
+              </Button>
+            </div>
+          </>
+        )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

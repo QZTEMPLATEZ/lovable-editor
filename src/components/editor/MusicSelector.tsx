@@ -1,18 +1,21 @@
-
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import TrackList from '../music/TrackList';
+import MusicUploadSection from '../music/MusicUploadSection';
 import { createAudioElement, cleanupAudioElement, validateAudioFile } from '@/utils/audioUtils';
 import { detectBeats } from '@/utils/audioProcessing';
 import { APP_CONFIG } from '@/config/appConfig';
 import { useVideoType } from '@/contexts/VideoTypeContext';
-import { Separator } from "@/components/ui/separator";
-import { CloudLink, SelectedTrack } from './types';
-import UploadHeader from './upload/UploadHeader';
-import LinkSection from './upload/LinkSection';
+import MusicHeader from './music/MusicHeader';
+import ContinueButton from './music/ContinueButton';
 
 interface MusicTrackSelectorProps {
   onMusicSelect: (file: File, beats: any[]) => void;
+}
+
+interface SelectedTrack {
+  file: File;
+  beats: any[];
 }
 
 const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
@@ -20,84 +23,10 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const [audioElements, setAudioElements] = useState<{ [key: string]: HTMLAudioElement }>({});
-  const [musicCloudLink, setMusicCloudLink] = useState('');
-  const [videoCloudLink, setVideoCloudLink] = useState('');
   const { toast } = useToast();
-  const { setSelectedMusic, setVideoLinks, setMusicLinks, videoLinks, musicLinks } = useVideoType();
+  const { setSelectedMusic } = useVideoType();
 
-  const handleMusicCloudLink = async () => {
-    if (!musicCloudLink.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Link inválido",
-        description: "Por favor, insira um link válido para a música",
-      });
-      return;
-    }
-
-    if (musicLinks.length >= 3) {
-      toast({
-        variant: "destructive",
-        title: "Limite atingido",
-        description: "Você pode adicionar no máximo 3 links de música",
-      });
-      return;
-    }
-
-    try {
-      const newMusicLinks = [...musicLinks, { url: musicCloudLink, id: Date.now().toString() }];
-      setMusicLinks(newMusicLinks);
-      toast({
-        title: "Link adicionado",
-        description: "Link da música foi adicionado com sucesso",
-      });
-      setMusicCloudLink('');
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Erro no processamento",
-        description: "Não foi possível processar o arquivo de música do link fornecido",
-      });
-    }
-  };
-
-  const handleVideoCloudLink = async () => {
-    if (!videoCloudLink.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Link inválido",
-        description: "Por favor, insira um link válido para o vídeo",
-      });
-      return;
-    }
-
-    if (videoLinks.length >= 3) {
-      toast({
-        variant: "destructive",
-        title: "Limite atingido",
-        description: "Você pode adicionar no máximo 3 links de vídeo",
-      });
-      return;
-    }
-
-    try {
-      const newVideoLinks = [...videoLinks, { url: videoCloudLink, id: Date.now().toString() }];
-      setVideoLinks(newVideoLinks);
-      toast({
-        title: "Link adicionado",
-        description: "Link do vídeo foi adicionado com sucesso",
-      });
-      setVideoCloudLink('');
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Erro no processamento",
-        description: "Não foi possível processar o arquivo de vídeo do link fornecido",
-      });
-    }
-  };
-
-    const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
 
@@ -121,16 +50,12 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
       return;
     }
 
-    await processFiles(newFiles);
-  };
-
-  const processFiles = async (files: File[]) => {
     setIsAnalyzing(true);
     
     try {
       const analyzedTracks: SelectedTrack[] = [];
       
-      for (const file of files) {
+      for (const file of newFiles) {
         const beats = await detectBeats(file);
         onMusicSelect(file, beats);
         
@@ -149,7 +74,7 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
 
       toast({
         title: "Music Analysis Complete",
-        description: `${files.length} track${files.length === 1 ? '' : 's'} analyzed. Total tracks: ${updatedTracks.length}`,
+        description: `${newFiles.length} track${newFiles.length === 1 ? '' : 's'} analyzed. Total tracks: ${updatedTracks.length}`,
       });
     } catch (error) {
       toast({
@@ -200,52 +125,24 @@ const MusicSelector = ({ onMusicSelect }: MusicTrackSelectorProps) => {
     });
   };
 
-  const removeVideoLink = (id: string) => {
-    setVideoLinks(videoLinks.filter(link => link.id !== id));
-  };
-
-  const removeMusicLink = (id: string) => {
-    setMusicLinks(musicLinks.filter(link => link.id !== id));
-  };
-
   return (
     <div className="space-y-6 w-full max-w-4xl mx-auto">
       <div className="bg-gradient-to-br from-editor-bg/95 to-editor-bg/80 p-8 rounded-2xl backdrop-blur-lg border border-purple-500/30 shadow-2xl relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 pointer-events-none" />
         
-        <div className="relative space-y-6">
-          <UploadHeader 
-            videoLinksCount={videoLinks.length}
-            musicLinksCount={musicLinks.length}
-          />
-
-          <div className="space-y-6">
-            <LinkSection
-              title="Vídeos"
-              icon="video"
-              links={videoLinks}
-              inputValue={videoCloudLink}
-              onInputChange={setVideoCloudLink}
-              onSubmit={handleVideoCloudLink}
-              onRemove={removeVideoLink}
-              placeholder="Cole aqui o link do vídeo (Dropbox, Google Drive, etc)"
-              buttonText="Adicionar Vídeo"
+        <div className="relative space-y-4">
+          <div className="flex items-center justify-between">
+            <MusicHeader 
+              trackCount={selectedTracks.length} 
+              maxTracks={APP_CONFIG.music.maxTracks} 
             />
-
-            <Separator className="bg-purple-500/20" />
-
-            <LinkSection
-              title="Músicas"
-              icon="music"
-              links={musicLinks}
-              inputValue={musicCloudLink}
-              onInputChange={setMusicCloudLink}
-              onSubmit={handleMusicCloudLink}
-              onRemove={removeMusicLink}
-              placeholder="Cole aqui o link da música (Dropbox, Google Drive, etc)"
-              buttonText="Adicionar Música"
-            />
+            <ContinueButton hasSelectedTracks={selectedTracks.length > 0} />
           </div>
+
+          <MusicUploadSection 
+            onMusicUpload={handleMusicUpload}
+            maxTracks={APP_CONFIG.music.maxTracks}
+          />
 
           <TrackList
             tracks={selectedTracks.map(track => ({

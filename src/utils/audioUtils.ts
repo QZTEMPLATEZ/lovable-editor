@@ -1,4 +1,3 @@
-
 export const createAudioElement = (file: File): HTMLAudioElement => {
   const audio = new Audio(URL.createObjectURL(file));
   return audio;
