@@ -1,12 +1,12 @@
 
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, Video, Film, FileVideo, Clapperboard, Download } from 'lucide-react';
+import { Upload, Video, FileVideo, Film, Download, ArrowRight, BarChart3 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { EditProject } from '@/types/video';
+import { EditProject, VideoCategory } from '@/types/video';
 
 const Home = () => {
   const { toast } = useToast();
@@ -128,6 +128,13 @@ const Home = () => {
     }, 2000);
   };
 
+  // Step indicators
+  const steps = [
+    { id: 1, title: "Import", icon: <Upload className="w-5 h-5" /> },
+    { id: 2, title: "Analyze", icon: <BarChart3 className="w-5 h-5" /> },
+    { id: 3, title: "Export", icon: <Download className="w-5 h-5" /> }
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-purple-950 text-white">
       <div className="container mx-auto py-10 px-4">
@@ -136,9 +143,61 @@ const Home = () => {
             Wedding Auto Edit
           </h1>
           <p className="text-lg text-purple-300">
-            Transform raw footage into professional edits using AI
+            Transform raw footage into professional edits automatically
           </p>
         </header>
+
+        {/* Step Indicators */}
+        <div className="max-w-3xl mx-auto mb-12">
+          <div className="flex items-center justify-between relative">
+            {steps.map((step, index) => (
+              <React.Fragment key={step.id}>
+                {/* Step Circle */}
+                <div 
+                  className={`relative z-10 flex flex-col items-center ${currentStep === step.id ? 'scale-110 transition-transform duration-300' : ''}`}
+                  onClick={() => {
+                    // Only allow going back to previous steps or current step
+                    if (step.id <= currentStep) {
+                      setCurrentStep(step.id);
+                    }
+                  }}
+                >
+                  <div 
+                    className={`w-16 h-16 rounded-full flex items-center justify-center 
+                      ${currentStep === step.id 
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/30' 
+                        : currentStep > step.id 
+                          ? 'bg-gradient-to-r from-purple-700 to-purple-500 opacity-90' 
+                          : 'bg-gray-800 opacity-60'} 
+                      transition-all duration-300 cursor-pointer hover:scale-105`}
+                  >
+                    {step.icon}
+                  </div>
+                  <span className={`mt-2 font-medium ${currentStep === step.id ? 'text-white' : 'text-gray-400'}`}>
+                    {step.title}
+                  </span>
+                </div>
+                
+                {/* Connector Line */}
+                {index < steps.length - 1 && (
+                  <div className="h-1 flex-1 mx-2 rounded-full bg-gray-800 relative z-0">
+                    <div 
+                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                      style={{ 
+                        width: currentStep > index + 1 
+                          ? '100%' 
+                          : currentStep === index + 1 
+                            ? '50%' 
+                            : '0%',
+                        transition: 'width 0.5s ease-in-out'
+                      }}
+                    />
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
 
         <div className="max-w-4xl mx-auto">
           {/* Step 1: File Import */}
@@ -149,7 +208,7 @@ const Home = () => {
               className="space-y-6"
             >
               <Card className="p-6 bg-black/20 backdrop-blur-md border border-purple-500/20 rounded-xl">
-                <h2 className="text-2xl font-bold mb-4 text-purple-200">Step 1: Import Your Files</h2>
+                <h2 className="text-2xl font-bold mb-4 text-purple-200">Import Your Files</h2>
                 
                 {/* Raw Footage Upload */}
                 <div 
@@ -209,6 +268,7 @@ const Home = () => {
                   disabled={!referenceVideo || rawFiles.length === 0}
                   onClick={handleStartAnalysis}
                 >
+                  <ArrowRight className="w-5 h-5 mr-2" />
                   Continue to Analysis
                 </Button>
               </Card>
@@ -223,7 +283,7 @@ const Home = () => {
               className="space-y-6"
             >
               <Card className="p-6 bg-black/20 backdrop-blur-md border border-purple-500/20 rounded-xl">
-                <h2 className="text-2xl font-bold mb-6 text-purple-200">Step 2: Analyzing & Matching</h2>
+                <h2 className="text-2xl font-bold mb-6 text-purple-200">Analyzing & Matching</h2>
                 
                 <div className="space-y-8">
                   {/* Reference Video Analysis */}
@@ -239,8 +299,8 @@ const Home = () => {
                     <Progress value={analysisProgress} className="h-2 bg-purple-900/30" />
                     {analysisProgress === 100 && (
                       <div className="p-3 bg-purple-900/20 rounded-lg">
-                        <p className="text-sm text-purple-200">✓ Identified 15 scenes in reference video</p>
-                        <p className="text-sm text-purple-200">✓ Detected 4 different categories</p>
+                        <p className="text-sm text-purple-200">✓ Identified scenes in reference video</p>
+                        <p className="text-sm text-purple-200">✓ Detected wedding event categories</p>
                         <p className="text-sm text-purple-200">✓ Analyzed transitions and timing</p>
                       </div>
                     )}
@@ -263,10 +323,14 @@ const Home = () => {
                           <p className="text-sm text-purple-200">
                             Processed {Math.min(rawFiles.length, Math.ceil(rawFiles.length * matchingProgress / 100))} of {rawFiles.length} raw files
                           </p>
+                          {matchingProgress > 30 && matchingProgress < 70 && (
+                            <p className="text-sm text-purple-200">Categorizing footage and finding best matches...</p>
+                          )}
                           {matchingProgress === 100 && (
                             <>
-                              <p className="text-sm text-purple-200">✓ Found matches for 15/15 reference scenes</p>
-                              <p className="text-sm text-purple-200">✓ Created timeline with {rawFiles.length} clips</p>
+                              <p className="text-sm text-purple-200">✓ All raw footage categorized</p>
+                              <p className="text-sm text-purple-200">✓ Best matches found for reference scenes</p>
+                              <p className="text-sm text-purple-200">✓ Ready to export project</p>
                             </>
                           )}
                         </div>
@@ -274,6 +338,16 @@ const Home = () => {
                     </div>
                   )}
                 </div>
+                
+                {matchingProgress === 100 && (
+                  <Button 
+                    className="w-full mt-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 transition-opacity"
+                    onClick={() => setCurrentStep(3)}
+                  >
+                    <ArrowRight className="w-5 h-5 mr-2" />
+                    Continue to Export
+                  </Button>
+                )}
               </Card>
             </motion.div>
           )}
@@ -286,22 +360,22 @@ const Home = () => {
               className="space-y-6"
             >
               <Card className="p-6 bg-black/20 backdrop-blur-md border border-purple-500/20 rounded-xl">
-                <h2 className="text-2xl font-bold mb-6 text-purple-200">Step 3: Export Your Project</h2>
+                <h2 className="text-2xl font-bold mb-6 text-purple-200">Export Your Project</h2>
                 
                 <div className="bg-purple-900/20 p-4 rounded-xl mb-6">
                   <h3 className="text-lg font-semibold mb-3 text-purple-200">Project Summary</h3>
                   <ul className="space-y-2 text-purple-300">
                     <li className="flex items-center gap-2">
-                      <Clapperboard className="w-4 h-4" />
-                      <span>15 matched scenes from reference video</span>
+                      <Video className="w-4 h-4" />
+                      <span>1 reference video analyzed</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <FileVideo className="w-4 h-4" />
-                      <span>{rawFiles.length} raw footage files used</span>
+                      <span>{rawFiles.length} raw footage files categorized</span>
                     </li>
                     <li className="flex items-center gap-2">
                       <Film className="w-4 h-4" />
-                      <span>Total duration: ~5 minutes</span>
+                      <span>4 different wedding event categories identified</span>
                     </li>
                   </ul>
                 </div>
