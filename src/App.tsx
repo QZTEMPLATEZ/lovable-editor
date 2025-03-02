@@ -2,7 +2,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster";
-import Home from './pages/Home';
+import Home from './pages/home';
 
 function App() {
   return (
