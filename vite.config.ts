@@ -1,30 +1,39 @@
-
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc';
-import path from 'path';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
+  server: {
+    host: "::",
+    port: 8080,
+  },
   plugins: [
     react(),
-    mode === 'development' && componentTagger(),
+    mode === 'development' &&
+    componentTagger(),
   ].filter(Boolean),
-  server: {
-    port: 8080,
-    host: '::',
-  },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false, // Disable sourcemaps to prevent warnings
+    minify: 'terser',
+    terserOptions: {
+      format: {
+        comments: false,
+      },
+    },
     rollupOptions: {
-      external: [
-        '@capacitor/app',
-        '@capacitor/status-bar',
-        '@capacitor/ios'
-      ]
-    }
-  }
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+        },
+      },
+    },
+  },
 }));
